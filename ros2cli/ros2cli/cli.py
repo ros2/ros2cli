@@ -43,6 +43,14 @@ def main(*, script_name='ros2', argv=None, description=None, extension=None):
             # hide the special commands in the help
             hide_extensions=['extension_points', 'extensions'])
 
+    # register argcomplete hook
+    try:
+        from argcomplete import autocomplete
+    except ImportError:
+        pass
+    else:
+        autocomplete(parser)
+
     # parse the command line arguments
     args = parser.parse_args(args=argv)
 

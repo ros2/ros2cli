@@ -5,6 +5,10 @@ setup(
     name='ros2cli',
     version='0.0.0',
     packages=find_packages(exclude=['test']),
+    install_requires=['argcomplete'],
+    data_files=[
+        ('share/ros2cli/environment', ['completion/ros2-argcomplete.bash']),
+    ],
     author='Dirk Thomas',
     author_email='dthomas@osrfoundation.org',
     maintainer='Dirk Thomas',
