@@ -39,7 +39,9 @@ def main(*, script_name='ros2', argv=None, description=None, extension=None):
         extensions = get_command_extensions('ros2cli.command')
         selected_extension_key = '_command'
         add_subparsers(
-            parser, script_name, selected_extension_key, extensions)
+            parser, script_name, selected_extension_key, extensions,
+            # hide the special commands in the help
+            hide_extensions=['extension_points', 'extensions'])
 
     # parse the command line arguments
     args = parser.parse_args(args=argv)

@@ -26,6 +26,9 @@ commands and verbs.""",
     test_suite='test',
     entry_points={
         'ros2cli.command': [
+            'extension_points ='
+            ' ros2cli.command.extension_points:ExtensionPointsCommand',
+            'extensions = ros2cli.command.extensions:ExtensionsCommand',
         ],
         'ros2cli.extension_point': [
             'ros2cli.command = ros2cli.command:CommandExtension',
