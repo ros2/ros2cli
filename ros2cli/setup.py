@@ -41,6 +41,7 @@ commands and verbs.""",
         ],
         'console_scripts': [
             'ros2 = ros2cli.cli:main',
+            '_ros2_daemon = ros2cli.daemon:main',
         ],
     }
 )
