@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
+
 import rclpy
 
 # TODO(mikaelarguedas) revisit this once it's specified
@@ -31,7 +33,8 @@ class DirectNode(object):
 
         rclpy.init()
 
-        node_name_suffix = getattr(args, 'node_name_suffix', '')
+        node_name_suffix = getattr(
+            args, 'node_name_suffix', '_%d' % os.getpid())
         self.node = rclpy.create_node(HIDDEN_NODE_PREFIX + 'ros2cli_node' + node_name_suffix)
         timeout = getattr(args, 'spin_time', DEFAULT_TIMEOUT)
         self.timer = self.node.create_timer(timeout, timer_callback)
