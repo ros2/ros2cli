@@ -28,7 +28,7 @@ def main(*, script_name='_ros2_daemon', argv=None):
     args = parser.parse_args(args=argv)
 
     addr = ('localhost', get_daemon_port())
-    with DirectNode({}) as node:
+    with DirectNode(object({'node_name_suffix': '_daemon'})) as node:
         server = SimpleXMLRPCServer(addr, logRequests=False)
 
         try:
