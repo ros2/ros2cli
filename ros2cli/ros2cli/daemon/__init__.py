@@ -15,6 +15,8 @@
 import argparse
 import os
 
+from collections import namedtuple
+
 from ros2cli.node.direct import DirectNode
 from xmlrpc.server import SimpleXMLRPCServer
 
@@ -28,7 +30,9 @@ def main(*, script_name='_ros2_daemon', argv=None):
     args = parser.parse_args(args=argv)
 
     addr = ('localhost', get_daemon_port())
-    with DirectNode({}) as node:
+    NodeArgs = namedtuple('NodeArgs', 'node_name_suffix')
+    node_args = NodeArgs(node_name_suffix='_daemon')
+    with DirectNode(node_args) as node:
         server = SimpleXMLRPCServer(addr, logRequests=False)
 
         try:
