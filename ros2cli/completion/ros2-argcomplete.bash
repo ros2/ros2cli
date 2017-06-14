@@ -12,4 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-eval "$(register-python-argcomplete ros2)"
+if type register-python-argcomplete > /dev/null 2>&1; then
+  eval "$(register-python-argcomplete ros2)"
+fi

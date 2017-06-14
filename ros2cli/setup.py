@@ -5,7 +5,9 @@ setup(
     name='ros2cli',
     version='0.0.0',
     packages=find_packages(exclude=['test']),
-    install_requires=['argcomplete'],
+    extras_require={
+        'completion': ['argcomplete'],
+    },
     data_files=[
         ('share/ros2cli/environment', ['completion/ros2-argcomplete.bash']),
     ],

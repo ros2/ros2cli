@@ -43,7 +43,7 @@ def main(*, script_name='ros2', argv=None, description=None, extension=None):
             # hide the special commands in the help
             hide_extensions=['extension_points', 'extensions'])
 
-    # register argcomplete hook
+    # register argcomplete hook if available
     try:
         from argcomplete import autocomplete
     except ImportError:
