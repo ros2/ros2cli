@@ -17,8 +17,8 @@ from ros2cli.node.strategy import NodeStrategy
 from rclpy.topic_or_service_is_hidden import topic_or_service_is_hidden
 
 
-def get_topic_names_and_types(*, node, include_hidden_topics=False):
-    topic_names_and_types = node.get_topic_names_and_types()
+def get_topic_names_and_types(*, node, include_hidden_topics=False, no_demangle=False):
+    topic_names_and_types = node.get_topic_names_and_types(no_demangle=no_demangle)
     if not include_hidden_topics:
         topic_names_and_types = [
             (n, t) for (n, t) in topic_names_and_types
