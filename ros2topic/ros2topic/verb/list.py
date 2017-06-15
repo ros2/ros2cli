@@ -24,7 +24,7 @@ class ListVerb(VerbExtension):
     def add_arguments(self, parser, cli_name):
         add_arguments(parser)
         parser.add_argument(
-            '--show-type', action='store_true',
+            '-t', '--show-types', action='store_true',
             help='Additionally show the topic type')
         parser.add_argument(
             '-c', '--count-topics', action='store_true',
@@ -38,8 +38,9 @@ class ListVerb(VerbExtension):
         if args.count_topics:
             print(len(topic_names_and_types))
         elif topic_names_and_types:
-            for (topic_name, topic_type) in topic_names_and_types:
+            for (topic_name, topic_types) in topic_names_and_types:
                 msg = '{topic_name}'
-                if args.show_type:
-                    msg += ' [{topic_type}]'
+                topic_types_formatted = ', '.join(topic_types)
+                if args.show_types:
+                    msg += ' [{topic_types_formatted}]'
                 print(msg.format_map(locals()))
