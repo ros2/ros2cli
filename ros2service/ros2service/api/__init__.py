@@ -12,9 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ros2cli.node.strategy import NodeStrategy
-
 from rclpy.topic_or_service_is_hidden import topic_or_service_is_hidden
+from ros2cli.node.strategy import NodeStrategy
 
 
 def get_service_names_and_types(*, node, include_hidden_services=False):
