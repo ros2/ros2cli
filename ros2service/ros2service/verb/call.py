@@ -48,18 +48,14 @@ class CallVerb(VerbExtension):
             return value
 
         parser.add_argument(
-            '-l', '--loop', metavar='N', default=None, type=float_or_int,
+            '-r', '--repeat', metavar='N', type=float_or_int,
             help='Repeat the call every N seconds')
 
     def main(self, *, args):
-        return main(args)
+        return requester(args.service_type, args.service_name, args.values, args.repeat)
 
 
-def main(args):
-    requester(args.service_type, args.service_name, args.values, args.loop)
-
-
-def requester(service_type, service_name, values, loop):
+def requester(service_type, service_name, values, repeat):
     # TODO(wjwwood) this logic should come from a rosidl related package
     try:
         package_name, srv_name = service_type.split('/', 2)
@@ -87,9 +83,9 @@ def requester(service_type, service_name, values, loop):
         cli.wait_for_future()
         if cli.response is not None:
             print('response:\n%r\n' % cli.response)
-        if loop is None or not rclpy.ok():
+        if repeat is None or not rclpy.ok():
             break
-        time_until_next_period = (last_call + loop) - time.time()
+        time_until_next_period = (last_call + repeat) - time.time()
         if time_until_next_period > 0:
             time.sleep(time_until_next_period)
 

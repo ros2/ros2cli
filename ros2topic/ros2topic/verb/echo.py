@@ -78,12 +78,10 @@ def subscriber(node, topic_name, message_type, callback):
         for n, t in topic_names_and_types:
             if n == topic_name:
                 if len(t) > 1:
-                    print(
+                    raise RuntimeError(
                         "Cannot echo topic '%s', as it contains more than one type: [%s]" %
-                        (topic_name, ', '.join(t)),
-                        file=sys.stderr
+                        (topic_name, ', '.join(t))
                     )
-                    sys.exit(1)
                 message_type = t[0]
                 break
         else:
