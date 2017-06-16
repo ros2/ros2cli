@@ -9,7 +9,10 @@ setup(
         'completion': ['argcomplete'],
     },
     data_files=[
-        ('share/ros2cli/environment', ['completion/ros2-argcomplete.bash']),
+        ('share/ros2cli/environment', [
+            'completion/ros2-argcomplete.bash',
+            'completion/ros2-argcomplete.zsh'
+        ]),
     ],
     author='Dirk Thomas',
     author_email='dthomas@osrfoundation.org',
