@@ -12,17 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from rclpy.topic_or_service_is_hidden import topic_or_service_is_hidden
 from ros2cli.node.strategy import NodeStrategy
 
-HIDDEN_TOPIC_PREFIX = '_'
 
-
-def get_topic_names_and_types(*, node, include_hidden_topics=False):
-    topic_names_and_types = node.get_topic_names_and_types()
+def get_topic_names_and_types(*, node, include_hidden_topics=False, no_demangle=False):
+    topic_names_and_types = node.get_topic_names_and_types(no_demangle=no_demangle)
     if not include_hidden_topics:
         topic_names_and_types = [
             (n, t) for (n, t) in topic_names_and_types
-            if not t.startswith(HIDDEN_TOPIC_PREFIX)]
+            if not topic_or_service_is_hidden(n)]
     return topic_names_and_types
 
 

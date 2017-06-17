@@ -22,7 +22,7 @@ from ros2topic.verb import VerbExtension
 
 
 class PubVerb(VerbExtension):
-    """Output a list of available topics."""
+    """Publish a message to a topic."""
 
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(

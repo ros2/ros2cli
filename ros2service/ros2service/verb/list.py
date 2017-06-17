@@ -14,38 +14,33 @@
 
 from ros2cli.node.strategy import add_arguments
 from ros2cli.node.strategy import NodeStrategy
-from ros2topic.api import get_topic_names_and_types
-from ros2topic.verb import VerbExtension
+from ros2service.api import get_service_names_and_types
+from ros2service.verb import VerbExtension
 
 
 class ListVerb(VerbExtension):
-    """Output a list of available topics."""
+    """Output a list of available services."""
 
     def add_arguments(self, parser, cli_name):
         add_arguments(parser)
         parser.add_argument(
             '-t', '--show-types', action='store_true',
-            help='Additionally show the topic type')
+            help='Additionally show the service type')
         parser.add_argument(
-            '-c', '--count-topics', action='store_true',
-            help='Only display the number of topics discovered')
-        parser.add_argument(
-            '--no-demangle', action='store_true',
-            help='Do not demangle the underlying middleware topics when listing')
+            '-c', '--count-services', action='store_true',
+            help='Only display the number of services discovered')
 
     def main(self, *, args):
         with NodeStrategy(args) as node:
-            topic_names_and_types = get_topic_names_and_types(
-                node=node,
-                include_hidden_topics=args.include_hidden_topics,
-                no_demangle=args.no_demangle)
+            service_names_and_types = get_service_names_and_types(
+                node=node, include_hidden_services=args.include_hidden_services)
 
-        if args.count_topics:
-            print(len(topic_names_and_types))
-        elif topic_names_and_types:
-            for (topic_name, topic_types) in topic_names_and_types:
-                msg = '{topic_name}'
-                topic_types_formatted = ', '.join(topic_types)
+        if args.count_services:
+            print(len(service_names_and_types))
+        elif service_names_and_types:
+            for (service_name, service_types) in service_names_and_types:
+                msg = '{service_name}'
+                service_types_formatted = ', '.join(service_types)
                 if args.show_types:
-                    msg += ' [{topic_types_formatted}]'
+                    msg += ' [{service_types_formatted}]'
                 print(msg.format_map(locals()))
