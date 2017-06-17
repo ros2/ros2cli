@@ -29,16 +29,12 @@ class ListVerb(VerbExtension):
         parser.add_argument(
             '-c', '--count-topics', action='store_true',
             help='Only display the number of topics discovered')
-        parser.add_argument(
-            '--no-demangle', action='store_true',
-            help='Do not demangle the underlying middleware topics when listing')
 
     def main(self, *, args):
         with NodeStrategy(args) as node:
             topic_names_and_types = get_topic_names_and_types(
                 node=node,
-                include_hidden_topics=args.include_hidden_topics,
-                no_demangle=args.no_demangle)
+                include_hidden_topics=args.include_hidden_topics)
 
         if args.count_topics:
             print(len(topic_names_and_types))
