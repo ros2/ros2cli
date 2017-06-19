@@ -18,9 +18,12 @@ import platform
 import socket
 import subprocess
 
+import rclpy
 from ros2cli.daemon import get_daemon_port
+from ros2cli.node.direct import DirectNode
 
-import xmlrpc.client
+from xmlrpc.client import ProtocolError
+from xmlrpc.client import ServerProxy
 
 
 def is_daemon_running(args):
@@ -40,23 +43,38 @@ def is_daemon_running(args):
 
 def spawn_daemon(args):
     ros_domain_id = int(os.environ.get('ROS_DOMAIN_ID', 0))
-    subprocess.Popen(
-        ['_ros2_daemon', '--ros-domain-id', str(ros_domain_id)],
+    subprocess.Popen([
+        '_ros2_daemon',
+        # the arguments are only passed for visibility in e.g. the process list
+        '--rmw-implementation', rclpy.get_rmw_implementation_identifier(),
+        '--ros-domain-id', str(ros_domain_id)],
         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
 class DaemonNode(object):
 
     def __init__(self, args):
-        self._proxy = xmlrpc.client.ServerProxy(
-            'http://localhost:%d/' % get_daemon_port())
+        self._args = args
+        self._proxy = ServerProxy(
+            'http://localhost:%d/%s/' %
+            (get_daemon_port(), rclpy.get_rmw_implementation_identifier()))
         self._methods = []
 
     def __enter__(self):
         self._proxy.__enter__()
 
-        methods = self._proxy.system.listMethods()
-        self._methods = [m for m in methods if not m.startswith('system.')]
+        try:
+            methods = self._proxy.system.listMethods()
+        except ProtocolError as e:
+            if e.errcode != 404:
+                raise
+            # remote daemon returned 404, likely using different rmw impl.
+            self._proxy.__exit__()
+            # fall back to use direct node
+            self._proxy = DirectNode(self._args)
+            self._proxy.__enter__()
+        else:
+            self._methods = [m for m in methods if not m.startswith('system.')]
 
         return self
 

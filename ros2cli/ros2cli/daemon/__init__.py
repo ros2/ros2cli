@@ -16,13 +16,19 @@ import argparse
 from collections import namedtuple
 import os
 
+import rclpy
 from ros2cli.node.direct import DirectNode
+from xmlrpc.server import SimpleXMLRPCRequestHandler
 from xmlrpc.server import SimpleXMLRPCServer
 
 
 def main(*, script_name='_ros2_daemon', argv=None):
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument(
+        '--rmw-implementation', type=str, required=True,
+        help='The RMW implementation name (must match the return value of '
+             'rclpy.get_rmw_implementation_identifier())')
     parser.add_argument(
         '--ros-domain-id', metavar='N', type=int, required=True,
         help='The ROS domain id (must match the environment variable '
@@ -32,14 +38,16 @@ def main(*, script_name='_ros2_daemon', argv=None):
         help='Shutdown the daemin after N seconds of inactivity')
     args = parser.parse_args(args=argv)
 
-    # the argument is solely passed for visibility in e.g. the process list
+    # the arguments are only passed for visibility in e.g. the process list
+    assert args.rmw_implementation == rclpy.get_rmw_implementation_identifier()
     assert args.ros_domain_id == int(os.environ.get('ROS_DOMAIN_ID', 0))
 
     addr = ('localhost', get_daemon_port())
     NodeArgs = namedtuple('NodeArgs', 'node_name_suffix')
     node_args = NodeArgs(node_name_suffix='_daemon_%d' % args.ros_domain_id)
     with DirectNode(node_args) as node:
-        server = SimpleXMLRPCServer(addr, logRequests=False)
+        server = SimpleXMLRPCServer(
+            addr, logRequests=False, requestHandler=RequestHandler)
 
         try:
             server.register_introspection_functions()
@@ -67,7 +75,8 @@ def main(*, script_name='_ros2_daemon', argv=None):
                 shutdown = True
             server.register_function(shutdown_handler, 'system.shutdown')
 
-            print('Serving XML-RPC on %s:%d' % addr)
+            print('Serving XML-RPC on %s:%d/%s/' % (
+                addr[0], addr[1], rclpy.get_rmw_implementation_identifier()))
             try:
                 while not shutdown:
                     server.handle_request()
@@ -81,6 +90,10 @@ def get_daemon_port():
     base_port = 11511
     base_port += int(os.environ.get('ROS_DOMAIN_ID', 0))
     return base_port
+
+
+class RequestHandler(SimpleXMLRPCRequestHandler):
+    rpc_paths = ('/%s/' % rclpy.get_rmw_implementation_identifier(),)
 
 
 def _print_invoked_function_name(func):
