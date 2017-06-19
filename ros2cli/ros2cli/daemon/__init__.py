@@ -46,7 +46,7 @@ def main(*, script_name='_ros2_daemon', argv=None):
     NodeArgs = namedtuple('NodeArgs', 'node_name_suffix')
     node_args = NodeArgs(node_name_suffix='_daemon_%d' % args.ros_domain_id)
     with DirectNode(node_args) as node:
-        server = SimpleXMLRPCServer(
+        server = LocalXMLRPCServer(
             addr, logRequests=False, requestHandler=RequestHandler)
 
         try:
@@ -84,6 +84,14 @@ def main(*, script_name='_ros2_daemon', argv=None):
                 pass
         finally:
             server.server_close()
+
+
+class LocalXMLRPCServer(SimpleXMLRPCServer):
+
+    def verify_request(self, request, client_address):
+        if client_address[0] != '127.0.0.1':
+            return False
+        return super(LocalXMLRPCServer, self).verify_request(request, client_address)
 
 
 def get_daemon_port():
