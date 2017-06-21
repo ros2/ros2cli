@@ -14,8 +14,8 @@
 
 import os
 import subprocess
+import sys
 
-from ros2cli.node.strategy import NodeStrategy
 from ros2pkg.api import get_prefix_path
 
 
@@ -31,7 +31,7 @@ class PackageNotFound(Exception):
         self.package_name = package_name
 
 
-def get_executable_paths(*, node, package_name):
+def get_executable_paths(*, package_name):
     prefix_path = get_prefix_path(package_name)
     if prefix_path is None:
         raise PackageNotFound(package_name)
@@ -49,11 +49,21 @@ def get_executable_paths(*, node, package_name):
     return executable_paths
 
 
-def get_executable_path(*, node, package_name, executable_name):
-    paths = get_executable_paths(node=node, package_name=package_name)
-    paths2base = {
-        p: os.path.basename(p) for p in paths
-        if os.path.basename(p) == executable_name}
+def get_executable_path(*, package_name, executable_name):
+    paths = get_executable_paths(package_name=package_name)
+    paths2base = {}
+    for p in paths:
+        basename = os.path.basename(p)
+        if basename == executable_name:
+            # pick exact match
+            paths2base[p] = basename
+        elif sys.platform == 'win32':
+            # check extensions listed in PATHEXT for match without extension
+            pathext = os.environ.get('PATHEXT', '').lower().split(os.pathsep)
+            ext = os.path.splitext(basename)[1].lower()
+            if ext in pathext and basename[:-len(ext)] == executable_name:
+                # pick match because of known extension
+                paths2base[p] = basename
     if not paths2base:
         return None
     if len(paths2base) > 1:
@@ -74,10 +84,8 @@ class ExecutableNameCompleter(object):
 
     def __call__(self, prefix, parsed_args, **kwargs):
         package_name = getattr(parsed_args, self.package_name_key)
-        with NodeStrategy(parsed_args) as node:
-            try:
-                paths = get_executable_paths(
-                    node=node, package_name=package_name)
-            except PackageNotFound:
-                return []
-            return [os.path.basename(p) for p in paths]
+        try:
+            paths = get_executable_paths(package_name=package_name)
+        except PackageNotFound:
+            return []
+        return [os.path.basename(p) for p in paths]
