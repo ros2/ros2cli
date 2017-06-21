@@ -14,6 +14,7 @@
 
 import os
 import subprocess
+import sys
 
 from ros2pkg.api import get_prefix_path
 
@@ -50,9 +51,19 @@ def get_executable_paths(*, package_name):
 
 def get_executable_path(*, package_name, executable_name):
     paths = get_executable_paths(package_name=package_name)
-    paths2base = {
-        p: os.path.basename(p) for p in paths
-        if os.path.basename(p) == executable_name}
+    paths2base = {}
+    for p in paths:
+        basename = os.path.basename(p)
+        if basename == executable_name:
+            # pick exact match
+            paths2base[p] = basename
+        elif sys.platform == 'win32':
+            # check extensions listed in PATHEXT for match without extension
+            pathext = os.environ.get('PATHEXT', '').lower().split(os.pathsep)
+            ext = os.path.splitext(basename)[1].lower()
+            if ext in pathext and basename[:-len(ext)] == executable_name:
+                # pick match because of known extension
+                paths2base[p] = basename
     if not paths2base:
         return None
     if len(paths2base) > 1:
