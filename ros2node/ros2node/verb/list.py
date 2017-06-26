@@ -19,7 +19,7 @@ from ros2node.verb import VerbExtension
 
 
 class ListVerb(VerbExtension):
-    """Output a list of available topics."""
+    """Output a list of available nodes."""
 
     def add_arguments(self, parser, cli_name):
         add_arguments(parser)

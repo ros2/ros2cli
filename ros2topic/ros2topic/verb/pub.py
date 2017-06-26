@@ -36,7 +36,7 @@ class PubVerb(VerbExtension):
         parser.add_argument(
             'values', nargs='?', default='{}',
             help='Values to fill the message with in JSON format ' +
-                 '(e.g. {"data": "Hello World"}), ' +
+                 '(e.g. \'{"data": "Hello World"}\'), ' +
                  'otherwise the message will be published with default values')
 
     def main(self, *, args):
