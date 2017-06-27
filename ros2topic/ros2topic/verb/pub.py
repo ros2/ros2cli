@@ -13,12 +13,12 @@
 # limitations under the License.
 
 import importlib
-import json
 import time
 
 import rclpy
 from ros2topic.api import TopicNameCompleter
 from ros2topic.verb import VerbExtension
+import yaml
 
 
 class PubVerb(VerbExtension):
@@ -35,8 +35,8 @@ class PubVerb(VerbExtension):
             help="Type of the ROS message (e.g. 'std_msgs/String')")
         parser.add_argument(
             'values', nargs='?', default='{}',
-            help='Values to fill the message with in JSON format ' +
-                 '(e.g. \'{"data": "Hello World"}\'), ' +
+            help='Values to fill the message with in YAML format ' +
+                 '(e.g. "data: Hello World"), ' +
                  'otherwise the message will be published with default values')
 
     def main(self, *, args):
@@ -55,7 +55,7 @@ def publisher(message_type, topic_name, values):
         raise RuntimeError('The passed message type is invalid')
     module = importlib.import_module(package_name + '.msg')
     msg_module = getattr(module, message_name)
-    values_dictionary = json.loads(values)
+    values_dictionary = yaml.load(values)
 
     rclpy.init()
 

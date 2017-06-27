@@ -14,12 +14,12 @@
 
 import argparse
 import importlib
-import json
 import time
 
 import rclpy
 from ros2service.api import ServiceNameCompleter
 from ros2service.verb import VerbExtension
+import yaml
 
 
 class CallVerb(VerbExtension):
@@ -36,8 +36,8 @@ class CallVerb(VerbExtension):
             help="Type of the ROS service (e.g. 'std_srvs/Empty')")
         parser.add_argument(
             'values', nargs='?', default='{}',
-            help='Values to fill the service request with in JSON format ' +
-                 '(e.g. \'{"a": 1, "b": 2}\'), ' +
+            help='Values to fill the service request with in YAML format ' +
+                 '(e.g. "{a: 1, b: 2}"), ' +
                  'otherwise the service request will be published with default values')
 
         def float_or_int(input_string):
@@ -63,7 +63,7 @@ def requester(service_type, service_name, values, repeat):
         raise RuntimeError('The passed service type is invalid')
     module = importlib.import_module(package_name + '.srv')
     srv_module = getattr(module, srv_name)
-    values_dictionary = json.loads(values)
+    values_dictionary = yaml.load(values)
 
     rclpy.init()
 
