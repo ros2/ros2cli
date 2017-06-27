@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
+
 from ros2pkg.api import get_executable_paths
 from ros2pkg.api import get_package_names
 from ros2pkg.api import package_name_completer
@@ -27,6 +29,11 @@ class ExecutablesVerb(VerbExtension):
             'package_name', nargs='?',
             help='The package name')
         arg.completer = package_name_completer
+        parser.add_argument(
+            '--full-path',
+            action='store_true',
+            default=False,
+            help='Show full path of each executable')
 
     def main(self, *, args):
         if args.package_name is None:
@@ -44,4 +51,7 @@ class ExecutablesVerb(VerbExtension):
                     "Package '{args.package_name}' not found"
                     .format_map(locals()))
             for path in sorted(paths):
-                print(path)
+                if args.full_path:
+                    print(path)
+                else:
+                    print(package_name, os.path.basename(path))
