@@ -37,7 +37,7 @@ class CallVerb(VerbExtension):
         parser.add_argument(
             'values', nargs='?', default='{}',
             help='Values to fill the service request with in JSON format ' +
-                 '(e.g. {"a": 1, "b": 2}), ' +
+                 '(e.g. \'{"a": 1, "b": 2}\'), ' +
                  'otherwise the service request will be published with default values')
 
         def float_or_int(input_string):

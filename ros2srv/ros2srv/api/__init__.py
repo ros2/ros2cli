@@ -20,10 +20,12 @@ from ament_index_python import has_resource
 
 
 def get_all_service_types():
-    service_types = {}
+    all_service_types = {}
     for package_name in get_resources('rosidl_interfaces'):
-        service_types[package_name] = get_service_types(package_name)
-    return service_types
+        service_types = get_service_types(package_name)
+        if service_types:
+            all_service_types[package_name] = service_types
+    return all_service_types
 
 
 def get_service_types(package_name):

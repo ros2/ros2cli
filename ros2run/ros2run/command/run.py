@@ -22,7 +22,7 @@ from ros2run.api import run_executable
 
 
 class RunCommand(CommandExtension):
-    """Various run related sub-commands."""
+    """Run a package specific executable."""
 
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(

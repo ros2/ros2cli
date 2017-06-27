@@ -20,10 +20,12 @@ from ament_index_python import has_resource
 
 
 def get_all_message_types():
-    message_types = {}
+    all_message_types = {}
     for package_name in get_resources('rosidl_interfaces'):
-        message_types[package_name] = get_message_types(package_name)
-    return message_types
+        message_types = get_message_types(package_name)
+        if message_types:
+            all_message_types[package_name] = message_types
+    return all_message_types
 
 
 def get_message_types(package_name):
