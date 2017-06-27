@@ -99,6 +99,8 @@ def set_msg_fields(msg, values):
                 raise SetFieldError(
                     '{field_name}.{e.field_name}'.format_map(locals()),
                     e.exception)
+        except ValueError as e:
+            raise SetFieldError(field_name, e)
         try:
             setattr(msg, field_name, value)
         except Exception as e:
