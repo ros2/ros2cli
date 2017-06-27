@@ -14,10 +14,10 @@
 
 from ros2cli.command import CommandExtension
 from ros2pkg.api import package_name_completer
+from ros2pkg.api import PackageNotFound
 from ros2run.api import ExecutableNameCompleter
 from ros2run.api import get_executable_path
 from ros2run.api import MultipleExecutables
-from ros2run.api import PackageNotFound
 from ros2run.api import run_executable
 
 
