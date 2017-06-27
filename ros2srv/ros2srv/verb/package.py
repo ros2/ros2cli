@@ -23,7 +23,7 @@ class PackageVerb(VerbExtension):
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
             'package_name',
-            help="Name of the ROS package (e.g. 'std_msgs')")
+            help="Name of the ROS package (e.g. 'std_srvs')")
         arg.completer = service_package_name_completer
 
     def main(self, *, args):
