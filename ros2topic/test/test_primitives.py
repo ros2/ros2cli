@@ -12,6 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from argparse import Namespace
+
+from ros2topic.verb.echo import DEFAULT_TRUNCATE_LENGTH
 from ros2topic.verb.echo import msg_to_csv
 from ros2topic.verb.echo import msg_to_yaml
 from ros2topic.verb.echo import register_yaml_representer
@@ -33,6 +36,9 @@ def test_primitives():
     msgs.extend(message_fixtures.get_msg_primitives())
     msgs.extend(message_fixtures.get_msg_static_array_nested())
     msgs.extend(message_fixtures.get_msg_static_array_primitives())
+    args = Namespace()
+    args.full_length = False
+    args.truncate_length = DEFAULT_TRUNCATE_LENGTH
     for m in msgs:
-        msg_to_yaml(m)
-        msg_to_csv(m)
+        msg_to_yaml(args, m)
+        msg_to_csv(args, m)
