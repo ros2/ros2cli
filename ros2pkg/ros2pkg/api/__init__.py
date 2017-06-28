@@ -12,9 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
+
 from ament_index_python import get_package_prefix
 from ament_index_python import get_packages_with_prefixes
 from ament_index_python import PackageNotFoundError
+
+
+class PackageNotFound(Exception):
+
+    def __init__(self, package_name):
+        self.package_name = package_name
 
 
 def get_package_names():
@@ -27,6 +35,24 @@ def get_prefix_path(package_name):
     except PackageNotFoundError:
         return None
     return prefix_path
+
+
+def get_executable_paths(*, package_name):
+    prefix_path = get_prefix_path(package_name)
+    if prefix_path is None:
+        raise PackageNotFound(package_name)
+    base_path = os.path.join(prefix_path, 'lib', package_name)
+    executable_paths = []
+    for dirpath, dirnames, filenames in os.walk(base_path):
+        # ignore folder starting with .
+        dirnames[:] = [d for d in dirnames if d[0] not in ['.']]
+        dirnames.sort()
+        # select executable files
+        for filename in sorted(filenames):
+            path = os.path.join(dirpath, filename)
+            if os.access(path, os.X_OK):
+                executable_paths.append(path)
+    return executable_paths
 
 
 def package_name_completer(**kwargs):

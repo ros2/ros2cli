@@ -16,37 +16,14 @@ import os
 import subprocess
 import sys
 
-from ros2pkg.api import get_prefix_path
+from ros2pkg.api import get_executable_paths
+from ros2pkg.api import PackageNotFound
 
 
 class MultipleExecutables(Exception):
 
     def __init__(self, paths):
         self.paths = paths
-
-
-class PackageNotFound(Exception):
-
-    def __init__(self, package_name):
-        self.package_name = package_name
-
-
-def get_executable_paths(*, package_name):
-    prefix_path = get_prefix_path(package_name)
-    if prefix_path is None:
-        raise PackageNotFound(package_name)
-    base_path = os.path.join(prefix_path, 'lib', package_name)
-    executable_paths = []
-    for dirpath, dirnames, filenames in os.walk(base_path):
-        # ignore folder starting with .
-        dirnames[:] = [d for d in dirnames if d[0] not in ['.']]
-        dirnames.sort()
-        # select executable files
-        for filename in sorted(filenames):
-            path = os.path.join(dirpath, filename)
-            if os.access(path, os.X_OK):
-                executable_paths.append(path)
-    return executable_paths
 
 
 def get_executable_path(*, package_name, executable_name):
