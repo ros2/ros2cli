@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from argparse import ArgumentTypeError
 from collections import OrderedDict
 import importlib
 import sys
@@ -23,6 +24,18 @@ from ros2topic.api import get_topic_names_and_types
 from ros2topic.api import TopicNameCompleter
 from ros2topic.verb import VerbExtension
 import yaml
+
+DEFAULT_TRUNCATE_LENGTH = 128
+
+
+def unsigned_int(string):
+    try:
+        value = int(string)
+    except ValueError:
+        value = -1
+    if value < 0:
+        raise ArgumentTypeError('value must be non-negative integer')
+    return value
 
 
 class EchoVerb(VerbExtension):
@@ -41,6 +54,15 @@ class EchoVerb(VerbExtension):
             '--csv', action='store_true',
             help='Output all recursive fields separated by commas (e.g. for '
                  'plotting)')
+        parser.add_argument(
+            '--full-length', '-f', action='store_true',
+            help="Output all elements for arrays, bytes, and string with a "
+                 "length > '--truncate-length', by default they are truncated "
+                 "after '--truncate-length' elements with '...''")
+        parser.add_argument(
+            '--truncate-length', '-l', type=unsigned_int, default=DEFAULT_TRUNCATE_LENGTH,
+            help='The length to truncate arrays, bytes, and string to '
+                 '(default: %d)' % DEFAULT_TRUNCATE_LENGTH)
 
     def main(self, *, args):
         return main(args)
@@ -49,9 +71,9 @@ class EchoVerb(VerbExtension):
 def main(args):
     if not args.csv:
         register_yaml_representer()
-        callback = subscriber_cb
+        callback = subscriber_cb(args)
     else:
-        callback = subscriber_cb_csv
+        callback = subscriber_cb_csv(args)
     with DirectNode(args) as node:
         subscriber(node, args.topic_name, args.message_type, callback)
 
@@ -103,30 +125,47 @@ def subscriber(node, topic_name, message_type, callback):
         rclpy.spin_once(node)
 
 
-def subscriber_cb(msg):
-    print(msg_to_yaml(msg))
+def subscriber_cb(args):
+    def cb(msg):
+        nonlocal args
+        print(msg_to_yaml(args, msg))
+    return cb
 
 
-def msg_to_yaml(msg):
-    return yaml.dump(msg_to_ordereddict(msg), width=sys.maxsize)
+def msg_to_yaml(args, msg):
+    return yaml.dump(msg_to_ordereddict(args, msg), width=sys.maxsize)
 
 
-def subscriber_cb_csv(msg):
-    print(msg_to_csv(msg))
+def subscriber_cb_csv(args):
+    def cb(msg):
+        nonlocal args
+        print(msg_to_csv(args, msg))
+    return cb
 
 
-def msg_to_csv(msg):
+def msg_to_csv(args, msg):
     def to_string(val):
+        nonlocal args
         r = ''
         if any([isinstance(val, t) for t in [list, tuple]]):
-            for v in val:
+            for i, v in enumerate(val):
                 if r:
                     r += ','
+                if not args.full_length and i >= args.truncate_length:
+                    r += '...'
+                    break
                 r += to_string(v)
         elif any([isinstance(val, t) for t in [bool, bytes, float, int, str]]):
+            if any([isinstance(val, t) for t in [bytes, str]]):
+                if not args.full_length and len(val) > args.truncate_length:
+                    val = val[:args.truncate_length]
+                    if isinstance(val, bytes):
+                        val += b'...'
+                    else:
+                        val += '...'
             r = str(val)
         else:
-            r = msg_to_csv(val)
+            r = msg_to_csv(args, val)
         return r
     result = ''
     # We rely on __slots__ retaining the order of the fields in the .msg file.
@@ -141,14 +180,23 @@ def msg_to_csv(msg):
 # Convert a msg to an OrderedDict. We do this instead of implementing a generic
 # __dict__() method in the msg because we want to preserve order of fields from
 # the .msg file(s).
-def msg_to_ordereddict(msg):
+def msg_to_ordereddict(args, msg):
     d = OrderedDict()
     # We rely on __slots__ retaining the order of the fields in the .msg file.
     types = [bool, bytes, dict, float, int, list, str, tuple, OrderedDict]
     for field_name in msg.__slots__:
         value = getattr(msg, field_name, None)
         if not any([isinstance(value, t) for t in types]):
-            value = msg_to_ordereddict(value)
+            value = msg_to_ordereddict(args, value)
+        elif any([isinstance(value, t) for t in [bytes, list, str, tuple]]):
+            if not args.full_length and len(value) > args.truncate_length:
+                value = value[:args.truncate_length]
+                if any([isinstance(value, t) for t in [list, tuple]]):
+                    value.append('...')
+                elif isinstance(value, bytes):
+                    value += b'...'
+                elif isinstance(value, str):
+                    value += '...'
         # remove leading underscore from field name
         d[field_name[1:]] = value
     return d
