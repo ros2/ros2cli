@@ -55,12 +55,12 @@ class EchoVerb(VerbExtension):
             help='Output all recursive fields separated by commas (e.g. for '
                  'plotting)')
         parser.add_argument(
-            '--full-length', action='store_true',
+            '--full-length', '-f', action='store_true',
             help="Output all elements for arrays, bytes, and string with a "
                  "length > '--truncate-length', by default they are truncated "
                  "after '--truncate-length' elements with '...''")
         parser.add_argument(
-            '--truncate-length', type=unsigned_int, default=DEFAULT_TRUNCATE_LENGTH,
+            '--truncate-length', '-l', type=unsigned_int, default=DEFAULT_TRUNCATE_LENGTH,
             help='The length to truncate arrays, bytes, and string to '
                  '(default: %d)' % DEFAULT_TRUNCATE_LENGTH)
 
