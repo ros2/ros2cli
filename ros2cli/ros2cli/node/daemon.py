@@ -58,6 +58,8 @@ def spawn_daemon(args):
         # Process Creation Flag documented in the MSDN
         DETACHED_PROCESS = 0x00000008
         kwargs.update(creationflags=DETACHED_PROCESS)
+        # don't keep handle of current working directory in daemon process
+        kwargs.update(cwd=os.environ.get('SYSTEMROOT', None))
     subprocess.Popen(cmd + [
         # the arguments are only passed for visibility in e.g. the process list
         '--rmw-implementation', rclpy.get_rmw_implementation_identifier(),
