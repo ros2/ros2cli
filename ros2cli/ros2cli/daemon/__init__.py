@@ -113,3 +113,7 @@ def _print_invoked_function_name(func):
         return func()
     wrapper.__name__ = func.__name__
     return wrapper
+
+
+if __name__ == '__main__':
+    main()
