@@ -14,7 +14,7 @@
 
 from ros2cli.node.daemon import DaemonNode
 from ros2cli.node.daemon import is_daemon_running
-from ros2msg.verb import VerbExtension
+from ros2cli.verb.daemon import VerbExtension
 
 
 class StopVerb(VerbExtension):

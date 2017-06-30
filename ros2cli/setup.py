@@ -42,6 +42,7 @@ commands and verbs.""",
         ],
         'ros2cli.extension_point': [
             'ros2cli.command = ros2cli.command:CommandExtension',
+            'ros2cli.daemon.verb = ros2cli.verb.daemon:VerbExtension',
         ],
         'ros2cli.daemon.verb': [
             'start = ros2cli.verb.daemon.start:StartVerb',
