@@ -35,12 +35,18 @@ commands and verbs.""",
     test_suite='test',
     entry_points={
         'ros2cli.command': [
+            'daemon = ros2cli.command.daemon:DaemonCommand',
             'extension_points ='
             ' ros2cli.command.extension_points:ExtensionPointsCommand',
             'extensions = ros2cli.command.extensions:ExtensionsCommand',
         ],
         'ros2cli.extension_point': [
             'ros2cli.command = ros2cli.command:CommandExtension',
+        ],
+        'ros2cli.daemon.verb': [
+            'start = ros2cli.verb.daemon.start:StartVerb',
+            'status = ros2cli.verb.daemon.status:StatusVerb',
+            'stop = ros2cli.verb.daemon.stop:StopVerb',
         ],
         'console_scripts': [
             'ros2 = ros2cli.cli:main',
