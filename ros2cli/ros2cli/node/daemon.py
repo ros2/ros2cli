@@ -73,7 +73,8 @@ class DaemonNode(object):
         self._args = args
         self._proxy = ServerProxy(
             'http://localhost:%d/%s/' %
-            (get_daemon_port(), rclpy.get_rmw_implementation_identifier()))
+            (get_daemon_port(), rclpy.get_rmw_implementation_identifier()),
+            allow_none=True)
         self._methods = []
 
     def __enter__(self):

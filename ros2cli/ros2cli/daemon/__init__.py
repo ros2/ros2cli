@@ -47,7 +47,8 @@ def main(*, script_name='_ros2_daemon', argv=None):
     node_args = NodeArgs(node_name_suffix='_daemon_%d' % args.ros_domain_id)
     with DirectNode(node_args) as node:
         server = LocalXMLRPCServer(
-            addr, logRequests=False, requestHandler=RequestHandler)
+            addr, logRequests=False, requestHandler=RequestHandler,
+            allow_none=True)
 
         try:
             server.register_introspection_functions()
