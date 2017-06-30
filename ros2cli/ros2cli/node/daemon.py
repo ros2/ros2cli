@@ -17,6 +17,7 @@ import os
 import platform
 import socket
 import subprocess
+import sys
 
 import rclpy
 from ros2cli.daemon import get_daemon_port
@@ -43,12 +44,27 @@ def is_daemon_running(args):
 
 def spawn_daemon(args):
     ros_domain_id = int(os.environ.get('ROS_DOMAIN_ID', 0))
-    subprocess.Popen([
-        '_ros2_daemon',
+    kwargs = {}
+    if platform.system() != 'Windows':
+        cmd = ['_ros2_daemon']
+    else:
+        # allow closing the shell the daemon was spawned from
+        # while the daemon is still running
+        cmd = [
+            sys.executable,
+            os.path.join(
+                os.path.dirname(os.path.dirname(__file__)),
+                'daemon/__init__.py')]
+        # Process Creation Flag documented in the MSDN
+        DETACHED_PROCESS = 0x00000008
+        kwargs.update(creationflags=DETACHED_PROCESS)
+        # don't keep handle of current working directory in daemon process
+        kwargs.update(cwd=os.environ.get('SYSTEMROOT', None))
+    subprocess.Popen(cmd + [
         # the arguments are only passed for visibility in e.g. the process list
         '--rmw-implementation', rclpy.get_rmw_implementation_identifier(),
         '--ros-domain-id', str(ros_domain_id)],
-        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, **kwargs)
 
 
 class DaemonNode(object):
