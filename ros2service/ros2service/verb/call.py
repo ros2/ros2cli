@@ -59,6 +59,8 @@ def requester(service_type, service_name, values, repeat):
     # TODO(wjwwood) this logic should come from a rosidl related package
     try:
         package_name, srv_name = service_type.split('/', 2)
+        if not package_name or not srv_name:
+            raise ValueError()
     except ValueError:
         raise RuntimeError('The passed service type is invalid')
     module = importlib.import_module(package_name + '.srv')

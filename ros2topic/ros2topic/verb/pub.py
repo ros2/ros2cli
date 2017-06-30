@@ -59,6 +59,8 @@ def publisher(message_type, topic_name, values):
     # TODO(dirk-thomas) this logic should come from a rosidl related package
     try:
         package_name, message_name = message_type.split('/', 2)
+        if not package_name or not message_name:
+            raise ValueError()
     except ValueError:
         raise RuntimeError('The passed message type is invalid')
     module = importlib.import_module(package_name + '.msg')
