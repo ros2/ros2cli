@@ -31,6 +31,8 @@ class ShowVerb(VerbExtension):
         # package
         try:
             package_name, service_name = args.service_type.split('/', 2)
+            if not package_name or not service_name:
+                raise ValueError()
         except ValueError:
             raise RuntimeError('The passed service type is invalid')
         try:

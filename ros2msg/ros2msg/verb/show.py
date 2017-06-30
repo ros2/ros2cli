@@ -31,6 +31,8 @@ class ShowVerb(VerbExtension):
         # package
         try:
             package_name, message_name = args.message_type.split('/', 2)
+            if not package_name or not message_name:
+                raise ValueError()
         except ValueError:
             raise RuntimeError('The passed message type is invalid')
         try:
