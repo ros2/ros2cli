@@ -48,8 +48,9 @@ def get_executable_path(*, package_name, executable_name):
     return list(paths2base.keys())[0]
 
 
-def run_executable(*, path, argv):
-    completed_process = subprocess.run([path] + argv)
+def run_executable(*, prefix, path, argv):
+    cmd = ([path] + argv) if prefix is '' else (prefix.split(' ') + [path] + argv)
+    completed_process = subprocess.run(cmd)
     return completed_process.returncode
 
 

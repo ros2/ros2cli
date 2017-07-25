@@ -26,6 +26,10 @@ class RunCommand(CommandExtension):
 
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
+            '--prefix', nargs=1,
+            help="Prefix command, which should go before the executable, "
+                 "like gdb or valgrind (e.g. --prefix \'gdb -ex run --args\').")
+        arg = parser.add_argument(
             'package_name',
             help="Name of the ROS package")
         arg.completer = package_name_completer
@@ -37,7 +41,7 @@ class RunCommand(CommandExtension):
         parser.add_argument(
             'argv', nargs='*',
             help="Pass arbitrary arguments to the executable (use '--' before "
-                 "these arguments to ensure they are not handle by this "
+                 "these arguments to ensure they are not handled by this "
                  "command)")
 
     def main(self, *, parser, args):
@@ -56,4 +60,5 @@ class RunCommand(CommandExtension):
             raise RuntimeError(msg)
         if path is None:
             return 'No executable found'
-        return run_executable(path=path, argv=args.argv)
+        prefix=args.prefix[0] if args.prefix is not None else ''
+        return run_executable(prefix=prefix, path=path, argv=args.argv)
