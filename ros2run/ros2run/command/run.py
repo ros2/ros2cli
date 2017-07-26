@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import shlex
+
 from ros2cli.command import CommandExtension
 from ros2pkg.api import package_name_completer
 from ros2pkg.api import PackageNotFound
@@ -26,6 +28,11 @@ class RunCommand(CommandExtension):
 
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
+            '--prefix',
+            help="Prefix command, which should go before the executable. "
+                 "Command must be wrapped in quotes if it contains spaces "
+                 "(e.g. --prefix 'gdb -ex run --args').")
+        arg = parser.add_argument(
             'package_name',
             help="Name of the ROS package")
         arg.completer = package_name_completer
@@ -37,7 +44,7 @@ class RunCommand(CommandExtension):
         parser.add_argument(
             'argv', nargs='*',
             help="Pass arbitrary arguments to the executable (use '--' before "
-                 "these arguments to ensure they are not handle by this "
+                 "these arguments to ensure they are not handled by this "
                  "command)")
 
     def main(self, *, parser, args):
@@ -56,4 +63,5 @@ class RunCommand(CommandExtension):
             raise RuntimeError(msg)
         if path is None:
             return 'No executable found'
-        return run_executable(path=path, argv=args.argv)
+        prefix = shlex.split(args.prefix) if args.prefix is not None else None
+        return run_executable(path=path, argv=args.argv, prefix=prefix)
