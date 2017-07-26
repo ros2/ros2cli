@@ -29,8 +29,8 @@ class RunCommand(CommandExtension):
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
             '--prefix',
-            help="Prefix command, which should go before the executable, "
-                 "like gdb or valgrind. Command must be wrapped in quotes "
+            help="Prefix command, which should go before the executable. "
+                 "Command must be wrapped in quotes if it contains spaces"
                  "(e.g. --prefix 'gdb -ex run --args').")
         arg = parser.add_argument(
             'package_name',
