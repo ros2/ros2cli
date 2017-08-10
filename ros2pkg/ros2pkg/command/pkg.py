@@ -34,6 +34,5 @@ class PkgCommand(CommandExtension):
             return 0
 
         extension = getattr(args, '_verb')
-
         # call the verb's main method
         return extension.main(args=args)

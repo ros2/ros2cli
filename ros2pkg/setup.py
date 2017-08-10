@@ -35,6 +35,7 @@ The package provides the pkg command for the ROS 2 command line tools.""",
             'executables = ros2pkg.verb.executables:ExecutablesVerb',
             'list = ros2pkg.verb.list:ListVerb',
             'prefix = ros2pkg.verb.prefix:PrefixVerb',
+            'create = ros2pkg.verb.create:CreateVerb',
         ],
     }
 )
