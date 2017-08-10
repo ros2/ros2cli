@@ -18,28 +18,37 @@ from io import StringIO
 import os
 import sys
 
+class ManagedInterpreter(em.Interpreter):
+
+    def __init__(self, output, interpreter_globals):
+        super(ManagedInterpreter, self).__init__(
+                output=output,
+                options={
+                    em.BUFFERED_OPT: True,
+                    em.RAW_OPT: True,
+                },
+                globals=interpreter_globals)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, traceback):
+        self.shutdown()
+
 
 def expand_template(template_file, data, output_file, minimum_timestamp=None):
     output = StringIO()
-    interpreter = em.Interpreter(
-        output=output,
-        options={
-            em.BUFFERED_OPT: True,
-            em.RAW_OPT: True,
-        },
-        globals=data,
-    )
-    with open(template_file, 'r') as h:
-        try:
-            interpreter.file(h)
-        except Exception:
-            if os.path.exists(output_file):
-                os.remove(output_file)
-            print("Exception when expanding '%s' into '%s'" %
-                  (template_file, output_file), file=sys.stderr)
-            raise
-    content = output.getvalue()
-    interpreter.shutdown()
+    with ManagedInterpreter(output, data) as interpreter:
+        with open(template_file, 'r') as h:
+            try:
+                interpreter.file(h)
+            except Exception:
+                if os.path.exists(output_file):
+                    os.remove(output_file)
+                print("Exception when expanding '%s' into '%s'" %
+                      (template_file, output_file), file=sys.stderr)
+                raise
+        content = output.getvalue()
 
     # only overwrite file if necessary
     # which is either when the timestamp is too old or when the content is different
