@@ -32,6 +32,12 @@ class RunCommand(CommandExtension):
             help="Prefix command, which should go before the executable. "
                  "Command must be wrapped in quotes if it contains spaces "
                  "(e.g. --prefix 'gdb -ex run --args').")
+        try:
+            from argcomplete.completers import SuppressCompleter
+        except ImportError:
+            pass
+        else:
+            arg.completer = SuppressCompleter()
         arg = parser.add_argument(
             'package_name',
             help="Name of the ROS package")
