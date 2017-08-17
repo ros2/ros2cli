@@ -13,7 +13,7 @@ endif()
 
 @[for deb in dependencies]@
 find_package(@deb REQUIRED)
-@[end for]
+@[end for]@
 
 include_directories(
 @[for deb in dependencies]@
@@ -21,9 +21,13 @@ include_directories(
 @[end for]@
 )
 
-@[if create_cpp_exe]add_executable(${PROJECT_NAME} src/@(cpp_exe_name))@
-@[for deb in dependencies]target_link_libraries(${PROJECT_NAME} ${@(deb)_LIBRARIES})@
+@[if create_cpp_exe]@
+add_executable(${PROJECT_NAME} src/@(cpp_exe_name))
+
+@[for deb in dependencies]@
+target_link_libraries(${PROJECT_NAME} ${@(deb)_LIBRARIES})
 @[end for]@
+
 install(TARGETS ${PROJECT_NAME}
   DESTINATION lib/${PROJECT_NAME})
 @[end if]@
