@@ -15,9 +15,9 @@
 import getpass
 import os
 
-from ros2pkg.verb import VerbExtension
 from ros2pkg.api.create_api import create_folder
 from ros2pkg.api.create_api import create_template_file
+from ros2pkg.verb import VerbExtension
 
 class CreateVerb(VerbExtension):
     """Output the prefix path of a package."""
