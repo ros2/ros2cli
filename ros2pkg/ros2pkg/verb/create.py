@@ -70,7 +70,7 @@ class CreateVerb(VerbExtension):
         create_cpp_exe = True if args.create_cpp_exe else False
         cpp_exe_name = args.cpp_exe_name
 
-        print("going to create a new package")
+        print('going to create a new package')
         print('package name:', package_name)
         print('destination directory', destination_directory)
         print('build tool:', build_tool)

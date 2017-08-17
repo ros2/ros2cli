@@ -70,15 +70,15 @@ def expand_template(template_file, data, output_file, minimum_timestamp=None):
 
 def create_folder(folder_name, base_directory):
     if not os.path.isabs(base_directory):
-        print("cannot create %s, folder path is not absolute" % base_directory)
+        print('cannot create %s, folder path is not absolute' % base_directory)
         return False
 
     folder_path = os.path.join(base_directory, folder_name)
-    if (os.path.exists(folder_path)):
-        print("cannot create %s, folder exists" % folder_path)
+    if os.path.exists(folder_path):
+        print('cannot create %s, folder exists' % folder_path)
         return False
 
-    print("creating folder", folder_path)
+    print('creating folder', folder_path)
     os.makedirs(folder_path)
 
     return folder_path
@@ -92,5 +92,5 @@ def create_template_file(template_file_name, output_directory, output_file_name,
 
     output_file_path = os.path.join(output_directory, output_file_name)
 
-    print("creating", output_file_path)
+    print('creating', output_file_path)
     expand_template(template_path, template_config, output_file_path)
