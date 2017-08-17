@@ -20,7 +20,7 @@ from ros2pkg.api.create_api import create_template_file
 from ros2pkg.verb import VerbExtension
 
 class CreateVerb(VerbExtension):
-    """Output the prefix path of a package."""
+    """Create a new ROS2 package."""
 
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
