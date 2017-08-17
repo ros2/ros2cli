@@ -101,7 +101,7 @@ class CreateVerb(VerbExtension):
             }
         create_template_file('CMakelists.txt.em', package_directory, 'CMakeLists.txt', cmakelists_config)
 
-        if (args.create_cpp_exe):
+        if args.create_cpp_exe:
             src_folder = create_folder('src', package_directory)
             if not src_folder:
                 return
