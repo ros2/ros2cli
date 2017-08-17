@@ -32,8 +32,8 @@ class CreateVerb(VerbExtension):
             help='Directory where to create the package')
         arg = parser.add_argument(
             '--build-tool',
-            default='cmake',
-            choices=['cmake', 'ament-cmake'],
+            default='ament_cmake',
+            choices=['cmake', 'ament_cmake'],
             help='Which build tool to use')
         arg = parser.add_argument(
             '--dependencies',
