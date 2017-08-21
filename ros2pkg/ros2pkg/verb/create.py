@@ -94,12 +94,13 @@ class CreateVerb(VerbExtension):
         create_template_file('package.xml.em', package_directory, 'package.xml', package_xml_config)
 
         cmakelists_config = {
+            'build_tool' : build_tool,
             'project_name' : package_name,
             'dependencies' : dependencies,
             'create_cpp_exe' : create_cpp_exe,
             'cpp_exe_name' : cpp_exe_name
             }
-        create_template_file('CMakelists.txt.em', package_directory, 'CMakeLists.txt', cmakelists_config)
+        create_template_file('CMakeLists.txt.em', package_directory, 'CMakeLists.txt', cmakelists_config)
 
         if args.create_cpp_exe:
             src_folder = create_folder('src', package_directory)

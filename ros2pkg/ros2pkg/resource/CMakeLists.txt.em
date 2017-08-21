@@ -15,13 +15,13 @@ endif()
 find_package(@deb REQUIRED)
 @[end for]@
 
+@[if create_cpp_exe]@
 include_directories(
 @[for deb in dependencies]@
   ${@(deb)_INCLUDE_DIRS}
 @[end for]@
 )
 
-@[if create_cpp_exe]@
 add_executable(${PROJECT_NAME} src/@(cpp_exe_name))
 
 @[for deb in dependencies]@
@@ -31,5 +31,12 @@ target_link_libraries(${PROJECT_NAME} ${@(deb)_LIBRARIES})
 install(TARGETS ${PROJECT_NAME}
   DESTINATION lib/${PROJECT_NAME})
 @[end if]@
+
+if(BUILD_TESTING)
+@[if build_tool == 'ament_cmake']@
+  find_package(ament_lint_auto REQUIRED)
+  ament_lint_auto_find_test_dependencies()
+@[end if]@
+endif()
 
 ament_package()
