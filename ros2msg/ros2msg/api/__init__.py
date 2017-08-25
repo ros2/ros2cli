@@ -65,7 +65,7 @@ def message_type_completer(**kwargs):
     return message_types
 
 
-class MessageNameCompleter(object):
+class MessageNameCompleter:
     """Callable returning a list of message names within a package."""
 
     def __init__(self, *, package_name_key=None):

@@ -27,7 +27,7 @@ def get_node_names(*, node, include_hidden_nodes=False):
     return node_names
 
 
-class NodeNameCompleter(object):
+class NodeNameCompleter:
     """Callable returning a list of node names."""
 
     def __init__(self, *, include_hidden_nodes_key=None):

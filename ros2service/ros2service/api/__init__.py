@@ -31,7 +31,7 @@ def get_service_names(*, node, include_hidden_services=False):
     return [n for (n, t) in service_names_and_types]
 
 
-class ServiceNameCompleter(object):
+class ServiceNameCompleter:
     """Callable returning a list of service names."""
 
     def __init__(self, *, include_hidden_services_key=None):
