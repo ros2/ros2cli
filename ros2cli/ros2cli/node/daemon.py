@@ -67,7 +67,7 @@ def spawn_daemon(args):
         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, **kwargs)
 
 
-class DaemonNode(object):
+class DaemonNode:
 
     def __init__(self, args):
         self._args = args

@@ -56,7 +56,7 @@ def run_executable(*, path, argv, prefix=None):
     return completed_process.returncode
 
 
-class ExecutableNameCompleter(object):
+class ExecutableNameCompleter:
     """Callable returning a list of executable names within a package."""
 
     def __init__(self, *, package_name_key=None):

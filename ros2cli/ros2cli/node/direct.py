@@ -22,7 +22,7 @@ HIDDEN_NODE_PREFIX = '_'
 DEFAULT_TIMEOUT = 0.5
 
 
-class DirectNode(object):
+class DirectNode:
 
     def __init__(self, args):
         timeout_reached = False

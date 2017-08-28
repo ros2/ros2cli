@@ -65,7 +65,7 @@ def service_type_completer(**kwargs):
     return service_types
 
 
-class ServiceNameCompleter(object):
+class ServiceNameCompleter:
     """Callable returning a list of service names within a package."""
 
     def __init__(self, *, package_name_key=None):

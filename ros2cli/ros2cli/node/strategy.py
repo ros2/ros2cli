@@ -20,7 +20,7 @@ from ros2cli.node.direct import add_arguments as add_direct_node_arguments
 from ros2cli.node.direct import DirectNode
 
 
-class NodeStrategy(object):
+class NodeStrategy:
 
     def __init__(self, args):
         if is_daemon_running(args):

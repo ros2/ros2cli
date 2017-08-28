@@ -31,7 +31,7 @@ def get_topic_names(*, node, include_hidden_topics=False):
     return [n for (n, t) in topic_names_and_types]
 
 
-class TopicNameCompleter(object):
+class TopicNameCompleter:
     """Callable returning a list of topic names."""
 
     def __init__(self, *, include_hidden_topics_key=None):

@@ -21,7 +21,7 @@ from ros2cli.plugin_system import PLUGIN_SYSTEM_VERSION
 from ros2cli.plugin_system import satisfies_version
 
 
-class CommandExtension(object):
+class CommandExtension:
     """
     The extension point for 'command' extensions.
 
