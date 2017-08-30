@@ -56,7 +56,7 @@ def spawn_daemon(args):
                 os.path.dirname(os.path.dirname(__file__)),
                 'daemon/__init__.py')]
         # Process Creation Flag documented in the MSDN
-        DETACHED_PROCESS = 0x00000008
+        DETACHED_PROCESS = 0x00000008  # noqa: N806
         kwargs.update(creationflags=DETACHED_PROCESS)
         # don't keep handle of current working directory in daemon process
         kwargs.update(cwd=os.environ.get('SYSTEMROOT', None))

@@ -29,8 +29,8 @@ class RunCommand(CommandExtension):
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
             '--prefix',
-            help="Prefix command, which should go before the executable. "
-                 "Command must be wrapped in quotes if it contains spaces "
+            help='Prefix command, which should go before the executable. '
+                 'Command must be wrapped in quotes if it contains spaces '
                  "(e.g. --prefix 'gdb -ex run --args').")
         try:
             from argcomplete.completers import SuppressCompleter
@@ -40,18 +40,18 @@ class RunCommand(CommandExtension):
             arg.completer = SuppressCompleter()
         arg = parser.add_argument(
             'package_name',
-            help="Name of the ROS package")
+            help='Name of the ROS package')
         arg.completer = package_name_completer
         arg = parser.add_argument(
             'executable_name',
-            help="Name of the executable")
+            help='Name of the executable')
         arg.completer = ExecutableNameCompleter(
             package_name_key='package_name')
         parser.add_argument(
             'argv', nargs='*',
             help="Pass arbitrary arguments to the executable (use '--' before "
-                 "these arguments to ensure they are not handled by this "
-                 "command)")
+                 'these arguments to ensure they are not handled by this '
+                 'command)')
 
     def main(self, *, parser, args):
         try:

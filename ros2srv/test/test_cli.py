@@ -29,7 +29,7 @@ def test_cli():
         package_result = subprocess.run(
             package_cmd, stdout=subprocess.PIPE, check=True)
         service_types = package_result.stdout.decode().splitlines()
-        assert all([t.startswith(package_name + '/') for t in service_types])
+        assert all(t.startswith(package_name + '/') for t in service_types)
         count += len(service_types)
 
         if package_name != 'std_srvs':

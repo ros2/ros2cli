@@ -56,7 +56,7 @@ class EchoVerb(VerbExtension):
                  'plotting)')
         parser.add_argument(
             '--full-length', '-f', action='store_true',
-            help="Output all elements for arrays, bytes, and string with a "
+            help='Output all elements for arrays, bytes, and string with a '
                  "length > '--truncate-length', by default they are truncated "
                  "after '--truncate-length' elements with '...''")
         parser.add_argument(
@@ -149,7 +149,7 @@ def msg_to_csv(args, msg):
     def to_string(val):
         nonlocal args
         r = ''
-        if any([isinstance(val, t) for t in [list, tuple]]):
+        if any(isinstance(val, t) for t in [list, tuple]):
             for i, v in enumerate(val):
                 if r:
                     r += ','
@@ -157,8 +157,8 @@ def msg_to_csv(args, msg):
                     r += '...'
                     break
                 r += to_string(v)
-        elif any([isinstance(val, t) for t in [bool, bytes, float, int, str]]):
-            if any([isinstance(val, t) for t in [bytes, str]]):
+        elif any(isinstance(val, t) for t in [bool, bytes, float, int, str]):
+            if any(isinstance(val, t) for t in [bytes, str]):
                 if not args.full_length and len(val) > args.truncate_length:
                     val = val[:args.truncate_length]
                     if isinstance(val, bytes):
@@ -188,12 +188,12 @@ def msg_to_ordereddict(args, msg):
     types = [bool, bytes, dict, float, int, list, str, tuple, OrderedDict]
     for field_name in msg.__slots__:
         value = getattr(msg, field_name, None)
-        if not any([isinstance(value, t) for t in types]):
+        if not any(isinstance(value, t) for t in types):
             value = msg_to_ordereddict(args, value)
-        elif any([isinstance(value, t) for t in [bytes, list, str, tuple]]):
+        elif any(isinstance(value, t) for t in [bytes, list, str, tuple]):
             if not args.full_length and len(value) > args.truncate_length:
                 value = value[:args.truncate_length]
-                if any([isinstance(value, t) for t in [list, tuple]]):
+                if any(isinstance(value, t) for t in [list, tuple]):
                     value.append('...')
                 elif isinstance(value, bytes):
                     value += b'...'

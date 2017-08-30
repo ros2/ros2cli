@@ -93,12 +93,12 @@ def satisfies_version(version, caret_range):
 
     if extension_point_version < extension_version:
         raise PluginException(
-            "Extension point is too old (%s), the extension requires "
+            'Extension point is too old (%s), the extension requires '
             "'%s'" % (extension_point_version, extension_version))
 
     if extension_point_version >= next_extension_version:
         raise PluginException(
-            "Extension point is newer (%s), than what the extension "
+            'Extension point is newer (%s), than what the extension '
             "supports '%s'" % (extension_point_version, extension_version))
 
 
