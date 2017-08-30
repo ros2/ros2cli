@@ -29,7 +29,7 @@ def test_cli():
         package_result = subprocess.run(
             package_cmd, stdout=subprocess.PIPE, check=True)
         message_types = package_result.stdout.decode().splitlines()
-        assert all([t.startswith(package_name + '/') for t in message_types])
+        assert all(t.startswith(package_name + '/') for t in message_types)
         count += len(message_types)
 
         if package_name != 'std_msgs':

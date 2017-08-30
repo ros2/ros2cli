@@ -80,9 +80,9 @@ def add_subparsers(
     # add subparser with description of available subparsers
     description = ''
     if command_extensions:
-        max_length = max([
+        max_length = max(
             len(name) for name in command_extensions.keys()
-            if hide_extensions is None or name not in hide_extensions])
+            if hide_extensions is None or name not in hide_extensions)
         for name in sorted(command_extensions.keys()):
             if hide_extensions is not None and name in hide_extensions:
                 continue
