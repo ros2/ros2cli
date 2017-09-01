@@ -18,7 +18,7 @@ from ros2topic.verb.echo import DEFAULT_TRUNCATE_LENGTH
 from ros2topic.verb.echo import msg_to_csv
 from ros2topic.verb.echo import msg_to_yaml
 from ros2topic.verb.echo import register_yaml_representer
-from test_communication import message_fixtures
+from test_msgs import message_fixtures
 
 
 def test_primitives():
