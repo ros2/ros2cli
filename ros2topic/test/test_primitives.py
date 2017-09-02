@@ -30,6 +30,7 @@ def test_primitives():
     msgs.extend(message_fixtures.get_msg_builtins())
     msgs.extend(message_fixtures.get_msg_dynamic_array_nested())
     msgs.extend(message_fixtures.get_msg_dynamic_array_primitives())
+    msgs.extend(message_fixtures.get_msg_dynamic_array_primitives_nested())
     msgs.extend(message_fixtures.get_msg_empty())
     msgs.extend(message_fixtures.get_msg_nested())
     msgs.extend(message_fixtures.get_msg_primitives())
