@@ -18,37 +18,31 @@ from io import StringIO
 import os
 import sys
 
-class ManagedInterpreter(em.Interpreter):
-
-    def __init__(self, output, interpreter_globals):
-        super(ManagedInterpreter, self).__init__(
-                output=output,
-                options={
-                    em.BUFFERED_OPT: True,
-                    em.RAW_OPT: True,
-                },
-                globals=interpreter_globals)
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, type, value, traceback):
-        self.shutdown()
+RELATIVE_RESOURCE_PATH = '../../resource/'
 
 
 def expand_template(template_file, data, output_file, minimum_timestamp=None):
     output = StringIO()
-    with ManagedInterpreter(output, data) as interpreter:
-        with open(template_file, 'r') as h:
-            try:
-                interpreter.file(h)
-            except Exception:
-                if os.path.exists(output_file):
-                    os.remove(output_file)
-                print("Exception when expanding '%s' into '%s'" %
-                      (template_file, output_file), file=sys.stderr)
-                raise
-        content = output.getvalue()
+    interpreter = em.Interpreter(
+        output=output,
+        options={
+            em.BUFFERED_OPT: True,
+            em.RAW_OPT: True,
+        },
+        globals=data,
+    )
+    with open(template_file, 'r') as h:
+        try:
+            interpreter.file(h)
+            content = output.getvalue()
+        except Exception:
+            if os.path.exists(output_file):
+                os.remove(output_file)
+            print("Exception when expanding '%s' into '%s'" %
+                  (template_file, output_file), file=sys.stderr)
+            raise
+        finally:
+            interpreter.shutdown()
 
     # only overwrite file if necessary
     # which is either when the timestamp is too old or when the content is different
@@ -68,14 +62,15 @@ def expand_template(template_file, data, output_file, minimum_timestamp=None):
     with open(output_file, 'w') as h:
         h.write(content)
 
+
 def create_folder(folder_name, base_directory):
-    if not os.path.isabs(base_directory):
-        print('cannot create %s, folder path is not absolute' % base_directory)
-        return False
+    # if not os.path.isabs(base_directory):
+    #     print("cannot create '%s', folder path is not absolute" % base_directory)
+    #     return False
 
     folder_path = os.path.join(base_directory, folder_name)
     if os.path.exists(folder_path):
-        print('cannot create %s, folder exists' % folder_path)
+        print("cannot create '%s', folder exists" % folder_path)
         return False
 
     print('creating folder', folder_path)
@@ -83,13 +78,14 @@ def create_folder(folder_name, base_directory):
 
     return folder_path
 
+
 def create_template_file(template_file_name, output_directory, output_file_name, template_config):
     template_path = os.path.abspath(
-        os.path.join(os.path.realpath(__file__), '../../resource/'+template_file_name))
+        os.path.join(os.path.realpath(__file__), RELATIVE_RESOURCE_PATH + template_file_name))
     if not os.path.exists(template_path):
-        print('template not found: ', template_path)
-        return False
+        raise IOError('template not found:', template_path)
 
+    print("joining '%s' and '%s'" % (output_directory, output_file_name))
     output_file_path = os.path.join(output_directory, output_file_name)
 
     print('creating', output_file_path)
