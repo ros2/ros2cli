@@ -13,10 +13,12 @@
 # limitations under the License.
 
 
-import em
 from io import StringIO
 import os
 import sys
+
+import em
+
 
 RELATIVE_RESOURCE_PATH = '../../resource/'
 
