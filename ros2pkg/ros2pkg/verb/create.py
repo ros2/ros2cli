@@ -14,6 +14,7 @@
 
 import getpass
 import os
+import platform
 
 from ros2pkg.api.create import create_folder
 from ros2pkg.api.create import create_template_file
@@ -43,7 +44,7 @@ class CreateVerb(VerbExtension):
             help='list of dependencies')
         parser.add_argument(
             '--maintainer-email',
-            default=getpass.getuser() + '@' + os.uname()[1] + '.local',
+            default=getpass.getuser() + '@' + platform.uname()[1] + '.local',
             help='email address of the maintainer of this package'),
         parser.add_argument(
             '--maintainer-name',
