@@ -18,7 +18,7 @@ from ros2topic.verb.echo import DEFAULT_TRUNCATE_LENGTH
 from ros2topic.verb.echo import msg_to_csv
 from ros2topic.verb.echo import msg_to_yaml
 from ros2topic.verb.echo import register_yaml_representer
-from test_communication import message_fixtures
+from test_msgs import message_fixtures
 
 
 def test_primitives():
@@ -30,8 +30,8 @@ def test_primitives():
     msgs.extend(message_fixtures.get_msg_builtins())
     msgs.extend(message_fixtures.get_msg_dynamic_array_nested())
     msgs.extend(message_fixtures.get_msg_dynamic_array_primitives())
+    msgs.extend(message_fixtures.get_msg_dynamic_array_primitives_nested())
     msgs.extend(message_fixtures.get_msg_empty())
-    msgs.extend(message_fixtures.get_msg_fields_with_same_type())
     msgs.extend(message_fixtures.get_msg_nested())
     msgs.extend(message_fixtures.get_msg_primitives())
     msgs.extend(message_fixtures.get_msg_static_array_nested())
