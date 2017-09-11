@@ -27,5 +27,10 @@ class StopVerb(VerbExtension):
             return
 
         with DaemonNode(args) as daemon:
-            daemon.system.shutdown()
+            try:
+                shutdown = daemon.system.shutdown
+            except AttributeError:
+                return 'Failed to shutdown daemon, ' \
+                    'it might be using a different rmw implementation'
+            shutdown()
         print('The daemon has been stopped')
