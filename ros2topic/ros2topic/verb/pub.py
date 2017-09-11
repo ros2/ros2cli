@@ -66,6 +66,8 @@ def publisher(message_type, topic_name, values):
     module = importlib.import_module(package_name + '.msg')
     msg_module = getattr(module, message_name)
     values_dictionary = yaml.load(values)
+    if not isinstance(values_dictionary, dict):
+        return 'The passed value needs to be a dictionary in YAML format'
 
     rclpy.init()
 
