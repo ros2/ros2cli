@@ -52,8 +52,16 @@ def run_executable(*, path, argv, prefix=None):
     cmd = [path] + argv
     if prefix is not None:
         cmd = prefix + cmd
-    completed_process = subprocess.run(cmd)
-    return completed_process.returncode
+
+    process = subprocess.Popen(cmd)
+    while process.returncode is None:
+        try:
+            process.communicate()
+        except KeyboardInterrupt:
+            # the subprocess will also receive the signal and should shut down
+            # therefore we continue here until the process has finished
+            pass
+    return process.returncode
 
 
 class ExecutableNameCompleter:
