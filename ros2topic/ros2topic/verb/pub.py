@@ -16,6 +16,8 @@ import importlib
 import time
 
 import rclpy
+from ros2topic.api import set_msg_fields
+from ros2topic.api import SetFieldError
 from ros2topic.api import TopicNameCompleter
 from ros2topic.verb import VerbExtension
 import yaml
@@ -45,14 +47,6 @@ class PubVerb(VerbExtension):
 
 def main(args):
     return publisher(args.message_type, args.topic_name, args.values)
-
-
-class SetFieldError(Exception):
-
-    def __init__(self, field_name, exception):
-        super(SetFieldError, self).__init__()
-        self.field_name = field_name
-        self.exception = exception
 
 
 def publisher(message_type, topic_name, values):
@@ -88,24 +82,3 @@ def publisher(message_type, topic_name, values):
         print('publishing %r\n' % msg)
         time.sleep(1)
     rclpy.shutdown()
-
-
-def set_msg_fields(msg, values):
-    for field_name, field_value in values.items():
-        field_type = type(getattr(msg, field_name))
-        try:
-            value = field_type(field_value)
-        except TypeError:
-            value = field_type()
-            try:
-                set_msg_fields(value, field_value)
-            except SetFieldError as e:
-                raise SetFieldError(
-                    '{field_name}.{e.field_name}'.format_map(locals()),
-                    e.exception)
-        except ValueError as e:
-            raise SetFieldError(field_name, e)
-        try:
-            setattr(msg, field_name, value)
-        except Exception as e:
-            raise SetFieldError(field_name, e)
