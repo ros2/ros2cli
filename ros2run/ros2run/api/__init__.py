@@ -50,6 +50,11 @@ def get_executable_path(*, package_name, executable_name):
 
 def run_executable(*, path, argv, prefix=None):
     cmd = [path] + argv
+
+    # on Windows Python scripts are invokable through the interpreter
+    if os.name == 'nt' and path.endswith('.py'):
+        cmd.insert(0, sys.executable)
+
     if prefix is not None:
         cmd = prefix + cmd
 
