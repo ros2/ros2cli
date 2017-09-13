@@ -16,8 +16,8 @@ import importlib
 import time
 
 import rclpy
-from ros2topic.api import SetFieldError
 from ros2topic.api import set_msg_fields
+from ros2topic.api import SetFieldError
 from ros2topic.api import TopicNameCompleter
 from ros2topic.verb import VerbExtension
 import yaml
