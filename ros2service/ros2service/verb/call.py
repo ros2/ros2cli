@@ -81,9 +81,6 @@ def requester(service_type, service_name, values, repeat):
     except SetFieldError as e:
         return "Failed to populate field '{e.field_name}': {e.exception}" \
             .format_map(locals())
-    # for field_name, field_value in values_dictionary.items():
-    #     field_type = type(getattr(request, field_name))
-    #     setattr(request, field_name, field_type(field_value))
 
     while True:
         print('requester: making request: %r\n' % request)
