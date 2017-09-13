@@ -43,3 +43,32 @@ class TopicNameCompleter:
                 node=node,
                 include_hidden_topics=getattr(
                     parsed_args, self.include_hidden_topics_key))
+
+
+class SetFieldError(Exception):
+
+    def __init__(self, field_name, exception):
+        super(SetFieldError, self).__init__()
+        self.field_name = field_name
+        self.exception = exception
+
+
+def set_msg_fields(msg, values):
+    for field_name, field_value in values.items():
+        field_type = type(getattr(msg, field_name))
+        try:
+            value = field_type(field_value)
+        except TypeError:
+            value = field_type()
+            try:
+                set_msg_fields(value, field_value)
+            except SetFieldError as e:
+                raise SetFieldError(
+                    '{field_name}.{e.field_name}'.format_map(locals()),
+                    e.exception)
+        except ValueError as e:
+            raise SetFieldError(field_name, e)
+        try:
+            setattr(msg, field_name, value)
+        except Exception as e:
+            raise SetFieldError(field_name, e)
