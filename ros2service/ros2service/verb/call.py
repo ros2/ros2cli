@@ -19,6 +19,7 @@ import time
 import rclpy
 from ros2service.api import ServiceNameCompleter
 from ros2service.verb import VerbExtension
+from ros2topic.verb.pub import SetFieldError, set_msg_fields
 import yaml
 
 
@@ -74,9 +75,15 @@ def requester(service_type, service_name, values, repeat):
     cli = node.create_client(srv_module, service_name)
 
     request = srv_module.Request()
-    for field_name, field_value in values_dictionary.items():
-        field_type = type(getattr(request, field_name))
-        setattr(request, field_name, field_type(field_value))
+
+    try:
+        set_msg_fields(request, values_dictionary)
+    except SetFieldError as e:
+        return "Failed to populate field '{e.field_name}': {e.exception}" \
+            .format_map(locals())
+    # for field_name, field_value in values_dictionary.items():
+    #     field_type = type(getattr(request, field_name))
+    #     setattr(request, field_name, field_type(field_value))
 
     while True:
         print('requester: making request: %r\n' % request)
