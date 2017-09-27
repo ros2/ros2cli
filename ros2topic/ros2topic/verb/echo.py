@@ -98,7 +98,7 @@ def subscriber(node, topic_name, message_type, callback):
     if message_type is None:
         topic_names_and_types = get_topic_names_and_types(node=node)
         for n, t in topic_names_and_types:
-            if n == topic_name:
+            if n == topic_name or n == '/' + topic_name:
                 if len(t) > 1:
                     raise RuntimeError(
                         "Cannot echo topic '%s', as it contains more than one type: [%s]" %
