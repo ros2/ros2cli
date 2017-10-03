@@ -18,8 +18,9 @@ import importlib
 import sys
 
 import rclpy
-from rclpy.qos import qos_profile_sensor_data
 from rclpy.expand_topic_name import expand_topic_name
+from rclpy.qos import qos_profile_sensor_data
+from rclpy.validate_full_topic_name import validate_full_topic_name
 from ros2cli.node.direct import DirectNode
 from ros2topic.api import get_topic_names_and_types
 from ros2topic.api import TopicNameCompleter
@@ -99,6 +100,7 @@ def subscriber(node, topic_name, message_type, callback):
     if message_type is None:
         topic_names_and_types = get_topic_names_and_types(node=node)
         expanded_name = expand_topic_name(topic_name, node.get_name(), node.get_namespace())
+        validate_full_topic_name(expanded_name, is_service=False)
         for n, t in topic_names_and_types:
             if n == expanded_name:
                 if len(t) > 1:
