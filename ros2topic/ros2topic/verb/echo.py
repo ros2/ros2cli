@@ -102,7 +102,7 @@ def subscriber(node, topic_name, message_type, callback):
         try:
             expanded_name = expand_topic_name(topic_name, node.get_name(), node.get_namespace())
         except ValueError as e:
-            raise RuntimeError("Topic name '%s' is invalid" % (topic_name))
+            raise RuntimeError(e)
         try:
             validate_full_topic_name(expanded_name)
         except rclpy.exceptions.InvalidTopicNameException as e:
