@@ -99,8 +99,14 @@ def represent_ordereddict(dumper, data):
 def subscriber(node, topic_name, message_type, callback):
     if message_type is None:
         topic_names_and_types = get_topic_names_and_types(node=node)
-        expanded_name = expand_topic_name(topic_name, node.get_name(), node.get_namespace())
-        validate_full_topic_name(expanded_name)
+        try:
+            expanded_name = expand_topic_name(topic_name, node.get_name(), node.get_namespace())
+        except ValueError as e:
+            raise RuntimeError(e)
+        try:
+            validate_full_topic_name(expanded_name)
+        except rclpy.exceptions.InvalidTopicNameException as e:
+            raise RuntimeError(e)
         for n, t in topic_names_and_types:
             if n == expanded_name:
                 if len(t) > 1:
