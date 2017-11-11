@@ -23,7 +23,7 @@ setup(
     long_description="""\
 The package provides the service command for the ROS 2 command line tools.""",
     license='Apache License, Version 2.0',
-    test_suite='test',
+    tests_require=['pytest'],
     entry_points={
         'ros2cli.command': [
             'service = ros2service.command.service:ServiceCommand',

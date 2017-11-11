@@ -32,7 +32,7 @@ setup(
 The framework provides a single command line script which can be extended with
 commands and verbs.""",
     license='Apache License, Version 2.0',
-    test_suite='test',
+    tests_require=['pytest'],
     entry_points={
         'ros2cli.command': [
             'daemon = ros2cli.command.daemon:DaemonCommand',
