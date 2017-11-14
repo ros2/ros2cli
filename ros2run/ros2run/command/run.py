@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from argparse import REMAINDER
 import shlex
 
 from ros2cli.command import CommandExtension
@@ -48,10 +49,8 @@ class RunCommand(CommandExtension):
         arg.completer = ExecutableNameCompleter(
             package_name_key='package_name')
         parser.add_argument(
-            'argv', nargs='*',
-            help="Pass arbitrary arguments to the executable (use '--' before "
-                 'these arguments to ensure they are not handled by this '
-                 'command)')
+            'argv', nargs=REMAINDER,
+            help='Pass arbitrary arguments to the executable')
 
     def main(self, *, parser, args):
         try:
