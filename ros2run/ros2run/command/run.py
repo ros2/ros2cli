@@ -14,6 +14,7 @@
 
 import shlex
 
+from argparse import REMAINDER
 from ros2cli.command import CommandExtension
 from ros2pkg.api import package_name_completer
 from ros2pkg.api import PackageNotFound
@@ -21,7 +22,6 @@ from ros2run.api import ExecutableNameCompleter
 from ros2run.api import get_executable_path
 from ros2run.api import MultipleExecutables
 from ros2run.api import run_executable
-from argparse import REMAINDER
 
 
 class RunCommand(CommandExtension):
@@ -50,7 +50,7 @@ class RunCommand(CommandExtension):
             package_name_key='package_name')
         parser.add_argument(
             'argv', nargs=REMAINDER,
-            help="Pass arbitrary arguments to the executable")
+            help='Pass arbitrary arguments to the executable')
 
     def main(self, *, parser, args):
         try:
