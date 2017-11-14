@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from argparse import REMAINDER
 import shlex
 
-from argparse import REMAINDER
 from ros2cli.command import CommandExtension
 from ros2pkg.api import package_name_completer
 from ros2pkg.api import PackageNotFound
