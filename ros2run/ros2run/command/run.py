@@ -21,7 +21,7 @@ from ros2run.api import ExecutableNameCompleter
 from ros2run.api import get_executable_path
 from ros2run.api import MultipleExecutables
 from ros2run.api import run_executable
-
+from argparse import REMAINDER
 
 class RunCommand(CommandExtension):
     """Run a package specific executable."""
@@ -48,10 +48,8 @@ class RunCommand(CommandExtension):
         arg.completer = ExecutableNameCompleter(
             package_name_key='package_name')
         parser.add_argument(
-            'argv', nargs='*',
-            help="Pass arbitrary arguments to the executable (use '--' before "
-                 'these arguments to ensure they are not handled by this '
-                 'command)')
+            'argv', nargs=REMAINDER,
+            help="Pass arbitrary arguments to the executable")
 
     def main(self, *, parser, args):
         try:
