@@ -83,6 +83,10 @@ def requester(service_type, service_name, values, repeat):
         return "Failed to populate field '{e.field_name}': {e.exception}" \
             .format_map(locals())
 
+    if not cli.service_is_ready():
+        print('waiting for service to become available...')
+        cli.wait_for_service()
+
     while True:
         print('requester: making request: %r\n' % request)
         last_call = time.time()
