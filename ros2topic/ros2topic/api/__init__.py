@@ -14,6 +14,7 @@
 
 from rclpy.topic_or_service_is_hidden import topic_or_service_is_hidden
 from ros2cli.node.strategy import NodeStrategy
+from ros2msg.api import message_type_completer
 
 
 def get_topic_names_and_types(*, node, include_hidden_topics=False):
@@ -43,6 +44,24 @@ class TopicNameCompleter:
                 node=node,
                 include_hidden_topics=getattr(
                     parsed_args, self.include_hidden_topics_key))
+
+
+class TopicTypeCompleter:
+    """Callable returning an existing topic type or all message types."""
+
+    def __init__(self, *, topic_name_key=None):
+        self.topic_name_key = topic_name_key
+
+    def __call__(self, prefix, parsed_args, **kwargs):
+        if self.topic_name_key is not None:
+            with NodeStrategy(parsed_args) as node:
+                topic_name = getattr(parsed_args, self.topic_name_key)
+                names_and_types = get_topic_names_and_types(
+                    node=node, include_hidden_topics=True)
+                for n, t in names_and_types:
+                    if n == topic_name:
+                        return t
+        return message_type_completer()
 
 
 class SetFieldError(Exception):

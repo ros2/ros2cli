@@ -14,6 +14,7 @@
 
 from rclpy.topic_or_service_is_hidden import topic_or_service_is_hidden
 from ros2cli.node.strategy import NodeStrategy
+from ros2srv.api import service_type_completer
 
 
 def get_service_names_and_types(*, node, include_hidden_services=False):
@@ -43,3 +44,21 @@ class ServiceNameCompleter:
                 node=node,
                 include_hidden_services=getattr(
                     parsed_args, self.include_hidden_services_key))
+
+
+class ServiceTypeCompleter:
+    """Callable returning an existing service type or all service types."""
+
+    def __init__(self, *, service_name_key=None):
+        self.service_name_key = service_name_key
+
+    def __call__(self, prefix, parsed_args, **kwargs):
+        if self.service_name_key is not None:
+            with NodeStrategy(parsed_args) as node:
+                service_name = getattr(parsed_args, self.service_name_key)
+                names_and_types = get_service_names_and_types(
+                    node=node, include_hidden_services=True)
+                for n, t in names_and_types:
+                    if n == service_name:
+                        return t
+        return service_type_completer()

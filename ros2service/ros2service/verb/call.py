@@ -18,6 +18,7 @@ import time
 
 import rclpy
 from ros2service.api import ServiceNameCompleter
+from ros2service.api import ServiceTypeCompleter
 from ros2service.verb import VerbExtension
 from ros2topic.api import set_msg_fields
 from ros2topic.api import SetFieldError
@@ -33,9 +34,11 @@ class CallVerb(VerbExtension):
             help="Name of the ROS service to call to (e.g. '/add_two_ints')")
         arg.completer = ServiceNameCompleter(
             include_hidden_services_key='include_hidden_services')
-        parser.add_argument(
+        arg = parser.add_argument(
             'service_type',
             help="Type of the ROS service (e.g. 'std_srvs/Empty')")
+        arg.completer = ServiceTypeCompleter(
+            service_name_key='service_name')
         parser.add_argument(
             'values', nargs='?', default='{}',
             help='Values to fill the service request with in YAML format ' +
