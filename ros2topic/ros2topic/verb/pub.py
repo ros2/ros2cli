@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import argparse
 import importlib
 import time
 
@@ -44,15 +45,26 @@ class PubVerb(VerbExtension):
                  '(e.g. "data: Hello World"), ' +
                  'otherwise the message will be published with default values')
 
+        def float_or_int(input_string):
+            try:
+                value = float(input_string)
+            except ValueError:
+                raise argparse.ArgumentTypeError("'%s' is not an integer or float" % input_string)
+            return value
+
+        parser.add_argument(
+            '-r', '--repeat', metavar='N', type=float_or_int, default=1,
+            help='Repeat the publication every N seconds')
+
     def main(self, *, args):
         return main(args)
 
 
 def main(args):
-    return publisher(args.message_type, args.topic_name, args.values)
+    return publisher(args.message_type, args.topic_name, args.values, args.repeat)
 
 
-def publisher(message_type, topic_name, values):
+def publisher(message_type, topic_name, values, period):
     # TODO(dirk-thomas) this logic should come from a rosidl related package
     try:
         package_name, message_name = message_type.split('/', 2)
@@ -65,6 +77,9 @@ def publisher(message_type, topic_name, values):
     values_dictionary = yaml.load(values)
     if not isinstance(values_dictionary, dict):
         return 'The passed value needs to be a dictionary in YAML format'
+    # TODO(mikaelarguedas) change this once we have latching to make the default a single publish
+    if period is None:
+        period = 1
 
     rclpy.init()
 
@@ -83,5 +98,5 @@ def publisher(message_type, topic_name, values):
     while rclpy.ok():
         pub.publish(msg)
         print('publishing %r\n' % msg)
-        time.sleep(1)
+        time.sleep(period)
     rclpy.shutdown()
