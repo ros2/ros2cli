@@ -19,6 +19,7 @@ import rclpy
 from ros2topic.api import set_msg_fields
 from ros2topic.api import SetFieldError
 from ros2topic.api import TopicNameCompleter
+from ros2topic.api import TopicTypeCompleter
 from ros2topic.verb import VerbExtension
 import yaml
 
@@ -32,9 +33,11 @@ class PubVerb(VerbExtension):
             help="Name of the ROS topic to publish to (e.g. '/chatter')")
         arg.completer = TopicNameCompleter(
             include_hidden_topics_key='include_hidden_topics')
-        parser.add_argument(
+        arg = parser.add_argument(
             'message_type',
             help="Type of the ROS message (e.g. 'std_msgs/String')")
+        arg.completer = TopicTypeCompleter(
+            topic_name_key='topic_name')
         parser.add_argument(
             'values', nargs='?', default='{}',
             help='Values to fill the message with in YAML format ' +
