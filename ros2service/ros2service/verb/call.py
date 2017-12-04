@@ -52,16 +52,13 @@ class CallVerb(VerbExtension):
 
     def main(self, *, args):
         if args.rate <= 0:
-            raise ValueError('rate must be greater than zero')
+            raise RuntimeError('rate must be greater than zero')
 
-        return requester(args.service_type, args.service_name, args.values, args.rate, args.once)
+        return requester(
+            args.service_type, args.service_name, args.values, 1 / args.rate, args.once)
 
 
-def requester(service_type, service_name, values, rate, once):
-    if rate is not None:
-        period = 1. / rate
-    else:
-        period = 1
+def requester(service_type, service_name, values, period, once):
     # TODO(wjwwood) this logic should come from a rosidl related package
     try:
         package_name, srv_name = service_type.split('/', 2)
