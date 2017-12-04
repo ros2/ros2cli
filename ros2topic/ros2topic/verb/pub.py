@@ -45,7 +45,7 @@ class PubVerb(VerbExtension):
                  'otherwise the message will be published with default values')
         parser.add_argument(
             '-r', '--rate', metavar='N', type=float, default=1.0,
-            help='Publishing rate (hz) default to 1')
+            help='Publishing rate in Hz (default: 1)')
         parser.add_argument(
             '-1', '--once', action='store_true',
             help='Publish one message and exit')
