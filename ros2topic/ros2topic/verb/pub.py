@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import argparse
 import importlib
 import time
 
@@ -45,7 +44,7 @@ class PubVerb(VerbExtension):
                  '(e.g. "data: Hello World"), ' +
                  'otherwise the message will be published with default values')
         parser.add_argument(
-            '-r', '--rate', metavar='N', type=float,
+            '-r', '--rate', metavar='N', type=float, default=1.0,
             help='Publishing rate (hz) default to 1')
         parser.add_argument(
             '-1', '--once', action='store_true',
@@ -56,21 +55,13 @@ class PubVerb(VerbExtension):
 
 
 def main(args):
-    rate = None
-    if args.rate is not None:
-        if args.once:
-            raise RuntimeError('You cannot select both -r and -1 (--once)')
-        try:
-            rate = float(args.rate)
-        except ValueError:
-            raise argparse.ArgumentTypeError('rate must be a number')
-        if rate <= 0:
-            raise ValueError('rate must be greater than zero')
+    if args.rate <= 0:
+        raise ValueError('rate must be greater than zero')
 
-    return publisher(args.message_type, args.topic_name, args.values, rate, args.once)
+    return publisher(args.message_type, args.topic_name, args.values, 1. / args.rate, args.once)
 
 
-def publisher(message_type, topic_name, values, rate, once):
+def publisher(message_type, topic_name, values, period, once):
     # TODO(dirk-thomas) this logic should come from a rosidl related package
     try:
         package_name, message_name = message_type.split('/', 2)
@@ -83,11 +74,6 @@ def publisher(message_type, topic_name, values, rate, once):
     values_dictionary = yaml.load(values)
     if not isinstance(values_dictionary, dict):
         return 'The passed value needs to be a dictionary in YAML format'
-
-    if rate is not None:
-        period = 1. / rate
-    else:
-        period = 1
 
     rclpy.init()
 
@@ -107,6 +93,7 @@ def publisher(message_type, topic_name, values, rate, once):
         pub.publish(msg)
         print('publishing %r\n' % msg)
         if once:
+            time.sleep(0.1)  # make sure the message reaches the wire before exiting
             break
         time.sleep(period)
     node.destroy_node()

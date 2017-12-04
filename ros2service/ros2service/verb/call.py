@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import argparse
 import importlib
 import time
 
@@ -45,26 +44,20 @@ class CallVerb(VerbExtension):
                  '(e.g. "{a: 1, b: 2}"), ' +
                  'otherwise the service request will be published with default values')
         parser.add_argument(
-            '-r', '--rate', metavar='N', type=float,
+            '-r', '--rate', metavar='N', type=float, default=1,
             help='Calling rate (hz) default to 1')
         parser.add_argument(
             '-1', '--once', action='store_true',
             help='Cal service once and exit')
 
     def main(self, *, args):
+        if args.rate <= 0:
+            raise ValueError('rate must be greater than zero')
+
         return requester(args.service_type, args.service_name, args.values, args.rate, args.once)
 
 
 def requester(service_type, service_name, values, rate, once):
-    if rate is not None:
-        if once:
-            raise RuntimeError('You cannot select both -r and -1 (--once)')
-        try:
-            rate = float(rate)
-        except ValueError:
-            raise argparse.ArgumentTypeError('rate must be a number')
-        if rate <= 0:
-            raise ValueError('rate must be greater than zero')
     if rate is not None:
         period = 1. / rate
     else:
