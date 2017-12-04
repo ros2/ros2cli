@@ -44,27 +44,33 @@ class PubVerb(VerbExtension):
             help='Values to fill the message with in YAML format ' +
                  '(e.g. "data: Hello World"), ' +
                  'otherwise the message will be published with default values')
-
-        def float_or_int(input_string):
-            try:
-                value = float(input_string)
-            except ValueError:
-                raise argparse.ArgumentTypeError("'%s' is not an integer or float" % input_string)
-            return value
-
         parser.add_argument(
-            '-r', '--repeat', metavar='N', type=float_or_int, default=1,
-            help='Repeat the publication every N seconds')
+            '-r', '--rate', metavar='N', type=float,
+            help='Publishing rate (hz) default to 1')
+        parser.add_argument(
+            '-1', '--once', action='store_true',
+            help='Publish one message and exit')
 
     def main(self, *, args):
         return main(args)
 
 
 def main(args):
-    return publisher(args.message_type, args.topic_name, args.values, args.repeat)
+    rate = None
+    if args.rate is not None:
+        if args.once:
+            raise RuntimeError('You cannot select both -r and -1 (--once)')
+        try:
+            rate = float(args.rate)
+        except ValueError:
+            raise argparse.ArgumentTypeError('rate must be a number')
+        if rate <= 0:
+            raise ValueError('rate must be greater than zero')
+
+    return publisher(args.message_type, args.topic_name, args.values, rate, args.once)
 
 
-def publisher(message_type, topic_name, values, period):
+def publisher(message_type, topic_name, values, rate, once):
     # TODO(dirk-thomas) this logic should come from a rosidl related package
     try:
         package_name, message_name = message_type.split('/', 2)
@@ -77,8 +83,10 @@ def publisher(message_type, topic_name, values, period):
     values_dictionary = yaml.load(values)
     if not isinstance(values_dictionary, dict):
         return 'The passed value needs to be a dictionary in YAML format'
-    # TODO(mikaelarguedas) change this once we have latching to make the default a single publish
-    if period is None:
+
+    if rate is not None:
+        period = 1. / rate
+    else:
         period = 1
 
     rclpy.init()
@@ -98,5 +106,8 @@ def publisher(message_type, topic_name, values, period):
     while rclpy.ok():
         pub.publish(msg)
         print('publishing %r\n' % msg)
+        if once:
+            break
         time.sleep(period)
+    node.destroy_node()
     rclpy.shutdown()
