@@ -51,13 +51,13 @@ class PubVerb(VerbExtension):
             help='Publish one message and exit')
 
     def main(self, *, args):
+        if args.rate <= 0:
+            raise RuntimeError('rate must be greater than zero')
+
         return main(args)
 
 
 def main(args):
-    if args.rate <= 0:
-        raise ValueError('rate must be greater than zero')
-
     return publisher(args.message_type, args.topic_name, args.values, 1. / args.rate, args.once)
 
 
