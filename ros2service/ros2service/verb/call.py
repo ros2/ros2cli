@@ -44,23 +44,31 @@ class CallVerb(VerbExtension):
             help='Values to fill the service request with in YAML format ' +
                  '(e.g. "{a: 1, b: 2}"), ' +
                  'otherwise the service request will be published with default values')
-
-        def float_or_int(input_string):
-            try:
-                value = float(input_string)
-            except ValueError:
-                raise argparse.ArgumentTypeError("'%s' is not an integer or float" % input_string)
-            return value
-
         parser.add_argument(
-            '-r', '--repeat', metavar='N', type=float_or_int,
-            help='Repeat the call every N seconds')
+            '-r', '--rate', metavar='N', type=float,
+            help='Calling rate (hz) default to 1')
+        parser.add_argument(
+            '-1', '--once', action='store_true',
+            help='Cal service once and exit')
 
     def main(self, *, args):
-        return requester(args.service_type, args.service_name, args.values, args.repeat)
+        return requester(args.service_type, args.service_name, args.values, args.rate, args.once)
 
 
-def requester(service_type, service_name, values, repeat):
+def requester(service_type, service_name, values, rate, once):
+    if rate is not None:
+        if once:
+            raise RuntimeError('You cannot select both -r and -1 (--once)')
+        try:
+            rate = float(rate)
+        except ValueError:
+            raise argparse.ArgumentTypeError('rate must be a number')
+        if rate <= 0:
+            raise ValueError('rate must be greater than zero')
+    if rate is not None:
+        period = 1. / rate
+    else:
+        period = 1
     # TODO(wjwwood) this logic should come from a rosidl related package
     try:
         package_name, srv_name = service_type.split('/', 2)
@@ -97,9 +105,9 @@ def requester(service_type, service_name, values, repeat):
         cli.wait_for_future()
         if cli.response is not None:
             print('response:\n%r\n' % cli.response)
-        if repeat is None or not rclpy.ok():
+        if once or not rclpy.ok():
             break
-        time_until_next_period = (last_call + repeat) - time.time()
+        time_until_next_period = (last_call + period) - time.time()
         if time_until_next_period > 0:
             time.sleep(time_until_next_period)
 
