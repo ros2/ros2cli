@@ -43,16 +43,25 @@ class PubVerb(VerbExtension):
             help='Values to fill the message with in YAML format ' +
                  '(e.g. "data: Hello World"), ' +
                  'otherwise the message will be published with default values')
+        parser.add_argument(
+            '-r', '--rate', metavar='N', type=float, default=1.0,
+            help='Publishing rate in Hz (default: 1)')
+        parser.add_argument(
+            '-1', '--once', action='store_true',
+            help='Publish one message and exit')
 
     def main(self, *, args):
+        if args.rate <= 0:
+            raise RuntimeError('rate must be greater than zero')
+
         return main(args)
 
 
 def main(args):
-    return publisher(args.message_type, args.topic_name, args.values)
+    return publisher(args.message_type, args.topic_name, args.values, 1. / args.rate, args.once)
 
 
-def publisher(message_type, topic_name, values):
+def publisher(message_type, topic_name, values, period, once):
     # TODO(dirk-thomas) this logic should come from a rosidl related package
     try:
         package_name, message_name = message_type.split('/', 2)
@@ -83,5 +92,9 @@ def publisher(message_type, topic_name, values):
     while rclpy.ok():
         pub.publish(msg)
         print('publishing %r\n' % msg)
-        time.sleep(1)
+        if once:
+            time.sleep(0.1)  # make sure the message reaches the wire before exiting
+            break
+        time.sleep(period)
+    node.destroy_node()
     rclpy.shutdown()
