@@ -48,7 +48,7 @@ class CallVerb(VerbExtension):
             help='Calling rate (hz) default to 1')
         parser.add_argument(
             '-1', '--once', action='store_true',
-            help='Cal service once and exit')
+            help='Call service once and exit')
 
     def main(self, *, args):
         if args.rate <= 0:
