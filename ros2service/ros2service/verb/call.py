@@ -45,7 +45,7 @@ class CallVerb(VerbExtension):
                  'otherwise the service request will be published with default values')
         parser.add_argument(
             '-r', '--rate', metavar='N', type=float, default=1,
-            help='Calling rate (hz) default to 1')
+            help='Calling rate in Hz (default: 1)')
         parser.add_argument(
             '-1', '--once', action='store_true',
             help='Call service once and exit')
