@@ -44,18 +44,20 @@ class CallVerb(VerbExtension):
                  '(e.g. "{a: 1, b: 2}"), ' +
                  'otherwise the service request will be published with default values')
         parser.add_argument(
-            '-r', '--rate', metavar='N', type=float, default=1.0,
-            help='Calling rate in Hz (default: 1)')
-        parser.add_argument(
-            '-1', '--once', action='store_true',
-            help='Call service once and exit')
+            '-r', '--rate', metavar='N', type=float, default=float('inf'),
+            help='Repeat the call at a specific rate in Hz')
 
     def main(self, *, args):
+        once = True
         if args.rate <= 0:
             raise RuntimeError('rate must be greater than zero')
+        elif args.rate == float('inf'):
+            once = True
+        else:
+            once = False
 
         return requester(
-            args.service_type, args.service_name, args.values, 1. / args.rate, args.once)
+            args.service_type, args.service_name, args.values, 1. / args.rate, once)
 
 
 def requester(service_type, service_name, values, period, once):
