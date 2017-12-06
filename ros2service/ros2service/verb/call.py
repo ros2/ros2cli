@@ -44,21 +44,19 @@ class CallVerb(VerbExtension):
                  '(e.g. "{a: 1, b: 2}"), ' +
                  'otherwise the service request will be published with default values')
         parser.add_argument(
-            '-r', '--rate', metavar='N', type=float, default=1.0,
-            help='Calling rate in Hz (default: 1)')
-        parser.add_argument(
-            '-1', '--once', action='store_true',
-            help='Call service once and exit')
+            '-r', '--rate', metavar='N', type=float,
+            help='Repeat the call at a specific rate in Hz')
 
     def main(self, *, args):
-        if args.rate <= 0:
+        if args.rate is not None and args.rate <= 0:
             raise RuntimeError('rate must be greater than zero')
+        period = 1. / args.rate if args.rate else None
 
         return requester(
-            args.service_type, args.service_name, args.values, 1. / args.rate, args.once)
+            args.service_type, args.service_name, args.values, period)
 
 
-def requester(service_type, service_name, values, period, once):
+def requester(service_type, service_name, values, period):
     # TODO(wjwwood) this logic should come from a rosidl related package
     try:
         package_name, srv_name = service_type.split('/', 2)
@@ -95,7 +93,7 @@ def requester(service_type, service_name, values, period, once):
         cli.wait_for_future()
         if cli.response is not None:
             print('response:\n%r\n' % cli.response)
-        if once or not rclpy.ok():
+        if period is None or not rclpy.ok():
             break
         time_until_next_period = (last_call + period) - time.time()
         if time_until_next_period > 0:
