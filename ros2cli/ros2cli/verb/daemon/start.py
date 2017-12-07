@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import sys
+
 from ros2cli.node.daemon import is_daemon_running
 from ros2cli.node.daemon import spawn_daemon
 from ros2cli.verb.daemon import VerbExtension
@@ -26,5 +28,11 @@ class StartVerb(VerbExtension):
             print('The daemon is already running')
             return
 
-        spawn_daemon(args)
-        print('The daemon has been started')
+        spawned = spawn_daemon(args, wait_until_spawned=10.0)
+        if spawned:
+            print('The daemon has been started')
+        else:
+            print(
+                'Failed to confirm that the daemon started successfully',
+                file=sys.stderr)
+            return 1

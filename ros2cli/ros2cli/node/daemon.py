@@ -18,6 +18,7 @@ import platform
 import socket
 import subprocess
 import sys
+import time
 
 import rclpy
 from ros2cli.daemon import get_daemon_port
@@ -42,7 +43,7 @@ def is_daemon_running(args):
     return False
 
 
-def spawn_daemon(args):
+def spawn_daemon(args, wait_until_spawned=None):
     ros_domain_id = int(os.environ.get('ROS_DOMAIN_ID', 0))
     kwargs = {}
     if platform.system() != 'Windows':
@@ -65,6 +66,20 @@ def spawn_daemon(args):
         '--rmw-implementation', rclpy.get_rmw_implementation_identifier(),
         '--ros-domain-id', str(ros_domain_id)],
         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, **kwargs)
+
+    if wait_until_spawned is None:
+        return True
+
+    if wait_until_spawned > 0.0:
+        timeout = time.time() + wait_until_spawned
+    else:
+        timeout = None
+    while True:
+        if is_daemon_running(args):
+            return True
+        time.sleep(0.1)
+        if timeout is not None and time.time() >= timeout:
+            return None
 
 
 class DaemonNode:
