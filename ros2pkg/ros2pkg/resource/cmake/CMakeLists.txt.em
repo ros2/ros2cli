@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 3.5)
 project(@(project_name))
 
+set(@(project_naem)_MAJOR_VERSION 0)
+set(@(project_naem)_MINOR_VERSION 0)
+set(@(project_naem)_PATCH_VERSION 0)
+set(@(project_naem)_VERSION
+  ${@(project_name)_MAJOR_VERSION}.${@(project_name)_MINOR_VERSION}.${@(project_name)_PATCH_VERSION})
+
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
   set(CMAKE_C_STANDARD 99)
@@ -13,36 +19,37 @@ endif()
 
 # find dependencies
 @[if dependencies]@
-@[for deb in dependencies]@
+@[  for deb in dependencies]@
 find_package(@deb REQUIRED)
-@[end for]@
+@[  end for]@
 
+
+@[  if create_cpp_library]@
 include_directories(
-@[if create_cpp_library]@
   include
-@[end if]@
-@[for deb in dependencies]@
+@[    for deb in dependencies]@
   ${@(deb)_INCLUDE_DIRS}
-@[end for]@
+@[    end for]@
 )
+@[  end if]@
 
 @[else]@
 # uncomment the following section in order to fill in
 # further dependencies manually.
-# find_package(<dependency> [<REQUIRED>|<QUIET>])
+# find_package(<dependency> [REQUIRED] [QUIET])
 
 # include_directories($<dependency>_INCLUDE_DIRS})
 
 @[end if]@
 @[if create_cpp_library]@
-add_library(${PROJECT_NAME} src/@(cpp_library_name))
+add_library(${PROJECT_NAME} SHARED src/@(cpp_library_name))
 
-@[if dependencies]@
-@[for deb in dependencies]@
+@[  if dependencies]@
+@[    for deb in dependencies]@
 target_link_libraries(${PROJECT_NAME} ${@(deb)_LIBRARIES})
-@[end for]@
+@[    end for]@
 
-@[end if]@
+@[  end if]@
 install(TARGETS ${PROJECT_NAME}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
@@ -50,29 +57,26 @@ install(TARGETS ${PROJECT_NAME}
 
 @[end if]@
 @[if create_cpp_exe]@
-add_executable(${PROJECT_NAME}_main src/@(cpp_exe_name))
+add_executable(${PROJECT_NAME}_node src/@(cpp_exe_name))
 
-@[if dependencies]@
-@[for deb in dependencies]@
-target_link_libraries(${PROJECT_NAME}_main ${@(deb)_LIBRARIES})
-@[end for]@
+@[  if dependencies]@
+@[    for deb in dependencies]@
+target_link_libraries(${PROJECT_NAME}_node ${@(deb)_LIBRARIES})
+@[    end for]@
 
-@[end if]@
-install(TARGETS ${PROJECT_NAME}_main
+@[  end if]@
+install(TARGETS ${PROJECT_NAME}_node
   DESTINATION lib/${PROJECT_NAME})
 
 @[end if]@
-if(BUILD_TESTING)
-# testing specific code
-endif()
 
 @[if create_cpp_library or create_cpp_exe]@
-@[if create_cpp_library]@
+@[  if create_cpp_library]@
 set(export_targets ${export_targets};${PROJECT_NAME})
-@[end if]@
-@[if create_cpp_exe]@
-set(export_targets ${export_targets};${PROJECT_NAME}_main)
-@[end if]@
+@[  end if]@
+@[  if create_cpp_exe]@
+set(export_targets ${export_targets};${PROJECT_NAME}_node)
+@[  end if]@
 export(TARGETS ${export_targets}
   FILE "${PROJECT_BINARY_DIR}/@(project_name)Targets.cmake")
 

@@ -72,43 +72,38 @@ class CreateVerb(VerbExtension):
             help='name of the empty cpp library')
 
     def main(self, *, args):
-        package_name = args.package_name
-        destination_directory = args.destination_directory
-        build_tool = args.build_tool
-        dependencies = args.dependencies
-        maintainer_email = args.maintainer_email
-        maintainer_name = args.maintainer_name
         create_cpp_exe = True if args.create_cpp_exe else False
         cpp_exe_name = (
-            package_name + '_main.cpp' if not args.cpp_exe_name else args.cpp_exe_name)
+            args.package_name + '_main.cpp' if not args.cpp_exe_name else args.cpp_exe_name)
         create_cpp_library = True if args.create_cpp_library else False
         cpp_library_name = (
-            package_name + '.cpp' if not args.cpp_exe_name else package_name + '.cpp')
+            args.package_name + '.cpp' if not args.cpp_exe_name else package_name + '.cpp')
 
         print('going to create a new package')
-        print('package name:', package_name)
-        print('destination directory', destination_directory)
-        print('build tool:', build_tool)
-        print('maintainer_email:', maintainer_email)
-        print('maintainer_name:', maintainer_name)
-        print('dependencies:', dependencies)
+        print('package name:', args.package_name)
+        print('destination directory', args.destination_directory)
+        print('build tool:', args.build_tool)
+        print('maintainer_email:', args.maintainer_email)
+        print('maintainer_name:', args.maintainer_name)
+        print('dependencies:', args.dependencies)
         print('create_cpp_exe:', create_cpp_exe)
         print('cpp_exe_name:', cpp_exe_name)
         print('create_cpp_library:', create_cpp_library)
         print('cpp_library_name:', cpp_library_name)
 
-        package_directory = create_folder(package_name, destination_directory)
+        package_directory = create_folder(args.package_name, args.destination_directory)
         if not package_directory:
-            return
+            print('unable to create folder', args.destination_directory)
+            return False
 
         package_xml_config = {
-            'package_name': package_name,
-            'maintainer_email': maintainer_email,
-            'maintainer_name': maintainer_name,
-            'dependencies': dependencies,
+            'package_name': args.package_name,
+            'maintainer_email': args.maintainer_email,
+            'maintainer_name': args.maintainer_name,
+            'dependencies': args.dependencies,
         }
 
-        if (build_tool == 'cmake'):
+        if args.build_tool == 'cmake':
             create_template_file(
                 'cmake/package.xml.em',
                 package_directory,
@@ -116,8 +111,8 @@ class CreateVerb(VerbExtension):
                 package_xml_config)
 
             cmakelists_config = {
-                'project_name': package_name,
-                'dependencies': dependencies,
+                'project_name': args.package_name,
+                'dependencies': args.dependencies,
                 'create_cpp_exe': create_cpp_exe,
                 'cpp_exe_name': cpp_exe_name,
                 'create_cpp_library': create_cpp_library,
@@ -130,24 +125,24 @@ class CreateVerb(VerbExtension):
                 cmakelists_config)
 
             cmake_config = {
-                'project_name': package_name,
+                'project_name': args.package_name,
             }
             create_template_file(
                 'cmake/Config.cmake.in.em',
                 package_directory,
-                package_name + 'Config.cmake.in',
+                args.package_name + 'Config.cmake.in',
                 cmake_config)
 
             version_config = {
-                'project_name': package_name,
+                'project_name': args.package_name,
             }
             create_template_file(
                 'cmake/ConfigVersion.cmake.in.em',
                 package_directory,
-                package_name + 'ConfigVersion.cmake.in',
+                args.package_name + 'ConfigVersion.cmake.in',
                 version_config)
 
-        if (build_tool == 'ament_cmake'):
+        if args.build_tool == 'ament_cmake':
             create_template_file(
                 'ament_cmake/package.xml.em',
                 package_directory,
@@ -155,8 +150,8 @@ class CreateVerb(VerbExtension):
                 package_xml_config)
 
             cmakelists_config = {
-                'project_name': package_name,
-                'dependencies': dependencies,
+                'project_name': args.package_name,
+                'dependencies': args.dependencies,
                 'create_cpp_exe': create_cpp_exe,
                 'cpp_exe_name': cpp_exe_name,
                 'create_cpp_library': create_cpp_library,
@@ -171,9 +166,12 @@ class CreateVerb(VerbExtension):
         if args.create_cpp_exe:
             src_folder = create_folder('src', package_directory)
             if not src_folder:
-                return
+                print('unable to create folder', package_directory)
+                return False
 
             cpp_exe_config = {
-                'package_name': package_name,
+                'package_name': args.package_name,
             }
             create_template_file('cpp/main.cpp.em', src_folder, cpp_exe_name, cpp_exe_config)
+
+        return True

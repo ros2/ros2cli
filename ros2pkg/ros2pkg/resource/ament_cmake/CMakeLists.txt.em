@@ -13,37 +13,39 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-@[if dependencies]@
-@[for deb in dependencies]@
-find_package(@deb REQUIRED)
-@[end for]@
-
-@[if dependencies or create_cpp_library]@
-include_directories(
 @[if create_cpp_library]@
-  include
+find_package(ament_cmake_ros REQUIRED)
 @[end if]@
+
+@[if dependencies]@
+@[  for deb in dependencies]@
+find_package(@deb REQUIRED)
+@[  end for]@
+
+@[  if create_cpp_library]@
+include_directories(
+  include
 )
+@[  end if]
 
 @[else]@
 # uncomment the following section in order to fill in
 # further dependencies manually.
-# find_package(<dependency> [<REQUIRED>|<QUIET>])
+# find_package(<dependency> [REQUIRED] [QUIET])
 
-@[end if]@
 @[end if]@
 @[if create_cpp_library]@
 add_library(${PROJECT_NAME} src/@(cpp_library_name))
 
-@[if dependencies]@
+@[  if dependencies]@
 ament_target_dependencies(
   ${PROJECT_NAME}
-@[for deb in dependencies]@
+@[    for deb in dependencies]@
   ${@(deb)_LIBRARIES}
-@[end for]@
+@[    end for]@
 )
 
-@[end if]@
+@[  end if]@
 install(TARGETS ${PROJECT_NAME}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
@@ -51,18 +53,18 @@ install(TARGETS ${PROJECT_NAME}
 
 @[end if]@
 @[if create_cpp_exe]@
-add_executable(${PROJECT_NAME}_main src/@(cpp_exe_name))
+add_executable(${PROJECT_NAME}_node src/@(cpp_exe_name))
 
-@[if dependencies]@
+@[  if dependencies]@
 ament_target_dependencies(
-  ${PROJECT_NAME}_main
-@[for deb in dependencies]@
+  ${PROJECT_NAME}_node
+@[    for deb in dependencies]@
   ${@(deb)_LIBRARIES}
-@[end for]@
+@[    end for]@
 )
 
-@[end if]@
-install(TARGETS ${PROJECT_NAME}_main
+@[  end if]@
+install(TARGETS ${PROJECT_NAME}_node
   DESTINATION lib/${PROJECT_NAME})
 
 @[end if]@

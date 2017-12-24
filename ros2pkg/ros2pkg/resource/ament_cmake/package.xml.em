@@ -10,16 +10,11 @@
   <buildtool_depend>ament_cmake</buildtool_depend>
 
 @[if dependencies]@
-@[for deb in dependencies]@
-  <build_depend>@deb</build_depend>
-@[end for]@
-
-@[for deb in dependencies]@
-  <exec_depend>@deb</exec_depend>
-@[end for]@
+@[  for deb in dependencies]@
+  <depend>@deb</depend>
+@[  end for]@
 
 @[end if]@
-  <test_depend>ament_cmake_gtest</test_depend>
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
 

@@ -20,10 +20,10 @@ import sys
 import em
 
 
-RELATIVE_RESOURCE_PATH = '../../resource/'
+RESOURCE_PATH = os.path.join(os.path.dirname(__file__), '..', 'resource')
 
 
-def expand_template(template_file, data, output_file, minimum_timestamp=None):
+def expand_template(template_file, data, output_file):
     output = StringIO()
     interpreter = em.Interpreter(
         output=output,
@@ -37,11 +37,12 @@ def expand_template(template_file, data, output_file, minimum_timestamp=None):
         try:
             interpreter.file(h)
             content = output.getvalue()
-        except Exception:
+        except Exception as e:
             if os.path.exists(output_file):
                 os.remove(output_file)
             print("Exception when expanding '%s' into '%s'" %
                   (template_file, output_file), file=sys.stderr)
+            print(str(e))
             raise
         finally:
             interpreter.shutdown()
@@ -56,23 +57,16 @@ def expand_template(template_file, data, output_file, minimum_timestamp=None):
                     return
     else:
         # create folder if necessary
-        try:
-            os.makedirs(os.path.dirname(output_file))
-        except FileExistsError:
-            pass
+        os.makedirs(os.path.dirname(output_file), exist_ok=True)
 
     with open(output_file, 'w') as h:
         h.write(content)
 
 
 def create_folder(folder_name, base_directory):
-    # if not os.path.isabs(base_directory):
-    #     print("cannot create '%s', folder path is not absolute" % base_directory)
-    #     return False
-
     folder_path = os.path.join(base_directory, folder_name)
     if os.path.exists(folder_path):
-        print("cannot create '%s', folder exists" % folder_path)
+        print("cannot create '%s', folder exists" % folder_path, file=sys.stderr)
         return False
 
     print('creating folder', folder_path)
@@ -83,9 +77,9 @@ def create_folder(folder_name, base_directory):
 
 def create_template_file(template_file_name, output_directory, output_file_name, template_config):
     template_path = os.path.abspath(
-        os.path.join(os.path.realpath(__file__), RELATIVE_RESOURCE_PATH + template_file_name))
+        os.path.join(__file__, RESOURCE_PATH, template_file_name))
     if not os.path.exists(template_path):
-        raise IOError('template not found:', template_path)
+        raise FileNotFoundError('template not found:', template_path)
 
     print("joining '%s' and '%s'" % (output_directory, output_file_name))
     output_file_path = os.path.join(output_directory, output_file_name)
