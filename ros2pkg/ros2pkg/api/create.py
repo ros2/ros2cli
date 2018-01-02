@@ -50,10 +50,8 @@ def expand_template(template_file, data, output_file):
     # only overwrite file if necessary
     # which is either when the timestamp is too old or when the content is different
     if os.path.exists(output_file):
-        timestamp = os.path.getmtime(output_file)
-        if minimum_timestamp is None or timestamp > minimum_timestamp:
-            with open(output_file, 'r') as h:
-                if h.read() == content:
+        with open(output_file, 'r') as h:
+            if h.read() == content:
                     return
     else:
         # create folder if necessary

@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.5)
 project(@(project_name))
 
-set(@(project_naem)_MAJOR_VERSION 0)
-set(@(project_naem)_MINOR_VERSION 0)
-set(@(project_naem)_PATCH_VERSION 0)
-set(@(project_naem)_VERSION
+set(@(project_name)_MAJOR_VERSION 0)
+set(@(project_name)_MINOR_VERSION 0)
+set(@(project_name)_PATCH_VERSION 0)
+set(@(project_name)_VERSION
   ${@(project_name)_MAJOR_VERSION}.${@(project_name)_MINOR_VERSION}.${@(project_name)_PATCH_VERSION})
 
 # Default to C99
@@ -23,8 +23,7 @@ endif()
 find_package(@deb REQUIRED)
 @[  end for]@
 
-
-@[  if create_cpp_library]@
+@[  if cpp_library_name]@
 include_directories(
   include
 @[    for deb in dependencies]@
@@ -32,16 +31,20 @@ include_directories(
 @[    end for]@
 )
 @[  end if]@
-
 @[else]@
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> [REQUIRED] [QUIET])
 
+@[  if cpp_library_name]@
+include_directories(
+  include
 # include_directories($<dependency>_INCLUDE_DIRS})
-
+)
+@[  end if]@
 @[end if]@
-@[if create_cpp_library]@
+
+@[if cpp_library_name]@
 add_library(${PROJECT_NAME} SHARED src/@(cpp_library_name))
 
 @[  if dependencies]@
@@ -50,14 +53,19 @@ target_link_libraries(${PROJECT_NAME} ${@(deb)_LIBRARIES})
 @[    end for]@
 
 @[  end if]@
+install(
+  DIRECTORY include/
+  DESTINATION include
+)
 install(TARGETS ${PROJECT_NAME}
+  EXPORT @(project_name)Targets
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
 
 @[end if]@
-@[if create_cpp_exe]@
-add_executable(${PROJECT_NAME}_node src/@(cpp_exe_name))
+@[if cpp_node_name]@
+add_executable(${PROJECT_NAME}_node src/@(cpp_node_name))
 
 @[  if dependencies]@
 @[    for deb in dependencies]@
@@ -66,38 +74,45 @@ target_link_libraries(${PROJECT_NAME}_node ${@(deb)_LIBRARIES})
 
 @[  end if]@
 install(TARGETS ${PROJECT_NAME}_node
+  EXPORT @(project_name)Targets
   DESTINATION lib/${PROJECT_NAME})
 
 @[end if]@
 
-@[if create_cpp_library or create_cpp_exe]@
-@[  if create_cpp_library]@
+@[if cpp_library_name or cpp_node_name]@
+# export targets
+@[  if cpp_library_name]@
 set(export_targets ${export_targets};${PROJECT_NAME})
 @[  end if]@
-@[  if create_cpp_exe]@
+@[  if cpp_node_name]@
 set(export_targets ${export_targets};${PROJECT_NAME}_node)
 @[  end if]@
-export(TARGETS ${export_targets}
+export(EXPORT @(project_name)Targets
   FILE "${PROJECT_BINARY_DIR}/@(project_name)Targets.cmake")
-
-# Export the package for use from the build-tree
-# (this registers the build-tree with a global CMake-registry)
 export(PACKAGE @(project_name))
+
+# Make relative paths absolute (needed later on)
+foreach(p LIB BIN INCLUDE CMAKE)
+  set(var INSTALL_${p}_DIR)
+  if(NOT IS_ABSOLUTE "${${var}}")
+    set(${var} "${CMAKE_INSTALL_PREFIX}/${${var}}")
+  endif()
+endforeach()
 # Create the @(project_name)Config.cmake
-# file(RELATIVE_PATH REL_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}"
-#    "${INSTALL_INCLUDE_DIR}")
-# set(CONF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}" "${PROJECT_BINARY_DIR}")
-# configure_file(@(project_name)Config.cmake.in
-#   "${PROJECT_BINARY_DIR}/@(project_name)Config.cmake" @@ONLY)
-# set(CONF_INCLUDE_DIRS "\${@(project_name)_CMAKE_DIR}/${REL_INCLUDE_DIR}")
-# configure_file(@(project_name)Config.cmake.in
-#   "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/@(project_name)Config.cmake" @@ONLY)
-# configure_file(@(project_name)ConfigVersion.cmake.in
-#   "${PROJECT_BINARY_DIR}/@(project_name)ConfigVersion.cmake" @@ONLY)
-# install(FILES
-#   "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/@(project_name)Config.cmake"
-#   "${PROJECT_BINARY_DIR}/@(project_name)ConfigVersion.cmake"
-#   DESTINATION "${INSTALL_CMAKE_DIR}" COMPONENT dev)
-# install(EXPORT @(project_name)Targets DESTINATION
-#   "${INSTALL_CMAKE_DIR}" COMPONENT dev)
+file(RELATIVE_PATH REL_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}"
+   "${INSTALL_INCLUDE_DIR}")
+set(CONF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}" "${PROJECT_BINARY_DIR}")
+configure_file(@(project_name)Config.cmake.in
+  "${PROJECT_BINARY_DIR}/@(project_name)Config.cmake" @@ONLY)
+set(CONF_INCLUDE_DIRS "${CMAKE_INSTALL_PREFIX}/include")
+configure_file(@(project_name)Config.cmake.in
+  "${PROJECT_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/@(project_name)Config.cmake" @@ONLY)
+configure_file(@(project_name)ConfigVersion.cmake.in
+  "${PROJECT_BINARY_DIR}/@(project_name)ConfigVersion.cmake" @@ONLY)
+install(FILES
+  "${PROJECT_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/@(project_name)Config.cmake"
+  "${PROJECT_BINARY_DIR}/@(project_name)ConfigVersion.cmake"
+  DESTINATION "share/${PROJECT_NAME}/cmake" COMPONENT dev)
+install(EXPORT @(project_name)Targets DESTINATION
+  "share/${PROJECT_NAME}/cmake" COMPONENT dev)
 @[end if]@

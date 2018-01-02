@@ -51,33 +51,18 @@ class CreateVerb(VerbExtension):
             default=getpass.getuser(),
             help='name of the maintainer of this package'),
         parser.add_argument(
-            '--create-cpp-exe',
+            '--cpp-node-name',
             nargs='?',
-            const=True,
-            required=False,
-            help='create an empty cpp executable')
-        parser.add_argument(
-            '--cpp-exe-name',
-            nargs='+',
             help='name of the empty cpp executable')
         parser.add_argument(
-            '--create-cpp-library',
+            '--cpp-library-name',
             nargs='?',
-            const=True,
-            required=False,
-            help='create an empty cpp library')
-        parser.add_argument(
-            '--cpp-exe-library',
-            nargs='+',
             help='name of the empty cpp library')
 
     def main(self, *, args):
-        create_cpp_exe = True if args.create_cpp_exe else False
-        cpp_exe_name = (
-            args.package_name + '_main.cpp' if not args.cpp_exe_name else args.cpp_exe_name)
-        create_cpp_library = True if args.create_cpp_library else False
-        cpp_library_name = (
-            args.package_name + '.cpp' if not args.cpp_exe_name else package_name + '.cpp')
+
+        if args.cpp_node_name == args.cpp_library_name:
+            raise ValueError('cpp_node_name has to be different from cpp_library_name')
 
         print('going to create a new package')
         print('package name:', args.package_name)
@@ -86,10 +71,8 @@ class CreateVerb(VerbExtension):
         print('maintainer_email:', args.maintainer_email)
         print('maintainer_name:', args.maintainer_name)
         print('dependencies:', args.dependencies)
-        print('create_cpp_exe:', create_cpp_exe)
-        print('cpp_exe_name:', cpp_exe_name)
-        print('create_cpp_library:', create_cpp_library)
-        print('cpp_library_name:', cpp_library_name)
+        print('cpp_node_name:', args.cpp_node_name)
+        print('cpp_library_name:', args.cpp_library_name)
 
         package_directory = create_folder(args.package_name, args.destination_directory)
         if not package_directory:
@@ -113,10 +96,8 @@ class CreateVerb(VerbExtension):
             cmakelists_config = {
                 'project_name': args.package_name,
                 'dependencies': args.dependencies,
-                'create_cpp_exe': create_cpp_exe,
-                'cpp_exe_name': cpp_exe_name,
-                'create_cpp_library': create_cpp_library,
-                'cpp_library_name': cpp_library_name,
+                'cpp_node_name': args.cpp_node_name,
+                'cpp_library_name': args.cpp_library_name,
             }
             create_template_file(
                 'cmake/CMakeLists.txt.em',
@@ -126,6 +107,8 @@ class CreateVerb(VerbExtension):
 
             cmake_config = {
                 'project_name': args.package_name,
+                'create_cpp_library': True if args.cpp_library_name else False,
+                'create_cpp_exe': True if args.cpp_node_name else False,
             }
             create_template_file(
                 'cmake/Config.cmake.in.em',
@@ -152,10 +135,8 @@ class CreateVerb(VerbExtension):
             cmakelists_config = {
                 'project_name': args.package_name,
                 'dependencies': args.dependencies,
-                'create_cpp_exe': create_cpp_exe,
-                'cpp_exe_name': cpp_exe_name,
-                'create_cpp_library': create_cpp_library,
-                'cpp_library_name': cpp_library_name,
+                'cpp_node_name': args.cpp_node_name + '.cpp',
+                'cpp_library_name': args.cpp_library_name + '.cpp',
             }
             create_template_file(
                 'ament_cmake/CMakeLists.txt.em',
@@ -163,15 +144,55 @@ class CreateVerb(VerbExtension):
                 'CMakeLists.txt',
                 cmakelists_config)
 
-        if args.create_cpp_exe:
+        if args.cpp_node_name or args.cpp_library_name:
             src_folder = create_folder('src', package_directory)
             if not src_folder:
                 print('unable to create folder', package_directory)
                 return False
 
-            cpp_exe_config = {
+        if args.cpp_node_name:
+            cpp_node_config = {
                 'package_name': args.package_name,
             }
-            create_template_file('cpp/main.cpp.em', src_folder, cpp_exe_name, cpp_exe_config)
+            create_template_file(
+                'cpp/main.cpp.em',
+                src_folder,
+                args.cpp_node_name + '.cpp',
+                cpp_node_config)
+
+        if args.cpp_library_name:
+            include_folder = create_folder('include/' + args.package_name, package_directory)
+            class_name = args.cpp_library_name.replace('_', ' ').title()
+            class_name = ''.join(x for x in class_name if not x.isspace())
+            cpp_header_config = {
+                'package_name': args.package_name,
+                'library_name': args.cpp_library_name,
+                'class_name': class_name,
+            }
+            create_template_file(
+                'cpp/header.hpp.em',
+                include_folder,
+                args.cpp_library_name + '.hpp',
+                cpp_header_config)
+
+            cpp_library_config = {
+                'package_name': args.package_name,
+                'library_name': args.cpp_library_name,
+                'class_name': class_name
+            }
+            create_template_file(
+                'cpp/library.cpp.em',
+                src_folder,
+                args.cpp_library_name + '.cpp',
+                cpp_library_config)
+
+            visibility_config = {
+                'package_name': args.package_name.upper(),
+            }
+            create_template_file(
+                'cpp/visibility_control.h.em',
+                include_folder,
+                'visibility_control.h',
+                visibility_config)
 
         return True

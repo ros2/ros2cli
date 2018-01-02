@@ -13,28 +13,26 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-@[if create_cpp_library]@
+@[if cpp_library_name]@
 find_package(ament_cmake_ros REQUIRED)
 @[end if]@
-
 @[if dependencies]@
 @[  for deb in dependencies]@
 find_package(@deb REQUIRED)
 @[  end for]@
 
-@[  if create_cpp_library]@
+@[  if cpp_library_name]@
 include_directories(
   include
 )
 @[  end if]
-
 @[else]@
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> [REQUIRED] [QUIET])
 
 @[end if]@
-@[if create_cpp_library]@
+@[if cpp_library_name]@
 add_library(${PROJECT_NAME} src/@(cpp_library_name))
 
 @[  if dependencies]@
@@ -45,15 +43,25 @@ ament_target_dependencies(
 @[    end for]@
 )
 
+# Causes the visibility macros to use dllexport rather than dllimport,
+# which is appropriate when building the dll but not consuming it.
+target_compile_definitions(${PROJECT_NAME} PRIVATE "@(project_name.upper())_BUILDING_LIBRARY")
 @[  end if]@
-install(TARGETS ${PROJECT_NAME}
+
+install(
+  DIRECTORY include/
+  DESTINATION include
+)
+install(
+  TARGETS ${PROJECT_NAME}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin)
+  RUNTIME DESTINATION bin
+)
 
 @[end if]@
-@[if create_cpp_exe]@
-add_executable(${PROJECT_NAME}_node src/@(cpp_exe_name))
+@[if cpp_node_name]@
+add_executable(${PROJECT_NAME}_node src/@(cpp_node_name))
 
 @[  if dependencies]@
 ament_target_dependencies(
@@ -73,7 +81,7 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-@[if create_cpp_library]@
+@[if cpp_library_name]@
 ament_export_include_directories(
   include
 )

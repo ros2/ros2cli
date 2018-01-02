@@ -12,5 +12,9 @@ set(@(project_name)_INCLUDE_DIRS "@@CONF_INCLUDE_DIRS@@")
 include("${@(project_name)_CMAKE_DIR}/@(project_name)Targets.cmake")
 
 # These are IMPORTED targets created by @(project_name)Targets.cmake
-set(@(project_name)_LIBRARIES foo)
-set(@(project_name)_EXECUTABLE bar)
+@[if create_cpp_library]@
+set(@(project_name)_LIBRARIES @(project_name))
+@[end if]
+@[if create_cpp_exe]@
+set(@(project_name)_EXECUTABLE @(project_name)_node)
+@[end if]
