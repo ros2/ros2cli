@@ -31,7 +31,7 @@ class CreateVerb(VerbExtension):
             help='The package name')
         parser.add_argument(
             '--destination-directory',
-            default=os.path.realpath(os.getcwd()),
+            default=os.curdir,
             help='Directory where to create the package')
         parser.add_argument(
             '--build-tool',
