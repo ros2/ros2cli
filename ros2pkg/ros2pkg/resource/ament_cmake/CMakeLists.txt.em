@@ -85,6 +85,15 @@ install(TARGETS ${PROJECT_NAME}_node
   DESTINATION lib/${PROJECT_NAME})
 
 @[end if]@
+if(BUILD_TESTING)
+  find_package(ament_lint_auto REQUIRED)
+  # remove the following line when a license model is present in all source files
+  set(ament_cmake_copyright_FOUND TRUE)
+  # remove the following line when this package is a git repo
+  set(ament_cmake_cpplint_FOUND TRUE)
+  ament_lint_auto_find_test_dependencies()
+endif()
+
 @[if cpp_library_name]@
 ament_export_include_directories(
   include
@@ -94,14 +103,4 @@ ament_export_libraries(
 )
 
 @[end if]@
-if(BUILD_TESTING)
-  #find_package(ament_cmake_uncrustify REQUIRED)
-  #ament_uncrustify()
-  # the lines above can be replaced with the lines below
-  # but it requires this repo to be a git repo in order
-  # to run all tests correctly
-  find_package(ament_lint_auto REQUIRED)
-  ament_lint_auto_find_test_dependencies()
-endif()
-
 ament_package()
