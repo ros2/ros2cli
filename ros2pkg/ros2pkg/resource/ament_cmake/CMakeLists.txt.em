@@ -31,6 +31,12 @@ include_directories(
 # further dependencies manually.
 # find_package(<dependency> [REQUIRED] [QUIET])
 
+@[  if cpp_library_name]@
+include_directories(
+  include
+# include_directories($<dependency>_INCLUDE_DIRS})
+)
+@[  end if]@
 @[end if]@
 @[if cpp_library_name]@
 add_library(${PROJECT_NAME} src/@(cpp_library_name))
@@ -76,11 +82,6 @@ install(TARGETS ${PROJECT_NAME}_node
   DESTINATION lib/${PROJECT_NAME})
 
 @[end if]@
-if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
-  ament_lint_auto_find_test_dependencies()
-endif()
-
 @[if cpp_library_name]@
 ament_export_include_directories(
   include
@@ -88,5 +89,16 @@ ament_export_include_directories(
 ament_export_libraries(
   ${PROJECT_NAME}
 )
+
 @[end if]@
+if(BUILD_TESTING)
+  find_package(ament_cmake_uncrustify REQUIRED)
+  ament_uncrustify()
+  # the lines above can be replaced with the lines below
+  # but it requires this repo to be a git repo in order
+  # to run all tests correctly
+  # find_package(ament_lint_auto REQUIRED)
+  # ament_lint_auto_find_test_dependencies()
+endif()
+
 ament_package()

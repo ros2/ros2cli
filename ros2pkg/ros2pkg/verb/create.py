@@ -14,7 +14,8 @@
 
 import getpass
 import os
-import platform
+import subprocess
+from subprocess import PIPE
 
 from ros2pkg.api.create import create_folder
 from ros2pkg.api.create import create_template_file
@@ -44,11 +45,11 @@ class CreateVerb(VerbExtension):
             help='list of dependencies')
         parser.add_argument(
             '--maintainer-email',
-            default=getpass.getuser() + '@' + platform.uname()[1] + '.local',
+            nargs='?',
             help='email address of the maintainer of this package'),
         parser.add_argument(
             '--maintainer-name',
-            default=getpass.getuser(),
+            nargs='?',
             help='name of the maintainer of this package'),
         parser.add_argument(
             '--cpp-node-name',
@@ -61,6 +62,32 @@ class CreateVerb(VerbExtension):
 
     def main(self, *, args):
 
+        maintainer_name = getpass.getuser()
+        if not args.maintainer_name:
+            # try getting the name from the global git config
+            p = subprocess.Popen(
+                ['git', 'config', '--global', 'user.name'],
+                stdout=PIPE)
+            resp = p.communicate()
+            name = resp[0].decode().rstrip()
+            if name:
+                maintainer_name = name
+        else:
+            maintainer_name = args.maintainer_name
+
+        maintainer_email = maintainer_name + '@todo.todo'
+        if not args.maintainer_email:
+            # try getting the email from the global git config
+            p = subprocess.Popen(
+                ['git', 'config', '--global', 'user.email'],
+                stdout=PIPE)
+            resp = p.communicate()
+            email = resp[0].decode().rstrip()
+            if email:
+                maintainer_email = email
+        else:
+            maintainer_email = args.maintainer_email
+
         if args.cpp_node_name == args.cpp_library_name:
             raise ValueError('cpp_node_name has to be different from cpp_library_name')
 
@@ -68,8 +95,8 @@ class CreateVerb(VerbExtension):
         print('package name:', args.package_name)
         print('destination directory', args.destination_directory)
         print('build tool:', args.build_tool)
-        print('maintainer_email:', args.maintainer_email)
-        print('maintainer_name:', args.maintainer_name)
+        print('maintainer_email:', maintainer_email)
+        print('maintainer_name:', maintainer_name)
         print('dependencies:', args.dependencies)
         print('cpp_node_name:', args.cpp_node_name)
         print('cpp_library_name:', args.cpp_library_name)
@@ -81,8 +108,8 @@ class CreateVerb(VerbExtension):
 
         package_xml_config = {
             'package_name': args.package_name,
-            'maintainer_email': args.maintainer_email,
-            'maintainer_name': args.maintainer_name,
+            'maintainer_email': maintainer_email,
+            'maintainer_name': maintainer_name,
             'dependencies': args.dependencies,
         }
 

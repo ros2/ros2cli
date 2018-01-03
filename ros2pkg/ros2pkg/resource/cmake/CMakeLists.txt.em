@@ -89,7 +89,6 @@ set(export_targets ${export_targets};${PROJECT_NAME}_node)
 @[  end if]@
 export(EXPORT @(project_name)Targets
   FILE "${PROJECT_BINARY_DIR}/@(project_name)Targets.cmake")
-export(PACKAGE @(project_name))
 
 # Make relative paths absolute (needed later on)
 foreach(p LIB BIN INCLUDE CMAKE)

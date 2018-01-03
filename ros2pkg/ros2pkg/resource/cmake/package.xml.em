@@ -8,6 +8,7 @@
   <license>Apache License 2.0</license>
 
   <buildtool_depend>cmake</buildtool_depend>
+
 @[if dependencies]@
 @[  for deb in dependencies]@
   <depend>@deb</depend>

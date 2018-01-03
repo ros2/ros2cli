@@ -11,7 +11,7 @@ class @(class_name)
 public:
   @(class_name)();
 
-  virtual ~@(class_name)(){}
+  virtual ~@(class_name)() {}
 };
 
 }  // namespace @(package_name)
