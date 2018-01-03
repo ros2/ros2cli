@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
-<package format="2">
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
   <name>@package_name</name>
   <version>0.0.0</version>
   <description>Description of @package_name</description>

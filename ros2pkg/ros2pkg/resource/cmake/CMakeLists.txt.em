@@ -17,6 +17,10 @@ if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 14)
 endif()
 
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
+
 # find dependencies
 @[if dependencies]@
 @[  for deb in dependencies]@
@@ -34,12 +38,12 @@ include_directories(
 @[else]@
 # uncomment the following section in order to fill in
 # further dependencies manually.
-# find_package(<dependency> [REQUIRED] [QUIET])
+# find_package(<dependency> REQUIRED)
 
 @[  if cpp_library_name]@
 include_directories(
   include
-# include_directories($<dependency>_INCLUDE_DIRS})
+# ${<dependency>_INCLUDE_DIRS}
 )
 @[  end if]@
 @[end if]@

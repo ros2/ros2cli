@@ -12,13 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 from io import StringIO
 import os
 import sys
 
 import em
-
 
 RESOURCE_PATH = os.path.join(os.path.dirname(__file__), '..', 'resource')
 
@@ -42,7 +40,7 @@ def expand_template(template_file, data, output_file):
                 os.remove(output_file)
             print("Exception when expanding '%s' into '%s'" %
                   (template_file, output_file), file=sys.stderr)
-            print(str(e))
+            print(str(e), file=sys.stderr)
             raise
         finally:
             interpreter.shutdown()
@@ -52,7 +50,7 @@ def expand_template(template_file, data, output_file):
     if os.path.exists(output_file):
         with open(output_file, 'r') as h:
             if h.read() == content:
-                    return
+                return
     else:
         # create folder if necessary
         os.makedirs(os.path.dirname(output_file), exist_ok=True)
@@ -79,7 +77,6 @@ def create_template_file(template_file_name, output_directory, output_file_name,
     if not os.path.exists(template_path):
         raise FileNotFoundError('template not found:', template_path)
 
-    print("joining '%s' and '%s'" % (output_directory, output_file_name))
     output_file_path = os.path.join(output_directory, output_file_name)
 
     print('creating', output_file_path)

@@ -7,4 +7,8 @@ namespace @(package_name)
 {
 }
 
+@(class_name)::~@(class_name)()
+{
+}
+
 }  // namespace @(package_name)

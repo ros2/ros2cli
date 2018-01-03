@@ -15,7 +15,6 @@
 import getpass
 import os
 import subprocess
-from subprocess import PIPE
 
 from ros2pkg.api.create import create_folder
 from ros2pkg.api.create import create_template_file
@@ -32,9 +31,9 @@ class CreateVerb(VerbExtension):
         parser.add_argument(
             '--destination-directory',
             default=os.curdir,
-            help='Directory where to create the package')
+            help='Directory where to create the package directory')
         parser.add_argument(
-            '--build-tool',
+            '--build-type',
             default='ament_cmake',
             choices=['cmake', 'ament_cmake'],
             help='Which build tool to use')
@@ -67,7 +66,7 @@ class CreateVerb(VerbExtension):
             # try getting the name from the global git config
             p = subprocess.Popen(
                 ['git', 'config', '--global', 'user.name'],
-                stdout=PIPE)
+                stdout=subprocess.PIPE)
             resp = p.communicate()
             name = resp[0].decode().rstrip()
             if name:
@@ -80,7 +79,7 @@ class CreateVerb(VerbExtension):
             # try getting the email from the global git config
             p = subprocess.Popen(
                 ['git', 'config', '--global', 'user.email'],
-                stdout=PIPE)
+                stdout=subprocess.PIPE)
             resp = p.communicate()
             email = resp[0].decode().rstrip()
             if email:
@@ -94,7 +93,7 @@ class CreateVerb(VerbExtension):
         print('going to create a new package')
         print('package name:', args.package_name)
         print('destination directory', args.destination_directory)
-        print('build tool:', args.build_tool)
+        print('build tool:', args.build_type)
         print('maintainer_email:', maintainer_email)
         print('maintainer_name:', maintainer_name)
         print('dependencies:', args.dependencies)
@@ -103,8 +102,7 @@ class CreateVerb(VerbExtension):
 
         package_directory = create_folder(args.package_name, args.destination_directory)
         if not package_directory:
-            print('unable to create folder', args.destination_directory)
-            return False
+            return 'unable to create folder: ' + args.destination_directory
 
         package_xml_config = {
             'package_name': args.package_name,
@@ -113,7 +111,7 @@ class CreateVerb(VerbExtension):
             'dependencies': args.dependencies,
         }
 
-        if args.build_tool == 'cmake':
+        if args.build_type == 'cmake':
             create_template_file(
                 'cmake/package.xml.em',
                 package_directory,
@@ -134,8 +132,8 @@ class CreateVerb(VerbExtension):
 
             cmake_config = {
                 'project_name': args.package_name,
-                'create_cpp_library': True if args.cpp_library_name else False,
-                'create_cpp_exe': True if args.cpp_node_name else False,
+                'create_cpp_library': bool(args.cpp_library_name),
+                'create_cpp_exe': bool(args.cpp_node_name),
             }
             create_template_file(
                 'cmake/Config.cmake.in.em',
@@ -152,7 +150,7 @@ class CreateVerb(VerbExtension):
                 args.package_name + 'ConfigVersion.cmake.in',
                 version_config)
 
-        if args.build_tool == 'ament_cmake':
+        if args.build_type == 'ament_cmake':
             create_template_file(
                 'ament_cmake/package.xml.em',
                 package_directory,
@@ -174,8 +172,7 @@ class CreateVerb(VerbExtension):
         if args.cpp_node_name or args.cpp_library_name:
             src_folder = create_folder('src', package_directory)
             if not src_folder:
-                print('unable to create folder', package_directory)
-                return False
+                return 'unable to create folder: ' + args.destination_directory
 
         if args.cpp_node_name:
             cpp_node_config = {
@@ -221,5 +218,3 @@ class CreateVerb(VerbExtension):
                 include_folder,
                 'visibility_control.h',
                 visibility_config)
-
-        return True

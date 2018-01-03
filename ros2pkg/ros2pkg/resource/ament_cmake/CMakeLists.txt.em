@@ -11,6 +11,10 @@ if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 14)
 endif()
 
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
+
 # find dependencies
 find_package(ament_cmake REQUIRED)
 @[if cpp_library_name]@
@@ -29,12 +33,11 @@ include_directories(
 @[else]@
 # uncomment the following section in order to fill in
 # further dependencies manually.
-# find_package(<dependency> [REQUIRED] [QUIET])
+# find_package(<dependency> REQUIRED)
 
 @[  if cpp_library_name]@
 include_directories(
   include
-# include_directories($<dependency>_INCLUDE_DIRS})
 )
 @[  end if]@
 @[end if]@
@@ -45,7 +48,7 @@ add_library(${PROJECT_NAME} src/@(cpp_library_name))
 ament_target_dependencies(
   ${PROJECT_NAME}
 @[    for deb in dependencies]@
-  ${@(deb)_LIBRARIES}
+  "@(deb)"
 @[    end for]@
 )
 
@@ -73,7 +76,7 @@ add_executable(${PROJECT_NAME}_node src/@(cpp_node_name))
 ament_target_dependencies(
   ${PROJECT_NAME}_node
 @[    for deb in dependencies]@
-  ${@(deb)_LIBRARIES}
+  "@(deb)"
 @[    end for]@
 )
 
@@ -92,13 +95,13 @@ ament_export_libraries(
 
 @[end if]@
 if(BUILD_TESTING)
-  find_package(ament_cmake_uncrustify REQUIRED)
-  ament_uncrustify()
+  #find_package(ament_cmake_uncrustify REQUIRED)
+  #ament_uncrustify()
   # the lines above can be replaced with the lines below
   # but it requires this repo to be a git repo in order
   # to run all tests correctly
-  # find_package(ament_lint_auto REQUIRED)
-  # ament_lint_auto_find_test_dependencies()
+  find_package(ament_lint_auto REQUIRED)
+  ament_lint_auto_find_test_dependencies()
 endif()
 
 ament_package()
