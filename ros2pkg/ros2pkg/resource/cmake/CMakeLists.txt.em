@@ -26,8 +26,8 @@ endif()
 @[  for deb in dependencies]@
 find_package(@deb REQUIRED)
 @[  end for]@
-
 @[  if cpp_library_name]@
+
 include_directories(
   include
 @[    for deb in dependencies]@
@@ -39,24 +39,23 @@ include_directories(
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
-
 @[  if cpp_library_name]@
+
 include_directories(
   include
 # ${<dependency>_INCLUDE_DIRS}
 )
 @[  end if]@
 @[end if]@
-
 @[if cpp_library_name]@
-add_library(${PROJECT_NAME} SHARED src/@(cpp_library_name))
 
+add_library(${PROJECT_NAME} SHARED src/@(cpp_library_name))
 @[  if dependencies]@
 @[    for deb in dependencies]@
 target_link_libraries(${PROJECT_NAME} ${@(deb)_LIBRARIES})
 @[    end for]@
-
 @[  end if]@
+
 install(
   DIRECTORY include/
   DESTINATION include
@@ -66,24 +65,22 @@ install(TARGETS ${PROJECT_NAME}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
-
 @[end if]@
 @[if cpp_node_name]@
-add_executable(${PROJECT_NAME}_node src/@(cpp_node_name))
 
+add_executable(${PROJECT_NAME}_node src/@(cpp_node_name))
 @[  if dependencies]@
 @[    for deb in dependencies]@
 target_link_libraries(${PROJECT_NAME}_node ${@(deb)_LIBRARIES})
 @[    end for]@
-
 @[  end if]@
+
 install(TARGETS ${PROJECT_NAME}_node
   EXPORT @(project_name)Targets
   DESTINATION lib/${PROJECT_NAME})
-
 @[end if]@
-
 @[if cpp_library_name or cpp_node_name]@
+
 # export targets
 @[  if cpp_library_name]@
 set(export_targets ${export_targets};${PROJECT_NAME})

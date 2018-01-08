@@ -87,8 +87,15 @@ class CreateVerb(VerbExtension):
         else:
             maintainer_email = args.maintainer_email
 
-        if args.cpp_node_name == args.cpp_library_name:
-            raise ValueError('cpp_node_name has to be different from cpp_library_name')
+        cpp_node_name = None
+        if args.cpp_node_name:
+            if args.cpp_node_name == args.cpp_library_name:
+                raise ValueError('cpp_node_name has to be different from cpp_library_name')
+            cpp_node_name = args.cpp_node_name + '.cpp'
+
+        cpp_library_name = None
+        if args.cpp_library_name:
+            cpp_library_name = args.cpp_library_name + '.cpp'
 
         print('going to create a new package')
         print('package name:', args.package_name)
@@ -96,9 +103,12 @@ class CreateVerb(VerbExtension):
         print('build tool:', args.build_type)
         print('maintainer_email:', maintainer_email)
         print('maintainer_name:', maintainer_name)
-        print('dependencies:', args.dependencies)
-        print('cpp_node_name:', args.cpp_node_name)
-        print('cpp_library_name:', args.cpp_library_name)
+        if args.dependencies:
+            print('dependencies:', args.dependencies)
+        if args.cpp_node_name:
+            print('cpp_node_name:', args.cpp_node_name)
+        if args.cpp_library_name:
+            print('cpp_library_name:', args.cpp_library_name)
 
         package_directory = create_folder(args.package_name, args.destination_directory)
         if not package_directory:
@@ -121,8 +131,8 @@ class CreateVerb(VerbExtension):
             cmakelists_config = {
                 'project_name': args.package_name,
                 'dependencies': args.dependencies,
-                'cpp_node_name': args.cpp_node_name,
-                'cpp_library_name': args.cpp_library_name,
+                'cpp_node_name': cpp_node_name,
+                'cpp_library_name': cpp_library_name,
             }
             create_template_file(
                 'cmake/CMakeLists.txt.em',
@@ -160,8 +170,8 @@ class CreateVerb(VerbExtension):
             cmakelists_config = {
                 'project_name': args.package_name,
                 'dependencies': args.dependencies,
-                'cpp_node_name': args.cpp_node_name + '.cpp',
-                'cpp_library_name': args.cpp_library_name + '.cpp',
+                'cpp_node_name': cpp_node_name,
+                'cpp_library_name': cpp_library_name,
             }
             create_template_file(
                 'ament_cmake/CMakeLists.txt.em',

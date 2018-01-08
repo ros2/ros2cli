@@ -24,26 +24,26 @@ find_package(ament_cmake_ros REQUIRED)
 @[  for deb in dependencies]@
 find_package(@deb REQUIRED)
 @[  end for]@
-
 @[  if cpp_library_name]@
+
 include_directories(
   include
 )
-@[  end if]
+@[  end if]@
 @[else]@
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
-
 @[  if cpp_library_name]@
+
 include_directories(
   include
 )
 @[  end if]@
 @[end if]@
 @[if cpp_library_name]@
-add_library(${PROJECT_NAME} src/@(cpp_library_name))
 
+add_library(${PROJECT_NAME} src/@(cpp_library_name))
 @[  if dependencies]@
 ament_target_dependencies(
   ${PROJECT_NAME}
@@ -67,11 +67,9 @@ install(
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
 )
-
 @[end if]@
 @[if cpp_node_name]@
 add_executable(${PROJECT_NAME}_node src/@(cpp_node_name))
-
 @[  if dependencies]@
 ament_target_dependencies(
   ${PROJECT_NAME}_node
@@ -79,12 +77,12 @@ ament_target_dependencies(
   "@(deb)"
 @[    end for]@
 )
-
 @[  end if]@
+
 install(TARGETS ${PROJECT_NAME}_node
   DESTINATION lib/${PROJECT_NAME})
-
 @[end if]@
+
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   # remove the following line when a license model is present in all source files
@@ -93,14 +91,14 @@ if(BUILD_TESTING)
   set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
 endif()
-
 @[if cpp_library_name]@
+
 ament_export_include_directories(
   include
 )
 ament_export_libraries(
   ${PROJECT_NAME}
 )
-
 @[end if]@
+
 ament_package()
