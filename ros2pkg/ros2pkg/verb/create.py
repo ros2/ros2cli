@@ -100,7 +100,7 @@ class CreateVerb(VerbExtension):
         print('going to create a new package')
         print('package name:', args.package_name)
         print('destination directory', args.destination_directory)
-        print('build tool:', args.build_type)
+        print('build type:', args.build_type)
         print('maintainer_email:', maintainer_email)
         print('maintainer_name:', maintainer_name)
         if args.dependencies:
