@@ -77,9 +77,11 @@ install(TARGETS ${PROJECT_NAME}_node
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
-  # remove the following line when a license model is present in all source files
+  # the following line skips the linter which checks for copyrights
+  # remove the line when a copyright and license is present in all source files
   set(ament_cmake_copyright_FOUND TRUE)
-  # remove the following line when this package is a git repo
+  # the following line skips cpplint (only works in a git repo)
+  # remove the line when this package is a git repo
   set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
 endif()
