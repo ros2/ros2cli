@@ -38,9 +38,8 @@ def expand_template(template_file, data, output_file):
         except Exception as e:
             if os.path.exists(output_file):
                 os.remove(output_file)
-            print("Exception when expanding '%s' into '%s'" %
-                  (template_file, output_file), file=sys.stderr)
-            print(str(e), file=sys.stderr)
+            print("Exception when expanding '%s' into '%s': %s" %
+                  (template_file, output_file, e), file=sys.stderr)
             raise
         finally:
             interpreter.shutdown()
