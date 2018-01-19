@@ -36,7 +36,7 @@ class CreateVerb(VerbExtension):
             '--build-type',
             default='ament_cmake',
             choices=['cmake', 'ament_cmake'],
-            help='Which build tool to use')
+            help='The build type to process the package with')
         parser.add_argument(
             '--dependencies',
             nargs='+',
