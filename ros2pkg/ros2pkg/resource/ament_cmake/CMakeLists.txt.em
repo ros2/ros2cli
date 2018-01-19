@@ -24,24 +24,16 @@ find_package(ament_cmake_ros REQUIRED)
 @[  for deb in dependencies]@
 find_package(@deb REQUIRED)
 @[  end for]@
-@[  if cpp_library_name]@
-
-include_directories(
-  include
-)
-@[  end if]@
 @[else]@
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
-@[  if cpp_library_name]@
+@[end if]@
+@[if cpp_library_name]@
 
 include_directories(
   include
 )
-@[  end if]@
-@[end if]@
-@[if cpp_library_name]@
 
 add_library(${PROJECT_NAME} src/@(cpp_library_name))
 @[  if dependencies]@
