@@ -29,7 +29,7 @@ def get_package_src_path(basepath, package_name):
     """
     path = basepath
     pkg_paths = find_package_paths(basepath)
-    print("package basepath " + basepath)
+    #print("package basepath " + basepath)
     for pkg_path in pkg_paths:
         pkg_base = os.path.basename(pkg_path)
         if pkg_base == package_name:
@@ -53,13 +53,11 @@ class CdCommand(CommandExtension):
         if path is None:
             raise PackageNotFound(args.package_name)
 
-        print("package path : " + path)
+        #print("package path : " + path)
         [head,tail] = os.path.split(path)
         if tail == "install":
             path = get_package_src_path(os.path.join(head, "src"), args.package_name)
         else:
             path = get_package_src_path(path, args.package_name)
 
-        os.chdir(path)
-        os.system("/bin/bash")
-        return 1
+        exit(path)
