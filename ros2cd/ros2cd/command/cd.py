@@ -18,7 +18,7 @@ from ros2cli.command import CommandExtension
 from ros2pkg.api import get_prefix_path
 from ros2pkg.api import package_name_completer
 from ros2pkg.api import PackageNotFound
-from ament_tools.packages import find_package_paths
+from ament_tools.packages import find_packages
 
 def get_package_src_path(basepath, package_name):
     """
@@ -28,11 +28,11 @@ def get_package_src_path(basepath, package_name):
     :return: path:
     """
     path = basepath
-    pkg_paths = find_package_paths(basepath)
+    pkg_paths = find_packages(basepath)
     #print("package basepath " + basepath)
-    for pkg_path in pkg_paths:
-        pkg_base = os.path.basename(pkg_path)
-        if pkg_base == package_name:
+    for pkg_path, pkg in pkg_paths.items():
+        #print("packages "+pkg_path+" "+pkg.name)
+        if pkg.name == package_name:
             path = os.path.join(basepath, pkg_path)
             break
 
