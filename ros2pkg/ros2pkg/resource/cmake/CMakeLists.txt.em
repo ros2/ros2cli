@@ -23,15 +23,15 @@ endif()
 
 # find dependencies
 @[if dependencies]@
-@[  for deb in dependencies]@
-find_package(@deb REQUIRED)
+@[  for dep in dependencies]@
+find_package(@dep REQUIRED)
 @[  end for]@
 @[  if cpp_library_name]@
 
 include_directories(
   include
-@[    for deb in dependencies]@
-  ${@(deb)_INCLUDE_DIRS}
+@[    for dep in dependencies]@
+  ${@(dep)_INCLUDE_DIRS}
 @[    end for]@
 )
 @[  end if]@
@@ -51,8 +51,8 @@ include_directories(
 
 add_library(${PROJECT_NAME} SHARED src/@(cpp_library_name))
 @[  if dependencies]@
-@[    for deb in dependencies]@
-target_link_libraries(${PROJECT_NAME} ${@(deb)_LIBRARIES})
+@[    for dep in dependencies]@
+target_link_libraries(${PROJECT_NAME} ${@(dep)_LIBRARIES})
 @[    end for]@
 @[  end if]@
 
@@ -70,8 +70,8 @@ install(TARGETS ${PROJECT_NAME}
 
 add_executable(${PROJECT_NAME}_node src/@(cpp_node_name))
 @[  if dependencies]@
-@[    for deb in dependencies]@
-target_link_libraries(${PROJECT_NAME}_node ${@(deb)_LIBRARIES})
+@[    for dep in dependencies]@
+target_link_libraries(${PROJECT_NAME}_node ${@(dep)_LIBRARIES})
 @[    end for]@
 @[  end if]@
 

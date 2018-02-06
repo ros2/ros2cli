@@ -10,8 +10,8 @@
   <buildtool_depend>cmake</buildtool_depend>
 
 @[if dependencies]@
-@[  for deb in dependencies]@
-  <depend>@deb</depend>
+@[  for dep in dependencies]@
+  <depend>@dep</depend>
 @[  end for]@
 
 @[end if]@

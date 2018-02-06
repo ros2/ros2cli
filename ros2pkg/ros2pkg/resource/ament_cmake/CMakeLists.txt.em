@@ -21,8 +21,8 @@ find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_ros REQUIRED)
 @[end if]@
 @[if dependencies]@
-@[  for deb in dependencies]@
-find_package(@deb REQUIRED)
+@[  for dep in dependencies]@
+find_package(@dep REQUIRED)
 @[  end for]@
 @[else]@
 # uncomment the following section in order to fill in
@@ -39,8 +39,8 @@ add_library(${PROJECT_NAME} src/@(cpp_library_name))
 @[  if dependencies]@
 ament_target_dependencies(
   ${PROJECT_NAME}
-@[    for deb in dependencies]@
-  "@(deb)"
+@[    for dep in dependencies]@
+  "@(dep)"
 @[    end for]@
 )
 
@@ -65,8 +65,8 @@ add_executable(${PROJECT_NAME}_node src/@(cpp_node_name))
 @[  if dependencies]@
 ament_target_dependencies(
   ${PROJECT_NAME}_node
-@[    for deb in dependencies]@
-  "@(deb)"
+@[    for dep in dependencies]@
+  "@(dep)"
 @[    end for]@
 )
 @[  end if]@
