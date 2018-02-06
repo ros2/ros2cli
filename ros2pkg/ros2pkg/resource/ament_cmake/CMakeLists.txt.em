@@ -31,11 +31,8 @@ find_package(@dep REQUIRED)
 @[end if]@
 @[if cpp_library_name]@
 
-include_directories(
-  include
-)
-
 add_library(${PROJECT_NAME} src/@(cpp_library_name))
+target_include_directories(${PROJECT_NAME} PUBLIC include)
 @[  if dependencies]@
 ament_target_dependencies(
   ${PROJECT_NAME}
@@ -61,7 +58,9 @@ install(
 )
 @[end if]@
 @[if cpp_node_name]@
+
 add_executable(${PROJECT_NAME}_node src/@(cpp_node_name))
+target_include_directories(${PROJECT_NAME}_node PUBLIC include)
 @[  if dependencies]@
 ament_target_dependencies(
   ${PROJECT_NAME}_node

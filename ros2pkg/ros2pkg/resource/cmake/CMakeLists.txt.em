@@ -21,40 +21,30 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-# find dependencies
 @[if dependencies]@
+
+# find dependencies
 @[  for dep in dependencies]@
 find_package(@dep REQUIRED)
 @[  end for]@
-@[  if cpp_library_name]@
-
-include_directories(
-  include
-@[    for dep in dependencies]@
-  ${@(dep)_INCLUDE_DIRS}
-@[    end for]@
-)
-@[  end if]@
-@[else]@
-# uncomment the following section in order to fill in
-# further dependencies manually.
-# find_package(<dependency> REQUIRED)
-@[  if cpp_library_name]@
-
-include_directories(
-  include
-# ${<dependency>_INCLUDE_DIRS}
-)
-@[  end if]@
 @[end if]@
 @[if cpp_library_name]@
 
 add_library(${PROJECT_NAME} SHARED src/@(cpp_library_name))
-@[  if dependencies]@
+@[if dependencies]@
+target_include_directories(${PROJECT_NAME} PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+@[  for dep in dependencies]@
+  PUBLIC ${@(dep)_INLCUDE_DIRS}
+@[  end for]@
+)
 @[    for dep in dependencies]@
 target_link_libraries(${PROJECT_NAME} ${@(dep)_LIBRARIES})
 @[    end for]@
-@[  end if]@
+@[else]@
+  target_include_directories(${PROJECT_NAME} PUBLIC include)
+@[end if]@
 
 install(
   DIRECTORY include/
