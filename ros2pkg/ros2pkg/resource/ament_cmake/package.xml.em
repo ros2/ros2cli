@@ -16,7 +16,7 @@
 
 @[end if]@
   <test_depend>ament_lint_auto</test_depend>
-  <test_depend>ament_common</test_depend>
+  <test_depend>ament_lint_common</test_depend>
 
   <export>
     <build_type>ament_cmake</build_type>
