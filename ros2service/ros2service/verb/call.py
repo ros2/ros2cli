@@ -89,10 +89,12 @@ def requester(service_type, service_name, values, period):
     while True:
         print('requester: making request: %r\n' % request)
         last_call = time.time()
-        cli.call(request)
-        cli.wait_for_future()
-        if cli.response is not None:
-            print('response:\n%r\n' % cli.response)
+        future = cli.call_async(request)
+        rclpy.spin_until_future_complete(node, future)
+        if future.result() is not None:
+            print('response:\n%r\n' % future.result())
+        else:
+            raise RuntimeError('Exception while calling service: %r' % future.exception())
         if period is None or not rclpy.ok():
             break
         time_until_next_period = (last_call + period) - time.time()
