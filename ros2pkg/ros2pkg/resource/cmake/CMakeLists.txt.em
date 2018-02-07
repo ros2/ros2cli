@@ -34,8 +34,8 @@ find_package(@dep REQUIRED)
 @[end if]@
 @[if cpp_library_name]@
 
-add_library(${PROJECT_NAME} SHARED src/@(cpp_library_name))
-target_include_directories(${PROJECT_NAME} PUBLIC
+add_library(@(cpp_library_name) SHARED src/@(cpp_library_name).cpp)
+target_include_directories(@(cpp_library_name) PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
 @[  if dependencies]@
@@ -45,7 +45,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 @[  end if]@
 )
 @[  if dependencies]@
-target_link_libraries(${PROJECT_NAME}
+target_link_libraries(@(cpp_library_name)
 @[    for dep in dependencies]@
  ${@(dep)_LIBRARIES}
 @[    end for]@
@@ -54,14 +54,14 @@ target_link_libraries(${PROJECT_NAME}
 
 # Causes the visibility macros to use dllexport rather than dllimport,
 # which is appropriate when building the dll but not consuming it.
-target_compile_definitions(${PROJECT_NAME} PRIVATE "@(project_name.upper())_BUILDING_LIBRARY")
+target_compile_definitions(@(cpp_library_name) PRIVATE "@(project_name.upper())_BUILDING_LIBRARY")
 
 install(
   DIRECTORY include/
   DESTINATION include
 )
 install(
-  TARGETS ${PROJECT_NAME}
+  TARGETS @(cpp_library_name)
   EXPORT @(project_name)Targets
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
@@ -69,9 +69,9 @@ install(
 @[end if]@
 @[if cpp_node_name]@
 
-add_executable(${PROJECT_NAME}_node src/@(cpp_node_name))
+add_executable(@(cpp_node_name) src/@(cpp_node_name).cpp)
 @[  if dependencies]@
-target_include_directories(${PROJECT_NAME}_node PUBLIC
+target_include_directories(@(cpp_node_name) PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
 @[      for dep in dependencies]@
@@ -80,10 +80,10 @@ target_include_directories(${PROJECT_NAME}_node PUBLIC
 )
 @[  end if]@
 @[  if cpp_library_name]@
-target_link_libraries(${PROJECT_NAME}_node ${PROJECT_NAME})
+target_link_libraries(@(cpp_node_name) @(cpp_library_name))
 @[  else]@
 @[    if dependencies]@
-target_link_libraries(${PROJECT_NAME}_node
+target_link_libraries(@(cpp_node_name)
 @[      for dep in dependencies]@
  ${@(dep)_LIBRARIES}
 @[      end for]@
@@ -92,7 +92,7 @@ target_link_libraries(${PROJECT_NAME}_node
 @[  end if]@
 
 install(
-  TARGETS ${PROJECT_NAME}_node
+  TARGETS @(cpp_node_name)
   EXPORT @(project_name)Targets
   DESTINATION lib/${PROJECT_NAME})
 @[end if]@
@@ -100,10 +100,10 @@ install(
 
 # export targets
 @[  if cpp_library_name]@
-set(export_targets ${export_targets};${PROJECT_NAME})
+set(export_targets ${export_targets};@(cpp_library_name))
 @[  end if]@
 @[  if cpp_node_name]@
-set(export_targets ${export_targets};${PROJECT_NAME}_node)
+set(export_targets ${export_targets};@(cpp_node_name))
 @[  end if]@
 export(EXPORT @(project_name)Targets
   FILE "${PROJECT_BINARY_DIR}/@(project_name)Targets.cmake")

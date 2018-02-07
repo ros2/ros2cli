@@ -15,6 +15,7 @@
 import getpass
 import os
 import subprocess
+import sys
 
 from ros2pkg.api.create import create_folder
 from ros2pkg.api.create import create_template_file
@@ -89,13 +90,11 @@ class CreateVerb(VerbExtension):
 
         cpp_node_name = None
         if args.cpp_node_name:
+            cpp_node_name = args.cpp_node_name
             if args.cpp_node_name == args.cpp_library_name:
-                raise ValueError('cpp_node_name has to be different from cpp_library_name')
-            cpp_node_name = args.cpp_node_name + '.cpp'
-
-        cpp_library_name = None
-        if args.cpp_library_name:
-            cpp_library_name = args.cpp_library_name + '.cpp'
+                cpp_node_name = args.cpp_node_name + '_node'
+                print('[WARNING] node name can not be equal to the library name', file=sys.stderr)
+                print('[WARNING] renaming node to %s' % cpp_node_name, file=sys.stderr)
 
         print('going to create a new package')
         print('package name:', args.package_name)
@@ -106,7 +105,7 @@ class CreateVerb(VerbExtension):
         if args.dependencies:
             print('dependencies:', args.dependencies)
         if args.cpp_node_name:
-            print('cpp_node_name:', args.cpp_node_name)
+            print('cpp_node_name:', cpp_node_name)
         if args.cpp_library_name:
             print('cpp_library_name:', args.cpp_library_name)
 
@@ -132,7 +131,7 @@ class CreateVerb(VerbExtension):
                 'project_name': args.package_name,
                 'dependencies': args.dependencies,
                 'cpp_node_name': cpp_node_name,
-                'cpp_library_name': cpp_library_name,
+                'cpp_library_name': args.cpp_library_name,
             }
             create_template_file(
                 'cmake/CMakeLists.txt.em',
@@ -142,8 +141,8 @@ class CreateVerb(VerbExtension):
 
             cmake_config = {
                 'project_name': args.package_name,
-                'create_cpp_library': bool(args.cpp_library_name),
-                'create_cpp_exe': bool(args.cpp_node_name),
+                'cpp_library_name': args.cpp_library_name,
+                'cpp_node_name': cpp_node_name,
             }
             create_template_file(
                 'cmake/Config.cmake.in.em',
@@ -171,7 +170,7 @@ class CreateVerb(VerbExtension):
                 'project_name': args.package_name,
                 'dependencies': args.dependencies,
                 'cpp_node_name': cpp_node_name,
-                'cpp_library_name': cpp_library_name,
+                'cpp_library_name': args.cpp_library_name,
             }
             create_template_file(
                 'ament_cmake/CMakeLists.txt.em',
@@ -191,7 +190,7 @@ class CreateVerb(VerbExtension):
             create_template_file(
                 'cpp/main.cpp.em',
                 src_folder,
-                args.cpp_node_name + '.cpp',
+                cpp_node_name + '.cpp',
                 cpp_node_config)
 
         if args.cpp_library_name:

@@ -44,14 +44,11 @@ def expand_template(template_file, data, output_file):
         finally:
             interpreter.shutdown()
 
-    # only overwrite file if necessary
-    # which is either when the timestamp is too old or when the content is different
     if os.path.exists(output_file):
         with open(output_file, 'r') as h:
             if h.read() == content:
                 return
     else:
-        # create folder if necessary
         os.makedirs(os.path.dirname(output_file), exist_ok=True)
 
     with open(output_file, 'w') as h:

@@ -31,13 +31,13 @@ find_package(@dep REQUIRED)
 @[end if]@
 @[if cpp_library_name]@
 
-add_library(${PROJECT_NAME} src/@(cpp_library_name))
-target_include_directories(${PROJECT_NAME} PUBLIC
+add_library(@(cpp_library_name) src/@(cpp_library_name).cpp)
+target_include_directories(@(cpp_library_name) PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 @[  if dependencies]@
 ament_target_dependencies(
-  ${PROJECT_NAME}
+  @(cpp_library_name)
 @[    for dep in dependencies]@
   "@(dep)"
 @[    end for]@
@@ -46,14 +46,14 @@ ament_target_dependencies(
 
 # Causes the visibility macros to use dllexport rather than dllimport,
 # which is appropriate when building the dll but not consuming it.
-target_compile_definitions(${PROJECT_NAME} PRIVATE "@(project_name.upper())_BUILDING_LIBRARY")
+target_compile_definitions(@(cpp_library_name) PRIVATE "@(project_name.upper())_BUILDING_LIBRARY")
 
 install(
   DIRECTORY include/
   DESTINATION include
 )
 install(
-  TARGETS ${PROJECT_NAME}
+  TARGETS @(cpp_library_name)
   EXPORT export_${PROJECT_NAME}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
@@ -62,16 +62,16 @@ install(
 @[end if]@
 @[if cpp_node_name]@
 
-add_executable(${PROJECT_NAME}_node src/@(cpp_node_name))
-target_include_directories(${PROJECT_NAME}_node PUBLIC
+add_executable(@(cpp_node_name) src/@(cpp_node_name).cpp)
+target_include_directories(@(cpp_node_name) PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 @[  if cpp_library_name]@
-target_link_libraries(${PROJECT_NAME}_node ${PROJECT_NAME})
+target_link_libraries(@(cpp_node_name) @(cpp_library_name))
 @[  else]@
 @[    if dependencies]@
 ament_target_dependencies(
-  ${PROJECT_NAME}_node
+  @(cpp_node_name)
 @[      for dep in dependencies]@
   "@(dep)"
 @[      end for]@
@@ -79,7 +79,7 @@ ament_target_dependencies(
 @[    end if]@
 @[  end if]@
 
-install(TARGETS ${PROJECT_NAME}_node
+install(TARGETS @(cpp_node_name)
   EXPORT export_${PROJECT_NAME}
   DESTINATION lib/${PROJECT_NAME})
 @[end if]@
@@ -103,7 +103,7 @@ ament_export_interfaces(
   export_${PROJECT_NAME}
 )
 ament_export_libraries(
-  ${PROJECT_NAME}
+  @(cpp_library_name)
 )
 @[end if]@
 
