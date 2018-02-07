@@ -102,4 +102,4 @@ def requester(service_type, service_name, values, period):
             time.sleep(time_until_next_period)
 
     node.destroy_node()
-    rclpy.try_shutdown()  # avoid duplicate shutdown from shutdown within cli.wait_for_future()
+    rclpy.shutdown()
