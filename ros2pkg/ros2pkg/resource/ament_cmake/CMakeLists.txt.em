@@ -32,7 +32,9 @@ find_package(@dep REQUIRED)
 @[if cpp_library_name]@
 
 add_library(${PROJECT_NAME} src/@(cpp_library_name))
-target_include_directories(${PROJECT_NAME} PUBLIC include)
+target_include_directories(${PROJECT_NAME} PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
 @[  if dependencies]@
 ament_target_dependencies(
   ${PROJECT_NAME}
@@ -40,11 +42,11 @@ ament_target_dependencies(
   "@(dep)"
 @[    end for]@
 )
+@[  end if]@
 
 # Causes the visibility macros to use dllexport rather than dllimport,
 # which is appropriate when building the dll but not consuming it.
 target_compile_definitions(${PROJECT_NAME} PRIVATE "@(project_name.upper())_BUILDING_LIBRARY")
-@[  end if]@
 
 install(
   DIRECTORY include/
@@ -52,6 +54,7 @@ install(
 )
 install(
   TARGETS ${PROJECT_NAME}
+  EXPORT export_${PROJECT_NAME}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
@@ -60,17 +63,24 @@ install(
 @[if cpp_node_name]@
 
 add_executable(${PROJECT_NAME}_node src/@(cpp_node_name))
-target_include_directories(${PROJECT_NAME}_node PUBLIC include)
-@[  if dependencies]@
+target_include_directories(${PROJECT_NAME}_node PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+@[  if cpp_library_name]@
+target_link_libraries(${PROJECT_NAME}_node ${PROJECT_NAME})
+@[  else]@
+@[    if dependencies]@
 ament_target_dependencies(
   ${PROJECT_NAME}_node
-@[    for dep in dependencies]@
+@[      for dep in dependencies]@
   "@(dep)"
-@[    end for]@
+@[      end for]@
 )
+@[    end if]@
 @[  end if]@
 
 install(TARGETS ${PROJECT_NAME}_node
+  EXPORT export_${PROJECT_NAME}
   DESTINATION lib/${PROJECT_NAME})
 @[end if]@
 
@@ -88,6 +98,9 @@ endif()
 
 ament_export_include_directories(
   include
+)
+ament_export_interfaces(
+  export_${PROJECT_NAME}
 )
 ament_export_libraries(
   ${PROJECT_NAME}

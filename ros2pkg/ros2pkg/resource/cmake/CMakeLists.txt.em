@@ -27,30 +27,37 @@ endif()
 @[  for dep in dependencies]@
 find_package(@dep REQUIRED)
 @[  end for]@
+@[else]@
+# uncomment the following section in order to fill in
+# further dependencies manually.
+# find_package(<dependency> REQUIRED)
 @[end if]@
 @[if cpp_library_name]@
 
 add_library(${PROJECT_NAME} SHARED src/@(cpp_library_name))
-@[if dependencies]@
 target_include_directories(${PROJECT_NAME} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
-@[  for dep in dependencies]@
-  PUBLIC ${@(dep)_INLCUDE_DIRS}
-@[  end for]@
-)
+@[  if dependencies]@
 @[    for dep in dependencies]@
-target_link_libraries(${PROJECT_NAME} ${@(dep)_LIBRARIES})
+  PUBLIC ${@(dep)_INCLUDE_DIRS}
 @[    end for]@
-@[else]@
-  target_include_directories(${PROJECT_NAME} PUBLIC include)
-@[end if]@
+@[  end if]@
+)
+@[  if dependencies]@
+target_link_libraries(${PROJECT_NAME}
+@[    for dep in dependencies]@
+ ${@(dep)_LIBRARIES}
+@[    end for]@
+)
+@[  end if]@
 
 install(
   DIRECTORY include/
   DESTINATION include
 )
-install(TARGETS ${PROJECT_NAME}
+install(
+  TARGETS ${PROJECT_NAME}
   EXPORT @(project_name)Targets
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
@@ -60,12 +67,28 @@ install(TARGETS ${PROJECT_NAME}
 
 add_executable(${PROJECT_NAME}_node src/@(cpp_node_name))
 @[  if dependencies]@
-@[    for dep in dependencies]@
-target_link_libraries(${PROJECT_NAME}_node ${@(dep)_LIBRARIES})
-@[    end for]@
+target_include_directories(${PROJECT_NAME}_node PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+@[      for dep in dependencies]@
+  PUBLIC ${@(dep)_INCLUDE_DIRS}
+@[      end for]@
+)
+@[  end if]@
+@[  if cpp_library_name]@
+target_link_libraries(${PROJECT_NAME}_node ${PROJECT_NAME})
+@[  else]@
+@[    if dependencies]@
+target_link_libraries(${PROJECT_NAME}_node
+@[      for dep in dependencies]@
+ ${@(dep)_LIBRARIES}
+@[      end for]@
+)
+@[    end if]@
 @[  end if]@
 
-install(TARGETS ${PROJECT_NAME}_node
+install(
+  TARGETS ${PROJECT_NAME}_node
   EXPORT @(project_name)Targets
   DESTINATION lib/${PROJECT_NAME})
 @[end if]@
