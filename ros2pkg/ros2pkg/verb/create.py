@@ -45,19 +45,15 @@ class CreateVerb(VerbExtension):
             help='list of dependencies')
         parser.add_argument(
             '--maintainer-email',
-            nargs='?',
             help='email address of the maintainer of this package'),
         parser.add_argument(
             '--maintainer-name',
-            nargs='?',
             help='name of the maintainer of this package'),
         parser.add_argument(
             '--cpp-node-name',
-            nargs='?',
             help='name of the empty cpp executable')
         parser.add_argument(
             '--cpp-library-name',
-            nargs='?',
             help='name of the empty cpp library')
 
     def main(self, *, args):
