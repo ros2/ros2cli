@@ -7,7 +7,7 @@
 set(@(project_name)_INCLUDE_DIRS "@@CONF_INCLUDE_DIRS@@")
 
 # Our library dependencies (contains definitions for IMPORTED targets)
-include("${@(project_name)_DIR}/@(project_name)Targets.cmake")
+include("${@(project_name)_DIR}/export_@(project_name).cmake")
 
 # These are IMPORTED targets created by @(project_name)Targets.cmake
 @[if cpp_library_name]@

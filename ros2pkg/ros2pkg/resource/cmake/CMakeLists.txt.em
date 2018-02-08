@@ -62,7 +62,7 @@ install(
 )
 install(
   TARGETS @(cpp_library_name)
-  EXPORT @(project_name)Targets
+  EXPORT export_@(project_name)
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
@@ -93,7 +93,7 @@ target_link_libraries(@(cpp_node_name)
 
 install(
   TARGETS @(cpp_node_name)
-  EXPORT @(project_name)Targets
+  EXPORT export_@(project_name)
   DESTINATION lib/${PROJECT_NAME})
 @[end if]@
 @[if cpp_library_name or cpp_node_name]@
@@ -105,31 +105,24 @@ set(export_targets ${export_targets};@(cpp_library_name))
 @[  if cpp_node_name]@
 set(export_targets ${export_targets};@(cpp_node_name))
 @[  end if]@
-export(EXPORT @(project_name)Targets
-  FILE "${PROJECT_BINARY_DIR}/@(project_name)Targets.cmake")
+export(EXPORT export_@(project_name)
+  FILE "${PROJECT_BINARY_DIR}/export_@(project_name).cmake")
 
-# Make relative paths absolute (needed later on)
-foreach(p LIB BIN INCLUDE CMAKE)
-  set(var INSTALL_${p}_DIR)
-  if(NOT IS_ABSOLUTE "${${var}}")
-    set(${var} "${CMAKE_INSTALL_PREFIX}/${${var}}")
-  endif()
-endforeach()
 # Create the @(project_name)Config.cmake
-file(RELATIVE_PATH REL_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}"
-   "${INSTALL_INCLUDE_DIR}")
-set(CONF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}" "${PROJECT_BINARY_DIR}")
-configure_file(@(project_name)Config.cmake.in
-  "${PROJECT_BINARY_DIR}/@(project_name)Config.cmake" @@ONLY)
 set(CONF_INCLUDE_DIRS "${CMAKE_INSTALL_PREFIX}/include")
 configure_file(@(project_name)Config.cmake.in
   "${PROJECT_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/@(project_name)Config.cmake" @@ONLY)
+
+# Create the @(project_name)ConfigVersion.cmake
 configure_file(@(project_name)ConfigVersion.cmake.in
   "${PROJECT_BINARY_DIR}/@(project_name)ConfigVersion.cmake" @@ONLY)
+
 install(FILES
   "${PROJECT_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/@(project_name)Config.cmake"
   "${PROJECT_BINARY_DIR}/@(project_name)ConfigVersion.cmake"
   DESTINATION "share/${PROJECT_NAME}/cmake" COMPONENT dev)
-install(EXPORT @(project_name)Targets DESTINATION
-  "share/${PROJECT_NAME}/cmake" COMPONENT dev)
+install(EXPORT export_@(project_name)
+  DESTINATION "share/${PROJECT_NAME}/cmake"
+  FILE export_@(project_name).cmake
+  COMPONENT dev)
 @[end if]@
