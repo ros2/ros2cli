@@ -17,8 +17,16 @@ import os
 import subprocess
 import sys
 
-from ros2pkg.api.create import create_folder
-from ros2pkg.api.create import create_template_file
+from ament_package.dependency import Dependency
+from ament_package.export import Export
+from ament_package.package import Package
+from ament_package.person import Person
+
+from ros2pkg.api.create import create_package_environment
+from ros2pkg.api.create import populate_cmake
+from ros2pkg.api.create import populate_ament_cmake
+from ros2pkg.api.create import populate_cpp_node
+from ros2pkg.api.create import populate_cpp_library
 from ros2pkg.verb import VerbExtension
 
 
@@ -29,6 +37,19 @@ class CreateVerb(VerbExtension):
         parser.add_argument(
             'package_name',
             help='The package name')
+        parser.add_argument(
+            '--package_format',
+            default=2,
+            choices=[2],
+            help='The package.xml format. Only version2 is supported at the moment.')
+        parser.add_argument(
+            '--description',
+            default='TODO: Package Description',
+            help='The description given in the package.xml')
+        parser.add_argument(
+            '--license',
+            default='Apache License 2.0',
+            help='The license attached to this package')
         parser.add_argument(
             '--destination-directory',
             default=os.curdir,
@@ -58,7 +79,7 @@ class CreateVerb(VerbExtension):
 
     def main(self, *, args):
 
-        maintainer_name = getpass.getuser()
+        maintainer = Person(getpass.getuser())
         if not args.maintainer_name:
             # try getting the name from the global git config
             p = subprocess.Popen(
@@ -67,11 +88,11 @@ class CreateVerb(VerbExtension):
             resp = p.communicate()
             name = resp[0].decode().rstrip()
             if name:
-                maintainer_name = name
+                maintainer.name = name
         else:
-            maintainer_name = args.maintainer_name
+            maintainer.name = args.maintainer_name
 
-        maintainer_email = maintainer_name + '@todo.todo'
+        maintainer.email = maintainer.name + '@todo.todo'
         if not args.maintainer_email:
             # try getting the email from the global git config
             p = subprocess.Popen(
@@ -80,9 +101,9 @@ class CreateVerb(VerbExtension):
             resp = p.communicate()
             email = resp[0].decode().rstrip()
             if email:
-                maintainer_email = email
+                maintainer.email = email
         else:
-            maintainer_email = args.maintainer_email
+            maintainer.email = args.maintainer_email
 
         cpp_node_name = None
         if args.cpp_node_name:
@@ -92,134 +113,51 @@ class CreateVerb(VerbExtension):
                 print('[WARNING] node name can not be equal to the library name', file=sys.stderr)
                 print('[WARNING] renaming node to %s' % cpp_node_name, file=sys.stderr)
 
+
+        package = Package(
+                #directory=args.destination_directory,
+                package_format=args.package_format,
+                name=args.package_name,
+                version='0.0.0',
+                description=args.description,
+                maintainers=[maintainer],
+                licenses=[args.license],
+                buildtool_depends=[Dependency(args.build_type)],
+                build_depends=[Dependency(dep) for dep in args.dependencies],
+                exports=[Export('build_type', content=args.build_type)]
+                )
+
         print('going to create a new package')
-        print('package name:', args.package_name)
-        print('destination directory', args.destination_directory)
-        print('build type:', args.build_type)
-        print('maintainer_email:', maintainer_email)
-        print('maintainer_name:', maintainer_name)
-        if args.dependencies:
-            print('dependencies:', args.dependencies)
+        print('package name:', package.name)
+        print('destination directory:', os.path.abspath(args.destination_directory))
+        print('package format:', package.package_format)
+        print('version:', package.version)
+        print('description:', package.description)
+        print('maintainer:', [str(maintainer) for maintainer in package.maintainers])
+        print('licenses:', [license for license in package.licenses])
+        print('build type:', package.get_build_type())
+        print('dependencies:', [str(dependency) for dependency in package.build_depends])
         if args.cpp_node_name:
             print('cpp_node_name:', cpp_node_name)
         if args.cpp_library_name:
             print('cpp_library_name:', args.cpp_library_name)
 
-        package_directory = create_folder(args.package_name, args.destination_directory)
+        package_directory, source_directory, include_directory = create_package_environment(package, args.destination_directory)
         if not package_directory:
             return 'unable to create folder: ' + args.destination_directory
 
-        package_xml_config = {
-            'package_name': args.package_name,
-            'maintainer_email': maintainer_email,
-            'maintainer_name': maintainer_name,
-            'dependencies': args.dependencies,
-        }
-
         if args.build_type == 'cmake':
-            create_template_file(
-                'cmake/package.xml.em',
-                package_directory,
-                'package.xml',
-                package_xml_config)
-
-            cmakelists_config = {
-                'project_name': args.package_name,
-                'dependencies': args.dependencies,
-                'cpp_node_name': cpp_node_name,
-                'cpp_library_name': args.cpp_library_name,
-            }
-            create_template_file(
-                'cmake/CMakeLists.txt.em',
-                package_directory,
-                'CMakeLists.txt',
-                cmakelists_config)
-
-            cmake_config = {
-                'project_name': args.package_name,
-                'cpp_library_name': args.cpp_library_name,
-                'cpp_node_name': cpp_node_name,
-            }
-            create_template_file(
-                'cmake/Config.cmake.in.em',
-                package_directory,
-                args.package_name + 'Config.cmake.in',
-                cmake_config)
-
-            version_config = {
-                'project_name': args.package_name,
-            }
-            create_template_file(
-                'cmake/ConfigVersion.cmake.in.em',
-                package_directory,
-                args.package_name + 'ConfigVersion.cmake.in',
-                version_config)
+            populate_cmake(package, package_directory, cpp_node_name, args.cpp_library_name)
 
         if args.build_type == 'ament_cmake':
-            create_template_file(
-                'ament_cmake/package.xml.em',
-                package_directory,
-                'package.xml',
-                package_xml_config)
+            populate_ament_cmake(package, package_directory, cpp_node_name, args.cpp_library_name)
 
-            cmakelists_config = {
-                'project_name': args.package_name,
-                'dependencies': args.dependencies,
-                'cpp_node_name': cpp_node_name,
-                'cpp_library_name': args.cpp_library_name,
-            }
-            create_template_file(
-                'ament_cmake/CMakeLists.txt.em',
-                package_directory,
-                'CMakeLists.txt',
-                cmakelists_config)
-
-        if args.cpp_node_name or args.cpp_library_name:
-            src_folder = create_folder('src', package_directory)
-            if not src_folder:
-                return 'unable to create folder: ' + args.destination_directory
-
-        if args.cpp_node_name:
-            cpp_node_config = {
-                'package_name': args.package_name,
-            }
-            create_template_file(
-                'cpp/main.cpp.em',
-                src_folder,
-                cpp_node_name + '.cpp',
-                cpp_node_config)
+        if cpp_node_name:
+            if not source_directory:
+                return 'unable to create source folder in ' + args.destination_directory
+            populate_cpp_node(package, source_directory, cpp_node_name)
 
         if args.cpp_library_name:
-            include_folder = create_folder('include/' + args.package_name, package_directory)
-            class_name = args.cpp_library_name.replace('_', ' ').title()
-            class_name = ''.join(x for x in class_name if not x.isspace())
-            cpp_header_config = {
-                'package_name': args.package_name,
-                'library_name': args.cpp_library_name,
-                'class_name': class_name,
-            }
-            create_template_file(
-                'cpp/header.hpp.em',
-                include_folder,
-                args.cpp_library_name + '.hpp',
-                cpp_header_config)
-
-            cpp_library_config = {
-                'package_name': args.package_name,
-                'library_name': args.cpp_library_name,
-                'class_name': class_name
-            }
-            create_template_file(
-                'cpp/library.cpp.em',
-                src_folder,
-                args.cpp_library_name + '.cpp',
-                cpp_library_config)
-
-            visibility_config = {
-                'package_name': args.package_name.upper(),
-            }
-            create_template_file(
-                'cpp/visibility_control.h.em',
-                include_folder,
-                'visibility_control.h',
-                visibility_config)
+            if not source_directory or not include_directory:
+                return 'unable to create source or include folder in ' + args.destination_directory
+            populate_cpp_library(package, source_directory, include_directory, args.cpp_library_name)

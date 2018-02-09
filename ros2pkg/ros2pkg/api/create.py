@@ -21,7 +21,7 @@ import em
 RESOURCE_PATH = os.path.join(os.path.dirname(__file__), '..', 'resource')
 
 
-def expand_template(template_file, data, output_file):
+def _expand_template(template_file, data, output_file):
     output = StringIO()
     interpreter = em.Interpreter(
         output=output,
@@ -55,19 +55,16 @@ def expand_template(template_file, data, output_file):
         h.write(content)
 
 
-def create_folder(folder_name, base_directory):
+def _create_folder(folder_name, base_directory, exist_ok=True):
     folder_path = os.path.join(base_directory, folder_name)
-    if os.path.exists(folder_path):
-        print("cannot create '%s', folder exists" % folder_path, file=sys.stderr)
-        return False
 
     print('creating folder', folder_path)
-    os.makedirs(folder_path)
+    os.makedirs(folder_path, exist_ok=exist_ok)
 
     return folder_path
 
 
-def create_template_file(template_file_name, output_directory, output_file_name, template_config):
+def _create_template_file(template_file_name, output_directory, output_file_name, template_config):
     template_path = os.path.abspath(
         os.path.join(__file__, RESOURCE_PATH, template_file_name))
     if not os.path.exists(template_path):
@@ -76,4 +73,125 @@ def create_template_file(template_file_name, output_directory, output_file_name,
     output_file_path = os.path.join(output_directory, output_file_name)
 
     print('creating', output_file_path)
-    expand_template(template_path, template_config, output_file_path)
+    _expand_template(template_path, template_config, output_file_path)
+
+
+def create_package_environment(package, destination_directory):
+    package_directory = _create_folder(package.name, destination_directory)
+
+    package_xml_config = {
+            'package_name': package.name,
+            'maintainer_email': package.maintainers[0].email,
+            'maintainer_name': package.maintainers[0].name,
+            'dependencies': [str(dep) for dep in package.build_depends],
+            }
+    _create_template_file(
+            'cmake/package.xml.em',
+            package_directory,
+            'package.xml',
+            package_xml_config)
+
+    source_directory = None
+    include_directory = None
+    print(package.get_build_type())
+    if package.get_build_type() == 'cmake' or package.get_build_type() == 'ament_cmake':
+        print('creating source and include folder')
+        source_directory = _create_folder('src', package_directory)
+        include_directory = _create_folder(package.name, package_directory + os.sep + 'include')
+
+    return package_directory, source_directory, include_directory
+
+
+def populate_cmake(package, package_directory, cpp_node_name, cpp_library_name):
+    cmakelists_config = {
+            'project_name': package.name,
+            'dependencies': [str(dep) for dep in package.build_depends],
+            'cpp_node_name': cpp_node_name,
+            'cpp_library_name': cpp_library_name,
+            }
+    _create_template_file(
+            'cmake/CMakeLists.txt.em',
+            package_directory,
+            'CMakeLists.txt',
+            cmakelists_config)
+
+    cmake_config = {
+            'project_name': package.name,
+            'cpp_library_name': cpp_library_name,
+            'cpp_node_name': cpp_node_name,
+            }
+    _create_template_file(
+            'cmake/Config.cmake.in.em',
+            package_directory,
+            package.name + 'Config.cmake.in',
+            cmake_config)
+
+    version_config = {
+            'project_name': package.name,
+            }
+    _create_template_file(
+            'cmake/ConfigVersion.cmake.in.em',
+            package_directory,
+            package.name + 'ConfigVersion.cmake.in',
+            version_config)
+
+
+def populate_ament_cmake(package, package_directory, cpp_node_name, cpp_library_name):
+    cmakelists_config = {
+            'project_name': package.name,
+            'dependencies': [str(dep) for dep in package.build_depends],
+            'cpp_node_name': cpp_node_name,
+            'cpp_library_name': cpp_library_name,
+            }
+    _create_template_file(
+            'ament_cmake/CMakeLists.txt.em',
+            package_directory,
+            'CMakeLists.txt',
+            cmakelists_config)
+
+
+def populate_cpp_node(package, source_directory, cpp_node_name):
+    cpp_node_config = {
+            'package_name': package.name,
+            }
+    _create_template_file(
+            'cpp/main.cpp.em',
+            source_directory,
+            cpp_node_name + '.cpp',
+            cpp_node_config)
+
+
+def populate_cpp_library(package, source_directory, include_directory, cpp_library_name):
+    class_name = cpp_library_name.replace('_', ' ').title()
+    class_name = ''.join(x for x in class_name if not x.isspace())
+    cpp_header_config = {
+            'package_name': package.name,
+            'library_name': cpp_library_name,
+            'class_name': class_name,
+            }
+    _create_template_file(
+            'cpp/header.hpp.em',
+            include_directory,
+            cpp_library_name + '.hpp',
+            cpp_header_config)
+
+    cpp_library_config = {
+            'package_name': package.name,
+            'library_name': cpp_library_name,
+            'class_name': class_name
+            }
+    _create_template_file(
+            'cpp/library.cpp.em',
+            source_directory,
+            cpp_library_name + '.cpp',
+            cpp_library_config)
+
+    visibility_config = {
+            'package_name': package.name.upper(),
+            }
+    _create_template_file(
+            'cpp/visibility_control.h.em',
+            include_directory,
+            'visibility_control.h',
+            visibility_config)
+
