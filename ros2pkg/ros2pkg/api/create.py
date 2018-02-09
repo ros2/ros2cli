@@ -80,16 +80,16 @@ def create_package_environment(package, destination_directory):
     package_directory = _create_folder(package.name, destination_directory)
 
     package_xml_config = {
-            'package_name': package.name,
-            'maintainer_email': package.maintainers[0].email,
-            'maintainer_name': package.maintainers[0].name,
-            'dependencies': [str(dep) for dep in package.build_depends],
-            }
+        'package_name': package.name,
+        'maintainer_email': package.maintainers[0].email,
+        'maintainer_name': package.maintainers[0].name,
+        'dependencies': [str(dep) for dep in package.build_depends],
+    }
     _create_template_file(
-            'cmake/package.xml.em',
-            package_directory,
-            'package.xml',
-            package_xml_config)
+        'cmake/package.xml.em',
+        package_directory,
+        'package.xml',
+        package_xml_config)
 
     source_directory = None
     include_directory = None
@@ -104,94 +104,93 @@ def create_package_environment(package, destination_directory):
 
 def populate_cmake(package, package_directory, cpp_node_name, cpp_library_name):
     cmakelists_config = {
-            'project_name': package.name,
-            'dependencies': [str(dep) for dep in package.build_depends],
-            'cpp_node_name': cpp_node_name,
-            'cpp_library_name': cpp_library_name,
-            }
+        'project_name': package.name,
+        'dependencies': [str(dep) for dep in package.build_depends],
+        'cpp_node_name': cpp_node_name,
+        'cpp_library_name': cpp_library_name,
+    }
     _create_template_file(
-            'cmake/CMakeLists.txt.em',
-            package_directory,
-            'CMakeLists.txt',
-            cmakelists_config)
+        'cmake/CMakeLists.txt.em',
+        package_directory,
+        'CMakeLists.txt',
+        cmakelists_config)
 
     cmake_config = {
-            'project_name': package.name,
-            'cpp_library_name': cpp_library_name,
-            'cpp_node_name': cpp_node_name,
-            }
+        'project_name': package.name,
+        'cpp_library_name': cpp_library_name,
+        'cpp_node_name': cpp_node_name,
+    }
     _create_template_file(
-            'cmake/Config.cmake.in.em',
-            package_directory,
-            package.name + 'Config.cmake.in',
-            cmake_config)
+        'cmake/Config.cmake.in.em',
+        package_directory,
+        package.name + 'Config.cmake.in',
+        cmake_config)
 
     version_config = {
-            'project_name': package.name,
-            }
+        'project_name': package.name,
+    }
     _create_template_file(
-            'cmake/ConfigVersion.cmake.in.em',
-            package_directory,
-            package.name + 'ConfigVersion.cmake.in',
-            version_config)
+        'cmake/ConfigVersion.cmake.in.em',
+        package_directory,
+        package.name + 'ConfigVersion.cmake.in',
+        version_config)
 
 
 def populate_ament_cmake(package, package_directory, cpp_node_name, cpp_library_name):
     cmakelists_config = {
-            'project_name': package.name,
-            'dependencies': [str(dep) for dep in package.build_depends],
-            'cpp_node_name': cpp_node_name,
-            'cpp_library_name': cpp_library_name,
-            }
+        'project_name': package.name,
+        'dependencies': [str(dep) for dep in package.build_depends],
+        'cpp_node_name': cpp_node_name,
+        'cpp_library_name': cpp_library_name,
+    }
     _create_template_file(
-            'ament_cmake/CMakeLists.txt.em',
-            package_directory,
-            'CMakeLists.txt',
-            cmakelists_config)
+        'ament_cmake/CMakeLists.txt.em',
+        package_directory,
+        'CMakeLists.txt',
+        cmakelists_config)
 
 
 def populate_cpp_node(package, source_directory, cpp_node_name):
     cpp_node_config = {
-            'package_name': package.name,
-            }
+        'package_name': package.name,
+    }
     _create_template_file(
-            'cpp/main.cpp.em',
-            source_directory,
-            cpp_node_name + '.cpp',
-            cpp_node_config)
+        'cpp/main.cpp.em',
+        source_directory,
+        cpp_node_name + '.cpp',
+        cpp_node_config)
 
 
 def populate_cpp_library(package, source_directory, include_directory, cpp_library_name):
     class_name = cpp_library_name.replace('_', ' ').title()
     class_name = ''.join(x for x in class_name if not x.isspace())
     cpp_header_config = {
-            'package_name': package.name,
-            'library_name': cpp_library_name,
-            'class_name': class_name,
-            }
+        'package_name': package.name,
+        'library_name': cpp_library_name,
+        'class_name': class_name,
+    }
     _create_template_file(
-            'cpp/header.hpp.em',
-            include_directory,
-            cpp_library_name + '.hpp',
-            cpp_header_config)
+        'cpp/header.hpp.em',
+        include_directory,
+        cpp_library_name + '.hpp',
+        cpp_header_config)
 
     cpp_library_config = {
-            'package_name': package.name,
-            'library_name': cpp_library_name,
-            'class_name': class_name
-            }
+        'package_name': package.name,
+        'library_name': cpp_library_name,
+        'class_name': class_name
+    }
     _create_template_file(
-            'cpp/library.cpp.em',
-            source_directory,
-            cpp_library_name + '.cpp',
-            cpp_library_config)
+        'cpp/library.cpp.em',
+        source_directory,
+        cpp_library_name + '.cpp',
+        cpp_library_config)
 
     visibility_config = {
-            'package_name': package.name.upper(),
-            }
+        'package_name': package.name.upper(),
+    }
     _create_template_file(
-            'cpp/visibility_control.h.em',
-            include_directory,
-            'visibility_control.h',
-            visibility_config)
-
+        'cpp/visibility_control.h.em',
+        include_directory,
+        'visibility_control.h',
+        visibility_config)

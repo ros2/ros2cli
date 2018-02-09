@@ -23,10 +23,11 @@ from ament_package.package import Package
 from ament_package.person import Person
 
 from ros2pkg.api.create import create_package_environment
-from ros2pkg.api.create import populate_cmake
 from ros2pkg.api.create import populate_ament_cmake
-from ros2pkg.api.create import populate_cpp_node
+from ros2pkg.api.create import populate_cmake
 from ros2pkg.api.create import populate_cpp_library
+from ros2pkg.api.create import populate_cpp_node
+
 from ros2pkg.verb import VerbExtension
 
 
@@ -113,19 +114,17 @@ class CreateVerb(VerbExtension):
                 print('[WARNING] node name can not be equal to the library name', file=sys.stderr)
                 print('[WARNING] renaming node to %s' % cpp_node_name, file=sys.stderr)
 
-
         package = Package(
-                #directory=args.destination_directory,
-                package_format=args.package_format,
-                name=args.package_name,
-                version='0.0.0',
-                description=args.description,
-                maintainers=[maintainer],
-                licenses=[args.license],
-                buildtool_depends=[Dependency(args.build_type)],
-                build_depends=[Dependency(dep) for dep in args.dependencies],
-                exports=[Export('build_type', content=args.build_type)]
-                )
+            package_format=args.package_format,
+            name=args.package_name,
+            version='0.0.0',
+            description=args.description,
+            maintainers=[maintainer],
+            licenses=[args.license],
+            buildtool_depends=[Dependency(args.build_type)],
+            build_depends=[Dependency(dep) for dep in args.dependencies],
+            exports=[Export('build_type', content=args.build_type)]
+        )
 
         print('going to create a new package')
         print('package name:', package.name)
@@ -142,7 +141,8 @@ class CreateVerb(VerbExtension):
         if args.cpp_library_name:
             print('cpp_library_name:', args.cpp_library_name)
 
-        package_directory, source_directory, include_directory = create_package_environment(package, args.destination_directory)
+        package_directory, source_directory, include_directory = \
+            create_package_environment(package, args.destination_directory)
         if not package_directory:
             return 'unable to create folder: ' + args.destination_directory
 
@@ -160,4 +160,9 @@ class CreateVerb(VerbExtension):
         if args.cpp_library_name:
             if not source_directory or not include_directory:
                 return 'unable to create source or include folder in ' + args.destination_directory
-            populate_cpp_library(package, source_directory, include_directory, args.cpp_library_name)
+            populate_cpp_library(
+                package,
+                source_directory,
+                include_directory,
+                args.cpp_library_name
+            )
