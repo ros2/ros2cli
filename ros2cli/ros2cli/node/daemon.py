@@ -19,13 +19,12 @@ import socket
 import subprocess
 import sys
 import time
+from xmlrpc.client import ProtocolError
+from xmlrpc.client import ServerProxy
 
 import rclpy
 from ros2cli.daemon import get_daemon_port
 from ros2cli.node.direct import DirectNode
-
-from xmlrpc.client import ProtocolError
-from xmlrpc.client import ServerProxy
 
 
 def is_daemon_running(args):
