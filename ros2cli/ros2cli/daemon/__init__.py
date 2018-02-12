@@ -15,11 +15,11 @@
 import argparse
 from collections import namedtuple
 import os
+from xmlrpc.server import SimpleXMLRPCRequestHandler
+from xmlrpc.server import SimpleXMLRPCServer
 
 import rclpy
 from ros2cli.node.direct import DirectNode
-from xmlrpc.server import SimpleXMLRPCRequestHandler
-from xmlrpc.server import SimpleXMLRPCServer
 
 
 def main(*, script_name='_ros2_daemon', argv=None):
