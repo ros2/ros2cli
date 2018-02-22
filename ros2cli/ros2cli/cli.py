@@ -41,7 +41,8 @@ def main(*, script_name='ros2', argv=None, description=None, extension=None):
         add_subparsers(
             parser, script_name, selected_extension_key, extensions,
             # hide the special commands in the help
-            hide_extensions=['extension_points', 'extensions'])
+            hide_extensions=['extension_points', 'extensions'],
+            required=False)
 
     # register argcomplete hook if available
     try:
@@ -55,9 +56,13 @@ def main(*, script_name='ros2', argv=None, description=None, extension=None):
     args = parser.parse_args(args=argv)
 
     if extension is None:
-        # the attribute should always exist
-        # otherwise argparse should have exited
-        extension = getattr(args, selected_extension_key)
+        # get extension identified by the passed command (if available)
+        extension = getattr(args, selected_extension_key, None)
+
+    # handle the case that no command was passed
+    if extension is None:
+        parser.print_help()
+        return 0
 
     # call the main method of the extension
     try:

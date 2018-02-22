@@ -57,7 +57,8 @@ def get_command_extensions(group_name):
 
 
 def add_subparsers(
-    parser, cli_name, dest, command_extensions, hide_extensions=None
+    parser, cli_name, dest, command_extensions, hide_extensions=None,
+    required=True
 ):
     """
     Create argparse subparser for each extension.
@@ -96,7 +97,7 @@ def add_subparsers(
     # use a name which doesn't collide with any argument
     # but is readable when shown as part of the the usage information
     subparser.dest = ' ' + dest.lstrip('_')
-    subparser.required = True
+    subparser.required = required
 
     # add extension specific sub-parser with its arguments
     for name in sorted(command_extensions.keys()):
@@ -109,3 +110,5 @@ def add_subparsers(
         if hasattr(extension, 'add_arguments'):
             extension.add_arguments(
                 command_parser, '{cli_name} {name}'.format_map(locals()))
+
+    return subparser
