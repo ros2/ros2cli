@@ -86,8 +86,7 @@ class DaemonNode:
     def __init__(self, args):
         self._args = args
         self._proxy = ServerProxy(
-            'http://localhost:%d/%s/' %
-            (get_daemon_port(), rclpy.get_rmw_implementation_identifier()),
+            'http://localhost:%d/ros2cli/' % get_daemon_port(),
             allow_none=True)
         self._methods = []
 
