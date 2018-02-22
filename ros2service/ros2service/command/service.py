@@ -21,17 +21,22 @@ class ServiceCommand(CommandExtension):
     """Various service related sub-commands."""
 
     def add_arguments(self, parser, cli_name):
+        self._subparser = parser
         parser.add_argument(
             '--include-hidden-services', action='store_true',
             help='Consider hidden services as well')
 
         # get verb extensions and let them add their arguments
         verb_extensions = get_verb_extensions('ros2service.verb')
-        add_subparsers(parser, cli_name, '_verb', verb_extensions)
+        add_subparsers(
+            parser, cli_name, '_verb', verb_extensions, required=False)
 
     def main(self, *, parser, args):
-        # the attribute should always exist
-        # otherwise argparse should have exited
+        if not hasattr(args, '_verb'):
+            # in case no verb was passed
+            self._subparser.print_help()
+            return 0
+
         extension = getattr(args, '_verb')
 
         # call the verb's main method
