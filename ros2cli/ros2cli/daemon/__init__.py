@@ -78,8 +78,7 @@ def main(*, script_name='_ros2_daemon', argv=None):
                 shutdown = True
             server.register_function(shutdown_handler, 'system.shutdown')
 
-            print('Serving XML-RPC on %s:%d/%s/' % (
-                addr[0], addr[1], rclpy.get_rmw_implementation_identifier()))
+            print('Serving XML-RPC on %s:%d/ros2cli/' % (addr[0], addr[1]))
             try:
                 while not shutdown:
                     server.handle_request()
@@ -104,7 +103,7 @@ def get_daemon_port():
 
 
 class RequestHandler(SimpleXMLRPCRequestHandler):
-    rpc_paths = ('/%s/' % rclpy.get_rmw_implementation_identifier(),)
+    rpc_paths = ('/ros2cli/',)
 
 
 def _print_invoked_function_name(func):
