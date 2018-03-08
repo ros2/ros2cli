@@ -49,6 +49,9 @@ class PubVerb(VerbExtension):
         parser.add_argument(
             '-1', '--once', action='store_true',
             help='Publish one message and exit')
+        parser.add_argument(
+            '-n', '--node-name', type=str, default='',
+            help='Name of the created publishing node')
 
     def main(self, *, args):
         if args.rate <= 0:
@@ -58,10 +61,12 @@ class PubVerb(VerbExtension):
 
 
 def main(args):
-    return publisher(args.message_type, args.topic_name, args.values, 1. / args.rate, args.once)
+    return publisher(
+        args.message_type, args.topic_name, args.values,
+        args.node_name, 1. / args.rate, args.once)
 
 
-def publisher(message_type, topic_name, values, period, once):
+def publisher(message_type, topic_name, values, node_name, period, once):
     # TODO(dirk-thomas) this logic should come from a rosidl related package
     try:
         package_name, message_name = message_type.split('/', 2)
@@ -74,10 +79,11 @@ def publisher(message_type, topic_name, values, period, once):
     values_dictionary = yaml.load(values)
     if not isinstance(values_dictionary, dict):
         return 'The passed value needs to be a dictionary in YAML format'
-
+    if node_name == '':
+        node_name = 'publisher_%s_%s' % (package_name, message_name)
     rclpy.init()
 
-    node = rclpy.create_node('publisher_%s_%s' % (package_name, message_name))
+    node = rclpy.create_node(node_name)
 
     pub = node.create_publisher(msg_module, topic_name)
 
