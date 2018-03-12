@@ -3,11 +3,11 @@
 <package format="2">
   <name>@package_name</name>
   <version>0.0.0</version>
-  <description>Description of @package_name</description>
+  <description>@package_description</description>
   <maintainer email="@maintainer_email">@maintainer_name</maintainer>
-  <license>Apache License 2.0</license>
+  <license>@package_license</license>
 
-  <buildtool_depend>ament_cmake</buildtool_depend>
+  <buildtool_depend>@build_type</buildtool_depend>
 
 @[if dependencies]@
 @[  for dep in dependencies]@
@@ -19,6 +19,6 @@
   <test_depend>ament_lint_common</test_depend>
 
   <export>
-    <build_type>ament_cmake</build_type>
+    <build_type>@build_type</build_type>
   </export>
 </package>

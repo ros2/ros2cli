@@ -45,11 +45,11 @@ class CreateVerb(VerbExtension):
             help='The package.xml format. Only version2 is supported at the moment.')
         parser.add_argument(
             '--description',
-            default='TODO: Package Description',
+            default='TODO: Package description',
             help='The description given in the package.xml')
         parser.add_argument(
             '--license',
-            default='Apache License 2.0',
+            default='TODO: License declaration',
             help='The license attached to this package')
         parser.add_argument(
             '--destination-directory',
@@ -142,7 +142,7 @@ class CreateVerb(VerbExtension):
             print('cpp_library_name:', args.cpp_library_name)
 
         package_directory, source_directory, include_directory = \
-            create_package_environment(package, args.destination_directory)
+            create_package_environment(package, args.destination_directory, args.cpp_library_name)
         if not package_directory:
             return 'unable to create folder: ' + args.destination_directory
 
