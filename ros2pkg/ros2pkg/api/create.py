@@ -76,14 +76,8 @@ def _create_template_file(template_file_name, output_directory, output_file_name
     _expand_template(template_path, template_config, output_file_path)
 
 
-def create_package_environment(package, destination_directory, cpp_library_name=None):
+def create_package_environment(package, destination_directory):
     package_directory = _create_folder(package.name, destination_directory)
-
-    dependencies = [str(dep) for dep in package.build_depends]
-    # if we build a library with ament_cmake, we have to add ament_cmake_ros as a dep
-    if package.get_build_type() == 'ament_cmake' and cpp_library_name:
-        dependencies.append('ament_cmake_ros')
-    dependencies.sort()
 
     package_xml_config = {
         'package_name': package.name,
@@ -91,8 +85,10 @@ def create_package_environment(package, destination_directory, cpp_library_name=
         'maintainer_email': package.maintainers[0].email,
         'maintainer_name': package.maintainers[0].name,
         'package_license': package.licenses[0],
+        'buildtool_dependencies': package.buildtool_depends,
+        'dependencies': package.build_depends,
+        'test_dependencies': package.test_depends,
         'build_type': package.get_build_type(),
-        'dependencies': dependencies,
     }
     _create_template_file(
         'package_environment/package.xml.em',

@@ -114,6 +114,14 @@ class CreateVerb(VerbExtension):
                 print('[WARNING] node name can not be equal to the library name', file=sys.stderr)
                 print('[WARNING] renaming node to %s' % cpp_node_name, file=sys.stderr)
 
+        buildtool_depends = args.build_type
+        if args.build_type == 'ament_cmake' and args.cpp_library_name:
+            buildtool_depends = 'ament_cmake_ros'
+
+        test_dependencies = []
+        if args.build_type == 'ament_cmake':
+            test_dependencies = ['ament_lint_auto', 'ament_lint_common']
+
         package = Package(
             package_format=args.package_format,
             name=args.package_name,
@@ -121,8 +129,9 @@ class CreateVerb(VerbExtension):
             description=args.description,
             maintainers=[maintainer],
             licenses=[args.license],
-            buildtool_depends=[Dependency(args.build_type)],
+            buildtool_depends=[Dependency(buildtool_depends)],
             build_depends=[Dependency(dep) for dep in args.dependencies],
+            test_depends=[Dependency(dep) for dep in test_dependencies],
             exports=[Export('build_type', content=args.build_type)]
         )
 
@@ -142,7 +151,7 @@ class CreateVerb(VerbExtension):
             print('cpp_library_name:', args.cpp_library_name)
 
         package_directory, source_directory, include_directory = \
-            create_package_environment(package, args.destination_directory, args.cpp_library_name)
+            create_package_environment(package, args.destination_directory)
         if not package_directory:
             return 'unable to create folder: ' + args.destination_directory
 
