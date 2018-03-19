@@ -14,6 +14,7 @@ setup(
             'completion/ros2-argcomplete.zsh'
         ]),
     ],
+    zip_safe=False,
     author='Dirk Thomas',
     author_email='dthomas@osrfoundation.org',
     maintainer='Dirk Thomas',
