@@ -9,6 +9,12 @@ setup(
         'completion': ['argcomplete'],
     },
     data_files=[
+        ('share/ament_index/resource_index/packages', [
+            'resource/ros2cli',
+        ]),
+        ('share/ros2cli', [
+            'resource/local_setup.bash',
+        ]),
         ('share/ros2cli/environment', [
             'completion/ros2-argcomplete.bash',
             'completion/ros2-argcomplete.zsh'
