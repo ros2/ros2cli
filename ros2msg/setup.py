@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='ros2msg',
-    version='0.4.0',
+    version='0.4.1',
     packages=find_packages(exclude=['test']),
     install_requires=['ros2cli'],
     author='Dirk Thomas',
