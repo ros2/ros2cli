@@ -23,7 +23,7 @@ def get_node_names(*, node, include_hidden_nodes=False):
     if not include_hidden_nodes:
         node_names = [
             n for n in node_names
-            if not n.startswith(HIDDEN_NODE_PREFIX)]
+            if n and not n.startswith(HIDDEN_NODE_PREFIX)]
     return node_names
 
 
