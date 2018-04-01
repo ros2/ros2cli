@@ -12,15 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ros2cli.node.strategy import add_arguments
-from ros2cli.node.strategy import NodeStrategy
-from ros2topic.api import get_topic_names_and_types
 from ros2topic.api import TopicNameCompleter
 from ros2topic.verb import VerbExtension
 
 
 class InfoVerb(VerbExtension):
-    """Print information about topic"""
+    """Print information about a topic."""
 
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
