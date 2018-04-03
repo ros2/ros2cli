@@ -5,6 +5,25 @@ setup(
     name='ros2pkg',
     version='0.4.0',
     packages=find_packages(exclude=['test']),
+    data_files=[
+        ('share/ros2pkg/resource/ament_cmake', [
+            'resource/ament_cmake/CMakeLists.txt.em',
+        ]),
+        ('share/ros2pkg/resource/cmake', [
+            'resource/cmake/CMakeLists.txt.em',
+            'resource/cmake/Config.cmake.in.em',
+            'resource/cmake/ConfigVersion.cmake.in.em',
+        ]),
+        ('share/ros2pkg/resource/cpp', [
+            'resource/cpp/header.hpp.em',
+            'resource/cpp/library.cpp.em',
+            'resource/cpp/main.cpp.em',
+            'resource/cpp/visibility_control.h.em',
+        ]),
+        ('share/ros2pkg/resource/package_environment', [
+            'resource/package_environment/package.xml.em',
+        ]),
+    ],
     install_requires=['ros2cli'],
     zip_safe=False,
     author='Dirk Thomas',
