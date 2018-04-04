@@ -20,7 +20,8 @@ import em
 
 from ros2pkg.api import get_prefix_path
 
-RESOURCE_PATH = os.path.join(get_prefix_path('ros2pkg'), 'share', 'ros2pkg', 'resource')
+RESOURCE_PATH = os.path.abspath(
+    os.path.join(get_prefix_path('ros2pkg'), 'share', 'ros2pkg', 'resource'))
 
 
 def _expand_template(template_file, data, output_file):
@@ -67,8 +68,7 @@ def _create_folder(folder_name, base_directory, exist_ok=True):
 
 
 def _create_template_file(template_file_name, output_directory, output_file_name, template_config):
-    template_path = os.path.abspath(
-        os.path.join(__file__, RESOURCE_PATH, template_file_name))
+    template_path = os.path.join(RESOURCE_PATH, template_file_name)
     if not os.path.exists(template_path):
         raise FileNotFoundError('template not found:', template_path)
 
