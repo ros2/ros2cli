@@ -17,11 +17,9 @@ import os
 import sys
 
 import em
+import pkg_resources
 
-from ros2pkg.api import get_prefix_path
-
-RESOURCE_PATH = os.path.abspath(
-    os.path.join(get_prefix_path('ros2pkg'), 'share', 'ros2pkg', 'resource'))
+RESOURCE_PATH = pkg_resources.resource_filename('ros2pkg', 'resource/')
 
 
 def _expand_template(template_file, data, output_file):
