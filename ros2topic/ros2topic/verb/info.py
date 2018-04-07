@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from ros2cli.node.direct import DirectNode
 from ros2topic.api import TopicNameCompleter
 from ros2topic.verb import VerbExtension
 
@@ -27,4 +28,10 @@ class InfoVerb(VerbExtension):
             include_hidden_topics_key='include_hidden_topics')
 
     def main(self, *, args):
-        print(args.topic_name)
+        with DirectNode(args) as node:
+            topic_name = args.topic_name
+            count_publishers = node.count_publishers(topic_name)
+            count_subscribers = node.count_subscribers(topic_name)
+            print("Topic: %s" % topic_name)
+            print("Publishers count: %d" % count_publishers)
+            print("Subscribers count: %d" % count_subscribers)
