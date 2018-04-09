@@ -19,20 +19,32 @@ from contextlib import contextmanager
 
 from ros2topic.verb.info import InfoVerb
 
+NODE_NAME = 'bar'
+TOPIC_NAME = '/foo'
+
 
 @contextmanager
 def string_stdout() -> StringIO:
     real_stdout = sys.stdout
-    stringio_stdout = StringIO()
-    sys.stdout = stringio_stdout
-    yield stringio_stdout
+    string_io_stdout = StringIO()
+    sys.stdout = string_io_stdout
+    yield string_io_stdout
     sys.stdout = real_stdout
 
 
-def test_info():
+def _generate_expected_output(topic_name, count_publishers, count_subscribers):
+    return [
+        "Topic: %s" % topic_name,
+        "Publishers count: %d" % count_publishers,
+        "Subscribers count: %d" % count_subscribers,
+    ]
+
+
+def test_info_zero_publishers_subscribers():
     args = Namespace()
-    args.topic_name = 'foo'
+    args.topic_name = TOPIC_NAME
     with string_stdout() as s:
         info_verb = InfoVerb()
         info_verb.main(args=args)
-        assert args.topic_name == s.getvalue().splitlines()[0]
+        expected_output = _generate_expected_output(args.topic_name, 0, 0)
+        assert expected_output == s.getvalue().splitlines()
