@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys
-from io import StringIO
 from argparse import Namespace
 from contextlib import contextmanager
+from io import StringIO
+import sys
 
 from ros2topic.verb.info import InfoVerb
 
@@ -34,9 +34,9 @@ def string_stdout() -> StringIO:
 
 def _generate_expected_output(topic_name, count_publishers, count_subscribers):
     return [
-        "Topic: %s" % topic_name,
-        "Publishers count: %d" % count_publishers,
-        "Subscribers count: %d" % count_subscribers,
+        'Topic: %s' % topic_name,
+        'Publishers count: %d' % count_publishers,
+        'Subscribers count: %d' % count_subscribers,
     ]
 
 

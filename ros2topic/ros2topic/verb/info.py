@@ -32,6 +32,6 @@ class InfoVerb(VerbExtension):
             topic_name = args.topic_name
             count_publishers = node.count_publishers(topic_name)
             count_subscribers = node.count_subscribers(topic_name)
-            print("Topic: %s" % topic_name)
-            print("Publishers count: %d" % count_publishers)
-            print("Subscribers count: %d" % count_subscribers)
+            print('Topic: %s' % topic_name)
+            print('Publishers count: %d' % count_publishers)
+            print('Subscribers count: %d' % count_subscribers)
