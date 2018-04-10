@@ -17,8 +17,7 @@ import os
 import sys
 
 import em
-
-RESOURCE_PATH = os.path.join(os.path.dirname(__file__), '..', 'resource')
+import pkg_resources
 
 
 def _expand_template(template_file, data, output_file):
@@ -65,8 +64,7 @@ def _create_folder(folder_name, base_directory, exist_ok=True):
 
 
 def _create_template_file(template_file_name, output_directory, output_file_name, template_config):
-    template_path = os.path.abspath(
-        os.path.join(__file__, RESOURCE_PATH, template_file_name))
+    template_path = pkg_resources.resource_filename('ros2pkg', 'resource/' + template_file_name)
     if not os.path.exists(template_path):
         raise FileNotFoundError('template not found:', template_path)
 

@@ -6,7 +6,7 @@ setup(
     version='0.4.0',
     packages=find_packages(exclude=['test']),
     install_requires=['ros2cli'],
-    zip_safe=False,
+    zip_safe=True,
     author='Dirk Thomas',
     author_email='dthomas@osrfoundation.org',
     maintainer='Dirk Thomas',
@@ -38,5 +38,10 @@ The package provides the pkg command for the ROS 2 command line tools.""",
             'list = ros2pkg.verb.list:ListVerb',
             'prefix = ros2pkg.verb.prefix:PrefixVerb',
         ],
-    }
+    },
+    package_data={
+        'ros2pkg': [
+            'resource/**/*',
+        ],
+    },
 )
