@@ -19,9 +19,6 @@ import sys
 
 from ros2topic.verb.info import InfoVerb
 
-NODE_NAME = 'bar'
-TOPIC_NAME = '/foo'
-
 
 @contextmanager
 def string_stdout() -> StringIO:
@@ -35,14 +32,14 @@ def string_stdout() -> StringIO:
 def _generate_expected_output(topic_name, count_publishers, count_subscribers):
     return [
         'Topic: %s' % topic_name,
-        'Publishers count: %d' % count_publishers,
-        'Subscribers count: %d' % count_subscribers,
+        'Publisher count: %d' % count_publishers,
+        'Subscriber count: %d' % count_subscribers,
     ]
 
 
 def test_info_zero_publishers_subscribers():
     args = Namespace()
-    args.topic_name = TOPIC_NAME
+    args.topic_name = '/test_ros2_topic_cli'
     with string_stdout() as s:
         info_verb = InfoVerb()
         info_verb.main(args=args)
