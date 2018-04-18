@@ -13,20 +13,10 @@
 # limitations under the License.
 
 from argparse import Namespace
-from contextlib import contextmanager
+from contextlib import redirect_stdout
 from io import StringIO
-import sys
 
 from ros2topic.verb.info import InfoVerb
-
-
-@contextmanager
-def string_stdout() -> StringIO:
-    real_stdout = sys.stdout
-    string_io_stdout = StringIO()
-    sys.stdout = string_io_stdout
-    yield string_io_stdout
-    sys.stdout = real_stdout
 
 
 def _generate_expected_output(topic_name, count_publishers, count_subscribers):
@@ -40,7 +30,8 @@ def _generate_expected_output(topic_name, count_publishers, count_subscribers):
 def test_info_zero_publishers_subscribers():
     args = Namespace()
     args.topic_name = '/test_ros2_topic_cli'
-    with string_stdout() as s:
+    s = StringIO()
+    with redirect_stdout(s):
         info_verb = InfoVerb()
         info_verb.main(args=args)
         expected_output = _generate_expected_output(args.topic_name, 0, 0)
