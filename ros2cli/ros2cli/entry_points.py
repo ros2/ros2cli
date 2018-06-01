@@ -83,7 +83,7 @@ def load_entry_points(group_name):
     for entry_point in get_entry_points(group_name).values():
         try:
             extension_type = entry_point.load()
-        except Exception as e:
+        except Exception as e:  # noqa: F841
             logger.warn(
                 "Failed to load entry point '{entry_point.name}': {e}"
                 .format_map(locals()))

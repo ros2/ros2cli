@@ -90,7 +90,7 @@ def publisher(message_type, topic_name, values, node_name, period, once):
     msg = msg_module()
     try:
         set_msg_fields(msg, values_dictionary)
-    except SetFieldError as e:
+    except SetFieldError as e:  # noqa: F841
         return "Failed to populate field '{e.field_name}': {e.exception}" \
             .format_map(locals())
 
