@@ -78,7 +78,7 @@ def requester(service_type, service_name, values, period):
 
     try:
         set_msg_fields(request, values_dictionary)
-    except SetFieldError as e:
+    except SetFieldError as e:  # noqa: F841
         return "Failed to populate field '{e.field_name}': {e.exception}" \
             .format_map(locals())
 
