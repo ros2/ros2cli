@@ -55,7 +55,6 @@ class ListVerb(VerbExtension):
                 client = node.create_client(
                     ListParameters,
                     '/{node_name}/list_parameters'.format_map(locals()))
-                print('client', node_name)
                 clients[node_name] = client
 
             # wait until all clients have been called
@@ -65,21 +64,15 @@ class ListVerb(VerbExtension):
                     client = clients[node_name]
                     if client.service_is_ready():
                         request = ListParameters.Request()
-                        print(node_name, request)
                         future = client.call_async(request)
                         futures[node_name] = future
-                    else:
-                        print(node_name, 'not ready')
 
                 if len(futures) == len(clients):
-                    print('break')
                     break
-                print('spin_once, waiting for', len(clients) - len(futures), 'clients')
                 rclpy.spin_once(node, timeout_sec=1.0)
 
             # wait for all responses
             for node_name in node_names:
-                print('spin', node_name)
                 rclpy.spin_until_future_complete(node, futures[node_name])
 
             # print responses
