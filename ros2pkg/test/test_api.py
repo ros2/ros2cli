@@ -17,6 +17,7 @@ import os
 
 from ros2pkg.api import get_package_names
 from ros2pkg.api import get_prefix_path
+from ros2pkg.api import get_share_directory
 
 
 def test_api():
@@ -31,6 +32,12 @@ def test_api():
 
         prefix_path = get_prefix_path(known_package_name)
         assert os.path.isdir(prefix_path)
+        share_directory = get_share_directory(known_package_name)
+        assert os.path.isdir(share_directory)
+        assert 'share' in share_directory
 
-    prefix_path = get_prefix_path('_not_existing_package_name')
+    not_existing_package_name = '_not_existing_package_name'
+    prefix_path = get_prefix_path(not_existing_package_name)
     assert prefix_path is None
+    share_directory = get_share_directory(not_existing_package_name)
+    assert share_directory is None

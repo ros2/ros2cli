@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from ros2pkg.api import get_prefix_path
+from ros2pkg.api import get_share_directory
 from ros2pkg.api import package_name_completer
 from ros2pkg.verb import VerbExtension
 
@@ -24,6 +25,10 @@ class PrefixVerb(VerbExtension):
         arg = parser.add_argument(
             'package_name',
             help='The package name')
+        parser.add_argument(
+            '--share',
+            action='store_true',
+            help='show share directory for the package')
         arg.completer = package_name_completer
 
     def main(self, *, args):
@@ -31,3 +36,5 @@ class PrefixVerb(VerbExtension):
         if prefix_path is None:
             return 'Package not found'
         print(prefix_path)
+        if args.share:
+            print('Share dir: %s' % get_share_directory(args.package_name))
