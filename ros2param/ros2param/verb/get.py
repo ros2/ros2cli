@@ -94,9 +94,6 @@ class GetVerb(VerbExtension):
 
             # output response
             if not args.hide_type:
-                if value is None:
-                    print(label)
-                else:
-                    print(label, value)
+                print(label, value)
             else:
                 print(value)
