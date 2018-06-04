@@ -63,7 +63,7 @@ class DeleteVerb(VerbExtension):
             assert len(response.results) == 1
             result = response.results[0]
             if result.successful:
-                msg = 'Deleted parameter successful'
+                msg = 'Deleted parameter successfully'
                 if result.reason:
                     msg += ': ' + result.reason
                 print(msg)
