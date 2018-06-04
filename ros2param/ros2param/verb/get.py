@@ -54,42 +54,43 @@ class GetVerb(VerbExtension):
                 parameter_names=[args.name])
 
             assert len(response.values) <= 1
-            # extract type specific value
+
+            # requested parameter not set
             if not response.values:
-                label = 'Parameter not set'
-                value = None
+                return 'Parameter not set'
+
+            # extract type specific value
+            pvalue = response.values[0]
+            if pvalue.type == ParameterType.PARAMETER_BOOL:
+                label = 'Boolean value is:'
+                value = pvalue.bool_value
+            elif pvalue.type == ParameterType.PARAMETER_INTEGER:
+                label = 'Integer value is:'
+                value = pvalue.integer_value
+            elif pvalue.type == ParameterType.PARAMETER_DOUBLE:
+                label = 'Double value is:'
+                value = pvalue.double_value
+            elif pvalue.type == ParameterType.PARAMETER_STRING:
+                label = 'String value is:'
+                value = pvalue.string_value
+            elif pvalue.type == ParameterType.PARAMETER_BYTE_ARRAY:
+                label = 'Byte values are:'
+                value = pvalue.byte_array_value
+            elif pvalue.type == ParameterType.PARAMETER_BOOL_ARRAY:
+                label = 'Boolean values are:'
+                value = pvalue.bool_array_value
+            elif pvalue.type == ParameterType.PARAMETER_INTEGER_ARRAY:
+                label = 'Integer values are:'
+                value = pvalue.integer_array_value
+            elif pvalue.type == ParameterType.PARAMETER_DOUBLE_ARRAY:
+                label = 'Double values are:'
+                value = pvalue.double_array_value
+            elif pvalue.type == ParameterType.PARAMETER_STRING_ARRAY:
+                label = 'String values are:'
+                value = pvalue.string_array_value
             else:
-                pvalue = response.values[0]
-                if pvalue.type == ParameterType.PARAMETER_BOOL:
-                    label = 'Boolean value is:'
-                    value = pvalue.bool_value
-                elif pvalue.type == ParameterType.PARAMETER_INTEGER:
-                    label = 'Integer value is:'
-                    value = pvalue.integer_value
-                elif pvalue.type == ParameterType.PARAMETER_DOUBLE:
-                    label = 'Double value is:'
-                    value = pvalue.double_value
-                elif pvalue.type == ParameterType.PARAMETER_STRING:
-                    label = 'String value is:'
-                    value = pvalue.string_value
-                elif pvalue.type == ParameterType.PARAMETER_BYTE_ARRAY:
-                    label = 'Byte values are:'
-                    value = pvalue.byte_array_value
-                elif pvalue.type == ParameterType.PARAMETER_BOOL_ARRAY:
-                    label = 'Boolean values are:'
-                    value = pvalue.bool_array_value
-                elif pvalue.type == ParameterType.PARAMETER_INTEGER_ARRAY:
-                    label = 'Integer values are:'
-                    value = pvalue.integer_array_value
-                elif pvalue.type == ParameterType.PARAMETER_DOUBLE_ARRAY:
-                    label = 'Double values are:'
-                    value = pvalue.double_array_value
-                elif pvalue.type == ParameterType.PARAMETER_STRING_ARRAY:
-                    label = 'String values are:'
-                    value = pvalue.string_array_value
-                else:
-                    return "Unknown parameter type '{pvalue.type}'" \
-                        .format_map(locals())
+                return "Unknown parameter type '{pvalue.type}'" \
+                    .format_map(locals())
 
             # output response
             if not args.hide_type:
@@ -97,5 +98,5 @@ class GetVerb(VerbExtension):
                     print(label)
                 else:
                     print(label, value)
-            elif value is not None:
+            else:
                 print(value)
