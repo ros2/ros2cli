@@ -97,5 +97,5 @@ class GetVerb(VerbExtension):
                     print(label)
                 else:
                     print(label, value)
-            else:
+            elif value is not None:
                 print(value)
