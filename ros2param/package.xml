@@ -9,6 +9,7 @@
   <maintainer email="dthomas@osrfoundation.org">Dirk Thomas</maintainer>
   <license>Apache License 2.0</license>
 
+  <depend>rcl_interfaces</depend>
   <depend>rclpy</depend>
   <depend>ros2cli</depend>
 
