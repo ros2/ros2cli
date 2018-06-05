@@ -15,7 +15,6 @@
 import os
 
 from ament_index_python import get_package_prefix
-from ament_index_python import get_package_share_directory
 from ament_index_python import get_packages_with_prefixes
 from ament_index_python import PackageNotFoundError
 
@@ -36,13 +35,6 @@ def get_prefix_path(package_name):
     except PackageNotFoundError:
         return None
     return prefix_path
-
-
-def get_share_directory(package_name):
-    try:
-        return get_package_share_directory(package_name)
-    except PackageNotFoundError:
-        return None
 
 
 def get_executable_paths(*, package_name):
