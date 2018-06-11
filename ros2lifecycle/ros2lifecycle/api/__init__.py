@@ -116,7 +116,6 @@ def call_get_available_transitions(*, node, states):
             response = future.result()
             transitions[node_name] = []
             for transition_description in response.available_transitions:
-                print(hash(transition_description.start_state))
                 if (
                     states[node_name] is None or
                     transition_description.start_state == states[node_name]
