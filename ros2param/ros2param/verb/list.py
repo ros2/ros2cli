@@ -79,7 +79,8 @@ class ListVerb(VerbExtension):
             for node_name in sorted(futures.keys()):
                 future = futures[node_name]
                 if future.result() is not None:
-                    print('{node_name}:'.format_map(locals()))
+                    if not args.node_name:
+                        print('{node_name}:'.format_map(locals()))
                     response = future.result()
                     for name in sorted(response.result.names):
                         print('  {name}'.format_map(locals()))
