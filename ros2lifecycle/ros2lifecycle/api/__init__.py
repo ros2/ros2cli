@@ -12,11 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import rclpy
-
 from lifecycle_msgs.srv import ChangeState
 from lifecycle_msgs.srv import GetAvailableTransitions
 from lifecycle_msgs.srv import GetState
+
+import rclpy
+
 from ros2node.api import get_node_names as get_all_node_names
 from ros2service.api import get_service_names_and_types
 
