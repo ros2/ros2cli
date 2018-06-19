@@ -19,9 +19,9 @@ from ros2cli.node.strategy import add_arguments
 from ros2cli.node.strategy import NodeStrategy
 from ros2lifecycle.api import call_change_states
 from ros2lifecycle.api import call_get_available_transitions
+from ros2lifecycle.verb import VerbExtension
 from ros2node.api import get_node_names
 from ros2node.api import NodeNameCompleter
-from ros2param.verb import VerbExtension
 
 
 class SetVerb(VerbExtension):
