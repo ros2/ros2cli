@@ -88,12 +88,15 @@ class GetVerb(VerbExtension):
             elif pvalue.type == ParameterType.PARAMETER_STRING_ARRAY:
                 label = 'String values are:'
                 value = pvalue.string_array_value
+            elif pvalue.type == ParameterType.PARAMETER_NOT_SET:
+                label = 'Parameter not set.'
+                value = None
             else:
                 return "Unknown parameter type '{pvalue.type}'" \
                     .format_map(locals())
 
             # output response
             if not args.hide_type:
-                print(label, value)
+                print(label, value) if value is not None else print(label)
             else:
                 print(value)
