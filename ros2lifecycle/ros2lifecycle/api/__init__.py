@@ -35,7 +35,8 @@ def _has_lifecycle(node_name, service_names_and_types):
     for (service_name, service_types) in service_names_and_types:
         if (
             service_name == '/{node_name}/get_state'.format_map(locals()) and
-            'lifecycle_msgs/GetState' in service_types
+            ('lifecycle_msgs/GetState' in service_types or
+                'lifecycle_msgs/Sample_GetState' in service_types)  # Format used by OpenSplice
         ):
             return True
     return False
