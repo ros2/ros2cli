@@ -14,6 +14,7 @@
 
 import getpass
 import os
+import shutil
 import subprocess
 import sys
 
@@ -69,7 +70,7 @@ class CreateVerb(VerbExtension):
             '--maintainer-email',
             help='email address of the maintainer of this package'),
         parser.add_argument(
-            '--maintainer-name',
+            '--maintainer-name', default=getpass.getuser(),
             help='name of the maintainer of this package'),
         parser.add_argument(
             '--cpp-node-name',
@@ -79,32 +80,23 @@ class CreateVerb(VerbExtension):
             help='name of the empty cpp library')
 
     def main(self, *, args):
+        maintainer = Person(args.maintainer_name)
 
-        maintainer = Person(getpass.getuser())
-        if not args.maintainer_name:
-            # try getting the name from the global git config
-            p = subprocess.Popen(
-                ['git', 'config', '--global', 'user.name'],
-                stdout=subprocess.PIPE)
-            resp = p.communicate()
-            name = resp[0].decode().rstrip()
-            if name:
-                maintainer.name = name
-        else:
-            maintainer.name = args.maintainer_name
-
-        maintainer.email = maintainer.name + '@todo.todo'
-        if not args.maintainer_email:
-            # try getting the email from the global git config
-            p = subprocess.Popen(
-                ['git', 'config', '--global', 'user.email'],
-                stdout=subprocess.PIPE)
-            resp = p.communicate()
-            email = resp[0].decode().rstrip()
-            if email:
-                maintainer.email = email
-        else:
+        if args.maintainer_email:
             maintainer.email = args.maintainer_email
+        else:
+            # try getting the email from the global git config
+            git = shutil.which('git')
+            if git is not None:
+                p = subprocess.Popen(
+                    [git, 'config', '--global', 'user.email'],
+                    stdout=subprocess.PIPE)
+                resp = p.communicate()
+                email = resp[0].decode().rstrip()
+                if email:
+                    maintainer.email = email
+            if not maintainer.email:
+                maintainer.email = maintainer.name + '@todo.todo'
 
         cpp_node_name = None
         if args.cpp_node_name:
