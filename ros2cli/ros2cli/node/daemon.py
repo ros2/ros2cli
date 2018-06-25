@@ -58,6 +58,11 @@ def spawn_daemon(args, wait_until_spawned=None):
         # Process Creation Flag documented in the MSDN
         DETACHED_PROCESS = 0x00000008  # noqa: N806
         kwargs.update(creationflags=DETACHED_PROCESS)
+        # avoid showing cmd windows for subprocess
+        si = subprocess.STARTUPINFO()
+        si.dwFlags = subprocess.STARTF_USESHOWWINDOW
+        si.wShowWindow = subprocess.SW_HIDE
+        kwargs['startupinfo'] = si
         # don't keep handle of current working directory in daemon process
         kwargs.update(cwd=os.environ.get('SYSTEMROOT', None))
     subprocess.Popen(cmd + [
