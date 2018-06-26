@@ -41,6 +41,7 @@ class DirectNode:
 
         while not timeout_reached:
             rclpy.spin_once(self.node)
+        self.timer.cancel()
 
     def __enter__(self):
         return self
