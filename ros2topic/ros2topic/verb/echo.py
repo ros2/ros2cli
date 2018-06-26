@@ -15,14 +15,13 @@
 from argparse import ArgumentTypeError
 from collections import OrderedDict
 import importlib
-import os
 import sys
 
 import rclpy
 from rclpy.expand_topic_name import expand_topic_name
 from rclpy.qos import qos_profile_sensor_data
 from rclpy.validate_full_topic_name import validate_full_topic_name
-from ros2cli.node.direct import DirectNode, HIDDEN_NODE_PREFIX
+from ros2cli.node.direct import DirectNode
 from ros2topic.api import get_topic_names_and_types
 from ros2topic.api import TopicNameCompleter
 from ros2topic.verb import VerbExtension
@@ -77,14 +76,8 @@ def main(args):
         callback = subscriber_cb(args)
     else:
         callback = subscriber_cb_csv(args)
-
-    rclpy.init()
-
-    node_name_suffix = '_%d' % os.getpid()
-    node = rclpy.create_node(HIDDEN_NODE_PREFIX + 'ros2topic_echo_node' + node_name_suffix)
-    subscriber(node, args.topic_name, args.message_type, callback)
-    node.destroy_node()
-    rclpy.shutdown()
+    with DirectNode(args) as node:
+        subscriber(node, args.topic_name, args.message_type, callback)
 
 
 def register_yaml_representer():
