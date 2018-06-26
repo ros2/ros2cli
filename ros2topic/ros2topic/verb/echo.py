@@ -77,7 +77,7 @@ def main(args):
     else:
         callback = subscriber_cb_csv(args)
     with DirectNode(args) as node:
-        subscriber(node, args.topic_name, args.message_type, callback)
+        subscriber(node.node, args.topic_name, args.message_type, callback)
 
 
 def register_yaml_representer():
