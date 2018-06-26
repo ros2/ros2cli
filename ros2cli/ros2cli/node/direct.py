@@ -37,11 +37,12 @@ class DirectNode:
             args, 'node_name_suffix', '_%d' % os.getpid())
         self.node = rclpy.create_node(HIDDEN_NODE_PREFIX + 'ros2cli_node' + node_name_suffix)
         timeout = getattr(args, 'spin_time', DEFAULT_TIMEOUT)
-        self.timer = self.node.create_timer(timeout, timer_callback)
+        timer = self.node.create_timer(timeout, timer_callback)
 
         while not timeout_reached:
             rclpy.spin_once(self.node)
-        self.timer.cancel()
+
+        self.node.destroy_timer(timer)
 
     def __enter__(self):
         return self
@@ -53,7 +54,6 @@ class DirectNode:
         return getattr(self.node, name)
 
     def __exit__(self, exc_type, exc_value, traceback):
-        self.node.destroy_timer(self.timer)
         self.node.destroy_node()
         rclpy.shutdown()
 
