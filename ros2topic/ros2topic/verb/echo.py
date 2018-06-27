@@ -145,7 +145,11 @@ def subscriber_cb(args):
 
 
 def msg_to_yaml(args, msg):
-    return yaml.dump(msg_to_ordereddict(args, msg), width=sys.maxsize)
+    return yaml.dump(
+        msg_to_ordereddict(
+            msg,
+            truncate_length=args.truncate_length if args.full_length else None
+        ), width=sys.maxsize)
 
 
 def subscriber_cb_csv(args):
@@ -192,23 +196,53 @@ def msg_to_csv(args, msg):
 # Convert a msg to an OrderedDict. We do this instead of implementing a generic
 # __dict__() method in the msg because we want to preserve order of fields from
 # the .msg file(s).
-def msg_to_ordereddict(args, msg):
+def msg_to_ordereddict(msg, truncate_length=None):
     d = OrderedDict()
     # We rely on __slots__ retaining the order of the fields in the .msg file.
-    types = [bool, bytes, dict, float, int, list, str, tuple, OrderedDict]
     for field_name in msg.__slots__:
         value = getattr(msg, field_name, None)
-        if not any(isinstance(value, t) for t in types):
-            value = msg_to_ordereddict(args, value)
-        elif any(isinstance(value, t) for t in [bytes, list, str, tuple]):
-            if not args.full_length and len(value) > args.truncate_length:
-                value = value[:args.truncate_length]
-                if any(isinstance(value, t) for t in [list, tuple]):
-                    value.append('...')
-                elif isinstance(value, bytes):
-                    value += b'...'
-                elif isinstance(value, str):
-                    value += '...'
+        value = _convert_value(value)
         # remove leading underscore from field name
         d[field_name[1:]] = value
     return d
+
+
+def _convert_value(value, truncate_length=None):
+    if any(isinstance(value, t) for t in (bytes, list, str, tuple)):
+        # truncate value if requested
+        if truncate_length is not None and len(value) > truncate_length:
+            value = value[:truncate_length]
+            if any(isinstance(value, t) for t in [list, tuple]):
+                value.append('...')
+            elif isinstance(value, bytes):
+                value += b'...'
+            elif isinstance(value, str):
+                value += '...'
+            else:
+                assert False
+
+    if any(isinstance(value, t) for t in (dict, OrderedDict)):
+        # convert each key and value in the mapping
+        new_value = {} if isinstance(value, dict) else OrderedDict()
+        for k, v in value.items():
+            new_value[_convert_value(k)] = _convert_value(
+                v, truncate_length=truncate_length)
+        value = new_value
+
+    elif any(isinstance(value, t) for t in (list, tuple)):
+        # convert each item in the array
+        value = [_convert_value(v, truncate_length=truncate_length) for v in value]
+        if isinstance(value, tuple):
+            value = tuple(value)
+
+    elif isinstance(value, bytes):
+        # show string representation of bytes
+        value = str(value)
+
+    elif not any(isinstance(value, t) for t in (
+        bool, bytes, float, int, str
+    )):
+        # assuming value is a message
+        # since it is neither a collection nor a primitive type
+        value = msg_to_ordereddict(value, truncate_length=truncate_length)
+    return value
