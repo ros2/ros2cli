@@ -235,6 +235,10 @@ def _convert_value(value, truncate_length=None):
         if isinstance(value, tuple):
             value = tuple(value)
 
+    elif isinstance(value, bytes):
+        # show string representation of bytes
+        value = str(value)
+
     elif not any(isinstance(value, t) for t in (
         bool, bytes, float, int, str
     )):
