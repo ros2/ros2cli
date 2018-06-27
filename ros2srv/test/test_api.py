@@ -51,7 +51,7 @@ def test_api():
         pass
 
     # check package with doesn't have services
-    service_names = get_service_types('ament_index_python')
+    service_names = get_service_types('std_msgs')
     assert len(service_names) == 0
 
     # check known package for not existing service name

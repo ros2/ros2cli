@@ -24,13 +24,10 @@ def test_api():
     assert isinstance(package_names, Iterable)
 
     # explicit dependencies of this package will for sure be available
-    known_package_names = (
-        'ament_copyright', 'ament_flake8', 'ament_pep257', 'ros2cli')
-    for known_package_name in known_package_names:
-        assert known_package_name in package_names
+    assert 'ros2cli' in package_names
 
-        prefix_path = get_prefix_path(known_package_name)
-        assert os.path.isdir(prefix_path)
+    prefix_path = get_prefix_path('ros2cli')
+    assert os.path.isdir(prefix_path)
 
     prefix_path = get_prefix_path('_not_existing_package_name')
     assert prefix_path is None
