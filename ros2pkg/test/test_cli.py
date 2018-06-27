@@ -22,17 +22,14 @@ def test_cli():
     package_names = list_result.stdout.decode().splitlines()
 
     # explicit dependencies of this package will for sure be available
-    known_package_names = (
-        'ament_copyright', 'ament_flake8', 'ament_pep257', 'ros2cli')
-    for known_package_name in known_package_names:
-        assert known_package_name in package_names
+    assert 'ros2cli' in package_names
 
-        prefix_cmd = ['ros2', 'pkg', 'prefix', known_package_name]
-        prefix_result = subprocess.run(
-            prefix_cmd, stdout=subprocess.PIPE, check=True)
-        prefix_path = prefix_result.stdout.decode().splitlines()
-        assert len(prefix_path) == 1
-        assert os.path.isdir(prefix_path[0])
+    prefix_cmd = ['ros2', 'pkg', 'prefix', 'ros2cli']
+    prefix_result = subprocess.run(
+        prefix_cmd, stdout=subprocess.PIPE, check=True)
+    prefix_path = prefix_result.stdout.decode().splitlines()
+    assert len(prefix_path) == 1
+    assert os.path.isdir(prefix_path[0])
 
     prefix_cmd = ['ros2', 'pkg', 'prefix', '_not_existing_package_name']
     prefix_result = subprocess.run(

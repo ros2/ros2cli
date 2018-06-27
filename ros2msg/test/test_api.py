@@ -51,7 +51,7 @@ def test_api():
         pass
 
     # check package with doesn't have messages
-    message_names = get_message_types('ament_index_python')
+    message_names = get_message_types('std_srvs')
     assert len(message_names) == 0
 
     # check known package for not existing message name
