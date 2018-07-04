@@ -65,9 +65,16 @@ def spawn_daemon(args, wait_until_spawned=None):
         kwargs['startupinfo'] = si
         # don't keep handle of current working directory in daemon process
         kwargs.update(cwd=os.environ.get('SYSTEMROOT', None))
+
+    rmw_implementation_identifier = rclpy.get_rmw_implementation_identifier()
+    if rmw_implementation_identifier is None:
+        raise RuntimeError(
+            'Unable to get rmw_implementation_identifier,'
+            ' try specifying the implementation to use via the'
+            " 'RMW_IMPLEMENTATION' environment variable")
     subprocess.Popen(cmd + [
         # the arguments are only passed for visibility in e.g. the process list
-        '--rmw-implementation', rclpy.get_rmw_implementation_identifier(),
+        '--rmw-implementation', rmw_implementation_identifier,
         '--ros-domain-id', str(ros_domain_id)],
         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, **kwargs)
 
