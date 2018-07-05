@@ -69,9 +69,9 @@ def spawn_daemon(args, wait_until_spawned=None):
     rmw_implementation_identifier = rclpy.get_rmw_implementation_identifier()
     if rmw_implementation_identifier is None:
         raise RuntimeError(
-            'Unable to get rmw_implementation_identifier,'
-            ' try specifying the implementation to use via the'
-            " 'RMW_IMPLEMENTATION' environment variable")
+            'Unable to get rmw_implementation_identifier, '
+            'try specifying the implementation to use via the '
+            "'RMW_IMPLEMENTATION' environment variable")
     subprocess.Popen(cmd + [
         # the arguments are only passed for visibility in e.g. the process list
         '--rmw-implementation', rmw_implementation_identifier,
