@@ -53,7 +53,7 @@ class PubVerb(VerbExtension):
             '-1', '--once', action='store_true',
             help='Publish one message and exit')
         parser.add_argument(
-            '-n', '--node-name', type=str, default='',
+            '-n', '--node-name', type=str,
             help='Name of the created publishing node')
 
     def main(self, *, args):
@@ -84,7 +84,7 @@ def publisher(
     values_dictionary = yaml.load(values)
     if not isinstance(values_dictionary, dict):
         return 'The passed value needs to be a dictionary in YAML format'
-    if node_name == '':
+    if not node_name:
         node_name = 'publisher_%s_%s' % (package_name, message_name)
     rclpy.init()
 
