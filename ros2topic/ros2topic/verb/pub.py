@@ -47,10 +47,13 @@ class PubVerb(VerbExtension):
             '-r', '--rate', metavar='N', type=float, default=1.0,
             help='Publishing rate in Hz (default: 1)')
         parser.add_argument(
+            '-p', '--print', metavar='N', type=int, default=1,
+            help='Only print every N-th published message (default: 1)')
+        parser.add_argument(
             '-1', '--once', action='store_true',
             help='Publish one message and exit')
         parser.add_argument(
-            '-n', '--node-name', type=str, default='',
+            '-n', '--node-name', type=str,
             help='Name of the created publishing node')
 
     def main(self, *, args):
@@ -63,10 +66,12 @@ class PubVerb(VerbExtension):
 def main(args):
     return publisher(
         args.message_type, args.topic_name, args.values,
-        args.node_name, 1. / args.rate, args.once)
+        args.node_name, 1. / args.rate, args.print, args.once)
 
 
-def publisher(message_type, topic_name, values, node_name, period, once):
+def publisher(
+    message_type, topic_name, values, node_name, period, print_nth, once
+):
     # TODO(dirk-thomas) this logic should come from a rosidl related package
     try:
         package_name, message_name = message_type.split('/', 2)
@@ -79,7 +84,7 @@ def publisher(message_type, topic_name, values, node_name, period, once):
     values_dictionary = yaml.load(values)
     if not isinstance(values_dictionary, dict):
         return 'The passed value needs to be a dictionary in YAML format'
-    if node_name == '':
+    if not node_name:
         node_name = 'publisher_%s_%s' % (package_name, message_name)
     rclpy.init()
 
@@ -95,9 +100,12 @@ def publisher(message_type, topic_name, values, node_name, period, once):
             .format_map(locals())
 
     print('publisher: beginning loop')
+    count = 0
     while rclpy.ok():
+        count += 1
+        if print_nth and count % print_nth == 0:
+            print('publishing #%d: %r\n' % (count, msg))
         pub.publish(msg)
-        print('publishing %r\n' % msg)
         if once:
             time.sleep(0.1)  # make sure the message reaches the wire before exiting
             break

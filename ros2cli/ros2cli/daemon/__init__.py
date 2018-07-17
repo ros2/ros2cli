@@ -35,7 +35,7 @@ def main(*, script_name='_ros2_daemon', argv=None):
              'ROS_DOMAIN_ID)')
     parser.add_argument(
         '--timeout', metavar='N', type=int, default=2 * 60 * 60,
-        help='Shutdown the daemin after N seconds of inactivity')
+        help='Shutdown the daemon after N seconds of inactivity')
     args = parser.parse_args(args=argv)
 
     # the arguments are only passed for visibility in e.g. the process list
