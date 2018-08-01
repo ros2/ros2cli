@@ -148,7 +148,7 @@ def msg_to_yaml(args, msg):
     return yaml.dump(
         msg_to_ordereddict(
             msg,
-            truncate_length=args.truncate_length if args.full_length else None
+            truncate_length=args.truncate_length if not args.full_length else None
         ), width=sys.maxsize)
 
 
@@ -201,7 +201,7 @@ def msg_to_ordereddict(msg, truncate_length=None):
     # We rely on __slots__ retaining the order of the fields in the .msg file.
     for field_name in msg.__slots__:
         value = getattr(msg, field_name, None)
-        value = _convert_value(value)
+        value = _convert_value(value, truncate_length=truncate_length)
         # remove leading underscore from field name
         d[field_name[1:]] = value
     return d
