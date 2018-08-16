@@ -208,40 +208,31 @@ def msg_to_ordereddict(msg, truncate_length=None):
 
 
 def _convert_value(value, truncate_length=None):
-    if any(isinstance(value, t) for t in (bytes, list, str, tuple)):
-        # truncate value if requested
+    if isinstance(value, bytes):
         if truncate_length is not None and len(value) > truncate_length:
-            value = value[:truncate_length]
-            if any(isinstance(value, t) for t in [list, tuple]):
-                value.append('...')
-            elif isinstance(value, bytes):
-                value += b'...'
-            elif isinstance(value, str):
-                value += '...'
-            else:
-                assert False
-
-    if any(isinstance(value, t) for t in (dict, OrderedDict)):
+            value = ''.join([chr(c) for c in value[:truncate_length]]) + '...'
+        else:
+            value = ''.join([chr(c) for c in value])
+    elif isinstance(value, str):
+        if truncate_length is not None and len(value) > truncate_length:
+            value = value[:truncate_length] + '...'
+    elif isinstance(value, tuple) or isinstance(value, list):
+        if truncate_length is not None and len(value) > truncate_length:
+                # Truncate the sequence
+                value = value[:truncate_length]
+                # Truncate every item in the sequence
+                value = type(value)([_convert_value(v, truncate_length) for v in value] + ['...'])
+        else:
+            # Truncate every item in the list
+            value = type(value)([_convert_value(v, truncate_length) for v in value])
+    elif isinstance(value, dict) or isinstance(value, OrderedDict):
         # convert each key and value in the mapping
         new_value = {} if isinstance(value, dict) else OrderedDict()
         for k, v in value.items():
-            new_value[_convert_value(k)] = _convert_value(
+            new_value[_convert_value(k, truncate_length=truncate_length)] = _convert_value(
                 v, truncate_length=truncate_length)
         value = new_value
-
-    elif any(isinstance(value, t) for t in (list, tuple)):
-        # convert each item in the array
-        value = [_convert_value(v, truncate_length=truncate_length) for v in value]
-        if isinstance(value, tuple):
-            value = tuple(value)
-
-    elif isinstance(value, bytes):
-        # show string representation of bytes
-        value = str(value)
-
-    elif not any(isinstance(value, t) for t in (
-        bool, bytes, float, int, str
-    )):
+    elif not any(isinstance(value, t) for t in (bool, float, int)):
         # assuming value is a message
         # since it is neither a collection nor a primitive type
         value = msg_to_ordereddict(value, truncate_length=truncate_length)
