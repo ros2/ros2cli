@@ -73,7 +73,7 @@ def test_convert_ordered_dict():
         OrderedDict([(1, 'a'), ('2', 'b')]), truncate_length=1)
     assert OrderedDict([(1, 'a'), ('2', 'b')]) == _convert_value(
         OrderedDict([(1, 'a'), ('2', 'b')]), truncate_length=1000)
-    assert OrderedDict([(1, 'a...'), ('2...', 'b...')]) == _convert_value(
+    assert OrderedDict([(1, 'a...'), ('234', 'b...')]) == _convert_value(
         OrderedDict([(1, 'abc'), ('234', 'bcd')]), truncate_length=1)
 
 
@@ -81,5 +81,5 @@ def test_convert_dict():
     assert {1: 'a', '2': 'b'} == _convert_value({1: 'a', '2': 'b'})
     assert {1: 'a', '2': 'b'} == _convert_value({1: 'a', '2': 'b'}, truncate_length=1)
     assert {1: 'a', '2': 'b'} == _convert_value({1: 'a', '2': 'b'}, truncate_length=1000)
-    assert {1: 'a...', '2...': 'b...'} == _convert_value(
+    assert {1: 'a...', '234': 'b...'} == _convert_value(
         {1: 'abc', '234': 'bcd'}, truncate_length=1)

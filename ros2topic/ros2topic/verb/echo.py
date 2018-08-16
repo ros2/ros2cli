@@ -229,8 +229,8 @@ def _convert_value(value, truncate_length=None):
         # convert each key and value in the mapping
         new_value = {} if isinstance(value, dict) else OrderedDict()
         for k, v in value.items():
-            new_value[_convert_value(k, truncate_length=truncate_length)] = _convert_value(
-                v, truncate_length=truncate_length)
+            # don't truncate keys because that could result in key collisions and data loss
+            new_value[_convert_value(k)] = _convert_value(v, truncate_length=truncate_length)
         value = new_value
     elif not any(isinstance(value, t) for t in (bool, float, int)):
         # assuming value is a message
