@@ -36,6 +36,9 @@ class ListVerb(VerbExtension):
         parser.add_argument(
             '--include-hidden-nodes', action='store_true',
             help='Consider hidden nodes as well')
+        parser.add_argument(
+            '--param-prefixes', nargs='+', default=[],
+            help='Only list parameters with the provided prefixes')
 
     def main(self, *, args):  # noqa: D102
         with NodeStrategy(args) as node:
@@ -64,6 +67,8 @@ class ListVerb(VerbExtension):
                     client = clients[node_name]
                     if client.service_is_ready():
                         request = ListParameters.Request()
+                        for prefix in args.param_prefixes:
+                            request.prefixes.append(prefix)
                         future = client.call_async(request)
                         futures[node_name] = future
 

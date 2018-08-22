@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="2">
   <name>ros2topic</name>
-  <version>0.5.3</version>
+  <version>0.5.4</version>
   <description>
     The topic command for ROS 2 command line tools.
   </description>
@@ -12,6 +12,7 @@
   <depend>ros2cli</depend>
 
   <exec_depend>python3-yaml</exec_depend>
+  <exec_depend>rclpy</exec_depend>
   <exec_depend>ros2msg</exec_depend>
 
   <test_depend>ament_copyright</test_depend>
