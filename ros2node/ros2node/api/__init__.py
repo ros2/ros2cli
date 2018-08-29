@@ -26,14 +26,17 @@ def get_node_names(*, node, include_hidden_nodes=False):
             if n and not n.startswith(HIDDEN_NODE_PREFIX)]
     return node_names
 
-def get_node_names_and_namespaces(*, node, include_hidden_nodes=False):
-    node_names_and_ns = node.get_node_names_and_namespaces()
-    if not include_hidden_nodes:
-        node_names_and_ns = [
-            n for n in node_names_and_ns
-            if n[0] and not n[0].startswith(HIDDEN_NODE_PREFIX)]
-    return node_names_and_ns
-
+def get_node_namespaced_names(*, node, include_hidden_nodes=False):
+    node_names_ns = node.get_node_names_and_namespaces()
+    namespaced_nodes = []
+    for (node_name, node_ns) in node_names_ns:
+        if not include_hidden_nodes and node_name.startswith(HIDDEN_NODE_PREFIX):
+            continue
+        if node_ns == '/':
+            namespaced_nodes.append('/' + node_name)
+        else:
+            namespaced_nodes.append(node_ns + '/' + node_name)
+    return namespaced_nodes
 
 class NodeNameCompleter:
     """Callable returning a list of node names."""
@@ -43,7 +46,7 @@ class NodeNameCompleter:
 
     def __call__(self, prefix, parsed_args, **kwargs):
         with NodeStrategy(parsed_args) as node:
-            return get_node_names(
+            return get_node_namespaced_names(
                 node=node,
                 include_hidden_nodes=getattr(
                     parsed_args, self.include_hidden_nodes_key))

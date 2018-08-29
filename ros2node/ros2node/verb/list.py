@@ -14,7 +14,7 @@
 
 from ros2cli.node.strategy import add_arguments
 from ros2cli.node.strategy import NodeStrategy
-from ros2node.api import get_node_names_and_namespaces
+from ros2node.api import get_node_namespaced_names
 from ros2node.verb import VerbExtension
 
 
@@ -32,9 +32,9 @@ class ListVerb(VerbExtension):
 
     def main(self, *, args):
         with NodeStrategy(args) as node:
-            node_names_ns = get_node_names_and_namespaces(node=node, include_hidden_nodes=args.all)
+            node_names = get_node_namespaced_names(node=node, include_hidden_nodes=args.all)
 
         if args.count_nodes:
             print(len(node_names))
         elif node_names:
-            print(*[n[1] + '/'+ n[0] for n in node_names_ns], sep='\n')
+            print(*node_names, sep='\n')
