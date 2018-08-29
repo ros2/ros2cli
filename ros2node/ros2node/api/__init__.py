@@ -26,6 +26,7 @@ def get_node_names(*, node, include_hidden_nodes=False):
             if n and not n.startswith(HIDDEN_NODE_PREFIX)]
     return node_names
 
+
 def get_node_namespaced_names(*, node, include_hidden_nodes=False):
     node_names_ns = node.get_node_names_and_namespaces()
     namespaced_nodes = []
@@ -37,6 +38,7 @@ def get_node_namespaced_names(*, node, include_hidden_nodes=False):
         else:
             namespaced_nodes.append(node_ns + '/' + node_name)
     return namespaced_nodes
+
 
 class NodeNameCompleter:
     """Callable returning a list of node names."""
