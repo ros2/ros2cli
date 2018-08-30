@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import threading
+import time
 
 from ros2multicast.api import receive
 from ros2multicast.api import send
@@ -24,10 +25,11 @@ def test_api():
 
     def target():
         nonlocal received_data
-        received_data = receive(timeout=1.0)
+        received_data, _ = receive(timeout=1.0)
 
     t = threading.Thread(target=target)
     t.start()
+    time.sleep(0.1)
     send(sent_data)
     t.join()
     assert sent_data == received_data

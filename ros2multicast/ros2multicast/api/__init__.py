@@ -15,21 +15,37 @@
 import socket
 import struct
 
-DEFAULT_ADDRESS = '224.0.0.1'
+DEFAULT_GROUP = '225.0.0.1'
 DEFAULT_PORT = 49150
 
 
-def send(data, *, address=DEFAULT_ADDRESS, port=DEFAULT_PORT):
+def send(data, *, group=DEFAULT_GROUP, port=DEFAULT_PORT):
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-    s.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 1)
-    s.sendto(data, (address, port))
+    try:
+        s.sendto(data, (group, port))
+    finally:
+        s.close()
 
 
-def receive(*, address=DEFAULT_ADDRESS, port=DEFAULT_PORT, timeout=None):
+def receive(*, group=DEFAULT_GROUP, port=DEFAULT_PORT, timeout=None):
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    s.bind((address, port))
-    mreq = struct.pack('4sl', socket.inet_aton(address), socket.INADDR_ANY)
-    s.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
-    s.settimeout(timeout)
-    return s.recv(4096)
+    try:
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        try:
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+        except AttributeError:
+            # not available on Windows
+            pass
+        s.bind(('', port))
+
+        s.settimeout(timeout)
+
+        mreq = struct.pack('4sl', socket.inet_aton(group), socket.INADDR_ANY)
+        s.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
+        try:
+            data, sender_addr = s.recvfrom(4096)
+        finally:
+            s.setsockopt(socket.IPPROTO_IP, socket.IP_DROP_MEMBERSHIP, mreq)
+    finally:
+        s.close()
+    return data, sender_addr

@@ -22,8 +22,9 @@ class ReceiveVerb(VerbExtension):
     def main(self, *, args):
         print('Waiting for UDP multicast datagram...')
         try:
-            data = receive().decode('utf-8')
+            data, (host, port) = receive()
         except KeyboardInterrupt:
             pass
         else:
-            print("Received: '{data}'".format_map(locals()))
+            data = data.decode('utf-8')
+            print("Received from {host}:{port}: '{data}'".format_map(locals()))
