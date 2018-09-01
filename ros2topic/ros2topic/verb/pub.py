@@ -101,14 +101,21 @@ def publisher(
 
     print('publisher: beginning loop')
     count = 0
-    while rclpy.ok():
+
+    def timer_callback():
+        nonlocal count
         count += 1
         if print_nth and count % print_nth == 0:
             print('publishing #%d: %r\n' % (count, msg))
         pub.publish(msg)
-        if once:
-            time.sleep(0.1)  # make sure the message reaches the wire before exiting
-            break
-        time.sleep(period)
+
+    timer = node.create_timer(period, timer_callback)
+    if once:
+        rclpy.spin_once(node)
+        time.sleep(0.1)  # make sure the message reaches the wire before exiting
+    else:
+        rclpy.spin(node)
+
+    node.destroy_timer(timer)
     node.destroy_node()
     rclpy.shutdown()
