@@ -57,6 +57,8 @@ def main(*, script_name='_ros2_daemon', argv=None):
             server.register_function(
                 _print_invoked_function_name(node.get_node_names))
             server.register_function(
+                _print_invoked_function_name(node.get_node_names_and_namespaces))
+            server.register_function(
                 _print_invoked_function_name(node.get_topic_names_and_types))
             server.register_function(
                 _print_invoked_function_name(node.get_service_names_and_types))
