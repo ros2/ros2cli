@@ -19,7 +19,7 @@ import rclpy
 from ros2cli.node.direct import DirectNode
 from ros2cli.node.strategy import add_arguments
 from ros2cli.node.strategy import NodeStrategy
-from ros2node.api import get_node_names
+from ros2node.api import get_node_namespaced_names
 from ros2node.api import NodeNameCompleter
 from ros2param.verb import VerbExtension
 
@@ -42,10 +42,12 @@ class ListVerb(VerbExtension):
 
     def main(self, *, args):  # noqa: D102
         with NodeStrategy(args) as node:
-            node_names = get_node_names(
+            node_names = get_node_namespaced_names(
                 node=node, include_hidden_nodes=args.include_hidden_nodes)
 
         if args.node_name:
+            if not args.node_name.startswith('/'):
+                args.node_name = '/' + args.node_name
             if args.node_name not in node_names:
                 return 'Node not found'
             node_names = [args.node_name]
@@ -57,7 +59,7 @@ class ListVerb(VerbExtension):
             for node_name in node_names:
                 client = node.create_client(
                     ListParameters,
-                    '/{node_name}/list_parameters'.format_map(locals()))
+                    '{node_name}/list_parameters'.format_map(locals()))
                 clients[node_name] = client
 
             # wait until all clients have been called
