@@ -46,9 +46,10 @@ class ListVerb(VerbExtension):
                 node=node, include_hidden_nodes=args.include_hidden_nodes)
 
         if args.node_name:
-            if args.node_name not in node_names:
+            if args.node_name not in [n.full_name for n in node_names]:
                 return 'Node not found'
-            node_names = [args.node_name]
+            node_names = [
+                n for n in node_names if args.node_name == n.full_name]
 
         with DirectNode(args) as node:
             clients = {}
@@ -57,7 +58,7 @@ class ListVerb(VerbExtension):
             for node_name in node_names:
                 client = node.create_client(
                     ListParameters,
-                    '/{node_name}/list_parameters'.format_map(locals()))
+                    '{node_name.full_name}/list_parameters'.format_map(locals()))
                 clients[node_name] = client
 
             # wait until all clients have been called
@@ -85,7 +86,7 @@ class ListVerb(VerbExtension):
                 future = futures[node_name]
                 if future.result() is not None:
                     if not args.node_name:
-                        print('{node_name}:'.format_map(locals()))
+                        print('{node_name.full_name}:'.format_map(locals()))
                     response = future.result()
                     for name in sorted(response.result.names):
                         print('  {name}'.format_map(locals()))
@@ -93,5 +94,5 @@ class ListVerb(VerbExtension):
                     e = future.exception()
                     print(
                         'Exception while calling service of node '
-                        "'{node_name}': {e}".format_map(locals()),
+                        "'{node_name.full_name}': {e}".format_map(locals()),
                         file=sys.stderr)

@@ -57,7 +57,7 @@ def call_get_parameters(*, node, node_name, parameter_names):
     # create client
     client = node.create_client(
         GetParameters,
-        '/{node_name}/get_parameters'.format_map(locals()))
+        '{node_name}/get_parameters'.format_map(locals()))
 
     # call as soon as ready
     ready = client.wait_for_service(timeout_sec=5.0)
@@ -83,7 +83,7 @@ def call_set_parameters(*, node, node_name, parameters):
     # create client
     client = node.create_client(
         SetParameters,
-        '/{node_name}/set_parameters'.format_map(locals()))
+        '{node_name}/set_parameters'.format_map(locals()))
 
     # call as soon as ready
     ready = client.wait_for_service(timeout_sec=5.0)
