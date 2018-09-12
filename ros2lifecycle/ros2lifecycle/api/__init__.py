@@ -27,14 +27,14 @@ def get_node_names(*, node, include_hidden_nodes=False):
         node=node, include_hidden_nodes=include_hidden_nodes)
     service_names_and_types = get_service_names_and_types(node=node)
     return [
-        n for n in node_names
-        if _has_lifecycle(n, service_names_and_types)]
+        n.full_name for n in node_names
+        if _has_lifecycle(n.full_name, service_names_and_types)]
 
 
 def _has_lifecycle(node_name, service_names_and_types):
     for (service_name, service_types) in service_names_and_types:
         if (
-            service_name == '/{node_name}/get_state'.format_map(locals()) and
+            service_name == '{node_name}/get_state'.format_map(locals()) and
             'lifecycle_msgs/GetState' in service_types
         ):
             return True
@@ -48,7 +48,7 @@ def call_get_states(*, node, node_names):
     for node_name in node_names:
         client = node.create_client(
             GetState,
-            '/{node_name}/get_state'.format_map(locals()))
+            '{node_name}/get_state'.format_map(locals()))
         clients[node_name] = client
 
     # wait until all clients have been called
@@ -88,7 +88,7 @@ def call_get_available_transitions(*, node, states):
     for node_name in states.keys():
         client = node.create_client(
             GetAvailableTransitions,
-            '/{node_name}/get_available_transitions'.format_map(locals()))
+            '{node_name}/get_available_transitions'.format_map(locals()))
         clients[node_name] = client
 
     # wait until all clients have been called
@@ -135,7 +135,7 @@ def call_change_states(*, node, transitions):
     for node_name in transitions.keys():
         client = node.create_client(
             ChangeState,
-            '/{node_name}/change_state'.format_map(locals()))
+            '{node_name}/change_state'.format_map(locals()))
         clients[node_name] = client
 
     # wait until all clients have been called
