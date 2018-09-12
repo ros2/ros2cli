@@ -44,12 +44,7 @@ class SetVerb(VerbExtension):
             node_names = get_node_names(
                 node=node, include_hidden_nodes=args.include_hidden_nodes)
 
-        node_found = False
-        for node_name in node_names:
-            if args.node_name in node_name.full_name:
-                node_found = True
-                break
-        if not node_found:
+        if args.node_name not in {n.full_name for n in node_names}:
             return 'Node not found'
 
         with DirectNode(args) as node:
