@@ -46,7 +46,7 @@ class GetVerb(VerbExtension):
                 node=node, include_hidden_nodes=args.include_hidden_nodes)
 
         if args.node_name:
-            if args.node_name not in node_names:
+            if args.node_name not in {n.full_name for n in node_names}:
                 return 'Node not found'
             node_names = [args.node_name]
 
