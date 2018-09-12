@@ -38,4 +38,4 @@ class ListVerb(VerbExtension):
         if args.count_nodes:
             print(len(node_names))
         elif node_names:
-            print(*node_names, sep='\n')
+            print(*{n.full_name for n in node_names}, sep='\n')
