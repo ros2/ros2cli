@@ -72,15 +72,24 @@ class SetFieldError(Exception):
         self.exception = exception
 
 
-def set_msg_fields(msg, values):
+def set_msg_fields(msg, values, keys={}):
     for field_name, field_value in values.items():
+        # check for substitution key, e.g. 'now'
+        if type(field_value) == str:
+            if field_value in keys:
+                try:
+                    setattr(msg, field_name, keys[field_value])
+                except Exception as e:
+                    raise SetFieldError(field_name, e)
+                continue
+
         field_type = type(getattr(msg, field_name))
         try:
             value = field_type(field_value)
         except TypeError:
             value = field_type()
             try:
-                set_msg_fields(value, field_value)
+                set_msg_fields(value, field_value, keys=keys)
             except SetFieldError as e:
                 raise SetFieldError(
                     '{field_name}.{e.field_name}'.format_map(locals()),

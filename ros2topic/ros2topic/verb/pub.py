@@ -21,6 +21,7 @@ from ros2topic.api import SetFieldError
 from ros2topic.api import TopicNameCompleter
 from ros2topic.api import TopicTypeCompleter
 from ros2topic.verb import VerbExtension
+from std_msgs.msg import Header
 import yaml
 
 
@@ -55,6 +56,10 @@ class PubVerb(VerbExtension):
         parser.add_argument(
             '-n', '--node-name', type=str,
             help='Name of the created publishing node')
+        parser.add_argument(
+            '-s', '--substitute-keywords', default=False, action='store_true',
+            help='When publishing with a rate, performs keyword ("now" or "auto")' +
+                 'substitution for each message')
 
     def main(self, *, args):
         if args.rate <= 0:
@@ -66,11 +71,12 @@ class PubVerb(VerbExtension):
 def main(args):
     return publisher(
         args.message_type, args.topic_name, args.values,
-        args.node_name, 1. / args.rate, args.print, args.once)
+        args.node_name, 1. / args.rate, args.print, args.once,
+        substitute_keywords=args.substitute_keywords)
 
 
 def publisher(
-    message_type, topic_name, values, node_name, period, print_nth, once
+    message_type, topic_name, values, node_name, period, print_nth, once, substitute_keywords=False
 ):
     # TODO(dirk-thomas) this logic should come from a rosidl related package
     try:
@@ -89,24 +95,26 @@ def publisher(
     rclpy.init()
 
     node = rclpy.create_node(node_name)
+    clock = node.get_clock()
 
     pub = node.create_publisher(msg_module, topic_name)
 
     msg = msg_module()
-    try:
-        set_msg_fields(msg, values_dictionary)
-    except SetFieldError as e:  # noqa: F841
-        return "Failed to populate field '{e.field_name}': {e.exception}" \
-            .format_map(locals())
+    _fill_message_args(clock, msg, values_dictionary)
 
     print('publisher: beginning loop')
     count = 0
 
     def timer_callback():
+        nonlocal clock
         nonlocal count
         count += 1
         if print_nth and count % print_nth == 0:
             print('publishing #%d: %r\n' % (count, msg))
+
+        # fill msg with values
+        if substitute_keywords:
+            _fill_message_args(clock, msg, values_dictionary)
         pub.publish(msg)
 
     timer = node.create_timer(period, timer_callback)
@@ -119,3 +127,25 @@ def publisher(
     node.destroy_timer(timer)
     node.destroy_node()
     rclpy.shutdown()
+
+
+def _fill_message_args(clock, msg, values_dictionary):
+    try:
+        # Populate the message and enable substitution keys for 'now'
+        # and 'auto'. There is a corner case here: this logic doesn't
+        # work if you're publishing a Header only and wish to use
+        # 'auto' with it. This isn't a troubling case, but if we start
+        # allowing more keys in the future, it could become an actual
+        # use case. It greatly complicates logic because we'll have to
+        # do more reasoning over types. to avoid ambiguous cases
+        # (e.g. a std_msgs/String type, which only has a single string
+        # field).
+
+        # allow the use of the 'now' string with timestamps and 'auto' with header
+        now = clock.now().to_msg()
+        header = Header()
+        keys = {'now': now, 'auto': Header(stamp=now)}
+        set_msg_fields(msg, values_dictionary, keys=keys)
+    except SetFieldError as e:  # noqa: F841
+        return "Failed to populate field '{e.field_name}': {e.exception}" \
+            .format_map(locals())
