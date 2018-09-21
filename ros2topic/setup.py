@@ -35,6 +35,7 @@ The package provides the topic command for the ROS 2 command line tools.""",
         'ros2topic.verb': [
             'delay = ros2topic.verb.delay:DelayVerb',
             'echo = ros2topic.verb.echo:EchoVerb',
+            'hz = ros2topic.verb.hz:HzVerb',
             'info = ros2topic.verb.info:InfoVerb',
             'list = ros2topic.verb.list:ListVerb',
             'pub = ros2topic.verb.pub:PubVerb',
