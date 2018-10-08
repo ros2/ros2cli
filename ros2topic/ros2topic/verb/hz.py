@@ -34,10 +34,12 @@
 # https://github.com/ros/ros_comm/blob/6e5016f4b2266d8a60c9a1e163c4928b8fc7115e/tools/rostopic/src/rostopic/__init__.py
 
 from argparse import ArgumentTypeError
+from collections import defaultdict
 
 import functools
 import importlib
 import math
+import threading
 
 from time import sleep
 
@@ -78,8 +80,8 @@ class HzVerb(VerbExtension):
         parser.add_argument(
             '--window', '-w',
             dest='window_size', type=unsigned_int, default=DEFAULT_WINDOW_SIZE,
-            help='window size, in # of messages, for calculating rate, '
-                 'string to (default: %d)' % DEFAULT_WINDOW_SIZE, metavar='WINDOW')
+            help='window size, in # of messages, for calculating rate '
+                 '(default: %d)' % DEFAULT_WINDOW_SIZE, metavar='WINDOW')
         parser.add_argument(
             '--filter',
             dest='filter_expr', default=None,
@@ -114,8 +116,6 @@ class ROSTopicHz(object):
     """ROSTopicHz receives messages for a topic and computes frequency."""
 
     def __init__(self, node, window_size, filter_expr=None, use_wtime=False):
-        import threading
-        from collections import defaultdict
         self.lock = threading.Lock()
         self.last_printed_tn = 0
         self.msg_t0 = -1
@@ -196,7 +196,8 @@ class ROSTopicHz(object):
                 return
 
             curr = curr_rostime.nanoseconds
-            if self.get_msg_t0(topic=topic) < 0 or self.get_msg_t0(topic=topic) > curr:
+            msg_t0 = self.get_msg_t0(topic=topic)
+            if msg_t0 < 0 or msg_t0 > curr:
                 self.set_msg_t0(curr, topic=topic)
                 self.set_msg_tn(curr, topic=topic)
                 self.set_times([], topic=topic)
@@ -225,16 +226,17 @@ class ROSTopicHz(object):
             return
         with self.lock:
             # Get frequency every one minute
-            n = len(self.get_times(topic=topic))
-            mean = sum(self.get_times(topic=topic)) / n
+            times = self.get_times(topic=topic)
+            n = len(times)
+            mean = sum(times) / n
             rate = 1. / mean if mean > 0. else 0
 
             # std dev
-            std_dev = math.sqrt(sum((x - mean)**2 for x in self.get_times(topic=topic)) / n)
+            std_dev = math.sqrt(sum((x - mean)**2 for x in times) / n)
 
             # min and max
-            max_delta = max(self.get_times(topic=topic))
-            min_delta = min(self.get_times(topic=topic))
+            max_delta = max(times)
+            min_delta = min(times)
 
             self.set_last_printed_tn(self.get_msg_tn(topic=topic), topic=topic)
 
