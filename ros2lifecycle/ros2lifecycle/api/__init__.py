@@ -58,7 +58,6 @@ def call_get_states(*, node, node_names):
             client = clients[node_name]
             if client.service_is_ready():
                 request = GetState.Request()
-                request.node_name = node_name
                 future = client.call_async(request)
                 futures[node_name] = future
 
@@ -98,7 +97,6 @@ def call_get_available_transitions(*, node, states):
             client = clients[node_name]
             if client.service_is_ready():
                 request = GetAvailableTransitions.Request()
-                request.node_name = node_name
                 future = client.call_async(request)
                 futures[node_name] = future
 
@@ -145,7 +143,6 @@ def call_change_states(*, node, transitions):
             client = clients[node_name]
             if client.service_is_ready():
                 request = ChangeState.Request()
-                request.node_name = node_name
                 request.transition = transitions[node_name]
                 future = client.call_async(request)
                 futures[node_name] = future
