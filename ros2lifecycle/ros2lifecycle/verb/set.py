@@ -17,9 +17,11 @@ import sys
 from ros2cli.node.direct import DirectNode
 from ros2cli.node.strategy import add_arguments
 from ros2cli.node.strategy import NodeStrategy
+
 from ros2lifecycle.api import call_change_states
 from ros2lifecycle.api import call_get_available_transitions
 from ros2lifecycle.verb import VerbExtension
+
 from ros2node.api import get_node_names
 from ros2node.api import NodeNameCompleter
 
@@ -57,18 +59,19 @@ class SetVerb(VerbExtension):
                     .format_map(locals())
 
             # identify requested transition
-            for transition in transitions:
+            for transition in [t.transition for t in transitions]:
                 if transition.label == args.transition:
                     break
             else:
-                for transition in transitions:
+                for transition in [t.transition for t in transitions]:
                     if str(transition.id) == args.transition:
                         break
                 else:
                     return \
                         'Unknown transition requested, available ones are:' + \
                         ''.join(
-                            '\n- {t.label} [{t.id}]'.format_map(locals())
+                            '\n- {t.transition.label} [{t.transition.id}]'
+                            .format_map(locals())
                             for t in transitions)
 
             results = call_change_states(
