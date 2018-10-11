@@ -35,6 +35,7 @@ The package provides the lifecycle command for the ROS 2 command line tools.""",
         'ros2lifecycle.verb': [
             'get = ros2lifecycle.verb.get:GetVerb',
             'list = ros2lifecycle.verb.list:ListVerb',
+            'nodes = ros2lifecycle.verb.nodes:NodesVerb',
             'set = ros2lifecycle.verb.set:SetVerb',
         ],
     }
