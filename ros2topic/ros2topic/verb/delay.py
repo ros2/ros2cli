@@ -34,19 +34,14 @@
 # https://github.com/ros/ros_comm/blob/6e5016f4b2266d8a60c9a1e163c4928b8fc7115e/tools/rostopic/src/rostopic/__init__.py
 
 from argparse import ArgumentTypeError
-import importlib
 import math
-
-from time import sleep
 
 import rclpy
 
-from rclpy.expand_topic_name import expand_topic_name
 from rclpy.qos import qos_profile_sensor_data
 from rclpy.time import Time
-from rclpy.validate_full_topic_name import validate_full_topic_name
 from ros2cli.node.direct import DirectNode
-from ros2topic.api import get_topic_names_and_types
+from ros2topic.api import get_msg_class
 from ros2topic.api import TopicNameCompleter
 from ros2topic.verb import VerbExtension
 
@@ -200,59 +195,3 @@ def _rostopic_delay(node, topic, window_size=DEFAULT_WINDOW_SIZE):
     node.destroy_timer(timer)
     node.destroy_node()
     rclpy.shutdown()
-
-
-def get_msg_class(node, topic, blocking=False):
-    msg_class = _get_msg_class(node, topic)
-    if msg_class:
-        return msg_class
-    elif blocking:
-        print('WARNING: topic [%s] does not appear to be published yet' % topic)
-        while rclpy.ok():
-            msg_class = _get_msg_class(node, topic)
-            if msg_class:
-                return msg_class
-            else:
-                sleep(0.1)
-    else:
-        print('WARNING: topic [%s] does not appear to be published yet' % topic)
-    return None
-
-
-def _get_msg_class(node, topic):
-    """
-    Get message module based on topic name.
-
-    :param topic: topic name, ``list`` of ``str``
-    """
-    topic_names_and_types = get_topic_names_and_types(node=node)
-    try:
-        expanded_name = expand_topic_name(topic, node.get_name(), node.get_namespace())
-    except ValueError as e:
-        raise RuntimeError(e)
-    try:
-        validate_full_topic_name(expanded_name)
-    except rclpy.exceptions.InvalidTopicNameException as e:
-        raise RuntimeError(e)
-    for n, t in topic_names_and_types:
-        if n == expanded_name:
-            if len(t) > 1:
-                raise RuntimeError(
-                    "Cannot echo topic '%s', as it contains more than one type: [%s]" %
-                    (topic, ', '.join(t))
-                )
-            message_type = t[0]
-            break
-    else:
-        # Could not determine the type for the passed topic
-        return None
-
-    # TODO(dirk-thomas) this logic should come from a rosidl related package
-    try:
-        package_name, message_name = message_type.split('/', 2)
-        if not package_name or not message_name:
-            raise ValueError()
-    except ValueError:
-        raise RuntimeError('The passed message type is invalid')
-    module = importlib.import_module(package_name + '.msg')
-    return getattr(module, message_name)
