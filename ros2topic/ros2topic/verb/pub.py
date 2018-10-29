@@ -21,6 +21,7 @@ from ros2topic.api import SetFieldError
 from ros2topic.api import TopicNameCompleter
 from ros2topic.api import TopicTypeCompleter
 from ros2topic.verb import VerbExtension
+from ros2cli.node import CLI_NODE_NAME_PREFIX
 import yaml
 
 
@@ -77,7 +78,7 @@ def publisher(
     if not isinstance(values_dictionary, dict):
         return 'The passed value needs to be a dictionary in YAML format'
     if not node_name:
-        node_name = 'publisher_%s' % (message_type.replace('/', '_'),)
+        node_name = CLI_NODE_NAME_PREFIX + '_publisher_%s' % (message_type.replace('/', '_'), )
     rclpy.init()
 
     node = rclpy.create_node(node_name)

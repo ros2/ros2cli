@@ -1,0 +1,2 @@
+HIDDEN_NODE_PREFIX = '_'
+CLI_NODE_NAME_PREFIX = 'ros2cli_node'
