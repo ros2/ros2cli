@@ -16,8 +16,6 @@ import os
 
 import rclpy
 
-#HIDDEN_NODE_PREFIX = '_'
-#from ros2node.api import HIDDEN_NODE_PREFIX
 from ros2cli.node import HIDDEN_NODE_PREFIX, CLI_NODE_NAME_PREFIX
 DEFAULT_TIMEOUT = 0.5
 
