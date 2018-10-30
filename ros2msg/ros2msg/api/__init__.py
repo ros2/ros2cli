@@ -43,8 +43,6 @@ def get_message_types(package_name):
 
 def get_message_path(package_name, message_name):
     message_types = get_message_types(package_name)
-    import sys
-    sys.stderr.write('Message types ' + repr(message_types) + '\n')
     if message_name not in message_types:
         raise LookupError('Unknown message name')
     prefix_path = has_resource('packages', package_name)
