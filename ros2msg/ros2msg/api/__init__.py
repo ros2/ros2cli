@@ -37,7 +37,8 @@ def get_message_types(package_name):
         return []
     interface_names = content.splitlines()
     # TODO(dirk-thomas) this logic should come from a rosidl related package
-    return [n[:-4] for n in interface_names if n.endswith('.msg')]
+    # Only return messages in msg folder
+    return [n[4:-4] for n in interface_names if n.startswith('msg/') and n.endswith('.msg')]
 
 
 def get_message_path(package_name, message_name):
