@@ -25,6 +25,7 @@ from ros2cli.node.direct import DirectNode
 from ros2topic.api import get_topic_names_and_types
 from ros2topic.api import TopicNameCompleter
 from ros2topic.verb import VerbExtension
+from std_msgs.msg import String
 import yaml
 
 DEFAULT_TRUNCATE_LENGTH = 128
@@ -140,7 +141,17 @@ def subscriber(node, topic_name, message_type, callback):
 def subscriber_cb(args):
     def cb(msg):
         nonlocal args
-        print(msg_to_yaml(args, msg))
+        if (type(msg) == String):
+            # emulate block literal yaml format, but accept unicode
+            # chars that yaml does not yet
+            if len(msg.data.splitlines()) > 1:
+                print("data: |-" )
+                for line in msg.data.splitlines():
+                    print("  {}".format(line))
+            else:
+                print("data: {}".format(msg.data))
+        else:
+            print(msg_to_yaml(args, msg))
     return cb
 
 
