@@ -16,7 +16,7 @@ import os
 
 import rclpy
 
-from ros2cli.node import HIDDEN_NODE_PREFIX, CLI_NODE_NAME_PREFIX
+from ros2cli.node import CLI_NODE_NAME_PREFIX
 DEFAULT_TIMEOUT = 0.5
 
 
@@ -33,8 +33,7 @@ class DirectNode:
 
         node_name_suffix = getattr(
             args, 'node_name_suffix', '_%d' % os.getpid())
-        node_name_prefix = HIDDEN_NODE_PREFIX + CLI_NODE_NAME_PREFIX
-        self.node = rclpy.create_node(node_name_prefix + node_name_suffix)
+        self.node = rclpy.create_node(CLI_NODE_NAME_PREFIX + node_name_suffix)
         timeout = getattr(args, 'spin_time', DEFAULT_TIMEOUT)
         timer = self.node.create_timer(timeout, timer_callback)
 
