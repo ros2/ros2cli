@@ -38,7 +38,10 @@ def get_service_types(package_name):
     interface_names = content.splitlines()
     # TODO(dirk-thomas) this logic should come from a rosidl related package
     # Only return services in srv folder
-    return [n[4:-4] for n in interface_names if n.startswith('srv/') and n.endswith('.srv')]
+    return list(sorted({
+        n[4:-4]
+        for n in interface_names
+        if n.startswith('srv/') and n[-4:] in ('.idl', '.srv')}))
 
 
 def get_service_path(package_name, service_name):
