@@ -12,18 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from ros2cli.node.direct import DirectNode
 from ros2cli.node.strategy import add_arguments
 from ros2cli.node.strategy import NodeStrategy
 from ros2node.api import get_node_names
-from ros2node.api import get_subscriber_info
 from ros2node.api import get_publisher_info
 from ros2node.api import get_service_info
-from ros2cli.node.direct import DirectNode
+from ros2node.api import get_subscriber_info
 from ros2node.verb import VerbExtension
 
 
 def print_names_and_types(names_and_types):
-    print(*[2*'  ' + s.name + ': ' + ', '.join(s.types) for s in names_and_types], sep='\n')
+    print(*[2 * '  ' + s.name + ': ' + ', '.join(s.types) for s in names_and_types], sep='\n')
 
 
 class InfoVerb(VerbExtension):
@@ -51,7 +51,7 @@ class InfoVerb(VerbExtension):
                 print('  Services:')
                 print_names_and_types(services)
         else:
-            print("All nodes found:")
-            print(*[n.full_name for n in node_names],  sep=', ')
-            print("Unable to find node " + args.node_name)
+            print('All nodes found:')
+            print(*[n.full_name for n in node_names], sep=', ')
+            print('Unable to find node ' + args.node_name)
             return
