@@ -257,7 +257,8 @@ def _rostopic_hz(node, topic, window_size=DEFAULT_WINDOW_SIZE, filter_expr=None,
     :param filter_expr: Python filter expression that is called with m, the message instance
     """
     # pause hz until topic is published
-    msg_class = get_msg_class(node, topic, blocking=True)
+    msg_class = get_msg_class(
+        node, topic, blocking=True, include_hidden_topics=True)
 
     if msg_class is None:
         node.destroy_node()

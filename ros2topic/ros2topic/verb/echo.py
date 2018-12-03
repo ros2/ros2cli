@@ -77,7 +77,8 @@ def main(args):
     else:
         callback = subscriber_cb_csv(args)
     with DirectNode(args) as node:
-        subscriber(node.node, args.topic_name, args.message_type, callback)
+        subscriber(
+            node.node, args.topic_name, args.message_type, callback)
 
 
 def register_yaml_representer():
@@ -98,7 +99,7 @@ def represent_ordereddict(dumper, data):
 
 def subscriber(node, topic_name, message_type, callback):
     if message_type is None:
-        topic_names_and_types = get_topic_names_and_types(node=node)
+        topic_names_and_types = get_topic_names_and_types(node=node, include_hidden_topics=True)
         try:
             expanded_name = expand_topic_name(topic_name, node.get_name(), node.get_namespace())
         except ValueError as e:
