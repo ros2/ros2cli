@@ -78,7 +78,8 @@ class DelayVerb(VerbExtension):
 
 def main(args):
     with DirectNode(args) as node:
-        _rostopic_delay(node.node, args.topic, window_size=args.window)
+        _rostopic_delay(
+            node.node, args.topic, window_size=args.window)
 
 
 class ROSTopicDelay(object):
@@ -175,7 +176,7 @@ def _rostopic_delay(node, topic, window_size=DEFAULT_WINDOW_SIZE):
     :param blocking: pause delay until topic is published, ``bool``
     """
     # pause hz until topic is published
-    msg_class = get_msg_class(node, topic, blocking=True)
+    msg_class = get_msg_class(node, topic, blocking=True, include_hidden_topics=True)
 
     if msg_class is None:
         node.destroy_node()

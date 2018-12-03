@@ -101,14 +101,14 @@ def set_msg_fields(msg, values):
             raise SetFieldError(field_name, e)
 
 
-def get_msg_class(node, topic, blocking=False):
-    msg_class = _get_msg_class(node, topic)
+def get_msg_class(node, topic, blocking=False, include_hidden_topics=False):
+    msg_class = _get_msg_class(node, topic, include_hidden_topics)
     if msg_class:
         return msg_class
     elif blocking:
         print('WARNING: topic [%s] does not appear to be published yet' % topic)
         while rclpy.ok():
-            msg_class = _get_msg_class(node, topic)
+            msg_class = _get_msg_class(node, topic, include_hidden_topics)
             if msg_class:
                 return msg_class
             else:
@@ -118,13 +118,14 @@ def get_msg_class(node, topic, blocking=False):
     return None
 
 
-def _get_msg_class(node, topic):
+def _get_msg_class(node, topic, include_hidden_topics):
     """
     Get message module based on topic name.
 
     :param topic: topic name, ``list`` of ``str``
     """
-    topic_names_and_types = get_topic_names_and_types(node=node)
+    topic_names_and_types = get_topic_names_and_types(
+        node=node, include_hidden_topics=include_hidden_topics)
     try:
         expanded_name = expand_topic_name(topic, node.get_name(), node.get_namespace())
     except ValueError as e:
