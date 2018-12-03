@@ -14,7 +14,6 @@
 
 from argparse import ArgumentTypeError
 from collections import OrderedDict
-import importlib
 import sys
 
 import rclpy
@@ -23,6 +22,7 @@ from rclpy.qos import qos_profile_sensor_data
 from rclpy.validate_full_topic_name import validate_full_topic_name
 from ros2cli.node.direct import DirectNode
 from ros2topic.api import get_topic_names_and_types
+from ros2topic.api import import_message_type
 from ros2topic.api import TopicNameCompleter
 from ros2topic.verb import VerbExtension
 import yaml
@@ -121,15 +121,7 @@ def subscriber(node, topic_name, message_type, callback):
             raise RuntimeError(
                 'Could not determine the type for the passed topic')
 
-    # TODO(dirk-thomas) this logic should come from a rosidl related package
-    try:
-        package_name, message_name = message_type.split('/', 2)
-        if not package_name or not message_name:
-            raise ValueError()
-    except ValueError:
-        raise RuntimeError('The passed message type is invalid')
-    module = importlib.import_module(package_name + '.msg')
-    msg_module = getattr(module, message_name)
+    msg_module = import_message_type(topic_name, message_type)
 
     node.create_subscription(
         msg_module, topic_name, callback, qos_profile=qos_profile_sensor_data)

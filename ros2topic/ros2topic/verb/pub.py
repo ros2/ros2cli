@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import importlib
 import time
 
 import rclpy
+from ros2topic.api import import_message_type
 from ros2topic.api import set_msg_fields
 from ros2topic.api import SetFieldError
 from ros2topic.api import TopicNameCompleter
@@ -72,20 +72,12 @@ def main(args):
 def publisher(
     message_type, topic_name, values, node_name, period, print_nth, once
 ):
-    # TODO(dirk-thomas) this logic should come from a rosidl related package
-    try:
-        package_name, message_name = message_type.split('/', 2)
-        if not package_name or not message_name:
-            raise ValueError()
-    except ValueError:
-        raise RuntimeError('The passed message type is invalid')
-    module = importlib.import_module(package_name + '.msg')
-    msg_module = getattr(module, message_name)
+    msg_module = import_message_type(topic_name, message_type)
     values_dictionary = yaml.load(values)
     if not isinstance(values_dictionary, dict):
         return 'The passed value needs to be a dictionary in YAML format'
     if not node_name:
-        node_name = 'publisher_%s_%s' % (package_name, message_name)
+        node_name = 'publisher_%s' % (message_type.replace('/', '_'),)
     rclpy.init()
 
     node = rclpy.create_node(node_name)
