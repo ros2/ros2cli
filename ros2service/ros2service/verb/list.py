@@ -29,9 +29,6 @@ class ListVerb(VerbExtension):
         parser.add_argument(
             '-c', '--count-services', action='store_true',
             help='Only display the number of services discovered')
-        parser.add_argument(
-            '--include-hidden-services', action='store_true',
-            help='Consider hidden services as well')
 
     def main(self, *, args):
         with NodeStrategy(args) as node:
