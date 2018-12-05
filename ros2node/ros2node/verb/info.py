@@ -54,4 +54,4 @@ class InfoVerb(VerbExtension):
             print('All nodes found:')
             print(*[n.full_name for n in node_names], sep=', ')
             print('Unable to find node ' + args.node_name)
-            return
+            return 'Unable to find node'

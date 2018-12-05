@@ -26,7 +26,7 @@ TopicInfo = namedtuple('Topic', ('name', 'types'))
 def parse_node_name(full_node_name):
     tokens = full_node_name.split('/')
     if 1 > len(tokens):
-        raise Exception('Invalid node name')
+        raise RuntimeError('Invalid node name: ' + full_node_name)
     node_name = full_node_name
     namespace = '/'
     if len(tokens) > 1:
