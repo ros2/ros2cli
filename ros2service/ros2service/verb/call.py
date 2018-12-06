@@ -64,7 +64,13 @@ def requester(service_type, service_name, values, period):
             raise ValueError()
     except ValueError:
         raise RuntimeError('The passed service type is invalid')
-    module = importlib.import_module(package_name + '.srv')
+
+    # TODO(sloretz) node API to get topic types should indicate if action or srv
+    middle_module = 'srv'
+    if service_name.endswith('/_action/get_result') or service_name.endswith('/_action/send_goal'):
+        middle_module = 'action'
+
+    module = importlib.import_module(package_name + '.' + middle_module)
     srv_module = getattr(module, srv_name)
     values_dictionary = yaml.load(values)
 
