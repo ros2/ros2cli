@@ -51,7 +51,4 @@ class InfoVerb(VerbExtension):
                 print('  Services:')
                 print_names_and_types(services)
         else:
-            print('All nodes found:')
-            print(*[n.full_name for n in node_names], sep=', ')
-            print('Unable to find node ' + args.node_name)
-            return 'Unable to find node'
+            return "Unable to find node '" + args.node_name + "'"
