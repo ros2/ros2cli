@@ -20,6 +20,19 @@ from ros2cli.node.strategy import NodeStrategy
 HIDDEN_NODE_PREFIX = '_'
 
 NodeName = namedtuple('NodeName', ('name', 'namespace', 'full_name'))
+TopicInfo = namedtuple('Topic', ('name', 'types'))
+
+
+def parse_node_name(full_node_name):
+    tokens = full_node_name.split('/')
+    if 1 > len(tokens):
+        raise RuntimeError('Invalid node name: ' + full_node_name)
+    node_name = full_node_name
+    namespace = '/'
+    if len(tokens) > 1:
+        node_name = tokens[-1]
+        namespace = '/'.join(tokens[:-1])
+    return NodeName(node_name, namespace, full_node_name)
 
 
 def get_node_names(*, node, include_hidden_nodes=False):
@@ -35,6 +48,28 @@ def get_node_names(*, node, include_hidden_nodes=False):
             (t[0] and not t[0].startswith(HIDDEN_NODE_PREFIX))
         )
     ]
+
+
+def get_topics(remote_node_name, func):
+    node = parse_node_name(remote_node_name)
+    names_and_types = func(node.name, node.namespace)
+    return [
+        TopicInfo(
+            name=t[0],
+            types=t[1])
+        for t in names_and_types]
+
+
+def get_subscriber_info(*, node, remote_node_name):
+    return get_topics(remote_node_name, node.get_subscriber_names_and_types_by_node)
+
+
+def get_publisher_info(*, node, remote_node_name):
+    return get_topics(remote_node_name, node.get_publisher_names_and_types_by_node)
+
+
+def get_service_info(*, node, remote_node_name):
+    return get_topics(remote_node_name, node.get_service_names_and_types_by_node)
 
 
 class NodeNameCompleter:
