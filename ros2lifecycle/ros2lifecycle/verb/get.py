@@ -44,9 +44,10 @@ class GetVerb(VerbExtension):
         with NodeStrategy(args) as node:
             node_names = get_node_names(
                 node=node, include_hidden_nodes=args.include_hidden_nodes)
+            node_names = [n.full_name for n in node_names]
 
         if args.node_name:
-            if args.node_name not in {n.full_name for n in node_names}:
+            if args.node_name not in node_names:
                 return 'Node not found'
             node_names = [args.node_name]
 
