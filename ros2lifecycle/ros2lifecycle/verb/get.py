@@ -44,7 +44,7 @@ class GetVerb(VerbExtension):
 
         if args.node_name:
             node_name = args.node_name
-            if not node_name[0] == '/':
+            if node_name[0] != '/':
                 node_name = '/' + node_name
             if node_name not in node_names:
                 return 'Node not found'
