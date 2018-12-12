@@ -43,9 +43,13 @@ class GetVerb(VerbExtension):
             node_names = [n.full_name for n in node_names]
 
         if args.node_name:
-            if args.node_name not in node_names:
+            node_name = args.node_name
+            if not node_name[0] == '/':
+                node_name = '/' + node_name
+
+            if node_name not in node_names:
                 return 'Node not found'
-            node_names = [args.node_name]
+            node_names = [node_name]
 
         with DirectNode(args) as node:
             states = call_get_states(node=node, node_names=node_names)
