@@ -17,7 +17,6 @@ import sys
 from ros2cli.node.direct import DirectNode
 from ros2cli.node.strategy import add_arguments
 from ros2cli.node.strategy import NodeStrategy
-from ros2lifecycle.api import call_get_available_transitions
 from ros2lifecycle.api import call_get_states
 from ros2lifecycle.api import get_node_names
 from ros2lifecycle.verb import VerbExtension
@@ -36,9 +35,6 @@ class GetVerb(VerbExtension):
         parser.add_argument(
             '--include-hidden-nodes', action='store_true',
             help='Consider hidden nodes as well')
-        parser.add_argument(
-            '--transitions', action='store_true',
-            help='Output possible transitions')
 
     def main(self, *, args):  # noqa: D102
         with NodeStrategy(args) as node:
@@ -47,9 +43,12 @@ class GetVerb(VerbExtension):
             node_names = [n.full_name for n in node_names]
 
         if args.node_name:
-            if args.node_name not in node_names:
+            node_name = args.node_name
+            if node_name[0] != '/':
+                node_name = '/' + node_name
+            if node_name not in node_names:
                 return 'Node not found'
-            node_names = [args.node_name]
+            node_names = [node_name]
 
         with DirectNode(args) as node:
             states = call_get_states(node=node, node_names=node_names)
@@ -66,10 +65,6 @@ class GetVerb(VerbExtension):
                     if args.node_name:
                         return 1
 
-            if args.transitions:
-                transitions = call_get_available_transitions(
-                    node=node, states=states)
-
             # output current states
             for node_name in sorted(states.keys()):
                 state = states[node_name]
@@ -78,19 +73,3 @@ class GetVerb(VerbExtension):
                     prefix = '{node_name}: '.format_map(locals())
                 print(
                     prefix + '{state.label} [{state.id}]'.format_map(locals()))
-
-                if args.transitions:
-                    if isinstance(transitions[node_name], Exception):
-                        print(
-                            'Exception while calling service of node '
-                            "'{node_name}': {transitions[node_name]}"
-                            .format_map(locals()), file=sys.stderr)
-                        if args.node_name:
-                            return 1
-                    elif transitions[node_name]:
-                        for transition in transitions[node_name]:
-                            print(
-                                '-> {transition.label} [{transition.id}]'
-                                .format_map(locals()))
-                    else:
-                        print('  no transitions available')
