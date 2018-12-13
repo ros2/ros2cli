@@ -13,4 +13,4 @@
 # limitations under the License.
 # TODO(mikaelarguedas) revisit this once it's specified
 HIDDEN_NODE_PREFIX = '_'
-CLI_NODE_NAME_PREFIX = 'ros2cli_node'
+CLI_NODE_NAME_PREFIX = HIDDEN_NODE_PREFIX + 'ros2cli_node'
