@@ -23,6 +23,14 @@ NodeName = namedtuple('NodeName', ('name', 'namespace', 'full_name'))
 TopicInfo = namedtuple('Topic', ('name', 'types'))
 
 
+def get_absolute_node_name(node_name):
+    if not node_name:
+        return None
+    if node_name[0] != '/':
+        node_name = '/' + node_name
+    return node_name
+
+
 def parse_node_name(full_node_name):
     tokens = full_node_name.split('/')
     if 1 > len(tokens):

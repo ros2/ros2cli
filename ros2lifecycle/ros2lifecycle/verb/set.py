@@ -22,6 +22,7 @@ from ros2lifecycle.api import call_change_states
 from ros2lifecycle.api import call_get_available_transitions
 from ros2lifecycle.verb import VerbExtension
 
+from ros2node.api import get_absolute_node_name
 from ros2node.api import get_node_names
 from ros2node.api import NodeNameCompleter
 
@@ -46,7 +47,8 @@ class SetVerb(VerbExtension):
             node_names = get_node_names(
                 node=node, include_hidden_nodes=args.include_hidden_nodes)
 
-        if args.node_name not in {n.full_name for n in node_names}:
+        node_name = get_absolute_node_name(args.node_name)
+        if node_name not in {n.full_name for n in node_names}:
             return 'Node not found'
 
         with DirectNode(args) as node:
