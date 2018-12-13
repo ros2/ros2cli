@@ -20,6 +20,7 @@ from ros2cli.node.strategy import NodeStrategy
 from ros2lifecycle.api import call_get_states
 from ros2lifecycle.api import get_node_names
 from ros2lifecycle.verb import VerbExtension
+from ros2node.api import get_absolute_node_name
 from ros2node.api import NodeNameCompleter
 
 
@@ -42,13 +43,10 @@ class GetVerb(VerbExtension):
                 node=node, include_hidden_nodes=args.include_hidden_nodes)
             node_names = [n.full_name for n in node_names]
 
-        if args.node_name:
-            node_name = args.node_name
-            if node_name[0] != '/':
-                node_name = '/' + node_name
+        node_name = get_absolute_node_name(args.node_name)
+        if node_name:
             if node_name not in node_names:
                 return 'Node not found'
-            node_names = [node_name]
 
         with DirectNode(args) as node:
             states = call_get_states(node=node, node_names=node_names)

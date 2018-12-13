@@ -19,6 +19,7 @@ import rclpy
 from ros2cli.node.direct import DirectNode
 from ros2cli.node.strategy import add_arguments
 from ros2cli.node.strategy import NodeStrategy
+from ros2node.api import get_absolute_node_name
 from ros2node.api import get_node_names
 from ros2node.api import NodeNameCompleter
 from ros2param.verb import VerbExtension
@@ -45,10 +46,8 @@ class ListVerb(VerbExtension):
             node_names = get_node_names(
                 node=node, include_hidden_nodes=args.include_hidden_nodes)
 
-        if args.node_name:
-            node_name = args.node_name
-            if node_name[0] != '/':
-                node_name = '/' + node_name
+        node_name = get_absolute_node_name(args.node_name)
+        if node_name:
             if node_name not in [n.full_name for n in node_names]:
                 return 'Node not found'
             node_names = [
