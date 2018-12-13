@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from collections import Iterable
+from collections.abc import Iterable
 import os
 
 from ros2srv.api import get_all_service_types
