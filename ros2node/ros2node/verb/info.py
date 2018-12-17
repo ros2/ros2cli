@@ -27,7 +27,7 @@ def print_names_and_types(names_and_types):
 
 
 class InfoVerb(VerbExtension):
-    """Output a list of available nodes."""
+    """Output information about a node."""
 
     def add_arguments(self, parser, cli_name):
         add_arguments(parser)
