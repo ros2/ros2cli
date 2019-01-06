@@ -24,6 +24,9 @@ class ListVerb(VerbExtension):
     def add_arguments(self, parser, cli_name):
         add_arguments(parser)
         parser.add_argument(
+            '--include-hidden-topics', action='store_true',
+            help='Consider hidden topics as well')
+        parser.add_argument(
             '-t', '--show-types', action='store_true',
             help='Additionally show the topic type')
         parser.add_argument(

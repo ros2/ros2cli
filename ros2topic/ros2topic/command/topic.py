@@ -22,9 +22,6 @@ class TopicCommand(CommandExtension):
 
     def add_arguments(self, parser, cli_name):
         self._subparser = parser
-        parser.add_argument(
-            '--include-hidden-topics', action='store_true',
-            help='Consider hidden topics as well')
 
         # get verb extensions and let them add their arguments
         verb_extensions = get_verb_extensions('ros2topic.verb')
