@@ -33,8 +33,8 @@ The package provides the node command for the ROS 2 command line tools.""",
             'ros2node.verb = ros2node.verb:VerbExtension',
         ],
         'ros2node.verb': [
-            'list = ros2node.verb.list:ListVerb',
             'info = ros2node.verb.info:InfoVerb',
+            'list = ros2node.verb.list:ListVerb',
         ],
     }
 )
