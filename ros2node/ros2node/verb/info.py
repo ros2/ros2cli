@@ -19,6 +19,7 @@ from ros2node.api import get_node_names
 from ros2node.api import get_publisher_info
 from ros2node.api import get_service_info
 from ros2node.api import get_subscriber_info
+from ros2node.api import NodeNameCompleter
 from ros2node.verb import VerbExtension
 
 
@@ -31,9 +32,10 @@ class InfoVerb(VerbExtension):
 
     def add_arguments(self, parser, cli_name):
         add_arguments(parser)
-        parser.add_argument(
+        argument = parser.add_argument(
             'node_name',
             help='Node name to request information')
+        argument.completer = NodeNameCompleter()
 
     def main(self, *, args):
         with NodeStrategy(args) as node:
