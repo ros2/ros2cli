@@ -11,6 +11,5 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# TODO(mikaelarguedas) revisit this once it's specified
-HIDDEN_NODE_PREFIX = '_'
-CLI_NODE_NAME_PREFIX = HIDDEN_NODE_PREFIX + 'ros2cli'
+from rclpy.node import HIDDEN_NODE_PREFIX
+NODE_NAME_PREFIX = HIDDEN_NODE_PREFIX + 'ros2cli'
