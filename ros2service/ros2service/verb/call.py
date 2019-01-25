@@ -16,12 +16,12 @@ import importlib
 import time
 
 import rclpy
+from ros2cli.node import NODE_NAME_PREFIX
 from ros2service.api import ServiceNameCompleter
 from ros2service.api import ServiceTypeCompleter
 from ros2service.verb import VerbExtension
 from ros2topic.api import set_msg_fields
 from ros2topic.api import SetFieldError
-from ros2cli.node import NODE_NAME_PREFIX
 import yaml
 
 

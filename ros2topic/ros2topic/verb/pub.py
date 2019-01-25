@@ -15,13 +15,13 @@
 import time
 
 import rclpy
+from ros2cli.node import NODE_NAME_PREFIX
 from ros2topic.api import import_message_type
 from ros2topic.api import set_msg_fields
 from ros2topic.api import SetFieldError
 from ros2topic.api import TopicNameCompleter
 from ros2topic.api import TopicTypeCompleter
 from ros2topic.verb import VerbExtension
-from ros2cli.node import NODE_NAME_PREFIX
 import yaml
 
 
