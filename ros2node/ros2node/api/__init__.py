@@ -14,10 +14,8 @@
 
 from collections import namedtuple
 
+from rclpy.node import HIDDEN_NODE_PREFIX
 from ros2cli.node.strategy import NodeStrategy
-
-# TODO(mikaelarguedas) revisit this once it's specified
-HIDDEN_NODE_PREFIX = '_'
 
 NodeName = namedtuple('NodeName', ('name', 'namespace', 'full_name'))
 TopicInfo = namedtuple('Topic', ('name', 'types'))

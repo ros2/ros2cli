@@ -16,6 +16,7 @@ import importlib
 import time
 
 import rclpy
+from ros2cli.node import NODE_NAME_PREFIX
 from ros2service.api import ServiceNameCompleter
 from ros2service.api import ServiceTypeCompleter
 from ros2service.verb import VerbExtension
@@ -76,7 +77,7 @@ def requester(service_type, service_name, values, period):
 
     rclpy.init()
 
-    node = rclpy.create_node('requester_%s_%s' % (package_name, srv_name))
+    node = rclpy.create_node(NODE_NAME_PREFIX + '_requester_%s_%s' % (package_name, srv_name))
 
     cli = node.create_client(srv_module, service_name)
 

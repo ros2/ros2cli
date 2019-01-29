@@ -15,6 +15,7 @@
 import time
 
 import rclpy
+from ros2cli.node import NODE_NAME_PREFIX
 from ros2topic.api import import_message_type
 from ros2topic.api import set_msg_fields
 from ros2topic.api import SetFieldError
@@ -77,7 +78,7 @@ def publisher(
     if not isinstance(values_dictionary, dict):
         return 'The passed value needs to be a dictionary in YAML format'
     if not node_name:
-        node_name = 'publisher_%s' % (message_type.replace('/', '_'),)
+        node_name = NODE_NAME_PREFIX + '_publisher_%s' % (message_type.replace('/', '_'), )
     rclpy.init()
 
     node = rclpy.create_node(node_name)
