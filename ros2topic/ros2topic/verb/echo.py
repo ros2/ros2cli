@@ -211,10 +211,10 @@ def _convert_value(value, truncate_length=None):
             value = value[:truncate_length] + '...'
     elif isinstance(value, tuple) or isinstance(value, list):
         if truncate_length is not None and len(value) > truncate_length:
-                # Truncate the sequence
-                value = value[:truncate_length]
-                # Truncate every item in the sequence
-                value = type(value)([_convert_value(v, truncate_length) for v in value] + ['...'])
+            # Truncate the sequence
+            value = value[:truncate_length]
+            # Truncate every item in the sequence
+            value = type(value)([_convert_value(v, truncate_length) for v in value] + ['...'])
         else:
             # Truncate every item in the list
             value = type(value)([_convert_value(v, truncate_length) for v in value])
