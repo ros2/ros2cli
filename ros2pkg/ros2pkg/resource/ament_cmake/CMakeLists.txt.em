@@ -87,11 +87,11 @@ install(TARGETS @(cpp_node_name)
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   # the following line skips the linter which checks for copyrights
-  # remove the line when a copyright and license is present in all source files
-  set(ament_cmake_copyright_FOUND TRUE)
+  # uncomment the line when a copyright and license is not present in all source files
+  #set(ament_cmake_copyright_FOUND TRUE)
   # the following line skips cpplint (only works in a git repo)
-  # remove the line when this package is a git repo
-  set(ament_cmake_cpplint_FOUND TRUE)
+  # uncomment the line when this package is not in a git repo
+  #set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
 endif()
 @[if cpp_library_name]@
