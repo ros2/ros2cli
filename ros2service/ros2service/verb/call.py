@@ -67,7 +67,7 @@ def requester(service_name, values, period):
             if len(t) > 1:
                 raise RuntimeError(
                     "Cannot call service '%s', as it contains more than one type: [%s]" %
-                    (topic_name, ', '.join(t))
+                    (service_name, ', '.join(t))
                 )
             service_type = t[0]
             break
