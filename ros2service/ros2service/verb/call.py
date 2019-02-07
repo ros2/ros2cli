@@ -15,8 +15,10 @@
 import importlib
 import time
 
+import os
 import rclpy
 from ros2cli.node import NODE_NAME_PREFIX
+from ros2service.api import get_service_names_and_types
 from ros2service.api import ServiceNameCompleter
 from ros2service.api import ServiceTypeCompleter
 from ros2service.verb import VerbExtension
@@ -34,9 +36,6 @@ class CallVerb(VerbExtension):
             help="Name of the ROS service to call to (e.g. '/add_two_ints')")
         arg.completer = ServiceNameCompleter(
             include_hidden_services_key='include_hidden_services')
-        arg = parser.add_argument(
-            'service_type',
-            help="Type of the ROS service (e.g. 'std_srvs/Empty')")
         arg.completer = ServiceTypeCompleter(
             service_name_key='service_name')
         parser.add_argument(
@@ -53,11 +52,29 @@ class CallVerb(VerbExtension):
             raise RuntimeError('rate must be greater than zero')
         period = 1. / args.rate if args.rate else None
 
-        return requester(
-            args.service_type, args.service_name, args.values, period)
+        return requester(args.service_name, args.values, period)
 
 
-def requester(service_type, service_name, values, period):
+def requester(service_name, values, period):
+    rclpy.init()
+
+    node = rclpy.create_node(NODE_NAME_PREFIX + '_requester_%s' % (str(os.getpid())))
+    names_and_types = get_service_names_and_types(
+        node=node
+    )
+    for n, t in names_and_types:
+        if n == service_name:
+            if len(t) > 1:
+                raise RuntimeError(
+                    "Cannot call service '%s', as it contains more than one type: [%s]" %
+                    (topic_name, ', '.join(t))
+                )
+            service_type = t[0]
+            break
+    else:
+        raise RuntimeError(
+            'Could not determine the type for the passed topic')
+
     # TODO(wjwwood) this logic should come from a rosidl related package
     try:
         package_name, srv_name = service_type.split('/', 2)
@@ -74,10 +91,6 @@ def requester(service_type, service_name, values, period):
     module = importlib.import_module(package_name + '.' + middle_module)
     srv_module = getattr(module, srv_name)
     values_dictionary = yaml.load(values)
-
-    rclpy.init()
-
-    node = rclpy.create_node(NODE_NAME_PREFIX + '_requester_%s_%s' % (package_name, srv_name))
 
     cli = node.create_client(srv_module, service_name)
 
