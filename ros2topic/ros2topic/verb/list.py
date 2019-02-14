@@ -29,6 +29,10 @@ class ListVerb(VerbExtension):
         parser.add_argument(
             '-c', '--count-topics', action='store_true',
             help='Only display the number of topics discovered')
+        # duplicate the following argument from the command for visibility
+        parser.add_argument(
+            '--include-hidden-topics', action='store_true',
+            help='Consider hidden topics as well')
 
     def main(self, *, args):
         with NodeStrategy(args) as node:
