@@ -17,20 +17,44 @@ from rcl_interfaces.msg import ParameterValue
 from rcl_interfaces.srv import GetParameters
 from rcl_interfaces.srv import SetParameters
 import rclpy
+import yaml
 
 
 def get_parameter_value(*, string_value):
     """Guess the desired type of the parameter based on the string value."""
     value = ParameterValue()
-    if string_value.lower() in ('true', 'false'):
+    try:
+        yaml_value = yaml.load(string_value)
+    except yaml.parser.ParserError:
+        value.type = ParameterType.PARAMETER_STRING
+        value.string_value = string_value
+        return value
+
+    if isinstance(yaml_value, bool):
         value.type = ParameterType.PARAMETER_BOOL
-        value.bool_value = string_value.lower() == 'true'
-    elif _is_integer(string_value):
+        value.bool_value = yaml_value
+    elif isinstance(yaml_value, int):
         value.type = ParameterType.PARAMETER_INTEGER
         value.integer_value = int(string_value)
-    elif _is_float(string_value):
+    elif isinstance(yaml_value, float):
         value.type = ParameterType.PARAMETER_DOUBLE
         value.double_value = float(string_value)
+    elif isinstance(yaml_value, list):
+        if all([isinstance(v, bool) for v in yaml_value]):
+            value.type = ParameterType.PARAMETER_BOOL_ARRAY
+            value.bool_array_value = yaml_value
+        elif all([isinstance(v, int) for v in yaml_value]):
+            value.type = ParameterType.PARAMETER_INTEGER_ARRAY
+            value.integer_array_value = yaml_value
+        elif all([isinstance(v, float) for v in yaml_value]):
+            value.type = ParameterType.PARAMETER_DOUBLE_ARRAY
+            value.double_array_value = yaml_value
+        elif all([isinstance(v, str) for v in yaml_value]):
+            value.type = ParameterType.PARAMETER_STRING_ARRAY
+            value.string_array_value = yaml_value
+        else:
+            value.type = ParameterType.PARAMETER_STRING
+            value.string_value = string_value
     else:
         value.type = ParameterType.PARAMETER_STRING
         value.string_value = string_value
