@@ -17,7 +17,6 @@ import time
 
 import os
 import rclpy
-from ros2cli.node import NODE_NAME_PREFIX
 from ros2service.api import get_service_names_and_types
 from ros2service.api import ServiceNameCompleter
 from ros2service.api import ServiceTypeCompleter
@@ -36,6 +35,11 @@ class CallVerb(VerbExtension):
             help="Name of the ROS service to call to (e.g. '/add_two_ints')")
         arg.completer = ServiceNameCompleter(
             include_hidden_services_key='include_hidden_services')
+        arg = parser.add_argument(
+            '-t', '--service-type',
+            nargs='?',
+            default=None,
+            help="Type of the ROS service (e.g. 'std_srvs/Empty')")
         arg.completer = ServiceTypeCompleter(
             service_name_key='service_name')
         parser.add_argument(
@@ -52,28 +56,34 @@ class CallVerb(VerbExtension):
             raise RuntimeError('rate must be greater than zero')
         period = 1. / args.rate if args.rate else None
 
-        return requester(args.service_name, args.values, period)
+        return requester(
+            args.service_type,
+            args.service_name,
+            args.values,
+            period
+        )
 
 
-def requester(service_name, values, period):
+def requester(service_type, service_name, values, period):
     rclpy.init()
 
-    node = rclpy.create_node(NODE_NAME_PREFIX + '_requester_%s' % (str(os.getpid())))
-    names_and_types = get_service_names_and_types(
-        node=node
-    )
-    for n, t in names_and_types:
-        if n == service_name:
-            if len(t) > 1:
-                raise RuntimeError(
-                    "Cannot call service '%s', as it contains more than one type: [%s]" %
-                    (service_name, ', '.join(t))
-                )
-            service_type = t[0]
-            break
-    else:
-        raise RuntimeError(
-            'Could not determine the type for the passed topic')
+    node = rclpy.create_node('requester_%s' % (str(os.getpid())))
+    if service_type is None:
+        names_and_types = get_service_names_and_types(node=node)
+        for n, t in names_and_types:
+            if n == service_name:
+                if len(t) > 1:
+                    raise RuntimeError(
+                        ("Cannot automatically determine the type of service '%s', as it "
+                         "contains more than one type: [%s]. Use '--service-type' to "
+                        "refine your choice." %
+                        (service_name, ', '.join(t)))
+                    )
+                service_type = t[0]
+                break
+        else:
+            raise RuntimeError(
+                "Could not determine the type for the passed service name '%s'" % service_name )
 
     # TODO(wjwwood) this logic should come from a rosidl related package
     try:
