@@ -114,6 +114,17 @@ def set_msg_fields(msg, values):
         except ValueError as e:
             raise SetFieldError(field_name, e)
         try:
+            f_type = msg.get_slot_types()['_' + field_name]
+            # Check if field is an array of ROS message types
+            if f_type.find('/') != -1:
+                if isinstance(field_type(), list):
+                    f_type = f_type[:f_type.rfind('[')]
+                    field_elem_type = import_message_type('', f_type)
+                    for n in range(len(value)):
+                        submsg = field_elem_type()
+                        set_msg_fields(submsg, value[n])
+                        value[n] = submsg
+
             setattr(msg, field_name, value)
         except Exception as e:
             raise SetFieldError(field_name, e)
