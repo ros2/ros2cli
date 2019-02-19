@@ -59,9 +59,9 @@ def test_double():
 
 
 def test_string():
-    value = get_parameter_value(string_value="foo")
+    value = get_parameter_value(string_value='foo')
     assert value.type == ParameterType.PARAMETER_STRING
-    assert value.string_value == "foo"
+    assert value.string_value == 'foo'
 
 
 def test_bool_array():
@@ -85,7 +85,7 @@ def test_float_array():
 def test_string_array():
     value = get_parameter_value(string_value='["foo", "bar", "buzz"]')
     assert value.type == ParameterType.PARAMETER_STRING_ARRAY
-    assert value.string_array_value == ["foo", "bar", "buzz"]
+    assert value.string_array_value == ['foo', 'bar', 'buzz']
 
 
 def test_malformed_yaml():
