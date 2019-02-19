@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ros2param.api import get_parameter_value
 from rcl_interfaces.msg import ParameterType
+from ros2param.api import get_parameter_value
 
 
 def test_bool():
