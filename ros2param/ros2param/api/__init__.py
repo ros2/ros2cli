@@ -35,10 +35,10 @@ def get_parameter_value(*, string_value):
         value.bool_value = yaml_value
     elif isinstance(yaml_value, int):
         value.type = ParameterType.PARAMETER_INTEGER
-        value.integer_value = int(string_value)
+        value.integer_value = yaml_value
     elif isinstance(yaml_value, float):
         value.type = ParameterType.PARAMETER_DOUBLE
-        value.double_value = float(string_value)
+        value.double_value = yaml_value
     elif isinstance(yaml_value, list):
         if all([isinstance(v, bool) for v in yaml_value]):
             value.type = ParameterType.PARAMETER_BOOL_ARRAY
