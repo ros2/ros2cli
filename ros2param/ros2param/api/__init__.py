@@ -40,16 +40,16 @@ def get_parameter_value(*, string_value):
         value.type = ParameterType.PARAMETER_DOUBLE
         value.double_value = yaml_value
     elif isinstance(yaml_value, list):
-        if all([isinstance(v, bool) for v in yaml_value]):
+        if all((isinstance(v, bool) for v in yaml_value)):
             value.type = ParameterType.PARAMETER_BOOL_ARRAY
             value.bool_array_value = yaml_value
-        elif all([isinstance(v, int) for v in yaml_value]):
+        elif all((isinstance(v, int) for v in yaml_value)):
             value.type = ParameterType.PARAMETER_INTEGER_ARRAY
             value.integer_array_value = yaml_value
-        elif all([isinstance(v, float) for v in yaml_value]):
+        elif all((isinstance(v, float) for v in yaml_value)):
             value.type = ParameterType.PARAMETER_DOUBLE_ARRAY
             value.double_array_value = yaml_value
-        elif all([isinstance(v, str) for v in yaml_value]):
+        elif all((isinstance(v, str) for v in yaml_value)):
             value.type = ParameterType.PARAMETER_STRING_ARRAY
             value.string_array_value = yaml_value
         else:
