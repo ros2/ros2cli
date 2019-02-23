@@ -12,83 +12,63 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import pytest
+
 from rcl_interfaces.msg import ParameterType
 from ros2param.api import get_parameter_value
 
 
-def test_bool():
-    value = get_parameter_value(string_value='true')
-    assert value.type == ParameterType.PARAMETER_BOOL
-    assert value.bool_value is True
+@pytest.mark.parametrize(
+    'string_value,expected_type,value_attribute,expected_value',
+    [
+        ('true', ParameterType.PARAMETER_BOOL, 'bool_value', True),
+        ('false', ParameterType.PARAMETER_BOOL, 'bool_value', False),
 
-    value = get_parameter_value(string_value='false')
-    assert value.type == ParameterType.PARAMETER_BOOL
-    assert value.bool_value is False
+        ('1', ParameterType.PARAMETER_INTEGER, 'integer_value', 1),
+        ('0', ParameterType.PARAMETER_INTEGER, 'integer_value', 0),
+        ('-1', ParameterType.PARAMETER_INTEGER, 'integer_value', -1),
 
+        ('1.0', ParameterType.PARAMETER_DOUBLE, 'double_value', 1.0),
+        ('0.0', ParameterType.PARAMETER_DOUBLE, 'double_value', 0.0),
+        ('-1.0', ParameterType.PARAMETER_DOUBLE, 'double_value', -1.0),
+        ('1.1234', ParameterType.PARAMETER_DOUBLE, 'double_value', 1.1234),
 
-def test_integer():
-    value = get_parameter_value(string_value='1')
-    assert value.type == ParameterType.PARAMETER_INTEGER
-    assert value.integer_value == 1
-
-    value = get_parameter_value(string_value='0')
-    assert value.type == ParameterType.PARAMETER_INTEGER
-    assert value.integer_value == 0
-
-    value = get_parameter_value(string_value='-1')
-    assert value.type == ParameterType.PARAMETER_INTEGER
-    assert value.integer_value == -1
-
-
-def test_double():
-    value = get_parameter_value(string_value='1.0')
-    assert value.type == ParameterType.PARAMETER_DOUBLE
-    assert value.double_value == 1
-
-    value = get_parameter_value(string_value='0.0')
-    assert value.type == ParameterType.PARAMETER_DOUBLE
-    assert value.double_value == 0
-
-    value = get_parameter_value(string_value='-1.0')
-    assert value.type == ParameterType.PARAMETER_DOUBLE
-    assert value.double_value == -1
-
-    value = get_parameter_value(string_value='1.1234')
-    assert value.type == ParameterType.PARAMETER_DOUBLE
-    assert value.double_value == 1.1234
-
-
-def test_string():
-    value = get_parameter_value(string_value='foo')
-    assert value.type == ParameterType.PARAMETER_STRING
-    assert value.string_value == 'foo'
-
-
-def test_bool_array():
-    value = get_parameter_value(string_value='[false, true]')
-    assert value.type == ParameterType.PARAMETER_BOOL_ARRAY
-    assert value.bool_array_value == [False, True]
-
-
-def test_integer_array():
-    value = get_parameter_value(string_value='[-1, 0, 1]')
-    assert value.type == ParameterType.PARAMETER_INTEGER_ARRAY
-    assert value.integer_array_value == [-1, 0, 1]
-
-
-def test_float_array():
-    value = get_parameter_value(string_value='[-1.0, 0.0, 1.0, 1.234]')
-    assert value.type == ParameterType.PARAMETER_DOUBLE_ARRAY
-    assert value.double_array_value == [-1.0, 0.0, 1.0, 1.234]
-
-
-def test_string_array():
-    value = get_parameter_value(string_value='["foo", "bar", "buzz"]')
-    assert value.type == ParameterType.PARAMETER_STRING_ARRAY
-    assert value.string_array_value == ['foo', 'bar', 'buzz']
-
-
-def test_malformed_yaml():
-    value = get_parameter_value(string_value='["foo","bar","buzz"')
-    assert value.type == ParameterType.PARAMETER_STRING
-    assert value.string_value == '["foo","bar","buzz"'
+        ('foo', ParameterType.PARAMETER_STRING, 'string_value', 'foo'),
+        (
+            '[false, true]',
+            ParameterType.PARAMETER_BOOL_ARRAY,
+            'bool_array_value',
+            [False, True]
+        ),
+        (
+            '[-1, 0, 1]',
+            ParameterType.PARAMETER_INTEGER_ARRAY,
+            'integer_array_value',
+            [-1, 0, 1]
+        ),
+        (
+            '[-1.0, 0.0, 1.0, 1.1234]',
+            ParameterType.PARAMETER_DOUBLE_ARRAY,
+            'double_array_value',
+            [-1.0, 0.0, 1.0, 1.1234]
+        ),
+        (
+            '["foo", "bar", "buzz"]',
+            ParameterType.PARAMETER_STRING_ARRAY,
+            'string_array_value',
+            ['foo', 'bar', 'buzz']
+        ),
+        (  # Invalid YAML remains a string
+            '["foo", "bar", "buzz"',
+            ParameterType.PARAMETER_STRING,
+            'string_value',
+            '["foo", "bar", "buzz"'
+        ),
+    ],
+)
+def test_get_parameter_value(
+    string_value, expected_type, value_attribute, expected_value
+):
+    value = get_parameter_value(string_value=string_value)
+    assert value.type == expected_type
+    assert getattr(value, value_attribute) == expected_value
