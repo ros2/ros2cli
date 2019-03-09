@@ -14,6 +14,7 @@
 
 from ros2cli.node.direct import DirectNode
 from ros2topic.api import TopicNameCompleter
+from ros2topic.api import get_topic_names_and_types
 from ros2topic.verb import VerbExtension
 
 
@@ -30,6 +31,21 @@ class InfoVerb(VerbExtension):
     def main(self, *, args):
         with DirectNode(args) as node:
             topic_name = args.topic_name
+            type_name = "NOT FOUND!"
+
+            all_topic_names_and_types = get_topic_names_and_types(node=node, include_hidden_topics=True)
+            for topic, type in all_topic_names_and_types:
+                if topic == topic_name:
+                    if len(type) > 1:
+                        raise RuntimeError(
+                            "Topic '%s', contains more than one type: [%s]" %
+                            (topic_name, ', '.join(type))
+                        )
+                    else:
+                        type_name = type[0]
+                    break
+
             print('Topic: %s' % topic_name)
+            print('Type: %s' % type_name)
             print('Publisher count: %d' % node.count_publishers(topic_name))
             print('Subscriber count: %d' % node.count_subscribers(topic_name))
