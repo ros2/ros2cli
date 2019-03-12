@@ -61,7 +61,7 @@ def _instantiate_extension(
     try:
         extension_instance = extension_class()
     except PluginException as e:  # noqa: F841
-        logger.warn(
+        logger.warning(
             "Failed to instantiate '{group_name}' extension "
             "'{extension_name}': {e}".format_map(locals()))
         return None
