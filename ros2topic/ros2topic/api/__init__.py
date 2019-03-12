@@ -23,6 +23,7 @@ from rclpy.topic_or_service_is_hidden import topic_or_service_is_hidden
 from rclpy.validate_full_topic_name import validate_full_topic_name
 from ros2cli.node.strategy import NodeStrategy
 from ros2msg.api import message_type_completer
+from rosidl_parser.definition import NamespacedType
 
 
 def get_topic_names_and_types(*, node, include_hidden_topics=False):
@@ -114,6 +115,19 @@ def set_msg_fields(msg, values):
         except ValueError as e:
             raise SetFieldError(field_name, e)
         try:
+            f_type = msg.get_slot_types()[field_name]
+            # Check if field is an array of ROS message types
+            if isinstance(field_type(), list):
+                if isinstance(f_type.basetype, NamespacedType):
+                    # TODO(mikaelarguedas) Consider putting this import logic in a rosidl function
+                    module = importlib.import_module(
+                            '.'.join(f_type.basetype.namespaces))
+                    field_elem_type = getattr(module, f_type.basetype.name)
+                    for n in range(len(value)):
+                        submsg = field_elem_type()
+                        set_msg_fields(submsg, value[n])
+                        value[n] = submsg
+
             setattr(msg, field_name, value)
         except Exception as e:
             raise SetFieldError(field_name, e)
