@@ -43,13 +43,13 @@ class InfoVerb(VerbExtension):
         if args.node_name in [n.full_name for n in node_names]:
             with DirectNode(args) as node:
                 print(args.node_name)
-                subscribers = get_subscriber_info(node=node, remote_node_name=args.node_name[1:])
+                subscribers = get_subscriber_info(node=node, remote_node_name=args.node_name)
                 print('  Subscribers:')
                 print_names_and_types(subscribers)
-                publishers = get_publisher_info(node=node, remote_node_name=args.node_name[1:])
+                publishers = get_publisher_info(node=node, remote_node_name=args.node_name)
                 print('  Publishers:')
                 print_names_and_types(publishers)
-                services = get_service_info(node=node, remote_node_name=args.node_name[1:])
+                services = get_service_info(node=node, remote_node_name=args.node_name)
                 print('  Services:')
                 print_names_and_types(services)
         else:

@@ -18,6 +18,14 @@ from ros2node.api import parse_node_name
 def test_parse_node_name():
     """Test parse_node_name api function."""
     # The input of parse_node_name is the full_name without the initial '/'
+    name = parse_node_name('/talker')
+    assert name.full_name == '/talker'
+    assert name.namespace == '/'
+    assert name.name == 'talker'
+    name = parse_node_name('/ns/talker')
+    assert name.full_name == '/ns/talker'
+    assert name.namespace == '/ns'
+    assert name.name == 'talker'
     name = parse_node_name('talker')
     assert name.full_name == '/talker'
     assert name.namespace == '/'

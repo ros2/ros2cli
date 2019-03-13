@@ -29,16 +29,18 @@ def get_absolute_node_name(node_name):
     return node_name
 
 
-def parse_node_name(full_node_name):
-    tokens = full_node_name.split('/')
-    if 1 > len(tokens):
-        raise RuntimeError('Invalid node name: ' + full_node_name)
-    node_name = full_node_name
-    namespace = '/'
+def parse_node_name(node_name):
+    if (node_name[0] == '/'):
+        node_name = node_name[1:]
+    tokens = node_name.split('/')
+    node_basename = tokens[-1]
     if len(tokens) > 1:
-        node_name = tokens[-1]
         namespace = '/' + '/'.join(tokens[:-1])
-    return NodeName(node_name, namespace, '/' + full_node_name)
+        full_node_name = namespace + '/' + node_basename
+    else:
+        namespace = '/'
+        full_node_name = '/' + node_basename
+    return NodeName(node_basename, namespace, full_node_name)
 
 
 def get_node_names(*, node, include_hidden_nodes=False):
