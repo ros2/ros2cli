@@ -34,7 +34,7 @@ def test_get_action_clients_and_servers():
 
 
 def test_get_action_names():
-    get_action_names(node=NodeStrategy(object()))
+    get_action_names(node=NodeStrategy(None))
 
 
 def test_get_action_path():
