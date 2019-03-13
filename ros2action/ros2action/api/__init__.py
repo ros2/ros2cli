@@ -19,6 +19,36 @@ from ament_index_python import get_resource
 from ament_index_python import has_resource
 
 
+def _is_action_status_topic(topic_name, action_name):
+    return action_name + '/_action/status' == topic_name
+
+
+def get_action_clients_and_servers(*, node, action_name):
+    action_clients = []
+    action_servers = []
+
+    node_names_and_ns = node.get_node_names_and_namespaces()
+    for node_name, node_ns in node_names_and_ns:
+        # Construct fully qualified name
+        node_fqn = '/'.join(node_ns) + node_name
+
+        # If a subscription is on an action status topic, the node must contain an action client
+        sub_names_and_types = node.get_subscriber_names_and_types_by_node(node_name, node_ns)
+        for sub_name, sub_type in sub_names_and_types:
+            if _is_action_status_topic(sub_name, action_name):
+                # TODO(jacobperron): Infer the action type and return that too
+                action_clients.append(node_fqn)
+
+        # If a publisher is on an action status topic, the node must contain an action server
+        pub_names_and_types = node.get_publisher_names_and_types_by_node(node_name, node_ns)
+        for pub_name, pub_type in pub_names_and_types:
+            if _is_action_status_topic(pub_name, action_name):
+                # TODO(jacobperron): Infer the action type and return that too
+                action_servers.append(node_fqn)
+
+    return (action_clients, action_servers)
+
+
 def get_action_names_and_types(*, node):
     service_names_and_types = node.get_service_names_and_types()
     # Assumption: actions have a hidden 'send_goal' service with the name:

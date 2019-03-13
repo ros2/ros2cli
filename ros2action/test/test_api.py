@@ -16,10 +16,21 @@ import os
 
 import pytest
 
+from ros2action.api import get_action_clients_and_servers
 from ros2action.api import get_action_names
 from ros2action.api import get_action_path
 from ros2action.api import get_action_types
+from ros2cli.node.strategy import DirectNode
 from ros2cli.node.strategy import NodeStrategy
+
+
+def test_get_action_clients_and_servers():
+    clients, servers = get_action_clients_and_servers(
+        node=DirectNode(None),
+        action_name='/test_action_name',
+    )
+    assert len(clients) == 0
+    assert len(servers) == 0
 
 
 def test_get_action_names():
