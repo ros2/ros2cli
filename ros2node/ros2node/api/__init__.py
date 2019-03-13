@@ -37,8 +37,8 @@ def parse_node_name(full_node_name):
     namespace = '/'
     if len(tokens) > 1:
         node_name = tokens[-1]
-        namespace = '/'.join(tokens[:-1])
-    return NodeName(node_name, namespace, full_node_name)
+        namespace = '/' + '/'.join(tokens[:-1])
+    return NodeName(node_name, namespace, '/' + full_node_name)
 
 
 def get_node_names(*, node, include_hidden_nodes=False):
