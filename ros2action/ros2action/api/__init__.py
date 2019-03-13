@@ -23,6 +23,7 @@ def _is_action_status_topic(topic_name, action_name):
     return action_name + '/_action/status' == topic_name
 
 
+# TODO(jacobperron): This should be provided by rclpy (and probably rcl_action)
 def get_action_clients_and_servers(*, node, action_name):
     action_clients = []
     action_servers = []
@@ -49,6 +50,7 @@ def get_action_clients_and_servers(*, node, action_name):
     return (action_clients, action_servers)
 
 
+# TODO(jacobperron): This should be provided by rclpy (and probably rcl_action)
 def get_action_names_and_types(*, node):
     service_names_and_types = node.get_service_names_and_types()
     # Assumption: actions have a hidden 'send_goal' service with the name:
