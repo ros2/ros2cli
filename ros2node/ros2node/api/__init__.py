@@ -30,13 +30,10 @@ def get_absolute_node_name(node_name):
 
 
 def parse_node_name(node_name):
-    if node_name[0] != '/':
-        full_node_name = '/' + node_name
-    else:
-        full_node_name = node_name
-    tokens = full_node_name.rsplit('/', 1)
-    node_basename = tokens[1]
-    namespace = tokens[0]
+    full_node_name = node_name
+    if not full_node_name.startswith('/'):
+        full_node_name = '/' + full_node_name
+    namespace, node_basename = full_node_name.rsplit('/', 1)
     if namespace == '':
         namespace = '/'
     return NodeName(node_basename, namespace, full_node_name)
