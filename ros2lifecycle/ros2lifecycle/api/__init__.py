@@ -27,8 +27,7 @@ def get_node_names(*, node, include_hidden_nodes=False):
     node_names = get_all_node_names(
         node=node, include_hidden_nodes=include_hidden_nodes)
     service_names_and_types = get_service_names_and_types(
-        node=node,
-        include_hidden_services=include_hidden_nodes)
+        node=node, include_hidden_services=include_hidden_nodes)
     return [
         n for n in node_names
         if _has_lifecycle(n.full_name, service_names_and_types)]
