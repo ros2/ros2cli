@@ -22,9 +22,8 @@ import rclpy
 from rclpy.action import ActionClient
 from ros2action.verb import VerbExtension
 from ros2cli.node import NODE_NAME_PREFIX
-# TODO(jacobperron): Move 'set_msg_fields' to ros2cli package to remove dependency to ros2topic
-from ros2topic.api import set_msg_fields
-from ros2topic.api import SetFieldError
+from rosidl_runtime_py import message_to_yaml
+from rosidl_runtime_py import set_message_fields
 
 
 class SendGoalVerb(VerbExtension):
@@ -45,7 +44,6 @@ class SendGoalVerb(VerbExtension):
             help='Echo feedback messages for the goal')
 
     def main(self, *, args):
-        register_yaml_representer()
         feedback_callback = None
         if args.feedback:
             feedback_callback = _feedback_callback
@@ -68,82 +66,8 @@ def _goal_status_to_string(status):
     else:
         return 'UNKNOWN'
 
-# TODO(jacobperron): Move to common place in ros2cli for all packages to use
-def register_yaml_representer():
-    # Register our custom representer for YAML output
-    yaml.add_representer(OrderedDict, represent_ordereddict)
-
-
-# TODO(jacobperron): Move to common place in ros2cli for all packages to use
-# Custom representer for getting clean YAML output that preserves the order in
-# an OrderedDict.
-# Inspired by:
-# http://stackoverflow.com/a/16782282/7169408
-def represent_ordereddict(dumper, data):
-    items = []
-    for k, v in data.items():
-        items.append((dumper.represent_data(k), dumper.represent_data(v)))
-    return yaml.nodes.MappingNode(u'tag:yaml.org,2002:map', items)
-
-
-# TODO(jacobperron): Move to common place in ros2cli for all packages to use
-def _convert_value(value, truncate_length=None):
-    if isinstance(value, bytes):
-        if truncate_length is not None and len(value) > truncate_length:
-            value = ''.join([chr(c) for c in value[:truncate_length]]) + '...'
-        else:
-            value = ''.join([chr(c) for c in value])
-    elif isinstance(value, str):
-        if truncate_length is not None and len(value) > truncate_length:
-            value = value[:truncate_length] + '...'
-    elif isinstance(value, tuple) or isinstance(value, list):
-        if truncate_length is not None and len(value) > truncate_length:
-            # Truncate the sequence
-            value = value[:truncate_length]
-            # Truncate every item in the sequence
-            value = type(value)([_convert_value(v, truncate_length) for v in value] + ['...'])
-        else:
-            # Truncate every item in the list
-            value = type(value)([_convert_value(v, truncate_length) for v in value])
-    elif isinstance(value, dict) or isinstance(value, OrderedDict):
-        # convert each key and value in the mapping
-        new_value = {} if isinstance(value, dict) else OrderedDict()
-        for k, v in value.items():
-            # don't truncate keys because that could result in key collisions and data loss
-            new_value[_convert_value(k)] = _convert_value(v, truncate_length=truncate_length)
-        value = new_value
-    elif not any(isinstance(value, t) for t in (bool, float, int)):
-        # assuming value is a message
-        # since it is neither a collection nor a primitive type
-        value = msg_to_ordereddict(value, truncate_length=truncate_length)
-    return value
-
-
-# TODO(jacobperron): Move to common place in ros2cli for all packages to use
-def msg_to_ordereddict(msg, truncate_length=None):
-    d = OrderedDict()
-    # We rely on __slots__ retaining the order of the fields in the .msg file.
-    for field_name in msg.__slots__:
-        value = getattr(msg, field_name, None)
-        value = _convert_value(value, truncate_length=truncate_length)
-        # remove leading underscore from field name
-        d[field_name[1:]] = value
-    return d
-
-
-# TODO(jacobperron): Move to common place in ros2cli for all packages to use
-def msg_to_yaml(msg):
-    return yaml.dump(
-        msg_to_ordereddict(
-          msg,
-          truncate_length=128
-          # truncate_length=args.truncate_length if not args.full_length else None
-        ), width=sys.maxsize)
-
-
 def _feedback_callback(feedback):
-    print('Feedback:\n    {}'.format(msg_to_yaml(feedback.feedback)))
-    # print(msg_to_yaml(feedback.feedback))
+    print('Feedback:\n    {}'.format(message_to_yaml(feedback.feedback, None)))
 
 
 def send_goal(action_name, action_type, goal_values, feedback_callback):
@@ -166,16 +90,14 @@ def send_goal(action_name, action_type, goal_values, feedback_callback):
     goal = action_module.Goal()
 
     try:
-        set_msg_fields(goal, goal_dict)
-    except SetFieldError as ex:
-        return "Failed to populate field '{ex.field_name}': {ex.exception}" \
-            .format_map(locals())
+        set_message_fields(goal, goal_dict)
+    except Exception as ex:
+        return "Failed to populate message fields: {!r}".format(ex)
 
     print('Waiting for an action server to become available...')
     action_client.wait_for_server()
 
-    print('Sending goal:\n     {}'.format(msg_to_yaml(goal)))
-    # print(msg_to_yaml(goal))
+    print('Sending goal:\n     {}'.format(message_to_yaml(goal, None)))
     goal_future = action_client.send_goal_async(goal, feedback_callback)
     rclpy.spin_until_future_complete(node, goal_future)
 
@@ -197,8 +119,7 @@ def send_goal(action_name, action_type, goal_values, feedback_callback):
         raise RuntimeError(
             'Exeception while getting result: {!r}'.format(result_future.exception()))
 
-    print('Result:\n    {}'.format(msg_to_yaml(result.result)))
-    # print(msg_to_yaml(result.result))
+    print('Result:\n    {}'.format(message_to_yaml(result.result, None)))
     print('Goal finished with status: {}'.format(_goal_status_to_string(result.status)))
 
     action_client.destroy()
