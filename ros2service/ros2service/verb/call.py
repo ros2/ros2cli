@@ -20,8 +20,7 @@ from ros2cli.node import NODE_NAME_PREFIX
 from ros2service.api import ServiceNameCompleter
 from ros2service.api import ServiceTypeCompleter
 from ros2service.verb import VerbExtension
-from ros2topic.api import set_msg_fields
-from ros2topic.api import SetFieldError
+from rosidl_runtime_py import set_message_fields
 import yaml
 
 
@@ -84,10 +83,9 @@ def requester(service_type, service_name, values, period):
     request = srv_module.Request()
 
     try:
-        set_msg_fields(request, values_dictionary)
-    except SetFieldError as e:  # noqa: F841
-        return "Failed to populate field '{e.field_name}': {e.exception}" \
-            .format_map(locals())
+        set_message_fields(request, values_dictionary)
+    except Exception as e:
+        return 'Failed to populate field: {0}'.format(e)
 
     if not cli.service_is_ready():
         print('waiting for service to become available...')

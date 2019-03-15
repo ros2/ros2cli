@@ -17,11 +17,11 @@ import time
 import rclpy
 from ros2cli.node import NODE_NAME_PREFIX
 from ros2topic.api import import_message_type
-from ros2topic.api import set_msg_fields
-from ros2topic.api import SetFieldError
 from ros2topic.api import TopicNameCompleter
 from ros2topic.api import TopicTypeCompleter
 from ros2topic.verb import VerbExtension
+from rosidl_runtime_py import set_message_fields
+
 import yaml
 
 
@@ -87,10 +87,9 @@ def publisher(
 
     msg = msg_module()
     try:
-        set_msg_fields(msg, values_dictionary)
-    except SetFieldError as e:  # noqa: F841
-        return "Failed to populate field '{e.field_name}': {e.exception}" \
-            .format_map(locals())
+        set_message_fields(msg, values_dictionary)
+    except Exception as e:
+        return 'Failed to populate field: {0}'.format(e)
 
     print('publisher: beginning loop')
     count = 0
