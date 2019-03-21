@@ -12,6 +12,7 @@
 
   <depend>ros2cli</depend>
 
+  <exec_depend>python3-numpy</exec_depend>
   <exec_depend>python3-yaml</exec_depend>
   <exec_depend>rclpy</exec_depend>
   <exec_depend>ros2msg</exec_depend>

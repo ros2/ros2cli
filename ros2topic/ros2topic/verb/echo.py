@@ -13,9 +13,11 @@
 # limitations under the License.
 
 from argparse import ArgumentTypeError
+import array
 from collections import OrderedDict
 import sys
 
+import numpy
 import rclpy
 from rclpy.expand_topic_name import expand_topic_name
 from rclpy.qos import qos_profile_sensor_data
@@ -156,7 +158,10 @@ def msg_to_csv(args, msg):
     def to_string(val):
         nonlocal args
         r = ''
-        if any(isinstance(val, t) for t in [list, tuple]):
+        if (any(
+            isinstance(val, t)
+            for t in [list, tuple, array.array, numpy.ndarray]
+        )):
             for i, v in enumerate(val):
                 if r:
                     r += ','
@@ -164,7 +169,10 @@ def msg_to_csv(args, msg):
                     r += '...'
                     break
                 r += to_string(v)
-        elif any(isinstance(val, t) for t in [bool, bytes, float, int, str]):
+        elif (any(
+            isinstance(val, t)
+            for t in [bool, bytes, float, int, str, numpy.number]
+        )):
             if any(isinstance(val, t) for t in [bytes, str]):
                 if not args.full_length and len(val) > args.truncate_length:
                     val = val[:args.truncate_length]
@@ -209,15 +217,21 @@ def _convert_value(value, truncate_length=None):
     elif isinstance(value, str):
         if truncate_length is not None and len(value) > truncate_length:
             value = value[:truncate_length] + '...'
-    elif isinstance(value, tuple) or isinstance(value, list):
+    elif (any(
+        isinstance(value, t) for t in [list, tuple, array.array, numpy.ndarray]
+    )):
+        # since arrays and ndarrays can't contain mixed types convert to list
+        typename = tuple if isinstance(value, tuple) else list
         if truncate_length is not None and len(value) > truncate_length:
             # Truncate the sequence
             value = value[:truncate_length]
             # Truncate every item in the sequence
-            value = type(value)([_convert_value(v, truncate_length) for v in value] + ['...'])
+            value = typename(
+                [_convert_value(v, truncate_length) for v in value] + ['...'])
         else:
             # Truncate every item in the list
-            value = type(value)([_convert_value(v, truncate_length) for v in value])
+            value = typename(
+                [_convert_value(v, truncate_length) for v in value])
     elif isinstance(value, dict) or isinstance(value, OrderedDict):
         # convert each key and value in the mapping
         new_value = {} if isinstance(value, dict) else OrderedDict()
@@ -225,7 +239,9 @@ def _convert_value(value, truncate_length=None):
             # don't truncate keys because that could result in key collisions and data loss
             new_value[_convert_value(k)] = _convert_value(v, truncate_length=truncate_length)
         value = new_value
-    elif not any(isinstance(value, t) for t in (bool, float, int)):
+    elif (
+        not any(isinstance(value, t) for t in (bool, float, int, numpy.number))
+    ):
         # assuming value is a message
         # since it is neither a collection nor a primitive type
         value = msg_to_ordereddict(value, truncate_length=truncate_length)
