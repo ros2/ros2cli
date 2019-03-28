@@ -73,7 +73,7 @@ def requester(service_type, service_name, values, period):
 
     module = importlib.import_module(package_name + '.' + middle_module)
     srv_module = getattr(module, srv_name)
-    values_dictionary = yaml.load(values)
+    values_dictionary = yaml.safe_load(values)
 
     rclpy.init()
 

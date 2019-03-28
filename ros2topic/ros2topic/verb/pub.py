@@ -74,7 +74,7 @@ def publisher(
     message_type, topic_name, values, node_name, period, print_nth, once
 ):
     msg_module = import_message_type(topic_name, message_type)
-    values_dictionary = yaml.load(values)
+    values_dictionary = yaml.safe_load(values)
     if not isinstance(values_dictionary, dict):
         return 'The passed value needs to be a dictionary in YAML format'
     if not node_name:
