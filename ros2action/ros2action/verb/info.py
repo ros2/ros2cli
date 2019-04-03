@@ -25,6 +25,9 @@ class InfoVerb(VerbExtension):
             'action_name',
             help="Name of the ROS action to get info (e.g. '/fibonacci')")
         parser.add_argument(
+            '-t', '--show-types', action='store_true',
+            help='Additionally show the action type')
+        parser.add_argument(
             '-c', '--count', action='store_true',
             help='Only display the number of action clients and action servers')
 
@@ -38,9 +41,17 @@ class InfoVerb(VerbExtension):
         print('Action: {}'.format(args.action_name))
         print('Action clients: {}'.format(len(action_clients)))
         if not args.count:
-            for client in action_clients:
-                print('    {}'.format(client))
+            for client_name, client_types in action_clients:
+                if args.show_types:
+                    types_formatted = ', '.join(client_types)
+                    print('    {client_name} [{types_formatted}]'.format_map(locals()))
+                else:
+                    print('    {client_name}'.format_map(locals()))
         print('Action servers: {}'.format(len(action_servers)))
         if not args.count:
-            for server in action_servers:
-                print('    {}'.format(server))
+            for server_name, server_types in action_servers:
+                if args.show_types:
+                    types_formatted = ', '.join(server_types)
+                    print('    {server_name} [{types_formatted}]'.format_map(locals()))
+                else:
+                    print('    {server_name}'.format_map(locals()))
