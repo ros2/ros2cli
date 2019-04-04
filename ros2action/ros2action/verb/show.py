@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from ros2action.api import action_type_completer
 from ros2action.api import get_action_path
-# from ros2action.api import action_type_completer
 from ros2action.verb import VerbExtension
 
 
@@ -21,10 +21,10 @@ class ShowVerb(VerbExtension):
     """Output the action definition."""
 
     def add_arguments(self, parser, cli_name):
-        parser.add_argument(
+        arg = parser.add_argument(
             'action_type',
             help="Type of the ROS action (e.g. 'examples_interfaces/Fibonacci')")
-        # arg.completer = action_type_completer
+        arg.completer = action_type_completer
 
     def main(self, *, args):
         package_name, action_name = args.action_type.split('/', 2)

@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from ros2action.api import action_name_completer
 from ros2action.api import get_action_clients_and_servers
 from ros2action.verb import VerbExtension
 from ros2cli.node.direct import DirectNode
@@ -21,9 +22,10 @@ class InfoVerb(VerbExtension):
     """Print information about an action."""
 
     def add_arguments(self, parser, cli_name):
-        parser.add_argument(
+        arg = parser.add_argument(
             'action_name',
             help="Name of the ROS action to get info (e.g. '/fibonacci')")
+        arg.completer = action_name_completer
         parser.add_argument(
             '-t', '--show-types', action='store_true',
             help='Additionally show the action type')

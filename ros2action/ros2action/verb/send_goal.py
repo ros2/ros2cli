@@ -17,6 +17,8 @@ import importlib
 from action_msgs.msg import GoalStatus
 import rclpy
 from rclpy.action import ActionClient
+from ros2action.api import action_name_completer
+from ros2action.api import ActionTypeCompleter
 from ros2action.verb import VerbExtension
 from ros2cli.node import NODE_NAME_PREFIX
 from rosidl_runtime_py import message_to_yaml
@@ -29,12 +31,14 @@ class SendGoalVerb(VerbExtension):
     """Send an action goal."""
 
     def add_arguments(self, parser, cli_name):
-        parser.add_argument(
+        arg = parser.add_argument(
             'action_name',
             help="Name of the ROS action (e.g. '/fibonacci')")
-        parser.add_argument(
+        arg.completer = action_name_completer
+        arg = parser.add_argument(
             'action_type',
             help="Type of the ROS action (e.g. 'example_interfaces/Fibonacci')")
+        arg.completer = ActionTypeCompleter(action_name_key='action_name')
         parser.add_argument(
             'goal',
             help="Goal request values in YAML format (e.g. '{order: 10}')")
