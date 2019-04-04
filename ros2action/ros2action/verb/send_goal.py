@@ -12,10 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from collections import OrderedDict
 import importlib
-import sys
-import yaml
 
 from action_msgs.msg import GoalStatus
 import rclpy
@@ -24,6 +21,8 @@ from ros2action.verb import VerbExtension
 from ros2cli.node import NODE_NAME_PREFIX
 from rosidl_runtime_py import message_to_yaml
 from rosidl_runtime_py import set_message_fields
+
+import yaml
 
 
 class SendGoalVerb(VerbExtension):
@@ -66,6 +65,7 @@ def _goal_status_to_string(status):
     else:
         return 'UNKNOWN'
 
+
 def _feedback_callback(feedback):
     print('Feedback:\n    {}'.format(message_to_yaml(feedback.feedback, None)))
 
@@ -92,7 +92,7 @@ def send_goal(action_name, action_type, goal_values, feedback_callback):
     try:
         set_message_fields(goal, goal_dict)
     except Exception as ex:
-        return "Failed to populate message fields: {!r}".format(ex)
+        return 'Failed to populate message fields: {!r}'.format(ex)
 
     print('Waiting for an action server to become available...')
     action_client.wait_for_server()

@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import os
-import re
 
 from ament_index_python import get_resource
 from ament_index_python import has_resource
