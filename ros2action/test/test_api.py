@@ -21,12 +21,13 @@ from ros2action.api import get_action_names
 from ros2action.api import get_action_path
 from ros2action.api import get_action_types
 from ros2cli.node.strategy import DirectNode
-from ros2cli.node.strategy import NodeStrategy
+
+g_node = DirectNode(None)
 
 
 def test_get_action_clients_and_servers():
     clients, servers = get_action_clients_and_servers(
-        node=DirectNode(None),
+        node=g_node,
         action_name='/test_action_name',
     )
     assert len(clients) == 0
@@ -34,7 +35,7 @@ def test_get_action_clients_and_servers():
 
 
 def test_get_action_names():
-    get_action_names(node=NodeStrategy(None))
+    get_action_names(node=g_node)
 
 
 def test_get_action_path():
