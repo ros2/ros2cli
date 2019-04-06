@@ -64,6 +64,10 @@ class EchoVerb(VerbExtension):
             '--truncate-length', '-l', type=unsigned_int, default=DEFAULT_TRUNCATE_LENGTH,
             help='The length to truncate arrays, bytes, and string to '
                  '(default: %d)' % DEFAULT_TRUNCATE_LENGTH)
+        parser.add_argument(
+            '--noarr', action='store_true', help='Exclude arrays')
+        parser.add_argument(
+            '--nostr', action='store_true', help='Exclude string fields')
 
     def main(self, *, args):
         return main(args)
@@ -71,9 +75,11 @@ class EchoVerb(VerbExtension):
 
 def main(args):
     if not args.csv:
-        callback = subscriber_cb(args.truncate_length if not args.full_length else None)
+        truncate_length = args.truncate_length if not args.full_length else None
+        callback = subscriber_cb(truncate_length, args.noarr, args.nostr)
     else:
-        callback = subscriber_cb_csv(args.truncate_length if not args.full_length else None)
+        truncate_length = args.truncate_length if not args.full_length else None
+        callback = subscriber_cb_csv(truncate_length, args.noarr, args.nostr)
     with DirectNode(args) as node:
         subscriber(
             node.node, args.topic_name, args.message_type, callback)
@@ -112,15 +118,15 @@ def subscriber(node, topic_name, message_type, callback):
         rclpy.spin_once(node)
 
 
-def subscriber_cb(truncate_length):
+def subscriber_cb(truncate_length, noarr, nostr):
     def cb(msg):
-        nonlocal truncate_length
-        print(message_to_yaml(msg, truncate_length), end='---\n')
+        nonlocal truncate_length, noarr, nostr
+        print(message_to_yaml(msg, truncate_length, noarr, nostr), end='---\n')
     return cb
 
 
-def subscriber_cb_csv(truncate_length):
+def subscriber_cb_csv(truncate_length, noarr, nostr):
     def cb(msg):
-        nonlocal truncate_length
-        print(message_to_csv(msg, truncate_length))
+        nonlocal truncate_length, noarr, nostr
+        print(message_to_csv(msg, truncate_length, noarr, nostr))
     return cb
