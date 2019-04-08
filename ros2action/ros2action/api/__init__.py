@@ -19,6 +19,8 @@ from ament_index_python import get_resources
 from ament_index_python import has_resource
 
 import rclpy.action
+from rclpy.expand_topic_name import expand_topic_name
+from rclpy.validate_full_topic_name import validate_full_topic_name
 from ros2cli.node.direct import DirectNode
 
 
@@ -29,6 +31,15 @@ def _is_action_status_topic(topic_name, action_name):
 def get_action_clients_and_servers(*, node, action_name):
     action_clients = []
     action_servers = []
+
+    try:
+        expanded_name = expand_topic_name(action_name, node.get_name(), node.get_namespace())
+    except ValueError as e:
+        raise RuntimeError(e)
+    try:
+        validate_full_topic_name(expanded_name)
+    except rclpy.exceptions.InvalidTopicNameException as e:
+        raise RuntimeError(e)
 
     node_names_and_ns = node.get_node_names_and_namespaces()
     for node_name, node_ns in node_names_and_ns:
@@ -42,7 +53,7 @@ def get_action_clients_and_servers(*, node, action_name):
             node_ns,
         )
         for client_name, client_types in client_names_and_types:
-            if client_name == action_name:
+            if client_name == expanded_name:
                 action_clients.append((node_fqn, client_types))
 
         # Get any action servers associated with the node
@@ -52,7 +63,7 @@ def get_action_clients_and_servers(*, node, action_name):
             node_ns,
         )
         for server_name, server_types in server_names_and_types:
-            if server_name == action_name:
+            if server_name == expanded_name:
                 action_servers.append((node_fqn, server_types))
 
     return (action_clients, action_servers)
