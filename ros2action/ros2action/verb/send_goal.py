@@ -114,6 +114,8 @@ def send_goal(action_name, action_type, goal_values, feedback_callback):
         print('Goal was rejected.')
         return
 
+    print('Goal accepted with ID: {}\n'.format(bytes(goal_handle.goal_id.uuid).hex()))
+
     result_future = goal_handle.get_result_async()
     rclpy.spin_until_future_complete(node, result_future)
 
