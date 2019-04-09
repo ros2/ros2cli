@@ -12,6 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import rclpy
+
+from ros2cli.node import NODE_NAME_PREFIX
 from ros2cli.node.direct import DirectNode
 from ros2cli.node.strategy import add_arguments
 from ros2cli.node.strategy import NodeStrategy
@@ -20,11 +23,10 @@ from ros2component.api import ComponentTypeNameCompleter
 from ros2component.api import container_node_name_completer
 from ros2component.api import find_container_node_names
 from ros2component.api import load_component_into_container
+from ros2component.api import package_with_components_name_completer
 from ros2component.verb import VerbExtension
 
 from ros2node.api import get_node_names
-
-from ros2pkg.api import package_name_completer
 
 
 class LoadVerb(VerbExtension):
@@ -39,7 +41,7 @@ class LoadVerb(VerbExtension):
         argument = parser.add_argument(
             'package_name',
             help='Package name where the component is to be found')
-        argument.completer = package_name_completer
+        argument.completer = package_with_components_name_completer
         argument = parser.add_argument(
             'plugin_name', help='Component type name'
         )
@@ -47,7 +49,7 @@ class LoadVerb(VerbExtension):
             package_name_key='package_name'
         )
         parser.add_argument('-n', '--node-name', default=None, help='Node name')
-        parser.add_argument('--ns', '--namespace-name', default=None, help='Node namespace')
+        parser.add_argument('--namespace-name', default=None, help='Node namespace')
         parser.add_argument('--log-level', default=None, help='Node log level')
         parser.add_argument('-r', '--remap-rule', action='append', default=None,
                             dest='remap_rules', help='Node remapping rules of the from:=to form')
@@ -61,7 +63,10 @@ class LoadVerb(VerbExtension):
         with NodeStrategy(args) as node:
             node_names = get_node_names(node=node)
         with DirectNode(args) as node:
-            container_node_names = filter_container_node_names(node=node, node_names=node_names)
+            container_node_names = find_container_node_names(node=node, node_names=node_names)
+        rclpy.init()
+        node = rclpy.create_node(NODE_NAME_PREFIX + '_component_load_requester')
+        try:
             if args.container_node_name in [n.full_name for n in container_node_names]:
                 return load_component_into_container(
                     node=node, remote_container_node_name=args.container_node_name,
@@ -72,3 +77,6 @@ class LoadVerb(VerbExtension):
                 )
             else:
                 return "Unable to find container node '" + args.container_node_name + "'"
+        finally:
+            node.destroy_node()
+            rclpy.shutdown()

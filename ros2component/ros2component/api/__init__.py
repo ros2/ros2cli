@@ -21,6 +21,9 @@ from ament_index_python import has_resource
 import composition_interfaces.srv
 import rcl_interfaces.msg
 
+import rclpy
+
+from ros2cli.node.direct import DirectNode
 from ros2cli.node.strategy import NodeStrategy
 from ros2node.api import get_node_names
 from ros2node.api import get_service_info
@@ -30,20 +33,22 @@ from ros2param.api import get_parameter_value
 COMPONENTS_RESOURCE_TYPE = 'rclcpp_components'
 
 
+def get_package_names_with_component_types():
+    return list(get_resources(COMPONENTS_RESOURCE_TYPE).keys())
+
+
 def get_package_component_types(*, package_name=None):
     if not has_resource(COMPONENTS_RESOURCE_TYPE, package_name):
         return []
     component_registry, _ = get_resource(COMPONENTS_RESOURCE_TYPE, package_name)
-    return [line.split(';')[0] for line in component_registry]
+    return [line.split(';')[0] for line in component_registry.splitlines()]
 
 
 def get_registered_component_types():
-    components = {}
-    component_registries = get_resources(COMPONENTS_RESOURCE_TYPE)
-    for package_name, path_to_component_registry in component_registries.items():
-        with open(path_to_component_registry, 'r') as f:
-            components[package_name] = [line.split(';')[0] for line in f]
-    return components
+    return [
+        (package_name, get_package_component_types(package_name=package_name))
+        for package_name in get_package_names_with_component_types()
+    ]
 
 
 ComponentInfo = namedtuple('Component', ('uid', 'name'))
@@ -55,9 +60,12 @@ def get_container_components_info(*, node, remote_container_node_name):
         '{}/_container/list_nodes'.format(remote_container_node_name)
     )
     try:
-        response = list_nodes_client.call(
+        list_nodes_client.wait_for_service()
+        future = list_nodes_client.call_async(
             composition_interfaces.srv.ListNodes.Request()
         )
+        rclpy.spin_until_future_complete(node, future)
+        response = future.result()
         return [
             ComponentInfo(uid, name) for uid, name in
             zip(response.unique_ids, response.full_node_names)
@@ -84,6 +92,7 @@ def load_component_into_container(
         '{}/_container/load_node'.format(remote_container_node_name)
     )
     try:
+        load_node_client.wait_for_service()
         request = composition_interfaces.srv.LoadNode.Request()
         request.package_name = package_name
         request.plugin_name = plugin_name
@@ -109,9 +118,12 @@ def load_component_into_container(
                 arg_msg.value = get_parameter_value(string_value=value)
                 arg_msg.name = name
                 request.extra_arguments.append(arg_msg)
-        response = load_node_client.call(request)
-        if not response.status:
+        future = load_node_client.call_async(request)
+        rclpy.spin_until_future_complete(node, future)
+        response = future.result()
+        if not response.success:
             return 'Failed to load component: ' + response.error_message.capitalize()
+        print('{} {}'.format(response.unique_id, response.full_node_name))
     finally:
         node.destroy_client(load_node_client)
 
@@ -123,12 +135,15 @@ def unload_component_from_container(*, node, remote_container_node_name, compone
         '{}/_container/unload_node'.format(remote_container_node_name)
     )
     try:
+        unload_node_client.wait_for_service()
         for uid in component_uids:
             request = composition_interfaces.srv.UnloadNode.Request()
             request.unique_id = uid
-            response = unload_node_client.call(request)
+            future = unload_node_client.call_async(request)
+            rclpy.spin_until_future_complete(node, future)
+            response = future.result()
             if not response.success:
-                print('Failed to unload component {} from {} container: {}'.format(
+                print('Failed to unload component {} from {} container\n  {}'.format(
                     uid, remote_container_node_name, response.error_message
                 ))
             else:
@@ -143,7 +158,6 @@ def find_container_node_names(*, node, node_names):
     container_node_names = []
     for n in node_names:
         services = get_service_info(node=node, remote_node_name=n.full_name)
-        print(services)
         if not any(s.name.endswith('_container/load_node') and
                    'composition_interfaces/LoadNode' in s.types
                    for s in services):
@@ -160,11 +174,20 @@ def find_container_node_names(*, node, node_names):
     return container_node_names
 
 
+def package_with_components_name_completer(prefix, parsed_args, **kwargs):
+    """Callable returning a list of package names with registered components."""
+    return get_package_names_with_component_types()
+
+
 def container_node_name_completer(prefix, parsed_args, **kwargs):
     """Callable returning a list of container node names."""
     with NodeStrategy(parsed_args) as node:
+        node_names = get_node_names(node=node)
+    with DirectNode(parsed_args) as node:
         return [
-            n.full_name for n in get_container_node_names(node=node)
+            n.full_name for n in find_container_node_names(
+                node=node, node_names=node_names
+            )
         ]
 
 

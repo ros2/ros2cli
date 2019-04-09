@@ -12,6 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import rclpy
+
+from ros2cli.node import NODE_NAME_PREFIX
 from ros2cli.node.direct import DirectNode
 from ros2cli.node.strategy import add_arguments
 from ros2cli.node.strategy import NodeStrategy
@@ -31,27 +34,32 @@ class ListVerb(VerbExtension):
         add_arguments(parser)
         argument = parser.add_argument(
             'container_node_name', nargs='?', default=None,
-            help='Optional Display all nodes even hidden ones')
+            help='Name of the container node to list components from')
         argument.completer = container_node_name_completer
         parser.add_argument(
             '--containers-only', action='store_true',
-            help='Only display the number of nodes discovered')
+            help='Only display found container node names')
 
     def main(self, *, args):
         with NodeStrategy(args) as node:
             node_names = get_node_names(node=node)
         with DirectNode(args) as node:
-            container_node_names = find_container_node_names(node=node, node_names=node_names)
+            container_node_names = find_container_node_names(
+                node=node, node_names=node_names
+            )
 
+        rclpy.init()
+        node = rclpy.create_node(NODE_NAME_PREFIX + '_component_list_requester')
+        try:
             if args.container_node_name is not None:
                 if args.container_node_name not in [n.full_name for n in container_node_names]:
                     return "Unable to find container node '" + args.container_node_name + "'"
                 if not args.containers_only:
-                    print(*[
-                        '{}  {}'.format(c.uid, c.full_name) for c in get_container_components_info(
-                            node=node, remote_container_node_name=args.container_node_name
-                        )
-                    ], sep='\n')
+                    components = get_container_components_info(
+                        node=node, remote_container_node_name=args.container_node_name
+                    )
+                    if any(components):
+                        print(*['{}  {}'.format(c.uid, c.name) for c in components], sep='\n')
             else:
                 for n in container_node_names:
                     print(n.full_name)
@@ -59,7 +67,10 @@ class ListVerb(VerbExtension):
                         components = get_container_components_info(
                             node=node, remote_container_node_name=n.full_name
                         )
-                        print('  Components:')
-                        print(*[
-                            2 * '  ' + '{}  {}'.format(c.uid, c.full_name) for c in components
-                        ], sep='\n')
+                        if any(components):
+                            print(*[
+                                2 * '  ' + '{}  {}'.format(c.uid, c.name) for c in components
+                            ], sep='\n')
+        finally:
+            node.destroy_node()
+            rclpy.shutdown()
