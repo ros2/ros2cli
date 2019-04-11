@@ -75,59 +75,89 @@ def _feedback_callback(feedback):
 
 
 def send_goal(action_name, action_type, goal_values, feedback_callback):
-    # TODO(jacobperron): This logic should come from a rosidl related package
-    package_name, action_type = action_type.split('/', 2)
-    if not package_name or not action_type:
-        raise RuntimeError('The passed action type is invalid')
-
-    module = importlib.import_module(package_name + '.action')
-    action_module = getattr(module, action_type)
-    goal_dict = yaml.load(goal_values)
-
-    rclpy.init()
-
-    node_name = NODE_NAME_PREFIX + '_send_goal_{}_{}'.format(package_name, action_type)
-    node = rclpy.create_node(node_name)
-
-    action_client = ActionClient(node, action_module, action_name)
-
-    goal = action_module.Goal()
-
+    goal_handle = None
+    node = None
+    action_client = None
     try:
-        set_message_fields(goal, goal_dict)
-    except Exception as ex:
-        return 'Failed to populate message fields: {!r}'.format(ex)
+        # TODO(jacobperron): This logic should come from a rosidl related package
+        package_name, action_type = action_type.split('/', 2)
+        if not package_name or not action_type:
+            raise RuntimeError('The passed action type is invalid')
 
-    print('Waiting for an action server to become available...')
-    action_client.wait_for_server()
+        module = importlib.import_module(package_name + '.action')
+        action_module = getattr(module, action_type)
+        goal_dict = yaml.load(goal_values)
 
-    print('Sending goal:\n     {}'.format(message_to_yaml(goal, None)))
-    goal_future = action_client.send_goal_async(goal, feedback_callback)
-    rclpy.spin_until_future_complete(node, goal_future)
+        rclpy.init()
 
-    goal_handle = goal_future.result()
+        node_name = NODE_NAME_PREFIX + '_send_goal_{}_{}'.format(package_name, action_type)
+        node = rclpy.create_node(node_name)
 
-    if goal_handle is None:
-        raise RuntimeError('Exeception while sending goal: {!r}'.format(goal_future.exception()))
+        action_client = ActionClient(node, action_module, action_name)
 
-    if not goal_handle.accepted:
-        print('Goal was rejected.')
-        return
+        goal = action_module.Goal()
 
-    print('Goal accepted with ID: {}\n'.format(bytes(goal_handle.goal_id.uuid).hex()))
+        try:
+            set_message_fields(goal, goal_dict)
+        except Exception as ex:
+            return 'Failed to populate message fields: {!r}'.format(ex)
 
-    result_future = goal_handle.get_result_async()
-    rclpy.spin_until_future_complete(node, result_future)
+        print('Waiting for an action server to become available...')
+        action_client.wait_for_server()
 
-    result = result_future.result()
+        print('Sending goal:\n     {}'.format(message_to_yaml(goal, None)))
+        goal_future = action_client.send_goal_async(goal, feedback_callback)
+        rclpy.spin_until_future_complete(node, goal_future)
 
-    if result is None:
-        raise RuntimeError(
-            'Exeception while getting result: {!r}'.format(result_future.exception()))
+        goal_handle = goal_future.result()
 
-    print('Result:\n    {}'.format(message_to_yaml(result.result, None)))
-    print('Goal finished with status: {}'.format(_goal_status_to_string(result.status)))
+        if goal_handle is None:
+            raise RuntimeError(
+                'Exeception while sending goal: {!r}'.format(goal_future.exception()))
 
-    action_client.destroy()
-    node.destroy_node()
-    rclpy.shutdown()
+        if not goal_handle.accepted:
+            print('Goal was rejected.')
+            return
+
+        print('Goal accepted with ID: {}\n'.format(bytes(goal_handle.goal_id.uuid).hex()))
+
+        result_future = goal_handle.get_result_async()
+        rclpy.spin_until_future_complete(node, result_future)
+
+        result = result_future.result()
+
+        if result is None:
+            raise RuntimeError(
+                'Exeception while getting result: {!r}'.format(result_future.exception()))
+
+        print('Result:\n    {}'.format(message_to_yaml(result.result, None)))
+        print('Goal finished with status: {}'.format(_goal_status_to_string(result.status)))
+    finally:
+        # Cancel the goal if it's still active
+        if (goal_handle is not None and
+            (GoalStatus.STATUS_ACCEPTED == goal_handle.status or
+             GoalStatus.STATUS_EXECUTING == goal_handle.status)):
+            print('Canceling goal...')
+            cancel_future = goal_handle.cancel_goal_async()
+            rclpy.spin_until_future_complete(node, cancel_future)
+
+            cancel_response = cancel_future.result()
+
+            if cancel_response is None:
+                raise RuntimeError(
+                    'Exeception while canceling goal: {!r}'.format(cancel_future.exception()))
+
+            if len(cancel_response.goals_canceling) == 0:
+                raise RuntimeError('Failed to cancel goal')
+            if len(cancel_response.goals_canceling) > 1:
+                raise RuntimeError('More than one goal canceled')
+            if cancel_response.goals_canceling[0].goal_id != goal_handle.goal_id:
+                raise RuntimeError('Canceled goal with incorrect goal ID')
+            print('Goal canceled.')
+
+        if action_client is not None:
+            action_client.destroy()
+        if node is not None:
+            node.destroy_node()
+        if rclpy.ok():
+            rclpy.shutdown()
