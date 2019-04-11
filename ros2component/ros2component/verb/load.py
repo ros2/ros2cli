@@ -35,29 +35,32 @@ class LoadVerb(VerbExtension):
     def add_arguments(self, parser, cli_name):
         add_arguments(parser)
         argument = parser.add_argument(
-            'container_node_name',
-            help='Container node name to load component into')
+            'container_node_name', help='Container node name to load component into'
+        )
         argument.completer = container_node_name_completer
         argument = parser.add_argument(
-            'package_name',
-            help='Package name where the component is to be found')
+            'package_name', help='Name of the package where the component is to be found'
+        )
         argument.completer = package_with_components_name_completer
         argument = parser.add_argument(
-            'plugin_name', help='Component type name'
+            'plugin_name', help='Type name of the component to be loaded'
         )
-        argument.completer = ComponentTypeNameCompleter(
-            package_name_key='package_name'
+        argument.completer = ComponentTypeNameCompleter(package_name_key='package_name')
+        parser.add_argument('-n', '--node-name', default=None, help='Component node name')
+        parser.add_argument('--namespace-name', default=None, help='Component node namespace')
+        parser.add_argument('--log-level', default=None, help='Component node log level')
+        parser.add_argument(
+            '-r', '--remap-rule', action='append', default=None, dest='remap_rules',
+            help="Component node remapping rules, in the 'from:=to' form"
         )
-        parser.add_argument('-n', '--node-name', default=None, help='Node name')
-        parser.add_argument('--namespace-name', default=None, help='Node namespace')
-        parser.add_argument('--log-level', default=None, help='Node log level')
-        parser.add_argument('-r', '--remap-rule', action='append', default=None,
-                            dest='remap_rules', help='Node remapping rules of the from:=to form')
-        parser.add_argument('-p', '--parameter', action='append', default=None,
-                            dest='parameters', help='Node parameters, in the name:=value form')
-        parser.add_argument('-e', '--extra-argument', action='append', default=None,
-                            dest='extra_arguments', help=('Extra arguments for the container, '
-                                                          'in the name:=value form'))
+        parser.add_argument(
+            '-p', '--parameter', action='append', default=None, dest='parameters',
+            help="Component node parameters, in the 'name:=value' form"
+        )
+        parser.add_argument(
+            '-e', '--extra-argument', action='append', default=None, dest='extra_arguments',
+            help="Extra arguments for the container, in the 'name:=value' form"
+        )
 
     def main(self, *, args):
         with NodeStrategy(args) as node:

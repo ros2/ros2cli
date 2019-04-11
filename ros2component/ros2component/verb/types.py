@@ -22,13 +22,13 @@ from ros2pkg.api import package_name_completer
 
 
 class TypesVerb(VerbExtension):
-    """Output a list of available containers and components."""
+    """Output a list of components registered in the ament index."""
 
     def add_arguments(self, parser, cli_name):
         add_arguments(parser)
         argument = parser.add_argument(
             'package_name', nargs='?', default=None,
-            help='Optional package name to narrow down the list'
+            help='Package name to look for registered components in'
         )
         argument.completer = package_name_completer
 

@@ -34,10 +34,17 @@ COMPONENTS_RESOURCE_TYPE = 'rclcpp_components'
 
 
 def get_package_names_with_component_types():
+    """Get the names of all packages that register component types in the ament index."""
     return list(get_resources(COMPONENTS_RESOURCE_TYPE).keys())
 
 
 def get_package_component_types(*, package_name=None):
+    """
+    Get all component types registered in the ament index for the given package.
+
+    :param package_name: whose component types are to be retrieved.
+    :return: a list of component type names.
+    """
     if not has_resource(COMPONENTS_RESOURCE_TYPE, package_name):
         return []
     component_registry, _ = get_resource(COMPONENTS_RESOURCE_TYPE, package_name)
@@ -45,6 +52,11 @@ def get_package_component_types(*, package_name=None):
 
 
 def get_registered_component_types():
+    """
+    Get all component types registered in the ament index.
+
+    :return: a list of (package name, component type names) tuples.
+    """
     return [
         (package_name, get_package_component_types(package_name=package_name))
         for package_name in get_package_names_with_component_types()
@@ -55,6 +67,14 @@ ComponentInfo = namedtuple('Component', ('uid', 'name'))
 
 
 def get_container_components_info(*, node, remote_container_node_name):
+    """
+    Get information about the components in a given container.
+
+    :param node: an `rclpy.Node` instance.
+    :param remote_container_node_name: of the container node to inspect.
+    :return: a list of `ComponentInfo` instances, with the unique ID and
+    name for each of the components in the container.
+    """
     list_nodes_client = node.create_client(
         composition_interfaces.srv.ListNodes,
         '{}/_container/list_nodes'.format(remote_container_node_name)
@@ -87,6 +107,20 @@ def load_component_into_container(
     parameters=None,
     extra_arguments=None
 ):
+    """
+    Load component into a running container synchronously.
+
+    :param node: an `rclpy.Node` instance
+    :param remote_container_node_name: of the container node to load the component into
+    :param package_name: where the component node plugin is to be found
+    :param plugin_name: of the component plugin to load
+    :param node_name: name for the component node
+    :param namespace_name: namespace for the component node
+    :param log_level: log level for the component node
+    :param remap_rules: remapping rules for the component node, in the 'from:=to' form
+    :param parameters: optional parameters for the component node, in the 'name:=value' form
+    :param extra_arguments: arguments specific to the container node in the 'name:=value' form
+    """
     load_node_client = node.create_client(
         composition_interfaces.srv.LoadNode,
         '{}/_container/load_node'.format(remote_container_node_name)
@@ -129,7 +163,13 @@ def load_component_into_container(
 
 
 def unload_component_from_container(*, node, remote_container_node_name, component_uids):
-    """."""
+    """
+    Unload a component from a running container synchronously.
+
+    :param node: an `rclpy.Node` instance
+    :param remote_container_node_name: of the container node to unload the component from
+    :param component_uids: list of unique IDs of the components to be unloaded
+    """
     unload_node_client = node.create_client(
         composition_interfaces.srv.UnloadNode,
         '{}/_container/unload_node'.format(remote_container_node_name)
@@ -143,18 +183,26 @@ def unload_component_from_container(*, node, remote_container_node_name, compone
             rclpy.spin_until_future_complete(node, future)
             response = future.result()
             if not response.success:
-                print('Failed to unload component {} from {} container\n  {}'.format(
+                return 'Failed to unload component {} from {} container\n  {}'.format(
                     uid, remote_container_node_name, response.error_message
-                ))
-            else:
-                print('Unloaded component {} from {} container'.format(
-                    uid, remote_container_node_name
-                ))
+                )
+            print('Unloaded component {} from {} container'.format(
+                uid, remote_container_node_name
+            ))
     finally:
         node.destroy_client(unload_node_client)
 
 
 def find_container_node_names(*, node, node_names):
+    """
+    Identify container nodes from a a list of node names.
+
+    :param node: a `ros2cli.node.DirectNode` instance
+    :param node_names: list of `ros2node.api.NodeName` instances, as returned
+        by `ros2node.api.get_node_names()`
+    :return: list of `ros2node.api.NodeName` instances for nodes that are
+        component containers
+    """
     container_node_names = []
     for n in node_names:
         services = get_service_info(node=node, remote_node_name=n.full_name)

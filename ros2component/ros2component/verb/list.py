@@ -20,15 +20,15 @@ from ros2cli.node.strategy import add_arguments
 from ros2cli.node.strategy import NodeStrategy
 
 from ros2component.api import container_node_name_completer
-from ros2component.api import get_container_components_info
 from ros2component.api import find_container_node_names
+from ros2component.api import get_container_components_info
 from ros2component.verb import VerbExtension
 
 from ros2node.api import get_node_names
 
 
 class ListVerb(VerbExtension):
-    """Output a list of available containers and components."""
+    """Output a list of running containers and components."""
 
     def add_arguments(self, parser, cli_name):
         add_arguments(parser)
@@ -38,7 +38,7 @@ class ListVerb(VerbExtension):
         argument.completer = container_node_name_completer
         parser.add_argument(
             '--containers-only', action='store_true',
-            help='Only display found container node names')
+            help='List found containers nodes only')
 
     def main(self, *, args):
         with NodeStrategy(args) as node:

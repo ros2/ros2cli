@@ -33,12 +33,12 @@ class UnloadVerb(VerbExtension):
     def add_arguments(self, parser, cli_name):
         add_arguments(parser)
         argument = parser.add_argument(
-            'container_node_name',
-            help='Container node name to unload component from')
+            'container_node_name', help='Container node name to unload component from'
+        )
         argument.completer = container_node_name_completer
         argument = parser.add_argument(
-            'component_uid', type=int, nargs='+',
-            help='Unique ID of the component to be unloaded.')
+            'component_uid', type=int, nargs='+', help='Unique ID of the component to be unloaded'
+        )
 
     def main(self, *, args):
         with NodeStrategy(args) as node:
