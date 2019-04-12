@@ -23,7 +23,7 @@ class ShowVerb(VerbExtension):
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
             'action_type',
-            help="Type of the ROS action (e.g. 'examples_interfaces/Fibonacci')")
+            help="Type of the ROS action (e.g. 'example_interfaces/Fibonacci')")
         arg.completer = action_type_completer
 
     def main(self, *, args):
