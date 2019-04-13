@@ -32,14 +32,8 @@ def get_action_clients_and_servers(*, node, action_name):
     action_clients = []
     action_servers = []
 
-    try:
-        expanded_name = expand_topic_name(action_name, node.get_name(), node.get_namespace())
-    except ValueError as e:
-        raise RuntimeError(e)
-    try:
-        validate_full_topic_name(expanded_name)
-    except rclpy.exceptions.InvalidTopicNameException as e:
-        raise RuntimeError(e)
+    expanded_name = expand_topic_name(action_name, node.get_name(), node.get_namespace())
+    validate_full_topic_name(expanded_name)
 
     node_names_and_ns = node.get_node_names_and_namespaces()
     for node_name, node_ns in node_names_and_ns:

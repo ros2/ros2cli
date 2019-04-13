@@ -35,10 +35,13 @@ class InfoVerb(VerbExtension):
 
     def main(self, *, args):
         with DirectNode(args) as node:
-            action_clients, action_servers = get_action_clients_and_servers(
-                node=node,
-                action_name=args.action_name,
-            )
+            try:
+                action_clients, action_servers = get_action_clients_and_servers(
+                    node=node,
+                    action_name=args.action_name,
+                )
+            except Exception as e:
+                raise RuntimeError(e)
 
         print('Action: {}'.format(args.action_name))
         print('Action clients: {}'.format(len(action_clients)))
