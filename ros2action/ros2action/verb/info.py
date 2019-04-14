@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import rclpy
 from ros2action.api import action_name_completer
 from ros2action.api import get_action_clients_and_servers
 from ros2action.verb import VerbExtension
@@ -40,7 +41,7 @@ class InfoVerb(VerbExtension):
                     node=node,
                     action_name=args.action_name,
                 )
-            except Exception as e:
+            except (ValueError, rclpy.exceptions.InvalidTopicNameException) as e:
                 raise RuntimeError(e)
 
         print('Action: {}'.format(args.action_name))
