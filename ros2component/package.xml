@@ -9,6 +9,7 @@
   <maintainer email="michel@ekumenlabs.com">Michel Hidalgo</maintainer>
   <license>Apache License 2.0</license>
 
+  <depend>composition_interfaces</depend>
   <depend>ros2cli</depend>
   <depend>ros2node</depend>
   <depend>ros2param</depend>
