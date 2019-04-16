@@ -101,7 +101,7 @@ def load_component_into_container(
     package_name,
     plugin_name,
     node_name=None,
-    namespace_name=None,
+    node_namespace=None,
     log_level=None,
     remap_rules=None,
     parameters=None,
@@ -115,7 +115,7 @@ def load_component_into_container(
     :param package_name: where the component node plugin is to be found
     :param plugin_name: of the component plugin to load
     :param node_name: name for the component node
-    :param namespace_name: namespace for the component node
+    :param node_namespace: namespace for the component node
     :param log_level: log level for the component node
     :param remap_rules: remapping rules for the component node, in the 'from:=to' form
     :param parameters: optional parameters for the component node, in the 'name:=value' form
@@ -132,8 +132,8 @@ def load_component_into_container(
         request.plugin_name = plugin_name
         if node_name is not None:
             request.node_name = node_name
-        if namespace_name is not None:
-            request.namespace_name = namespace_name
+        if node_namespace is not None:
+            request.node_namespace = node_namespace
         if log_level is not None:
             request.log_level = log_level
         if remap_rules is not None:
