@@ -47,7 +47,7 @@ class LoadVerb(VerbExtension):
         )
         argument.completer = ComponentTypeNameCompleter(package_name_key='package_name')
         parser.add_argument('-n', '--node-name', default=None, help='Component node name')
-        parser.add_argument('--namespace-name', default=None, help='Component node namespace')
+        parser.add_argument('--node-namespace', default=None, help='Component node namespace')
         parser.add_argument('--log-level', default=None, help='Component node log level')
         parser.add_argument(
             '-r', '--remap-rule', action='append', default=None, dest='remap_rules',
@@ -74,7 +74,7 @@ class LoadVerb(VerbExtension):
                 return load_component_into_container(
                     node=node, remote_container_node_name=args.container_node_name,
                     package_name=args.package_name, plugin_name=args.plugin_name,
-                    node_name=args.node_name, namespace_name=args.namespace_name,
+                    node_name=args.node_name, node_namespace=args.node_namespace,
                     log_level=args.log_level, remap_rules=args.remap_rules,
                     parameters=args.parameters, extra_arguments=args.extra_arguments
                 )
