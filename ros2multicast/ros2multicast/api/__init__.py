@@ -17,10 +17,13 @@ import struct
 
 DEFAULT_GROUP = '225.0.0.1'
 DEFAULT_PORT = 49150
+DEFAULT_TTL = 10
 
 
 def send(data, *, group=DEFAULT_GROUP, port=DEFAULT_PORT):
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+    ttl = struct.pack('b', DEFAULT_TTL)
+    s.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, ttl)
     try:
         s.sendto(data, (group, port))
     finally:
