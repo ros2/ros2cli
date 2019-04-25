@@ -36,6 +36,10 @@ class UnloadVerb(VerbExtension):
         argument = parser.add_argument(
             'component_uid', type=int, nargs='+', help='Unique ID of the component to be unloaded'
         )
+        parser.add_argument(
+            '-q', '--quiet', action='store_true', default=False,
+            help='Print bare minimum output: component unique IDs only'
+        )
 
     def main(self, *, args):
         with NodeStrategy(args) as node:
@@ -52,6 +56,9 @@ class UnloadVerb(VerbExtension):
                     return "Failed to unload component {} from '{}' container node\n    {}".format(
                         uid, args.container_node_name, reason.capitalize()
                     )
-                print("Unloaded component {} from '{}' container node".format(
-                    uid, args.container_node_name
-                ))
+                if not args.quiet:
+                    print("Unloaded component {} from '{}' container node".format(
+                        uid, args.container_node_name
+                    ))
+                else:
+                    print(uid)

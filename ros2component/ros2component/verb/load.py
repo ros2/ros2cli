@@ -35,6 +35,10 @@ class LoadVerb(VerbExtension):
         )
         argument.completer = container_node_name_completer
         add_component_arguments(parser)
+        parser.add_argument(
+            '-q', '--quiet', action='store_true', default=False,
+            help='Print bare minimum output: component unique IDs and names only'
+        )
 
     def main(self, *, args):
         with NodeStrategy(args) as node:
@@ -50,4 +54,9 @@ class LoadVerb(VerbExtension):
                 log_level=args.log_level, remap_rules=args.remap_rules,
                 parameters=args.parameters, extra_arguments=args.extra_arguments
             )
-            print('{}  {}'.format(component_uid, component_name))
+            if not args.quiet:
+                print("Loaded component {} into '{}' container node as '{}'".format(
+                    component_uid, args.container_node_name, component_name
+                ))
+            else:
+                print('{}    {}'.format(component_uid, component_name))
