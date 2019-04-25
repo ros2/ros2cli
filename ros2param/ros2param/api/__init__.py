@@ -61,22 +61,6 @@ def get_parameter_value(*, string_value):
     return value
 
 
-def _is_integer(string_value):
-    try:
-        integer_value = int(string_value)
-    except ValueError:
-        return False
-    return str(integer_value) == string_value
-
-
-def _is_float(string_value):
-    try:
-        float(string_value)
-    except ValueError:
-        return False
-    return True
-
-
 def call_get_parameters(*, node, node_name, parameter_names):
     # create client
     client = node.create_client(
