@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import array
+
 import pytest
 
 from rcl_interfaces.msg import ParameterType
@@ -38,31 +40,31 @@ from ros2param.api import get_parameter_value
             '[false, true]',
             ParameterType.PARAMETER_BOOL_ARRAY,
             'bool_array_value',
-            [False, True]
+            [False, True],
         ),
         (
             '[-1, 0, 1]',
             ParameterType.PARAMETER_INTEGER_ARRAY,
             'integer_array_value',
-            [-1, 0, 1]
+            array.array('q', (-1, 0, 1))
         ),
         (
             '[-1.0, 0.0, 1.0, 1.1234]',
             ParameterType.PARAMETER_DOUBLE_ARRAY,
             'double_array_value',
-            [-1.0, 0.0, 1.0, 1.1234]
+            array.array('d', (-1.0, 0.0, 1.0, 1.1234)),
         ),
         (
             '["foo", "bar", "buzz"]',
             ParameterType.PARAMETER_STRING_ARRAY,
             'string_array_value',
-            ['foo', 'bar', 'buzz']
+            ['foo', 'bar', 'buzz'],
         ),
         (  # Invalid YAML remains a string
             '["foo", "bar", "buzz"',
             ParameterType.PARAMETER_STRING,
             'string_value',
-            '["foo", "bar", "buzz"'
+            '["foo", "bar", "buzz"',
         ),
     ],
 )
