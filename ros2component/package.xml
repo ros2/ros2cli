@@ -9,11 +9,15 @@
   <maintainer email="michel@ekumenlabs.com">Michel Hidalgo</maintainer>
   <license>Apache License 2.0</license>
 
-  <depend>composition_interfaces</depend>
-  <depend>ros2cli</depend>
-  <depend>ros2node</depend>
-  <depend>ros2param</depend>
-  <depend>ros2pkg</depend>
+  <exec_depend>ament_index_python</exec_depend>
+  <exec_depend>composition_interfaces</exec_depend>
+  <exec_depend>rcl_interfaces</exec_depend>
+  <exec_depend>rclcpp_components</exec_depend>
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>ros2cli</exec_depend>
+  <exec_depend>ros2node</exec_depend>
+  <exec_depend>ros2param</exec_depend>
+  <exec_depend>ros2pkg</exec_depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
