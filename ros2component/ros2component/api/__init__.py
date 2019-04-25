@@ -271,3 +271,17 @@ def add_component_arguments(parser):
         '-e', '--extra-argument', action='append', default=None, dest='extra_arguments',
         help="Extra arguments for the container, in the 'name:=value' form"
     )
+
+
+def run_standalone_container(*, container_node_name):
+    """Run a standalone component container."""
+    try:
+        paths = get_executable_paths(package_name='rclcpp_components')
+    except PackageNotFound:
+        raise RuntimeError("Package 'rclcpp_components' not found")
+
+    executable_path = next((p for p in paths if 'component_container' in p), None)
+    if executable_path is None:
+        raise RuntimeError('No component container node found!')
+
+    return subprocess.Popen([executable_path, '__node:=' + container_node_name])

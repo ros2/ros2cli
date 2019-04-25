@@ -35,6 +35,7 @@ The package provides the component command for the ROS 2 command line tools.""",
         'ros2component.verb': [
             'list = ros2component.verb.list:ListVerb',
             'load = ros2component.verb.load:LoadVerb',
+            'standalone = ros2component.verb.standalone:StandaloneVerb',
             'types = ros2component.verb.types:TypesVerb',
             'unload = ros2component.verb.unload:UnloadVerb',
         ],
