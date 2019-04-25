@@ -12,9 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import rclpy
-
-from ros2cli.node import NODE_NAME_PREFIX
 from ros2cli.node.direct import DirectNode
 from ros2cli.node.strategy import add_arguments
 from ros2cli.node.strategy import NodeStrategy
@@ -47,10 +44,6 @@ class ListVerb(VerbExtension):
             container_node_names = find_container_node_names(
                 node=node, node_names=node_names
             )
-
-        rclpy.init()
-        node = rclpy.create_node(NODE_NAME_PREFIX + '_component_list_requester')
-        try:
             if args.container_node_name is not None:
                 if args.container_node_name not in [n.full_name for n in container_node_names]:
                     return "Unable to find container node '" + args.container_node_name + "'"
@@ -71,6 +64,3 @@ class ListVerb(VerbExtension):
                             print(*[
                                 2 * '  ' + '{}  {}'.format(c.uid, c.name) for c in components
                             ], sep='\n')
-        finally:
-            node.destroy_node()
-            rclpy.shutdown()

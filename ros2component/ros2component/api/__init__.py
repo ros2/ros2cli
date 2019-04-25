@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from collections import namedtuple
+import subprocess
 
 from ament_index_python import get_resource
 from ament_index_python import get_resources
@@ -28,7 +29,8 @@ from ros2cli.node.strategy import NodeStrategy
 from ros2node.api import get_node_names
 from ros2node.api import get_service_info
 from ros2param.api import get_parameter_value
-
+from ros2pkg.api import get_executable_paths
+from ros2pkg.api import PackageNotFound
 
 COMPONENTS_RESOURCE_TYPE = 'rclcpp_components'
 
@@ -156,8 +158,8 @@ def load_component_into_container(
         rclpy.spin_until_future_complete(node, future)
         response = future.result()
         if not response.success:
-            return 'Failed to load component: ' + response.error_message.capitalize()
-        print('{} {}'.format(response.unique_id, response.full_node_name))
+            raise RuntimeError('Failed to load component: ' + response.error_message.capitalize())
+        return response.unique_id, response.full_node_name
     finally:
         node.destroy_client(load_node_client)
 
@@ -182,13 +184,7 @@ def unload_component_from_container(*, node, remote_container_node_name, compone
             future = unload_node_client.call_async(request)
             rclpy.spin_until_future_complete(node, future)
             response = future.result()
-            if not response.success:
-                return 'Failed to unload component {} from {} container\n  {}'.format(
-                    uid, remote_container_node_name, response.error_message
-                )
-            print('Unloaded component {} from {} container'.format(
-                uid, remote_container_node_name
-            ))
+            yield uid, not response.success, response.error_message
     finally:
         node.destroy_client(unload_node_client)
 
@@ -248,3 +244,30 @@ class ComponentTypeNameCompleter:
     def __call__(self, prefix, parsed_args, **kwargs):
         package_name = getattr(parsed_args, self.package_name_key)
         return get_package_component_types(package_name=package_name)
+
+
+def add_component_arguments(parser):
+    """Add component specific arguments to the CLI parser."""
+    argument = parser.add_argument(
+        'package_name', help='Name of the package where the component is to be found'
+    )
+    argument.completer = package_with_components_name_completer
+    argument = parser.add_argument(
+        'plugin_name', help='Type name of the component to be loaded'
+    )
+    argument.completer = ComponentTypeNameCompleter(package_name_key='package_name')
+    parser.add_argument('-n', '--node-name', default=None, help='Component node name')
+    parser.add_argument('--node-namespace', default=None, help='Component node namespace')
+    parser.add_argument('--log-level', default=None, help='Component node log level')
+    parser.add_argument(
+        '-r', '--remap-rule', action='append', default=None, dest='remap_rules',
+        help="Component node remapping rules, in the 'from:=to' form"
+    )
+    parser.add_argument(
+        '-p', '--parameter', action='append', default=None, dest='parameters',
+        help="Component node parameters, in the 'name:=value' form"
+    )
+    parser.add_argument(
+        '-e', '--extra-argument', action='append', default=None, dest='extra_arguments',
+        help="Extra arguments for the container, in the 'name:=value' form"
+    )

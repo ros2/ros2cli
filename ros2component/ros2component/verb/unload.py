@@ -12,9 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import rclpy
-
-from ros2cli.node import NODE_NAME_PREFIX
 from ros2cli.node.direct import DirectNode
 from ros2cli.node.strategy import add_arguments
 from ros2cli.node.strategy import NodeStrategy
@@ -45,12 +42,16 @@ class UnloadVerb(VerbExtension):
             node_names = get_node_names(node=node)
         with DirectNode(args) as node:
             container_node_names = find_container_node_names(node=node, node_names=node_names)
-        rclpy.init()
-        node = rclpy.create_node(NODE_NAME_PREFIX + '_component_load_requester')
-        if args.container_node_name in [n.full_name for n in container_node_names]:
-            return unload_component_from_container(
+            if args.container_node_name not in [n.full_name for n in container_node_names]:
+                return "Unable to find container node '" + args.container_node_name + "'"
+            for uid, error, reason in unload_component_from_container(
                 node=node, remote_container_node_name=args.container_node_name,
                 component_uids=args.component_uid
-            )
-        else:
-            return "Unable to find container node '" + args.container_node_name + "'"
+            ):
+                if error:
+                    return "Failed to unload component {} from '{}' container node\n    {}".format(
+                        uid, args.container_node_name, reason.capitalize()
+                    )
+                print("Unloaded component {} from '{}' container node".format(
+                    uid, args.container_node_name
+                ))
