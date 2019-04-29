@@ -256,19 +256,19 @@ def add_component_arguments(parser):
         'plugin_name', help='Type name of the component to be loaded'
     )
     argument.completer = ComponentTypeNameCompleter(package_name_key='package_name')
-    parser.add_argument('-n', '--node-name', default=None, help='Component node name')
-    parser.add_argument('--node-namespace', default=None, help='Component node namespace')
-    parser.add_argument('--log-level', default=None, help='Component node log level')
+    parser.add_argument('-n', '--node-name', help='Component node name')
+    parser.add_argument('--node-namespace', help='Component node namespace')
+    parser.add_argument('--log-level', help='Component node log level')
     parser.add_argument(
-        '-r', '--remap-rule', action='append', default=None, dest='remap_rules',
+        '-r', '--remap-rule', action='append', dest='remap_rules',
         help="Component node remapping rules, in the 'from:=to' form"
     )
     parser.add_argument(
-        '-p', '--parameter', action='append', default=None, dest='parameters',
+        '-p', '--parameter', action='append', dest='parameters',
         help="Component node parameters, in the 'name:=value' form"
     )
     parser.add_argument(
-        '-e', '--extra-argument', action='append', default=None, dest='extra_arguments',
+        '-e', '--extra-argument', action='append', dest='extra_arguments',
         help="Extra arguments for the container, in the 'name:=value' form"
     )
 

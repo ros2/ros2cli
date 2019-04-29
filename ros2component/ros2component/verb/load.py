@@ -37,7 +37,7 @@ class LoadVerb(VerbExtension):
         add_component_arguments(parser)
         parser.add_argument(
             '-q', '--quiet', action='store_true', default=False,
-            help='Print bare minimum output: component unique IDs and names only'
+            help='Only print component unique IDs and names'
         )
 
     def main(self, *, args):
@@ -59,4 +59,4 @@ class LoadVerb(VerbExtension):
                     component_uid, args.container_node_name, component_name
                 ))
             else:
-                print('{}    {}'.format(component_uid, component_name))
+                print('{}  {}'.format(component_uid, component_name))

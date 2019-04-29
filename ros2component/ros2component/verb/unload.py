@@ -38,7 +38,7 @@ class UnloadVerb(VerbExtension):
         )
         parser.add_argument(
             '-q', '--quiet', action='store_true', default=False,
-            help='Print bare minimum output: component unique IDs only'
+            help='Only print component unique IDs'
         )
 
     def main(self, *, args):

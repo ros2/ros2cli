@@ -52,7 +52,7 @@ class ListVerb(VerbExtension):
                         node=node, remote_container_node_name=args.container_node_name
                     )
                     if any(components):
-                        print(*['{}    {}'.format(c.uid, c.name) for c in components], sep='\n')
+                        print(*['{}  {}'.format(c.uid, c.name) for c in components], sep='\n')
             else:
                 for n in container_node_names:
                     print(n.full_name)
@@ -62,5 +62,5 @@ class ListVerb(VerbExtension):
                         )
                         if any(components):
                             print(*[
-                                4 * ' ' + '{}    {}'.format(c.uid, c.name) for c in components
+                                '  ' + '{}  {}'.format(c.uid, c.name) for c in components
                             ], sep='\n')
