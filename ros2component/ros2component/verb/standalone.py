@@ -12,51 +12,46 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import uuid
+
 from ros2cli.node.direct import DirectNode
 from ros2cli.node.strategy import add_arguments
-from ros2cli.node.strategy import NodeStrategy
 
 from ros2component.api import add_component_arguments
-from ros2component.api import container_node_name_completer
-from ros2component.api import find_container_node_names
 from ros2component.api import load_component_into_container
+from ros2component.api import run_standalone_container
 from ros2component.verb import VerbExtension
 
-from ros2node.api import get_node_names
 
-
-class LoadVerb(VerbExtension):
-    """Load a component into a container node."""
+class RunVerb(VerbExtension):
+    """Run a component into its own standalone container node."""
 
     def add_arguments(self, parser, cli_name):
         add_arguments(parser)
-        argument = parser.add_argument(
-            'container_node_name', help='Container node name to unload component from'
-        )
-        argument.completer = container_node_name_completer
         add_component_arguments(parser)
         parser.add_argument(
-            '-q', '--quiet', action='store_true', default=False,
-            help='Only print component unique IDs and names'
+            '-c', '--container-node-name',
+            default='standalone_container_' + uuid.uuid4().hex[:12],
+            help='Name of the standalone container node to be run'
         )
 
     def main(self, *, args):
-        with NodeStrategy(args) as node:
-            node_names = get_node_names(node=node)
+        container = run_standalone_container(container_node_name=args.container_node_name)
+
         with DirectNode(args) as node:
-            container_node_names = find_container_node_names(node=node, node_names=node_names)
-            if args.container_node_name not in [n.full_name for n in container_node_names]:
-                return "Unable to find container node '" + args.container_node_name + "'"
-            component_uid, component_name = load_component_into_container(
+            load_component_into_container(
                 node=node, remote_container_node_name=args.container_node_name,
                 package_name=args.package_name, plugin_name=args.plugin_name,
                 node_name=args.node_name, node_namespace=args.node_namespace,
                 log_level=args.log_level, remap_rules=args.remap_rules,
                 parameters=args.parameters, extra_arguments=args.extra_arguments
             )
-            if not args.quiet:
-                print("Loaded component {} into '{}' container node as '{}'".format(
-                    component_uid, args.container_node_name, component_name
-                ))
-            else:
-                print('{}  {}'.format(component_uid, component_name))
+
+        while container.returncode is None:
+            try:
+                container.communicate()
+            except KeyboardInterrupt:
+                # the subprocess will also receive the signal and should shut down
+                # therefore we continue here until the process has finished
+                pass
+        return container.returncode
