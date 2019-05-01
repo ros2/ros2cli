@@ -115,7 +115,7 @@ def subscriber(node, topic_name, message_type, callback):
 def subscriber_cb(truncate_length):
     def cb(msg):
         nonlocal truncate_length
-        print(message_to_yaml(msg, truncate_length))
+        print(message_to_yaml(msg, truncate_length), end='---\n')
     return cb
 
 
