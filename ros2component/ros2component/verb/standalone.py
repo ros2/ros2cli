@@ -23,7 +23,7 @@ from ros2component.api import run_standalone_container
 from ros2component.verb import VerbExtension
 
 
-class RunVerb(VerbExtension):
+class StandaloneVerb(VerbExtension):
     """Run a component into its own standalone container node."""
 
     def add_arguments(self, parser, cli_name):
