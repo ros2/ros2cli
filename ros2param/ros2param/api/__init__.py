@@ -24,7 +24,7 @@ def get_parameter_value(*, string_value):
     """Guess the desired type of the parameter based on the string value."""
     value = ParameterValue()
     try:
-        yaml_value = yaml.load(string_value)
+        yaml_value = yaml.stafe_load(string_value)
     except yaml.parser.ParserError:
         value.type = ParameterType.PARAMETER_STRING
         value.string_value = string_value
