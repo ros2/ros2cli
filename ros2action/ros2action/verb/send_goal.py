@@ -86,7 +86,7 @@ def send_goal(action_name, action_type, goal_values, feedback_callback):
 
         module = importlib.import_module(package_name + '.action')
         action_module = getattr(module, action_type)
-        goal_dict = yaml.load(goal_values)
+        goal_dict = yaml.safe_load(goal_values)
 
         rclpy.init()
 
