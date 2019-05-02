@@ -21,7 +21,7 @@ from rclpy.topic_or_service_is_hidden import topic_or_service_is_hidden
 from rclpy.validate_full_topic_name import validate_full_topic_name
 from ros2cli.node.strategy import NodeStrategy
 from ros2msg.api import message_type_completer
-from rosidl_runtime_py.import_message import import_message_type
+from rosidl_runtime_py import import_message_type
 
 
 def get_topic_names_and_types(*, node, include_hidden_topics=False):

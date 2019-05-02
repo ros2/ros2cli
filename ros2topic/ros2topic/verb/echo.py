@@ -20,9 +20,9 @@ from rclpy.qos import qos_profile_sensor_data
 from rclpy.validate_full_topic_name import validate_full_topic_name
 from ros2cli.node.direct import DirectNode
 from ros2topic.api import get_topic_names_and_types
-from ros2topic.api import import_message_type
 from ros2topic.api import TopicNameCompleter
 from ros2topic.verb import VerbExtension
+from rosidl_runtime_py import import_message_type
 from rosidl_runtime_py import message_to_csv
 from rosidl_runtime_py import message_to_yaml
 
