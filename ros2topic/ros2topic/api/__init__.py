@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import importlib
-
 from time import sleep
 
 import rclpy
@@ -23,6 +21,7 @@ from rclpy.topic_or_service_is_hidden import topic_or_service_is_hidden
 from rclpy.validate_full_topic_name import validate_full_topic_name
 from ros2cli.node.strategy import NodeStrategy
 from ros2msg.api import message_type_completer
+from rosidl_runtime_py.import_message import import_message_type
 
 
 def get_topic_names_and_types(*, node, include_hidden_topics=False):
@@ -52,24 +51,6 @@ class TopicNameCompleter:
                 node=node,
                 include_hidden_topics=getattr(
                     parsed_args, self.include_hidden_topics_key))
-
-
-def import_message_type(topic_name, message_type):
-    # TODO(dirk-thomas) this logic should come from a rosidl related package
-    try:
-        package_name, message_name = message_type.split('/', 2)
-        if not package_name or not message_name:
-            raise ValueError()
-    except ValueError:
-        raise RuntimeError('The passed message type is invalid')
-
-    # TODO(sloretz) node API to get topic types should indicate if action or msg
-    middle_module = 'msg'
-    if topic_name.endswith('/_action/feedback'):
-        middle_module = 'action'
-
-    module = importlib.import_module(package_name + '.' + middle_module)
-    return getattr(module, message_name)
 
 
 class TopicTypeCompleter:
