@@ -83,7 +83,7 @@ def publisher(
 
     node = rclpy.create_node(node_name)
 
-    pub = node.create_publisher(msg_module, topic_name)
+    pub = node.create_publisher(msg_module, topic_name, 10)
 
     msg = msg_module()
     try:

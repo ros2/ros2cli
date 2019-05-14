@@ -187,7 +187,7 @@ def _rostopic_delay(node, topic, window_size=DEFAULT_WINDOW_SIZE):
         msg_class,
         topic,
         rt.callback_delay,
-        qos_profile=qos_profile_sensor_data)
+        qos_profile_sensor_data)
 
     timer = node.create_timer(1, rt.print_delay)
     while rclpy.ok():

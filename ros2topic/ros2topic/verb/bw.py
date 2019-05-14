@@ -147,7 +147,7 @@ def _rostopic_bw(node, topic, window_size=DEFAULT_WINDOW_SIZE):
         msg_class,
         topic,
         rt.callback,
-        qos_profile=qos_profile_sensor_data,
+        qos_profile_sensor_data,
         raw=True
     )
 
