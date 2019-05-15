@@ -106,7 +106,7 @@ def subscriber(node, topic_name, message_type, callback):
     msg_module = import_message_type(topic_name, message_type)
 
     node.create_subscription(
-        msg_module, topic_name, callback, qos_profile=qos_profile_sensor_data)
+        msg_module, topic_name, callback, qos_profile_sensor_data)
 
     while rclpy.ok():
         rclpy.spin_once(node)
