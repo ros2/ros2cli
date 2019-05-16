@@ -163,7 +163,7 @@ QOS_DURABILITY_OPT = {
 
 # Convenience structure for using QoS profile options with argparse
 QOS_PROFILE_OPT = {
-    None: None,  # Allow default of None
+    None: rclpy.qos.qos_profile_system_default,  # Allow default of None
     'system_default':
         rclpy.qos.qos_profile_system_default,
     'sensor_data':

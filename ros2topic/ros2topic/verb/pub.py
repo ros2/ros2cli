@@ -56,19 +56,19 @@ class PubVerb(VerbExtension):
             '-1', '--once', action='store_true',
             help='Publish one message and exit')
         parser.add_argument(
-            '-n', '--node-name', type=str,
+            '-n', '--node-name',
             help='Name of the created publishing node')
         parser.add_argument(
-            '--qos-profile', type=str,
+            '--qos-profile',
             choices=QOS_PROFILE_OPT.keys(),
             help='Quality of service profile to publish with')
         parser.add_argument(
-            '--qos-reliability', type=str,
+            '--qos-reliability',
             choices=QOS_RELIABILITY_OPT.keys(),
             help='Quality of service reliability setting to publish with. ' +
                  '(Will override reliability value of --qos-profile option)')
         parser.add_argument(
-            '--qos-durability', type=str,
+            '--qos-durability',
             choices=QOS_DURABILITY_OPT.keys(),
             help='Quality of service durability setting to publish with. ' +
                  '(Will override durability value of --qos-profile option)')
@@ -101,8 +101,6 @@ def publisher(
 
     # Build a QoS profile based on user-supplied arguments
     profile = rclpy.qos.qos_profile_system_default
-    if qos_profile:
-        profile = QOS_PROFILE_OPT[qos_profile]
     if qos_durability:
         profile.durability = QOS_DURABILITY_OPT[qos_durability]
     if qos_reliability:

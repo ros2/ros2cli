@@ -77,6 +77,7 @@ def main(args=None):
             qos_profile=QoSProfile(
                 reliability=QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT))
 
+    # Asserts to suppress unused variable warnings.
     assert sub_default
     assert sub_transient
     assert sub_volatile
