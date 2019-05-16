@@ -42,7 +42,7 @@ class CreateVerb(VerbExtension):
         parser.add_argument(
             '--package_format',
             type=int,
-            default=2,
+            default=3,
             choices=[2, 3],
             help='The package.xml format.')
         parser.add_argument(
