@@ -137,3 +137,43 @@ def _get_msg_class(node, topic, include_hidden_topics):
         return None
 
     return import_message_type(topic, message_type)
+
+
+# Convenience structure for using QoS reliability options with argparse
+QOS_RELIABILITY_OPT = {
+    None: None,  # Allow default of None
+    'system_default':
+        rclpy.qos.QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_SYSTEM_DEFAULT,
+    'reliable':
+        rclpy.qos.QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_RELIABLE,
+    'best_effort':
+        rclpy.qos.QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT
+}
+
+# Convenience structure for using QoS durability options with argparse
+QOS_DURABILITY_OPT = {
+    None: None,  # Allow default of None
+    'system_default':
+        rclpy.qos.QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_SYSTEM_DEFAULT,
+    'transient_local':
+        rclpy.qos.QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL,
+    'volatile':
+        rclpy.qos.QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_VOLATILE
+}
+
+# Convenience structure for using QoS profile options with argparse
+QOS_PROFILE_OPT = {
+    None: None,  # Allow default of None
+    'system_default':
+        rclpy.qos.qos_profile_system_default,
+    'sensor_data':
+        rclpy.qos.qos_profile_sensor_data,
+    'services_default':
+        rclpy.qos.qos_profile_services_default,
+    'parameters':
+        rclpy.qos.qos_profile_parameters,
+    'parameter_events':
+        rclpy.qos.qos_profile_parameter_events,
+    'action_status_default':
+        rclpy.qos.qos_profile_action_status_default
+}
