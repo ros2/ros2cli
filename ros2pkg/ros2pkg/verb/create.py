@@ -41,9 +41,10 @@ class CreateVerb(VerbExtension):
             help='The package name')
         parser.add_argument(
             '--package_format',
-            default=2,
-            choices=[2],
-            help='The package.xml format. Only version2 is supported at the moment.')
+            type=int,
+            default=3,
+            choices=[2, 3],
+            help='The package.xml format.')
         parser.add_argument(
             '--description',
             default='TODO: Package description',

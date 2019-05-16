@@ -78,6 +78,7 @@ def create_package_environment(package, destination_directory):
     package_directory = _create_folder(package.name, destination_directory)
 
     package_xml_config = {
+        'package_format': package.package_format,
         'package_name': package.name,
         'package_description': package.description,
         'maintainer_email': package.maintainers[0].email,
