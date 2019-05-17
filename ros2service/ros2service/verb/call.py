@@ -59,7 +59,7 @@ class CallVerb(VerbExtension):
 def requester(service_type, service_name, values, period):
     # TODO(wjwwood) this logic should come from a rosidl related package
     # TODO(karsten1987) as of dashing, types are split in three parts indicating
-    # package_Name, middle_module (e.g. srv, msg, action), srv_name
+    # package_name, middle_module (e.g. srv, msg, action), srv_name
     # This might change in the future and has to be re-addressed if so.
     try:
         package_name, middle_module, srv_name = service_type.split('/', 3)
