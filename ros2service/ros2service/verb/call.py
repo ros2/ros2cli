@@ -58,17 +58,15 @@ class CallVerb(VerbExtension):
 
 def requester(service_type, service_name, values, period):
     # TODO(wjwwood) this logic should come from a rosidl related package
+    # TODO(karsten1987) as of dashing, types are split in three parts indicating
+    # package_Name, middle_module (e.g. srv, msg, action), srv_name
+    # This might change in the future and has to be re-addressed if so.
     try:
-        package_name, _, srv_name = service_type.split('/', 3)
+        package_name, middle_module, srv_name = service_type.split('/', 3)
         if not package_name or not srv_name:
             raise ValueError()
     except ValueError:
         raise RuntimeError('The passed service type is invalid')
-
-    # TODO(sloretz) node API to get topic types should indicate if action or srv
-    middle_module = 'srv'
-    if service_name.endswith('/_action/get_result') or service_name.endswith('/_action/send_goal'):
-        middle_module = 'action'
 
     module = importlib.import_module(package_name + '.' + middle_module)
     srv_module = getattr(module, srv_name)
