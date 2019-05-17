@@ -37,7 +37,7 @@ def _has_lifecycle(node_name, service_names_and_types):
     for (service_name, service_types) in service_names_and_types:
         if (
             service_name == '{node_name}/get_state'.format_map(locals()) and
-            'lifecycle_msgs/GetState' in service_types
+            'lifecycle_msgs/srv/GetState' in service_types
         ):
             return True
     return False
