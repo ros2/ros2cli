@@ -59,7 +59,7 @@ class CallVerb(VerbExtension):
 def requester(service_type, service_name, values, period):
     # TODO(wjwwood) this logic should come from a rosidl related package
     try:
-        package_name, srv_name = service_type.split('/', 2)
+        package_name, _, srv_name = service_type.split('/', 3)
         if not package_name or not srv_name:
             raise ValueError()
     except ValueError:
