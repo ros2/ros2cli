@@ -15,11 +15,9 @@
 import time
 
 import rclpy
+from rclpy.qos import QoSNameTranslations
 from ros2cli.node import NODE_NAME_PREFIX
 from ros2topic.api import import_message_type
-from ros2topic.api import QOS_DURABILITY_OPT
-from ros2topic.api import QOS_PROFILE_OPT
-from ros2topic.api import QOS_RELIABILITY_OPT
 from ros2topic.api import TopicNameCompleter
 from ros2topic.api import TopicTypeCompleter
 from ros2topic.verb import VerbExtension
@@ -60,16 +58,16 @@ class PubVerb(VerbExtension):
             help='Name of the created publishing node')
         parser.add_argument(
             '--qos-profile',
-            choices=QOS_PROFILE_OPT.keys(),
+            choices=QoSNameTranslations.PresetProfiles.keys(),
             help='Quality of service profile to publish with')
         parser.add_argument(
             '--qos-reliability',
-            choices=QOS_RELIABILITY_OPT.keys(),
+            choices=QoSNameTranslations.ReliabilityPolicy.keys(),
             help='Quality of service reliability setting to publish with. '
                  '(Will override reliability value of --qos-profile option)')
         parser.add_argument(
             '--qos-durability',
-            choices=QOS_DURABILITY_OPT.keys(),
+            choices=QoSNameTranslations.DurabilityPolicy.keys(),
             help='Quality of service durability setting to publish with. '
                  '(Will override durability value of --qos-profile option)')
 
@@ -100,11 +98,11 @@ def publisher(
     rclpy.init()
 
     # Build a QoS profile based on user-supplied arguments
-    profile = rclpy.qos.qos_profile_system_default
+    profile = QoSNameTranslations.PresetProfiles[qos_profile]
     if qos_durability:
-        profile.durability = QOS_DURABILITY_OPT[qos_durability]
+        profile.durability = QoSNameTranslations.DurabilityPolicy[qos_durability]
     if qos_reliability:
-        profile.reliability = QOS_RELIABILITY_OPT[qos_reliability]
+        profile.reliability = QoSNameTranslations.ReliabilityPolicy[qos_reliability]
 
     node = rclpy.create_node(node_name)
 
