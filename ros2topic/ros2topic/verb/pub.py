@@ -17,11 +17,13 @@ import time
 import rclpy
 from ros2cli.node import NODE_NAME_PREFIX
 from ros2topic.api import import_message_type
+from ros2topic.api import QOS_DURABILITY_OPT
+from ros2topic.api import QOS_PROFILE_OPT
+from ros2topic.api import QOS_RELIABILITY_OPT
 from ros2topic.api import TopicNameCompleter
 from ros2topic.api import TopicTypeCompleter
 from ros2topic.verb import VerbExtension
 from rosidl_runtime_py import set_message_fields
-
 import yaml
 
 
@@ -41,8 +43,8 @@ class PubVerb(VerbExtension):
             topic_name_key='topic_name')
         parser.add_argument(
             'values', nargs='?', default='{}',
-            help='Values to fill the message with in YAML format ' +
-                 '(e.g. "data: Hello World"), ' +
+            help='Values to fill the message with in YAML format '
+                 '(e.g. "data: Hello World"), '
                  'otherwise the message will be published with default values')
         parser.add_argument(
             '-r', '--rate', metavar='N', type=float, default=1.0,
@@ -54,8 +56,22 @@ class PubVerb(VerbExtension):
             '-1', '--once', action='store_true',
             help='Publish one message and exit')
         parser.add_argument(
-            '-n', '--node-name', type=str,
+            '-n', '--node-name',
             help='Name of the created publishing node')
+        parser.add_argument(
+            '--qos-profile',
+            choices=QOS_PROFILE_OPT.keys(),
+            help='Quality of service profile to publish with')
+        parser.add_argument(
+            '--qos-reliability',
+            choices=QOS_RELIABILITY_OPT.keys(),
+            help='Quality of service reliability setting to publish with. '
+                 '(Will override reliability value of --qos-profile option)')
+        parser.add_argument(
+            '--qos-durability',
+            choices=QOS_DURABILITY_OPT.keys(),
+            help='Quality of service durability setting to publish with. '
+                 '(Will override durability value of --qos-profile option)')
 
     def main(self, *, args):
         if args.rate <= 0:
@@ -67,11 +83,13 @@ class PubVerb(VerbExtension):
 def main(args):
     return publisher(
         args.message_type, args.topic_name, args.values,
-        args.node_name, 1. / args.rate, args.print, args.once)
+        args.node_name, 1. / args.rate, args.print, args.once,
+        args.qos_profile, args.qos_reliability, args.qos_durability)
 
 
 def publisher(
-    message_type, topic_name, values, node_name, period, print_nth, once
+    message_type, topic_name, values, node_name, period, print_nth, once,
+    qos_profile, qos_reliability, qos_durability
 ):
     msg_module = import_message_type(topic_name, message_type)
     values_dictionary = yaml.safe_load(values)
@@ -81,9 +99,16 @@ def publisher(
         node_name = NODE_NAME_PREFIX + '_publisher_%s' % (message_type.replace('/', '_'), )
     rclpy.init()
 
+    # Build a QoS profile based on user-supplied arguments
+    profile = rclpy.qos.qos_profile_system_default
+    if qos_durability:
+        profile.durability = QOS_DURABILITY_OPT[qos_durability]
+    if qos_reliability:
+        profile.reliability = QOS_RELIABILITY_OPT[qos_reliability]
+
     node = rclpy.create_node(node_name)
 
-    pub = node.create_publisher(msg_module, topic_name, 10)
+    pub = node.create_publisher(msg_module, topic_name, profile)
 
     msg = msg_module()
     try:
