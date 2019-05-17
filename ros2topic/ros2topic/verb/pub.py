@@ -43,8 +43,8 @@ class PubVerb(VerbExtension):
             topic_name_key='topic_name')
         parser.add_argument(
             'values', nargs='?', default='{}',
-            help='Values to fill the message with in YAML format ' +
-                 '(e.g. "data: Hello World"), ' +
+            help='Values to fill the message with in YAML format '
+                 '(e.g. "data: Hello World"), '
                  'otherwise the message will be published with default values')
         parser.add_argument(
             '-r', '--rate', metavar='N', type=float, default=1.0,
@@ -65,12 +65,12 @@ class PubVerb(VerbExtension):
         parser.add_argument(
             '--qos-reliability',
             choices=QOS_RELIABILITY_OPT.keys(),
-            help='Quality of service reliability setting to publish with. ' +
+            help='Quality of service reliability setting to publish with. '
                  '(Will override reliability value of --qos-profile option)')
         parser.add_argument(
             '--qos-durability',
             choices=QOS_DURABILITY_OPT.keys(),
-            help='Quality of service durability setting to publish with. ' +
+            help='Quality of service durability setting to publish with. '
                  '(Will override durability value of --qos-profile option)')
 
     def main(self, *, args):
@@ -108,7 +108,7 @@ def publisher(
 
     node = rclpy.create_node(node_name)
 
-    pub = node.create_publisher(msg_module, topic_name, qos_profile=profile)
+    pub = node.create_publisher(msg_module, topic_name, profile)
 
     msg = msg_module()
     try:

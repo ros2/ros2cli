@@ -47,34 +47,38 @@ def main(args=None):
             String,
             'topic',
             lambda msg: counter.onMsg('default', msg),
-            qos_profile=rclpy.qos.qos_profile_default)
+            QoSProfile(depth=10))
 
     sub_transient = node.create_subscription(
             String,
             'topic',
             lambda msg: counter.onMsg('transient', msg),
-            qos_profile=QoSProfile(
+            QoSProfile(
+                depth=10,
                 durability=QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL))
 
     sub_volatile = node.create_subscription(
             String,
             'topic',
             lambda msg: counter.onMsg('volatile', msg),
-            qos_profile=QoSProfile(
+            QoSProfile(
+                depth=10,
                 durability=QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_VOLATILE))
 
     sub_reliable = node.create_subscription(
             String,
             'topic',
             lambda msg: counter.onMsg('reliable', msg),
-            qos_profile=QoSProfile(
+            QoSProfile(
+                depth=10,
                 reliability=QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_RELIABLE))
 
     sub_best_effort = node.create_subscription(
             String,
             'topic',
             lambda msg: counter.onMsg('best_effort', msg),
-            qos_profile=QoSProfile(
+            QoSProfile(
+                depth=10,
                 reliability=QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT))
 
     # Asserts to suppress unused variable warnings.
