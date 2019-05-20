@@ -59,19 +59,16 @@ class CallVerb(VerbExtension):
 def requester(service_type, service_name, values, period):
     # TODO(wjwwood) this logic should come from a rosidl related package
     try:
-        package_name, srv_name = service_type.split('/', 2)
-        if not package_name or not srv_name:
+        parts = service_type.split('/')
+        package_name = parts[0]
+        module = importlib.import_module('.'.join(parts[:-1]))
+        srv_name = parts[-1]
+        srv_module = getattr(module, srv_name)
+        if not package_name or not srv_module:
             raise ValueError()
     except ValueError:
         raise RuntimeError('The passed service type is invalid')
 
-    # TODO(sloretz) node API to get topic types should indicate if action or srv
-    middle_module = 'srv'
-    if service_name.endswith('/_action/get_result') or service_name.endswith('/_action/send_goal'):
-        middle_module = 'action'
-
-    module = importlib.import_module(package_name + '.' + middle_module)
-    srv_module = getattr(module, srv_name)
     values_dictionary = yaml.safe_load(values)
 
     rclpy.init()
