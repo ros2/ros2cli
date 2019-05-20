@@ -58,18 +58,17 @@ class CallVerb(VerbExtension):
 
 def requester(service_type, service_name, values, period):
     # TODO(wjwwood) this logic should come from a rosidl related package
-    # TODO(karsten1987) as of dashing, types are split in three parts indicating
-    # package_name, middle_module (e.g. srv, msg, action), srv_name
-    # This might change in the future and has to be re-addressed if so.
     try:
-        package_name, middle_module, srv_name = service_type.split('/', 3)
-        if not package_name or not srv_name:
+        parts = service_type.split('/')
+        package_name = parts[0]
+        module = importlib.import_module('.'.join(parts[:-1]))
+        srv_name = parts[-1]
+        srv_module = getattr(module, srv_name)
+        if not package_name or not srv_module:
             raise ValueError()
     except ValueError:
         raise RuntimeError('The passed service type is invalid')
 
-    module = importlib.import_module(package_name + '.' + middle_module)
-    srv_module = getattr(module, srv_name)
     values_dictionary = yaml.safe_load(values)
 
     rclpy.init()
