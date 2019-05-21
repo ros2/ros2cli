@@ -24,12 +24,13 @@ fi
 # restore AMENT_CURRENT_PREFIX before evaluating the environment hooks
 AMENT_CURRENT_PREFIX=$_package_local_setup_AMENT_CURRENT_PREFIX
 # list all environment hooks of this package
-ament_zsh_to_array AMENT_ENVIRONMENT_HOOKS "$AMENT_CURRENT_PREFIX/share/ros2cli/environment/ros2-argcomplete.zsh"
+ament_append_value AMENT_ENVIRONMENT_HOOKS "$AMENT_CURRENT_PREFIX/share/ros2cli/environment/ros2-argcomplete.zsh"
 # source all shell-specific environment hooks of this package
 # if not returning them
 if [ -z "$AMENT_RETURN_ENVIRONMENT_HOOKS" ]; then
   _package_local_setup_IFS=$IFS
   IFS=":"
+  ament_zsh_to_array AMENT_ENVIRONMENT_HOOKS
   for _hook in $AMENT_ENVIRONMENT_HOOKS; do
     # restore AMENT_CURRENT_PREFIX for each environment hook
     AMENT_CURRENT_PREFIX=$_package_local_setup_AMENT_CURRENT_PREFIX
