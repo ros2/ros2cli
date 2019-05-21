@@ -15,7 +15,6 @@
 import time
 
 import rclpy
-from rclpy.qos import QoSNameTranslations
 from ros2cli.node import NODE_NAME_PREFIX
 from ros2topic.api import import_message_type
 from ros2topic.api import TopicNameCompleter
@@ -58,16 +57,16 @@ class PubVerb(VerbExtension):
             help='Name of the created publishing node')
         parser.add_argument(
             '--qos-profile',
-            choices=QoSNameTranslations.PresetProfiles.keys(),
+            choices=rclpy.qos.QoSPresetProfiles.short_keys(),
             help='Quality of service profile to publish with')
         parser.add_argument(
             '--qos-reliability',
-            choices=QoSNameTranslations.ReliabilityPolicy.keys(),
+            choices=rclpy.qos.QoSReliabilityPolicy.short_keys(),
             help='Quality of service reliability setting to publish with. '
                  '(Will override reliability value of --qos-profile option)')
         parser.add_argument(
             '--qos-durability',
-            choices=QoSNameTranslations.DurabilityPolicy.keys(),
+            choices=rclpy.qos.QoSDurabilityPolicy.short_keys(),
             help='Quality of service durability setting to publish with. '
                  '(Will override durability value of --qos-profile option)')
 
@@ -98,11 +97,11 @@ def publisher(
     rclpy.init()
 
     # Build a QoS profile based on user-supplied arguments
-    profile = QoSNameTranslations.PresetProfiles[qos_profile]
+    profile = rclpy.qos.QoSPresetProfiles.get_from_short_key(qos_profile)
     if qos_durability:
-        profile.durability = QoSNameTranslations.DurabilityPolicy[qos_durability]
+        profile.durability = rclpy.qos.QoSDurabilityPolicy.get_from_short_key(qos_durability)
     if qos_reliability:
-        profile.reliability = QoSNameTranslations.ReliabilityPolicy[qos_reliability]
+        profile.reliability = rclpy.qos.QoSReliabilityPolicy.get_from_short_key(qos_reliability)
 
     node = rclpy.create_node(node_name)
 
