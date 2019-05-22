@@ -53,13 +53,13 @@ from ros2topic.verb import VerbExtension
 DEFAULT_WINDOW_SIZE = 10000
 
 
-def unsigned_int(string):
+def positive_int(string):
     try:
         value = int(string)
     except ValueError:
         value = -1
-    if value < 0:
-        raise ArgumentTypeError('value must be non-negative integer')
+    if value <= 0:
+        raise ArgumentTypeError('value must be a positive integer')
     return value
 
 
@@ -74,7 +74,7 @@ class HzVerb(VerbExtension):
             include_hidden_topics_key='include_hidden_topics')
         parser.add_argument(
             '--window', '-w',
-            dest='window_size', type=unsigned_int, default=DEFAULT_WINDOW_SIZE,
+            dest='window_size', type=positive_int, default=DEFAULT_WINDOW_SIZE,
             help='window size, in # of messages, for calculating rate '
                  '(default: %d)' % DEFAULT_WINDOW_SIZE, metavar='WINDOW')
         parser.add_argument(
