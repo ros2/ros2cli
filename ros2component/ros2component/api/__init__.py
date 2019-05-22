@@ -203,15 +203,15 @@ def find_container_node_names(*, node, node_names):
     for n in node_names:
         services = get_service_info(node=node, remote_node_name=n.full_name)
         if not any(s.name.endswith('_container/load_node') and
-                   'composition_interfaces/LoadNode' in s.types
+                   'composition_interfaces/srv/LoadNode' in s.types
                    for s in services):
             continue
         if not any(s.name.endswith('_container/unload_node') and
-                   'composition_interfaces/UnloadNode' in s.types
+                   'composition_interfaces/srv/UnloadNode' in s.types
                    for s in services):
             continue
         if not any(s.name.endswith('_container/list_nodes') and
-                   'composition_interfaces/ListNodes' in s.types
+                   'composition_interfaces/srv/ListNodes' in s.types
                    for s in services):
             continue
         container_node_names.append(n)
