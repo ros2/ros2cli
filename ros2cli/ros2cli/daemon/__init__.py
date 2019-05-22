@@ -43,8 +43,11 @@ def main(*, script_name='_ros2_daemon', argv=None):
     assert args.ros_domain_id == int(os.environ.get('ROS_DOMAIN_ID', 0))
 
     addr = ('localhost', get_daemon_port())
-    NodeArgs = namedtuple('NodeArgs', 'node_name_suffix')
-    node_args = NodeArgs(node_name_suffix='_daemon_%d' % args.ros_domain_id)
+    NodeArgs = namedtuple(
+        'NodeArgs', ('node_name_suffix', 'start_parameter_services'))
+    node_args = NodeArgs(
+        node_name_suffix='_daemon_%d' % args.ros_domain_id,
+        start_parameter_services=False)
     with DirectNode(node_args) as node:
         server = LocalXMLRPCServer(
             addr, logRequests=False, requestHandler=RequestHandler,
