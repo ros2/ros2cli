@@ -35,7 +35,7 @@ class CallVerb(VerbExtension):
             include_hidden_services_key='include_hidden_services')
         arg = parser.add_argument(
             'service_type',
-            help="Type of the ROS service (e.g. 'std_srvs/Empty')")
+            help="Type of the ROS service (e.g. 'std_srvs/srv/Empty')")
         arg.completer = ServiceTypeCompleter(
             service_name_key='service_name')
         parser.add_argument(
@@ -60,6 +60,8 @@ def requester(service_type, service_name, values, period):
     # TODO(wjwwood) this logic should come from a rosidl related package
     try:
         parts = service_type.split('/')
+        if len(parts) == 2:
+            parts = [parts[0], 'srv', parts[1]]
         package_name = parts[0]
         module = importlib.import_module('.'.join(parts[:-1]))
         srv_name = parts[-1]
