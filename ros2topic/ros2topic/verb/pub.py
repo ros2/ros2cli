@@ -58,6 +58,7 @@ class PubVerb(VerbExtension):
         parser.add_argument(
             '--qos-profile',
             choices=rclpy.qos.QoSPresetProfiles.short_keys(),
+            default='system_default',
             help='Quality of service profile to publish with')
         parser.add_argument(
             '--qos-reliability',
