@@ -63,4 +63,5 @@ class DirectNode:
 def add_arguments(parser):
     parser.add_argument(
         '--spin-time', type=float, default=DEFAULT_TIMEOUT,
-        help='Spin time to wait for discovery (in seconds)')
+        help='Spin time in seconds to wait for discovery (only applies when '
+             'not using an already running daemon)')
