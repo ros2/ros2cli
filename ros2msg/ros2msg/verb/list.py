@@ -23,4 +23,4 @@ class ListVerb(VerbExtension):
         message_types = get_all_message_types()
         for package_name in sorted(message_types.keys()):
             for message_name in sorted(message_types[package_name]):
-                print('{package_name}/{message_name}'.format_map(locals()))
+                print('{package_name}/msg/{message_name}'.format_map(locals()))

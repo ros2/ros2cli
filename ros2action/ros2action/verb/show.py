@@ -23,12 +23,22 @@ class ShowVerb(VerbExtension):
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
             'action_type',
-            help="Type of the ROS action (e.g. 'example_interfaces/Fibonacci')")
+            help='Type of the ROS action (e.g. '
+                 "'example_interfaces/action/Fibonacci')")
         arg.completer = action_type_completer
 
     def main(self, *, args):
-        package_name, action_name = args.action_type.split('/', 2)
-        if not package_name or not action_name:
+        try:
+            parts = args.action_type.split('/')
+            if len(parts) == 1:
+                raise ValueError()
+            if len(parts) == 2:
+                parts = [parts[0], 'action', parts[1]]
+            package_name = parts[0]
+            action_name = parts[-1]
+            if not package_name or not action_name:
+                raise ValueError()
+        except ValueError:
             raise RuntimeError('The passed action type is invalid')
         try:
             path = get_action_path(package_name, action_name)

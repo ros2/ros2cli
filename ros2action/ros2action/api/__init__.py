@@ -118,7 +118,7 @@ def action_type_completer(**kwargs):
     for package_name, action_names in get_all_action_types().items():
         for action_name in action_names:
             action_types.append(
-                '{package_name}/{action_name}'.format_map(locals()))
+                '{package_name}/action/{action_name}'.format_map(locals()))
     return action_types
 
 

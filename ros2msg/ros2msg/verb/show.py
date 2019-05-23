@@ -23,14 +23,20 @@ class ShowVerb(VerbExtension):
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
             'message_type',
-            help="Type of the ROS message (e.g. 'std_msgs/String')")
+            help="Type of the ROS message (e.g. 'std_msgs/msg/String')")
         arg.completer = message_type_completer
 
     def main(self, *, args):
         # TODO(dirk-thomas) this logic should come from a rosidl related
         # package
         try:
-            package_name, message_name = args.message_type.split('/', 2)
+            parts = args.message_type.split('/')
+            if len(parts) == 1:
+                raise ValueError()
+            if len(parts) == 2:
+                parts = [parts[0], 'msg', parts[1]]
+            package_name = parts[0]
+            message_name = parts[-1]
             if not package_name or not message_name:
                 raise ValueError()
         except ValueError:

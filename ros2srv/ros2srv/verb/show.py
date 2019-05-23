@@ -23,14 +23,20 @@ class ShowVerb(VerbExtension):
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
             'service_type',
-            help="Type of the ROS service (e.g. 'std_srvs/Trigger')")
+            help="Type of the ROS service (e.g. 'std_srvs/srv/Trigger')")
         arg.completer = service_type_completer
 
     def main(self, *, args):
         # TODO(dirk-thomas) this logic should come from a rosidl related
         # package
         try:
-            package_name, service_name = args.service_type.split('/', 2)
+            parts = args.service_type.split('/')
+            if len(parts) == 1:
+                raise ValueError()
+            if len(parts) == 2:
+                parts = [parts[0], 'srv', parts[1]]
+            package_name = parts[0]
+            service_name = parts[-1]
             if not package_name or not service_name:
                 raise ValueError()
         except ValueError:
