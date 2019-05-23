@@ -143,6 +143,11 @@ class CreateVerb(VerbExtension):
         if args.cpp_library_name:
             print('cpp_library_name:', args.cpp_library_name)
 
+        package_path = os.path.join(args.destination_directory, package.name)
+        if os.path.exists(package_path):
+            return '\nAborted!\nThe directory already exists: ' + package_path + '\nEither ' + \
+                'remove the directory or choose a different destination directory or package name'
+
         package_directory, source_directory, include_directory = \
             create_package_environment(package, args.destination_directory)
         if not package_directory:
