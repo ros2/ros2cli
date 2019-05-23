@@ -113,7 +113,7 @@ def send_goal(action_name, action_type, goal_values, feedback_callback):
 
         if goal_handle is None:
             raise RuntimeError(
-                'Exeception while sending goal: {!r}'.format(goal_future.exception()))
+                'Exception while sending goal: {!r}'.format(goal_future.exception()))
 
         if not goal_handle.accepted:
             print('Goal was rejected.')
@@ -130,7 +130,7 @@ def send_goal(action_name, action_type, goal_values, feedback_callback):
 
         if result is None:
             raise RuntimeError(
-                'Exeception while getting result: {!r}'.format(result_future.exception()))
+                'Exception while getting result: {!r}'.format(result_future.exception()))
 
         # no need to potentially cancel the goal anymore
         goal_handle = None
@@ -150,7 +150,7 @@ def send_goal(action_name, action_type, goal_values, feedback_callback):
 
             if cancel_response is None:
                 raise RuntimeError(
-                    'Exeception while canceling goal: {!r}'.format(cancel_future.exception()))
+                    'Exception while canceling goal: {!r}'.format(cancel_future.exception()))
 
             if len(cancel_response.goals_canceling) == 0:
                 raise RuntimeError('Failed to cancel goal')
