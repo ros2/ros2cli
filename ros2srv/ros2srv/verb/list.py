@@ -23,4 +23,4 @@ class ListVerb(VerbExtension):
         service_types = get_all_service_types()
         for package_name in sorted(service_types.keys()):
             for service_name in sorted(service_types[package_name]):
-                print('{package_name}/{service_name}'.format_map(locals()))
+                print('{package_name}/srv/{service_name}'.format_map(locals()))

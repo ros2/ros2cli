@@ -65,7 +65,7 @@ def service_type_completer(**kwargs):
     for package_name, service_names in get_all_service_types().items():
         for service_name in service_names:
             service_types.append(
-                '{package_name}/{service_name}'.format_map(locals()))
+                '{package_name}/srv/{service_name}'.format_map(locals()))
     return service_types
 
 

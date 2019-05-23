@@ -65,7 +65,7 @@ def message_type_completer(**kwargs):
     for package_name, message_names in get_all_message_types().items():
         for message_name in message_names:
             message_types.append(
-                '{package_name}/{message_name}'.format_map(locals()))
+                '{package_name}/msg/{message_name}'.format_map(locals()))
     return message_types
 
 
