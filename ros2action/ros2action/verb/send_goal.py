@@ -117,6 +117,8 @@ def send_goal(action_name, action_type, goal_values, feedback_callback):
 
         if not goal_handle.accepted:
             print('Goal was rejected.')
+            # no need to potentially cancel the goal anymore
+            goal_handle = None
             return
 
         print('Goal accepted with ID: {}\n'.format(bytes(goal_handle.goal_id.uuid).hex()))
@@ -129,6 +131,9 @@ def send_goal(action_name, action_type, goal_values, feedback_callback):
         if result is None:
             raise RuntimeError(
                 'Exeception while getting result: {!r}'.format(result_future.exception()))
+
+        # no need to potentially cancel the goal anymore
+        goal_handle = None
 
         print('Result:\n    {}'.format(message_to_yaml(result.result, None)))
         print('Goal finished with status: {}'.format(_goal_status_to_string(result.status)))
