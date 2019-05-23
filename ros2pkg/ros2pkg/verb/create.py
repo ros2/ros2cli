@@ -128,6 +128,11 @@ class CreateVerb(VerbExtension):
             exports=[Export('build_type', content=args.build_type)]
         )
 
+        package_path = os.path.join(args.destination_directory, package.name)
+        if os.path.exists(package_path):
+            return '\nAborted!\nThe directory already exists: ' + package_path + '\nEither ' + \
+                'remove the directory or choose a different destination directory or package name'
+
         print('going to create a new package')
         print('package name:', package.name)
         print('destination directory:', os.path.abspath(args.destination_directory))
@@ -142,11 +147,6 @@ class CreateVerb(VerbExtension):
             print('cpp_node_name:', cpp_node_name)
         if args.cpp_library_name:
             print('cpp_library_name:', args.cpp_library_name)
-
-        package_path = os.path.join(args.destination_directory, package.name)
-        if os.path.exists(package_path):
-            return '\nAborted!\nThe directory already exists: ' + package_path + '\nEither ' + \
-                'remove the directory or choose a different destination directory or package name'
 
         package_directory, source_directory, include_directory = \
             create_package_environment(package, args.destination_directory)
