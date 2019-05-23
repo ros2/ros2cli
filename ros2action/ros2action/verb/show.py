@@ -27,8 +27,12 @@ class ShowVerb(VerbExtension):
         arg.completer = action_type_completer
 
     def main(self, *, args):
-        package_name, action_name = args.action_type.split('/', 2)
-        if not package_name or not action_name:
+        # TODO(jacobperron) this logic should come from a rosidl related package
+        try:
+            package_name, action_name = args.action_type.split('/', 2)
+            if not package_name or not action_name:
+                raise ValueError()
+        except ValueError:
             raise RuntimeError('The passed action type is invalid')
         try:
             path = get_action_path(package_name, action_name)
