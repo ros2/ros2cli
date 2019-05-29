@@ -55,7 +55,8 @@ class ListVerb(VerbExtension):
                 n for n in node_names if node_name == n.full_name]
 
         with DirectNode(args) as node:
-            service_names = get_service_names(node=node)
+            service_names = get_service_names(
+                node=node, include_hidden_services=args.include_hidden_nodes)
 
             clients = {}
             futures = {}
