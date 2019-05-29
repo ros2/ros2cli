@@ -25,12 +25,13 @@ from ros2node.api import NodeNameCompleter
 
 
 class GetVerb(VerbExtension):
-    """Get lifecycle state."""
+    """Get lifecycle state for one or more nodes."""
 
     def add_arguments(self, parser, cli_name):  # noqa: D102
         add_arguments(parser)
         arg = parser.add_argument(
-            'node_name', nargs='?', help='Name of the ROS node')
+            'node_name', nargs='?', help='Name of the ROS node. '
+            'If no name is provided, then get the state for all nodes.')
         arg.completer = NodeNameCompleter(
             include_hidden_nodes_key='include_hidden_nodes')
         parser.add_argument(
@@ -47,9 +48,12 @@ class GetVerb(VerbExtension):
         if node_name:
             if node_name not in node_names:
                 return 'Node not found'
+            nodes_to_query = [node_name]
+        else:
+            nodes_to_query = node_names
 
         with DirectNode(args) as node:
-            states = call_get_states(node=node, node_names=node_names)
+            states = call_get_states(node=node, node_names=nodes_to_query)
 
             # output exceptions
             for node_name in sorted(states.keys()):
