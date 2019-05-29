@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import signal
 import uuid
 
 from ros2cli.node.direct import DirectNode
@@ -39,13 +40,17 @@ class StandaloneVerb(VerbExtension):
         container = run_standalone_container(container_node_name=args.container_node_name)
 
         with DirectNode(args) as node:
-            load_component_into_container(
-                node=node, remote_container_node_name=args.container_node_name,
-                package_name=args.package_name, plugin_name=args.plugin_name,
-                node_name=args.node_name, node_namespace=args.node_namespace,
-                log_level=args.log_level, remap_rules=args.remap_rules,
-                parameters=args.parameters, extra_arguments=args.extra_arguments
-            )
+            try:
+                load_component_into_container(
+                    node=node, remote_container_node_name=args.container_node_name,
+                    package_name=args.package_name, plugin_name=args.plugin_name,
+                    node_name=args.node_name, node_namespace=args.node_namespace,
+                    log_level=args.log_level, remap_rules=args.remap_rules,
+                    parameters=args.parameters, extra_arguments=args.extra_arguments
+                )
+            except RuntimeError as ex:
+                print("{}, terminating container.".format(ex))
+                container.send_signal(signal.SIGINT)
 
         while container.returncode is None:
             try:
