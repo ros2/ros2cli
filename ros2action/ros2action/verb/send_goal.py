@@ -88,7 +88,7 @@ def send_goal(action_name, action_type, goal_values, feedback_callback):
                 parts = [parts[0], 'action', parts[1]]
             package_name = parts[0]
             action_type = parts[-1]
-            if not package_name or not action_type:
+            if not all(parts):
                 raise ValueError()
         except ValueError:
             raise RuntimeError('The passed action type is invalid')
