@@ -23,6 +23,7 @@ from ros2node.api import get_absolute_node_name
 from ros2node.api import get_node_names
 from ros2node.api import NodeNameCompleter
 from ros2param.verb import VerbExtension
+from ros2service.api import get_service_names
 
 
 class ListVerb(VerbExtension):
@@ -54,18 +55,23 @@ class ListVerb(VerbExtension):
                 n for n in node_names if node_name == n.full_name]
 
         with DirectNode(args) as node:
+            service_names = get_service_names(node=node)
+
             clients = {}
             futures = {}
-            # create clients
+            # create clients for nodes which have the service
             for node_name in node_names:
-                client = node.create_client(
-                    ListParameters,
-                    '{node_name.full_name}/list_parameters'.format_map(locals()))
-                clients[node_name] = client
+                service_name = '{node_name.full_name}/list_parameters' \
+                    .format_map(locals())
+                if service_name in service_names:
+                    client = node.create_client(ListParameters, service_name)
+                    clients[node_name] = client
 
             # wait until all clients have been called
             while True:
-                for node_name in [n for n in node_names if n not in futures]:
+                for node_name in [
+                    n for n in clients.keys() if n not in futures
+                ]:
                     # call as soon as ready
                     client = clients[node_name]
                     if client.service_is_ready():
@@ -80,8 +86,8 @@ class ListVerb(VerbExtension):
                 rclpy.spin_once(node, timeout_sec=1.0)
 
             # wait for all responses
-            for node_name in node_names:
-                rclpy.spin_until_future_complete(node, futures[node_name])
+            for future in futures.values():
+                rclpy.spin_until_future_complete(node, future)
 
             # print responses
             for node_name in sorted(futures.keys()):
