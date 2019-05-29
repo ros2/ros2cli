@@ -37,7 +37,7 @@ class SendGoalVerb(VerbExtension):
         arg.completer = action_name_completer
         arg = parser.add_argument(
             'action_type',
-            help="Type of the ROS action (e.g. 'example_interfaces/Fibonacci')")
+            help="Type of the ROS action (e.g. 'example_interfaces/action/Fibonacci')")
         arg.completer = ActionTypeCompleter(action_name_key='action_name')
         parser.add_argument(
             'goal',
@@ -79,12 +79,21 @@ def send_goal(action_name, action_type, goal_values, feedback_callback):
     node = None
     action_client = None
     try:
-        # TODO(jacobperron): This logic should come from a rosidl related package
-        package_name, action_type = action_type.split('/', 2)
-        if not package_name or not action_type:
+        try:
+            # TODO(jacobperron): This logic should come from a rosidl related package
+            parts = action_type.split('/')
+            if len(parts) == 1:
+                raise ValueError()
+            if len(parts) == 2:
+                parts = [parts[0], 'action', parts[1]]
+            package_name = parts[0]
+            action_type = parts[-1]
+            if not all(parts):
+                raise ValueError()
+        except ValueError:
             raise RuntimeError('The passed action type is invalid')
 
-        module = importlib.import_module(package_name + '.action')
+        module = importlib.import_module('.'.join(parts[:-1]))
         action_module = getattr(module, action_type)
         goal_dict = yaml.safe_load(goal_values)
 
