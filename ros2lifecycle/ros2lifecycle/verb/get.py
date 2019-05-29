@@ -49,7 +49,7 @@ class GetVerb(VerbExtension):
                 return 'Node not found'
 
         with DirectNode(args) as node:
-            states = call_get_states(node=node, node_names=node_names)
+            states = call_get_states(node=node, node_names=[node_name])
 
             # output exceptions
             for node_name in sorted(states.keys()):
