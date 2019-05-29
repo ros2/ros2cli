@@ -47,9 +47,12 @@ class GetVerb(VerbExtension):
         if node_name:
             if node_name not in node_names:
                 return 'Node not found'
+            nodes_to_query = [node_name]
+        else:
+            nodes_to_query = node_names
 
         with DirectNode(args) as node:
-            states = call_get_states(node=node, node_names=[node_name])
+            states = call_get_states(node=node, node_names=nodes_to_query)
 
             # output exceptions
             for node_name in sorted(states.keys()):
