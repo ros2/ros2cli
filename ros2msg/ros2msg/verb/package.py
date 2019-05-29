@@ -32,4 +32,4 @@ class PackageVerb(VerbExtension):
         except LookupError as e:
             return str(e)
         for message_name in sorted(message_names):
-            print('{args.package_name}/{message_name}'.format_map(locals()))
+            print('{args.package_name}/msg/{message_name}'.format_map(locals()))
