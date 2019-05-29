@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import platform
 import signal
 import uuid
 
@@ -49,8 +50,12 @@ class StandaloneVerb(VerbExtension):
                     parameters=args.parameters, extra_arguments=args.extra_arguments
                 )
             except RuntimeError as ex:
-                print("{}, terminating container.".format(ex))
-                container.send_signal(signal.SIGINT)
+                # In case the component fails to load, kill the container.
+                print('{}, terminating container.'.format(ex))
+                if platform.system() == 'Windows':
+                    container.send_signal(signal.CTRL_C_EVENT)
+                else:
+                    container.send_signal(signal.SIGINT)
 
         while container.returncode is None:
             try:
