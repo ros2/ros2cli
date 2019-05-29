@@ -82,7 +82,7 @@ def send_goal(action_name, action_type, goal_values, feedback_callback):
         try:
             # TODO(jacobperron): This logic should come from a rosidl related package
             parts = action_type.split('/')
-            if len(parts) < 2:
+            if len(parts) == 1:
                 raise ValueError()
             if len(parts) == 2:
                 parts = [parts[0], 'action', parts[1]]
