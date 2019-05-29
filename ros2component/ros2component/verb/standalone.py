@@ -51,7 +51,7 @@ class StandaloneVerb(VerbExtension):
                 )
             except RuntimeError as ex:
                 # In case the component fails to load, kill the container.
-                print('{}, terminating container.'.format(ex))
+                print('{}, interrupting container node'.format(ex))
                 if platform.system() == 'Windows':
                     container.send_signal(signal.CTRL_C_EVENT)
                 else:
