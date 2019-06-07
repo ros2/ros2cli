@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from ros2cli.node.strategy import NodeStrategy
+from ros2service.api import ServiceTypeCompleter
 from ros2service.api import get_service_names_and_types
 from ros2service.verb import VerbExtension
 
@@ -23,7 +24,9 @@ class FindVerb(VerbExtension):
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
             'service_type',
-            help="Name of the ROS service type to filter for (e.g. 'rcl_interfaces/srv/ListParameters')")
+            help="Name of the ROS service type to filter for \
+                (e.g. 'rcl_interfaces/srv/ListParameters')")
+        arg.completer = ServiceTypeCompleter()
         parser.add_argument(
             '-c', '--count-services', action='store_true',
             help='Only display the number of services discovered')
