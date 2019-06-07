@@ -24,7 +24,7 @@ class FindVerb(VerbExtension):
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
             'service_type',
-            help="Name of the ROS service type to filter for "
+            help='Name of the ROS service type to filter for '
                  "(e.g. 'rcl_interfaces/srv/ListParameters')")
         arg.completer = service_type_completer
         parser.add_argument(
