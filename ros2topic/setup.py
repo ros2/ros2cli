@@ -40,6 +40,7 @@ The package provides the topic command for the ROS 2 command line tools.""",
             'info = ros2topic.verb.info:InfoVerb',
             'list = ros2topic.verb.list:ListVerb',
             'pub = ros2topic.verb.pub:PubVerb',
+            'find = ros2topic.verb.find:FindVerb',
         ],
     }
 )
