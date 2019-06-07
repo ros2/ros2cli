@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from ros2cli.node.strategy import NodeStrategy
-from ros2topic.api import TopicTypeCompleter
+from ros2msg.api import message_type_completer
 from ros2topic.api import get_topic_names_and_types
 from ros2topic.verb import VerbExtension
 
@@ -25,7 +25,7 @@ class FindVerb(VerbExtension):
         arg = parser.add_argument(
             'topic_type',
             help="Name of the ROS topic type to filter for (e.g. 'std_msg/msg/String')")
-        arg.completer = TopicTypeCompleter()
+        arg.completer = message_type_completer
         parser.add_argument(
             '-c', '--count-topics', action='store_true',
             help='Only display the number of topics discovered')
