@@ -36,7 +36,8 @@ class TypeVerb(VerbExtension):
 
         for (service_name, service_types) in service_names_and_types:
             if args.service_name == service_name:
-                print(service_types[0])
+                for service_type in service_types:
+                    print(service_type)
                 return 0
 
         return 1
