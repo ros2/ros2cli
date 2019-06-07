@@ -24,7 +24,7 @@ class TypeVerb(VerbExtension):
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
             'topic_name',
-            help="Name of the ROS topic to get info (e.g. '/chatter')")
+            help="Name of the ROS topic to get type (e.g. '/chatter')")
         arg.completer = TopicNameCompleter(
             include_hidden_topics_key='include_hidden_topics')
 
