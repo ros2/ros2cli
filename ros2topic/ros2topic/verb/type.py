@@ -36,7 +36,8 @@ class TypeVerb(VerbExtension):
 
         for (topic_name, topic_types) in topic_names_and_types:
             if args.topic_name == topic_name:
-                print(topic_types[0])
+                for topic_type in topic_types:
+                    print(topic_type)
                 return 0
 
         return 1
