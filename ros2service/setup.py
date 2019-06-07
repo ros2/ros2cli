@@ -35,6 +35,7 @@ The package provides the service command for the ROS 2 command line tools.""",
         'ros2service.verb': [
             'call = ros2service.verb.call:CallVerb',
             'list = ros2service.verb.list:ListVerb',
+            'type = ros2service.verb.type:TypeVerb',
         ],
     }
 )
