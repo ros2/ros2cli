@@ -13,9 +13,9 @@
 # limitations under the License.
 
 from ros2cli.node.strategy import NodeStrategy
-from ros2srv.api import service_type_completer
 from ros2service.api import get_service_names_and_types
 from ros2service.verb import VerbExtension
+from ros2srv.api import service_type_completer
 
 
 class FindVerb(VerbExtension):
