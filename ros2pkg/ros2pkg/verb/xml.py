@@ -23,6 +23,7 @@ from ros2pkg.verb import VerbExtension
 
 
 PACKAGE_NOT_FOUND = 'Package not found'
+PACKAGE_XML_NOT_FOUND = 'Package xml manifest not found'
 PACKAGE_XML_TAG_NOT_FOUND = 'XML tag not found'
 
 
@@ -35,23 +36,28 @@ class XmlVerb(VerbExtension):
             help='The package name')
         arg = parser.add_argument(
             '-t', '--tag',
-            default='root',
+            default='None',
             help="The package's xml's tag to print")
         arg.completer = package_name_completer
 
     def main(self, *, args):
         try:
             package_share_dir = get_package_share_directory(args.package_name)
-            package_xml = os.path.join(package_share_dir, 'package.xml')
-            if os.path.isfile(package_xml):
-                tree = ET.parse(package_xml)
-                if args.tag == 'root':
-                    ET.dump(tree)
-                    return 0
-                else:
-                    for elements in tree.getroot().findall(args.tag):
-                        print(elements.text)
-                    return 0
-                return PACKAGE_XML_TAG_NOT_FOUND
         except PackageNotFoundError:
             return PACKAGE_NOT_FOUND
+
+        package_xml = os.path.join(package_share_dir, 'package.xml')
+        if os.path.isfile(package_xml):
+            tree = ET.parse(package_xml)
+            if args.tag == 'None':
+                ET.dump(tree)
+                return 0
+            else:
+                elements = tree.getroot().findall(args.tag)
+                if len(elements) > 0:
+                    for element in elements:
+                        print(element.text)
+                else:
+                    return PACKAGE_XML_TAG_NOT_FOUND
+        else:
+            return PACKAGE_XML_NOT_FOUND
