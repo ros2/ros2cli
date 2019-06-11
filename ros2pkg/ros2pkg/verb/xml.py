@@ -28,7 +28,7 @@ PACKAGE_XML_TAG_NOT_FOUND = 'XML tag not found'
 
 
 class XmlVerb(VerbExtension):
-    """Output the package xml manifest or an specific tag."""
+    """Output the package xml manifest or a specific tag."""
 
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
