@@ -34,11 +34,11 @@ class XmlVerb(VerbExtension):
         arg = parser.add_argument(
             'package_name',
             help='The package name')
+        arg.completer = package_name_completer
         arg = parser.add_argument(
             '-t', '--tag',
             default='None',
             help="The package's xml's tag to print")
-        arg.completer = package_name_completer
 
     def main(self, *, args):
         try:
