@@ -19,8 +19,11 @@ DEFAULT_GROUP = '225.0.0.1'
 DEFAULT_PORT = 49150
 
 
-def send(data, *, group=DEFAULT_GROUP, port=DEFAULT_PORT):
+def send(data, *, group=DEFAULT_GROUP, port=DEFAULT_PORT, ttl=None):
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+    if ttl is not None:
+        packed_ttl = struct.pack('b', ttl)
+        s.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, packed_ttl)
     try:
         s.sendto(data, (group, port))
     finally:
