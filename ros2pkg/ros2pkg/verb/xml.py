@@ -35,9 +35,8 @@ class XmlVerb(VerbExtension):
             'package_name',
             help='The package name')
         arg.completer = package_name_completer
-        arg = parser.add_argument(
+        parser.add_argument(
             '-t', '--tag',
-            default='None',
             help="The package's xml's tag to print")
 
     def main(self, *, args):
@@ -47,17 +46,16 @@ class XmlVerb(VerbExtension):
             return PACKAGE_NOT_FOUND
 
         package_xml = os.path.join(package_share_dir, 'package.xml')
-        if os.path.isfile(package_xml):
-            tree = ET.parse(package_xml)
-            if args.tag == 'None':
-                ET.dump(tree)
-                return 0
-            else:
-                elements = tree.getroot().findall(args.tag)
-                if len(elements) > 0:
-                    for element in elements:
-                        print(element.text)
-                else:
-                    return PACKAGE_XML_TAG_NOT_FOUND
-        else:
+        if not os.path.isfile(package_xml):
             return PACKAGE_XML_NOT_FOUND
+
+        tree = ET.parse(package_xml)
+        if args.tag is None:
+            ET.dump(tree)
+            return 0
+        else:
+            elements = tree.getroot().findall(args.tag)
+            if len(elements) == 0:
+                return PACKAGE_XML_TAG_NOT_FOUND
+            for element in elements:
+                    print(element.text)
