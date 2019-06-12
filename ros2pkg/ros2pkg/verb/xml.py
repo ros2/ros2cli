@@ -23,12 +23,12 @@ from ros2pkg.verb import VerbExtension
 
 
 PACKAGE_NOT_FOUND = 'Package not found'
-PACKAGE_XML_NOT_FOUND = 'Package xml manifest not found'
+PACKAGE_XML_NOT_FOUND = 'Package XML manifest not found'
 PACKAGE_XML_TAG_NOT_FOUND = 'XML tag not found'
 
 
 class XmlVerb(VerbExtension):
-    """Output the package xml manifest or a specific tag."""
+    """Output the XML of the package manifest or a specific tag."""
 
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
@@ -37,7 +37,7 @@ class XmlVerb(VerbExtension):
         arg.completer = package_name_completer
         parser.add_argument(
             '-t', '--tag',
-            help="The package's xml's tag to print")
+            help="The XML tag to output (e.g. 'version')")
 
     def main(self, *, args):
         try:
@@ -53,9 +53,10 @@ class XmlVerb(VerbExtension):
         if args.tag is None:
             ET.dump(tree)
             return 0
-        else:
-            elements = tree.getroot().findall(args.tag)
-            if len(elements) == 0:
-                return PACKAGE_XML_TAG_NOT_FOUND
-            for element in elements:
-                    print(element.text)
+
+        elements = tree.getroot().findall(args.tag)
+        if not elements:
+            return PACKAGE_XML_TAG_NOT_FOUND
+
+        for element in elements:
+            print(element.text)
