@@ -14,11 +14,15 @@
 
 import argparse
 from collections import namedtuple
+import inspect
 import os
 from xmlrpc.server import SimpleXMLRPCRequestHandler
 from xmlrpc.server import SimpleXMLRPCServer
 
+import netifaces
+
 import rclpy
+
 from ros2cli.node.direct import DirectNode
 
 
@@ -48,7 +52,7 @@ def main(*, script_name='_ros2_daemon', argv=None):
     node_args = NodeArgs(
         node_name_suffix='_daemon_%d' % args.ros_domain_id,
         start_parameter_services=False)
-    with DirectNode(node_args) as node:
+    with _DirectNode(node_args) as node:
         server = LocalXMLRPCServer(
             addr, logRequests=False, requestHandler=RequestHandler,
             allow_none=True)
@@ -90,6 +94,69 @@ def main(*, script_name='_ros2_daemon', argv=None):
                 pass
         finally:
             server.server_close()
+
+
+class _DirectNode:
+    """A direct node, that resets itself when a network interface changes."""
+
+    def __init__(self, args):
+        self.args = args
+        self.node = DirectNode(args)
+        self.addresses_at_start = self.interfaces_ip_addresses()
+
+    def __enter__(self):
+        self.node.__enter__()
+        return self
+
+    def __getattr__(self, name):
+        attr = self.node.__getattr__(name)
+
+        def wrapper():
+            self.reset_if_addresses_changed()
+            return self.node.__getattr__(name)
+        wrapper.__name__ = attr.__name__
+
+        if inspect.ismethod(attr):
+            return wrapper
+        self.reset_if_addresses_changed()
+        return attr
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.node.__exit__(exc_type, exc_value, traceback)
+
+    def interfaces_ip_addresses(self):
+        addresses_by_interfaces = {}
+        for (kind, info) in netifaces.gateways().items():
+            if kind not in (netifaces.AF_INET, netifaces.AF_INET6):
+                continue
+            if isinstance(info, dict):
+                continue
+            info_list = info
+            if isinstance(info, tuple):
+                info_list = [info]
+            addresses_by_interfaces[kind] = {}
+            for info in info_list:
+                # info[1] is the interface name
+                addresses_by_interfaces[kind][info[1]] = netifaces.ifaddresses(info[1])[kind][0]['addr']
+        return addresses_by_interfaces
+
+    def reset_if_addresses_changed(self):
+        def have_addresses_changed(new_addresses):
+            for (kind, addresses_by_interfaces) in self.addresses_at_start.items():
+                for (interface, addr) in addresses_by_interfaces.items():
+                    try:
+                        if new_addresses[kind][interface] != addr:
+                            return True
+                    except KeyError:
+                        return True
+            return False
+        new_addresses = self.interfaces_ip_addresses()
+        if have_addresses_changed(new_addresses):
+            self.addresses_at_start = new_addresses
+            self.node.destroy_node()
+            rclpy.shutdown()
+            self.node = DirectNode(self.args)
+            self.node.__enter__()
 
 
 class LocalXMLRPCServer(SimpleXMLRPCServer):
