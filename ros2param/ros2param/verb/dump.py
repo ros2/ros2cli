@@ -115,9 +115,6 @@ class DumpVerb(VerbExtension):
             if client.service_is_ready():
                 request = ListParameters.Request()
                 future = client.call_async(request)
-
-            rclpy.spin_once(node, timeout_sec=1.0)
-
             # wait for response
             rclpy.spin_until_future_complete(node, future)
 
