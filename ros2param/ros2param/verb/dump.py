@@ -51,7 +51,7 @@ class DumpVerb(VerbExtension):
             help='Consider hidden nodes as well')
         parser.add_argument(
             '--file-path',
-            default='',
+            default='.',
             help='The absolute path were to save the generated file')
 
     @staticmethod
@@ -60,55 +60,39 @@ class DumpVerb(VerbExtension):
             node=node, node_name=node_name,
             parameter_names=[param])
 
-        print(param)
-
         # requested parameter not set
         if not response.values:
-            print('Parameter not set')
-            return
+            return '# Parameter not set'
 
         # extract type specific value
         pvalue = response.values[0]
         if pvalue.type == ParameterType.PARAMETER_BOOL:
-            label = 'Boolean value is:'
             value = pvalue.bool_value
         elif pvalue.type == ParameterType.PARAMETER_INTEGER:
-            label = 'Integer value is:'
             value = pvalue.integer_value
         elif pvalue.type == ParameterType.PARAMETER_DOUBLE:
-            label = 'Double value is:'
             value = pvalue.double_value
         elif pvalue.type == ParameterType.PARAMETER_STRING:
-            label = 'String value is:'
             value = pvalue.string_value
         elif pvalue.type == ParameterType.PARAMETER_BYTE_ARRAY:
-            label = 'Byte values are:'
             value = pvalue.byte_array_value
         elif pvalue.type == ParameterType.PARAMETER_BOOL_ARRAY:
-            label = 'Boolean values are:'
             value = pvalue.bool_array_value
         elif pvalue.type == ParameterType.PARAMETER_INTEGER_ARRAY:
-            label = 'Integer values are:'
             value = pvalue.integer_array_value
         elif pvalue.type == ParameterType.PARAMETER_DOUBLE_ARRAY:
-            label = 'Double values are:'
             value = pvalue.double_array_value
         elif pvalue.type == ParameterType.PARAMETER_STRING_ARRAY:
-            label = 'String values are:'
             value = pvalue.string_array_value
         elif pvalue.type == ParameterType.PARAMETER_NOT_SET:
-            label = 'Parameter not set.'
             value = None
         else:
-            label = "Unknown parameter type '{pvalue.type}'" \
-                .format_map(locals())
             value = None
-
-        print('{label} {value}'.format_map(locals()))
 
         return value
 
     def main(self, *, args):  # noqa: D102
+
         with NodeStrategy(args) as node:
             node_names = get_node_names(
                 node=node, include_hidden_nodes=args.include_hidden_nodes)
@@ -118,7 +102,8 @@ class DumpVerb(VerbExtension):
         if absolute_node_name:
             if absolute_node_name not in [n.full_name for n in node_names]:
                 return 'Node not found'
-
+        if not os.path.isdir(args.file_path):
+            return 'Invalid output directory'
         with DirectNode(args) as node:
             service_names = get_service_names(
                 node=node, include_hidden_services=args.include_hidden_nodes)
@@ -154,8 +139,5 @@ class DumpVerb(VerbExtension):
                     'Exception while calling service of node '
                     "'{node_name.full_name}': {e}".format_map(locals()),
                     file=sys.stderr)
-
-            print(os.path.join(args.file_path, node_name.name + ".yaml"))
-
             with open(os.path.join(args.file_path, node_name.name + ".yaml"), "w") as yaml_file:
                 yaml.dump(yaml_output, yaml_file, default_flow_style=False)
