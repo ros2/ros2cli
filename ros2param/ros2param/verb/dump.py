@@ -105,26 +105,29 @@ class DumpVerb(VerbExtension):
         if absolute_node_name:
             if absolute_node_name not in [n.full_name for n in node_names]:
                 return 'Node not found'
+
         if not os.path.isdir(args.file_path):
             return 'Invalid output directory'
-        with DirectNode(args) as node:
-            service_names = get_service_names(
-                node=node, include_hidden_services=args.include_hidden_nodes)
 
+        with DirectNode(args) as node:
             # create client
             service_name = '{absolute_node_name}/list_parameters'.format_map(locals())
             client = node.create_client(ListParameters, service_name)
 
-            if client.service_is_ready():
-                request = ListParameters.Request()
-                future = client.call_async(request)
+            client.wait_for_service()
+
+            if not client.service_is_ready():
+                return 'Something went wrong'
+
+            request = ListParameters.Request()
+            future = client.call_async(request)
+
             # wait for response
             rclpy.spin_until_future_complete(node, future)
 
             yaml_output = {node_name.name: {'ros__parameters': {}}}
 
             # retrieve values
-            params_content = ''
             if future.result() is not None:
                 response = future.result()
                 for param_name in sorted(response.result.names):
@@ -136,5 +139,7 @@ class DumpVerb(VerbExtension):
                     'Exception while calling service of node '
                     "'{node_name.full_name}': {e}".format_map(locals()),
                     file=sys.stderr)
+
+            print ('Saving to: ', os.path.join(args.file_path, node_name.name + ".yaml"))
             with open(os.path.join(args.file_path, node_name.name + ".yaml"), "w") as yaml_file:
                 yaml.dump(yaml_output, yaml_file, default_flow_style=False)
