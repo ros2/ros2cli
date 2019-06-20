@@ -16,16 +16,29 @@ import os
 import tempfile
 import threading
 
-# import pytest
 import unittest
 
 import rclpy
 
 from rclpy.executors import MultiThreadedExecutor
+from rclpy.parameter import PARAMETER_SEPARATOR_STRING
 from ros2cli import cli
 
 TEST_NODE = 'test_node'
 TEST_NAMESPACE = ''
+
+EXPECTED_PARAMETER_FILE = '''\
+test_node:
+  ros__parameters:
+    bool_param: true
+    double_param: 1.23
+    foo:
+      bar:
+        str_param: foo
+      str_param: foo
+    int_param: 42
+    str_param: Hello World
+'''
 
 
 class TestVerbDump(unittest.TestCase):
@@ -44,7 +57,9 @@ class TestVerbDump(unittest.TestCase):
         cls.node.declare_parameter('int_param', 42)
         cls.node.declare_parameter('double_param', 1.23)
         cls.node.declare_parameter('str_param', 'Hello World')
+        # TODO use PARAMETER_SEPARATOR_STRING
         cls.node.declare_parameter('foo/str_param', 'foo')
+        cls.node.declare_parameter('foo/bar/str_param', 'foo')
 
         # We need both the test node and 'dump'
         # node to be able to spin
@@ -64,11 +79,15 @@ class TestVerbDump(unittest.TestCase):
 
     def test_verb_dump_invalid_path(self):
         assert cli.main(
-                argv=['param', 'dump', 'test_node', '--file-path', 'invalid_path']) == 'Invalid output directory'
+                argv=['param', 'dump', 'test_node', '--file-path', 'invalid_path']) \
+                    == 'Invalid output directory'
 
     def test_verb_dump(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             assert cli.main(
                     argv=['param', 'dump', 'test_node', '--file-path', tmpdir]) is None
 
-        # TODO check for output file correctness
+            # Compare generated parameter file against expected
+            generated_param_file = os.path.join(tmpdir, self.node.get_name() + ".yaml")
+            assert (open(generated_param_file, 'r').read() ==
+                    EXPECTED_PARAMETER_FILE)
