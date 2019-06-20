@@ -34,7 +34,7 @@ test_node:
     double_param: 1.23
     foo:
       bar:
-        str_param: foo
+        str_param: foobar
       str_param: foo
     int_param: 42
     str_param: Hello World
@@ -59,7 +59,7 @@ class TestVerbDump(unittest.TestCase):
         cls.node.declare_parameter('str_param', 'Hello World')
         # TODO use PARAMETER_SEPARATOR_STRING
         cls.node.declare_parameter('foo/str_param', 'foo')
-        cls.node.declare_parameter('foo/bar/str_param', 'foo')
+        cls.node.declare_parameter('foo/bar/str_param', 'foobar')
 
         # We need both the test node and 'dump'
         # node to be able to spin
