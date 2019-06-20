@@ -19,6 +19,7 @@ import yaml
 from rcl_interfaces.msg import ParameterType
 from rcl_interfaces.srv import ListParameters
 import rclpy
+from rclpy.parameter import PARAMETER_SEPARATOR_STRING
 from ros2cli.node.direct import DirectNode
 from ros2cli.node.strategy import add_arguments
 from ros2cli.node.strategy import NodeStrategy
@@ -28,11 +29,10 @@ from ros2node.api import NodeNameCompleter
 from ros2node.api import parse_node_name
 from ros2param.api import call_get_parameters
 from ros2param.verb import VerbExtension
-from ros2service.api import get_service_names
 
 
 class DumpVerb(VerbExtension):
-    """Dump the parameters to a yaml file."""
+    """Dump the parameters of a node to a yaml file."""
 
     def add_arguments(self, parser, cli_name):  # noqa: D102
         add_arguments(parser)
@@ -86,7 +86,8 @@ class DumpVerb(VerbExtension):
         return value
 
     def insert_dict(self, dict, key, value):
-        split = key.split("/", 1)
+        # TODO use PARAMETER_SEPARATOR_STRING
+        split = key.split('/', 1)
         if len(split) > 1:
             if not split[0] in dict:
                 dict[split[0]] = {}
@@ -140,6 +141,6 @@ class DumpVerb(VerbExtension):
                     "'{node_name.full_name}': {e}".format_map(locals()),
                     file=sys.stderr)
 
-            print ('Saving to: ', os.path.join(args.file_path, node_name.name + ".yaml"))
+            print('Saving to: ', os.path.join(args.file_path, node_name.name + ".yaml"))
             with open(os.path.join(args.file_path, node_name.name + ".yaml"), "w") as yaml_file:
                 yaml.dump(yaml_output, yaml_file, default_flow_style=False)
