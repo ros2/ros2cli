@@ -45,10 +45,14 @@ class ShowVerb(VerbExtension):
         try:
             if parts[1] == 'msg':
                 path = get_message_path(parts[0], parts[2])
-            if parts[1] == 'srv':
+            elif parts[1] == 'srv':
                 path = get_service_path(parts[1], parts[2])
-            if parts[1] == 'action':
+            elif parts[1] == 'action':
                 path = get_action_path(parts[0], parts[2])
+            else:
+                raise ValueError()
+        except ValueError:
+            raise RuntimeError('The passed interface type is invalid')
         except LookupError as e:
             return str(e)
         with open(path, 'r') as h:
