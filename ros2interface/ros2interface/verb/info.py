@@ -19,7 +19,8 @@ from ros2action.verb import VerbExtension
 from ros2cli.node.direct import DirectNode
 
 class InfoVerb(VerbExtension):
-    """ Print information about an action """
+    """Print information about an action."""
+    
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
                 'action_name',

@@ -87,6 +87,26 @@ def message_package_name_completer(**kwargs):
     """Callable returning a list of package names which contain messages."""
     return get_all_message_types().keys()
 
+def message_type_completer(**kwargs):
+    """Callable returning a list of message types."""
+    message_types = []
+    for package_name, message_names in get_all_message_types().items():
+        for message_name in message_names:
+            message_types.append(
+                '{package_name}/msg/{message_name}'.format_map(locals()))
+    return message_types
+
+
+class MessageNameCompleter:
+    """Callable returning a list of message names within a package."""
+
+    def __init__(self, *, package_name_key=None):
+        self.package_name_key = package_name_key
+
+    def __call__(self, prefix, parsed_args, **kwargs):
+        package_name = getattr(parsed_args, self.package_name_key)
+        return get_message_types(package_name)
+
 
 def service_package_name_completer(**kwargs):
     """Callable returning a list of package names which contain services."""
@@ -111,4 +131,14 @@ class ServiceNameCompleter:
 
     def __call__(self, prefix, parsed_args, **kwargs):
         package_name = getattr(parsed_args, self.package_name_key)
+        return get_service_types(package_name)
+
+class NameCompleter:
+    """Callable returning a list of msgs, srvs, and/or action names within a package."""
+
+    def __init__(self, *, package_name_key=None):
+        self.package_name_key = package_name_key 
+
+    def __call__(self, prefix, parsed_agrs, **kwargs):
+        pacakge_name = getattr(parsed_args, self.package_namep_key)
         return get_service_types(package_name)

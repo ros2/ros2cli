@@ -12,22 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ros2cli.plugin_system import PLUGIN_SYSTEM_VERSION
-from ros2cli.plugin_system import satisfies_version 
+from ament_flake8.main import main
+import pytest
 
-class VerbExtension:
-    """Extension point for 'interface' verb extensions."""
 
-    NAME = None 
-    EXTENSION_POINT_VERSION = '0.1'
-
-    def __init__(self):
-        super(VerbExtension, self).__init__()
-        satisfies_version(PLUGIN_SYSTEM_VERSION, '^0.1')
-
-    def add_arguments(self, parser, cli_name):
-        pass
-
-    def main(self, *, args):
-        raise NotImplementedError()
-
+@pytest.mark.flake8
+@pytest.mark.linter
+def test_flake8():
+    rc = main(argv=[])
+    assert rc == 0, 'Found errors'

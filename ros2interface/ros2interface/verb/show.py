@@ -21,7 +21,7 @@ from ros2interface.verb import VerbExtension
 
 
 class ShowVerb(VerbExtension):
-    """ Show an interface definition  """
+    """Show an interface definition."""
     
     def add_arguments(self, parser, cli_name):
          parser.add_argument(
