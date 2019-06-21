@@ -12,13 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ros2interface.api import get_all_message_types
-from ros2interface.api import get_service_types
+from ros2msg.api import get_all_message_types
+from ros2srv.api import get_service_types
 from ros2msg.api import get_message_path
-from ros2msg.api import message_type_completer
 from ros2srv.api import get_service_path
-from ros2srv.api import service_type_completer
-from ros2action.api import action_type_completer
 from ros2action.api import get_action_path
 from ros2interface.verb import VerbExtension
 
@@ -46,7 +43,7 @@ class ShowVerb(VerbExtension):
             if parts[1] == 'msg':
                 path = get_message_path(parts[0], parts[2])
             elif parts[1] == 'srv':
-                path = get_service_path(parts[1], parts[2])
+                path = get_service_path(parts[0], parts[2])
             elif parts[1] == 'action':
                 path = get_action_path(parts[0], parts[2])
             else:
