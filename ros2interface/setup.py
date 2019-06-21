@@ -37,6 +37,7 @@ The package provides the interface command for the ROS 2 command line tools.""",
             'packages = ros2interface.verb.packages:PackagesVerb',
             'package = ros2interface.verb.package:PackageVerb',
             'show = ros2interface.verb.show:ShowVerb',
+            'info = ros2interface.verb.info:InfoVerb',
         ],
     }
 )
