@@ -65,9 +65,9 @@ class EchoVerb(VerbExtension):
             help='The length to truncate arrays, bytes, and string to '
                  '(default: %d)' % DEFAULT_TRUNCATE_LENGTH)
         parser.add_argument(
-            '--noarr', action='store_true', help='Exclude arrays')
+            '--no-arr', action='store_true', help="Don't print array fields of messages")
         parser.add_argument(
-            '--nostr', action='store_true', help='Exclude string fields')
+            '--no-str', action='store_true', help="Don't print string fields of messages")
 
     def main(self, *, args):
         return main(args)
@@ -76,10 +76,10 @@ class EchoVerb(VerbExtension):
 def main(args):
     if not args.csv:
         truncate_length = args.truncate_length if not args.full_length else None
-        callback = subscriber_cb(truncate_length, args.noarr, args.nostr)
+        callback = subscriber_cb(truncate_length, args.no_arr, args.no_str)
     else:
         truncate_length = args.truncate_length if not args.full_length else None
-        callback = subscriber_cb_csv(truncate_length, args.noarr, args.nostr)
+        callback = subscriber_cb_csv(truncate_length, args.no_arr, args.no_str)
     with DirectNode(args) as node:
         subscriber(
             node.node, args.topic_name, args.message_type, callback)
