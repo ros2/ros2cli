@@ -12,22 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ros2msg.api import get_all_message_types
-from ros2srv.api import get_service_types
-from ros2msg.api import get_message_path
-from ros2srv.api import get_service_path
 from ros2action.api import get_action_path
 from ros2interface.api import type_completer
 from ros2interface.verb import VerbExtension
+from ros2msg.api import get_message_path
+from ros2srv.api import get_service_path
 
 
 class ShowVerb(VerbExtension):
     """Output the interface definition."""
-    
+
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
                 'type',
-                help="Show an interface definition (msgs, srvs, actions)")
+                help='Show an interface definition (msgs, srvs, actions)')
         arg.completer = type_completer
 
     def main(self, *, args):
@@ -56,4 +54,3 @@ class ShowVerb(VerbExtension):
             return str(e)
         with open(path, 'r') as h:
             print(h.read(), end='')
-
