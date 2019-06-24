@@ -18,9 +18,10 @@ from ros2action.api import get_action_clients_and_servers
 from ros2action.verb import VerbExtension
 from ros2cli.node.direct import DirectNode
 
+
 class InfoVerb(VerbExtension):
     """Print information about an action."""
-    
+
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
                 'action_name',
@@ -28,10 +29,10 @@ class InfoVerb(VerbExtension):
         arg.completer = action_name_completer
         parser.add_argument(
                 '-t', '--show-types', action='store_true',
-                help="Additionally show the action type")
+                help='Additionally show the action type')
         parser.add_argument(
                 '-c', '--count', action='store_true',
-                help="Only display the number of action client and action servers")
+                help='Only display the number of action client and action servers')
 
     def main(self, *, args):
         with DirectNode(args) as node:
@@ -59,4 +60,3 @@ class InfoVerb(VerbExtension):
                     print('    {server_name} [{types_formatted}]'.format_map(locals()))
                 else:
                     print('    {server_name}'.format_map(locals()))
-

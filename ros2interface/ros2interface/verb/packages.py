@@ -12,23 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from ros2interface.verb import VerbExtension
 from ros2msg.api import get_all_message_types
 from ros2srv.api import get_all_service_types
-from ros2interface.verb import VerbExtension
+
 
 def printPackages(packs):
     for name in sorted(packs):
         print((name))
+
 
 class PackagesVerb(VerbExtension):
     """Output a list of packages which contain msgs, srvs, & actions."""
 
     def add_arguments(self, parser, cli_name):
         parser.add_argument('-m', '--only-msgs', action='count',
-               help='Only list packages that generate messages')
+                            help='Only list packages that generate messages')
 
         parser.add_argument('-s', '--only-srvs', action='count',
-               help='Only list packages that generate services')
+                            help='Only list packages that generate services')
 
     def main(self, *, args):
         packs = set()
@@ -44,7 +46,7 @@ class PackagesVerb(VerbExtension):
             for package_name in sorted(service_types.keys()):
                 packs.add(package_name)
             printPackages(packs)
-            return 
+            return
 
         for package_name in sorted(message_types.keys()):
             packs.add(package_name)

@@ -16,6 +16,7 @@ from ros2cli.command import add_subparsers
 from ros2cli.command import CommandExtension
 from ros2cli.verb import get_verb_extensions
 
+
 class InterfaceCommand(CommandExtension):
 
     def add_arguments(self, parser, cli_name):
@@ -26,10 +27,9 @@ class InterfaceCommand(CommandExtension):
 
     def main(self, *, parser, args):
         if not hasattr(args, '_verb'):
-            #in case no verb was passed
+            # in case no verb was passed
             self._subparser.print_help()
             return 0
-        
         extension = getattr(args, '_verb')
-        #call verb's main method 
+        # call verb's main method
         return extension.main(args=args)
