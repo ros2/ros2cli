@@ -16,7 +16,7 @@ import subprocess
 
 
 def test_cli():
-    packages_cmd = ['ros2', 'msg', 'packages']
+    packages_cmd = ['ros2', 'interface', 'packages']
     packages_result = subprocess.run(packages_cmd, stdout=subprocess.PIPE, check=True)
     package_names = packages_result.stdout.decode().splitlines()
 
@@ -25,7 +25,7 @@ def test_cli():
 
     count = 0
     for package_name in package_names:
-        package_cmd = ['ros2', 'msg', 'package', package_name]
+        package_cmd = ['ros2', 'interface', 'package', package_name]
         package_result = subprocess.run(
             package_cmd, stdout=subprocess.PIPE, check=True)
         message_types = package_result.stdout.decode().splitlines()
@@ -36,23 +36,22 @@ def test_cli():
             continue
         for message_name in [t[len(package_name) + 1:] for t in message_types]:
             show_cmd = [
-                'ros2', 'msg', 'show', package_name + '/' + message_name]
+                'ros2', 'interface', 'show', package_name + '/' + message_name]
             show_result = subprocess.run(
                 show_cmd, stdout=subprocess.PIPE, check=True)
             if message_name == 'String':
                 assert show_result.stdout.rstrip() == b'string data'
-
-    list_cmd = ['ros2', 'msg', 'list']
+    list_cmd = ['ros2', 'interface', 'list']
     list_result = subprocess.run(list_cmd, stdout=subprocess.PIPE, check=True)
     message_types = list_result.stdout.decode().splitlines()
-    assert len(message_types) == count
+    assert len(message_types) == (count+2)
 
-    package_cmd = ['ros2', 'msg', 'package', '_not_existing_package_name']
+    package_cmd = ['ros2', 'interface', 'package', '_not_existing_package_name']
     package_result = subprocess.run(
         package_cmd, stdout=subprocess.PIPE)
     assert package_result.returncode
 
-    show_cmd = ['ros2', 'msg', 'show', 'std_msgs/_not_existing_message_name']
+    show_cmd = ['ros2', 'interface', 'show', 'std_msgs/_not_existing_message_name']
     show_result = subprocess.run(
         show_cmd, stdout=subprocess.PIPE)
     assert show_result.returncode
