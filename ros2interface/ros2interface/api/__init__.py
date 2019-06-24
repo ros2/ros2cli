@@ -76,15 +76,3 @@ def type_completer(**kwargs):
             types.append(
                 '{package_name}/msg/{message_name}'.format_map(locals()))
     return sorted(types)
-
-
-# class NameCompleter:
-#     """Callable returning a list of msgs, srvs, and/or action names within a package."""
-
-#     def __init__(self, *, package_name_key=None):
-#         self.package_name_key = package_name_key
-
-#     def __call__(self, prefix, parsed_agrs, **kwargs):
-#         pacakge_name = getattr(parsed_args, self.package_namep_key)
-#         #this should only be returning the srvs for now
-#         return get_types(package_name)

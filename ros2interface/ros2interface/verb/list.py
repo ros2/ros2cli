@@ -34,7 +34,7 @@ def printServices():
 
 
 class ListVerb(VerbExtension):
-    """List all .msg, .srv, and .action types available."""
+    """List all .msg and .srv types available."""
 
     def add_arguments(self, parser, cli_name):
         parser.add_argument('-m', '--only-msgs', action='count',

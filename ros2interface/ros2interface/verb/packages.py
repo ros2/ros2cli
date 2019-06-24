@@ -23,7 +23,7 @@ def printPackages(packs):
 
 
 class PackagesVerb(VerbExtension):
-    """Output a list of packages which contain msgs, srvs, & actions."""
+    """Output a list of packages which contain msgs and srvs."""
 
     def add_arguments(self, parser, cli_name):
         parser.add_argument('-m', '--only-msgs', action='count',

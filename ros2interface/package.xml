@@ -4,11 +4,15 @@
   <name>ros2interface</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
-  <maintainer email="kucheria@usc.edu">siddarth</maintainer>
+  <maintainer email="dthomas@osrfoundation.org">Dirk Thomas</maintainer>
   <license>TODO: License declaration</license>
 
 
   <depend>ros2cli</depend>
+    <depend>ros2action</depend>
+  <depend>ros2msg</depend>
+  <depend>ros2srv</depend>
+
   <exec_depend>ament_index_python</exec_depend>
 
   <test_depend>ament_copyright</test_depend>
