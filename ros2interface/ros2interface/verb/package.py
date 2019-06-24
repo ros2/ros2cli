@@ -13,7 +13,11 @@
 # limitations under the License.
 
 from ros2interface.api import get_message_types
+from ros2srv.api import get_service_types
+from ros2interface.api import get_types
+from ros2interface.api import package_name_completer
 from ros2interface.api import message_package_name_completer
+from ros2srv.api import service_package_name_completer
 from ros2interface.verb import VerbExtension
 
 class PackageVerb(VerbExtension):
@@ -22,13 +26,14 @@ class PackageVerb(VerbExtension):
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
             'package_name',
-            help="Name of the ROS package (e.g. 'std_msgs')")
-        
+            help="Name of the ROS package (e.g. 'std_msgs, std_srvs, etc.')")
+        #arg.completer = service_package_name_completer
+        arg.completer = package_name_completer
 
     def main(self, *, args):
         try:
-            message_names = get_message_types(args.package_name)
+            names = get_types(args.package_name)
         except LookupError as e:
             return str(e)
-        for message_name in sorted(message_names):
-            print('{args.package_name}/msg/{message_name}'.format_map(locals()))
+        for message_name in sorted(names):
+            print('{args.package_name}/ANY/{message_name}'.format_map(locals()))

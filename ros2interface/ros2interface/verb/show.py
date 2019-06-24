@@ -17,17 +17,18 @@ from ros2srv.api import get_service_types
 from ros2msg.api import get_message_path
 from ros2srv.api import get_service_path
 from ros2action.api import get_action_path
+from ros2interface.api import type_completer
 from ros2interface.verb import VerbExtension
 
 
 class ShowVerb(VerbExtension):
-    """Show an interface definition."""
+    """Output the interface definition."""
     
     def add_arguments(self, parser, cli_name):
-         parser.add_argument(
+        arg = parser.add_argument(
                 'type',
                 help="Show an interface definition (msgs, srvs, actions)")
-        
+        arg.completer = type_completer
 
     def main(self, *, args):
         try:
