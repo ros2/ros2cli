@@ -17,15 +17,27 @@ from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
 
-def get_action_server_node_action():
-    return Node(
-        package='action_tutorials',
-        node_executable='fibonacci_action_server.py',
-        sigterm_timeout=LaunchConfiguration('sigterm_timeout', default=30)
-    )
+class Config():
+    pass
 
 
-arguments_by_option = {
+config = Config()
+
+config.verb = 'action'
+
+config.options = [
+    'info',
+    'info -t',
+    'info -c',
+    'list',
+    'list -t',
+    'list -c',
+    'send_goal',
+    'send_goal -f',
+    'show',
+]
+
+config.arguments_by_option = {
     'info': ['info', '/fibonacci'],
     'info -t': ['info', '-t', '/fibonacci'],
     'info -c': ['info', '-c', '/fibonacci'],
@@ -38,7 +50,16 @@ arguments_by_option = {
     'show': ['show', 'action_tutorials/action/Fibonacci'],
 }
 
-actions_by_option = {
+
+def get_action_server_node_action():
+    return Node(
+        package='action_tutorials',
+        node_executable='fibonacci_action_server.py',
+        sigterm_timeout=LaunchConfiguration('sigterm_timeout', default=30)
+    )
+
+
+config.actions_by_option = {
     'info': [get_action_server_node_action()],
     'info -t': [get_action_server_node_action()],
     'info -c': [get_action_server_node_action()],
@@ -66,7 +87,7 @@ common_send_goal_output = [
     'Goal finished with status: SUCCEEDED',
 ]
 
-msgs_by_option = {
+config.msgs_by_option = {
     'info': common_info_output + ['/fibonacci_action_server'],
     'info -t':
         common_info_output +
@@ -91,17 +112,3 @@ msgs_by_option = {
         'int32[] partial_sequence'
     ],
 }
-
-options = [
-    'info',
-    'info -t',
-    'info -c',
-    'list',
-    'list -t',
-    'list -c',
-    'send_goal',
-    'send_goal -f',
-    'show',
-]
-
-verb = 'action'

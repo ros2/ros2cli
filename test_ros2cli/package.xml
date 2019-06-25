@@ -4,7 +4,7 @@
   <name>test_ros2cli</name>
   <version>0.7.4</version>
   <description>
-    Test of the ROS2 command line tools Framework.
+    Tests for ROS2 command line tools.
   </description>
   <maintainer email="ivanpauno@ekumenlabs.com">Ivan Paunovic</maintainer>
   <license>Apache License 2.0</license>

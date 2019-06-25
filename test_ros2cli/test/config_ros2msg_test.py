@@ -12,7 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-arguments_by_option = {
+
+class Config():
+    pass
+
+
+config = Config()
+
+config.verb = 'msg'
+
+config.options = [
+    'list',
+    'package',
+    'packages',
+    'show',
+    'show_old_style',
+]
+
+config.arguments_by_option = {
     'list': ['list'],
     'package': ['package', 'std_msgs'],
     'packages': ['packages'],
@@ -20,7 +37,7 @@ arguments_by_option = {
     'show_old_style': ['show', 'std_msgs/String'],
 }
 
-actions_by_option = {
+config.actions_by_option = {
     'list': [],
     'package': [],
     'packages': [],
@@ -34,20 +51,10 @@ some_messages_from_std_msgs = [
     'std_msgs/msg/Float64',
 ]
 
-msgs_by_option = {
+config.msgs_by_option = {
     'list': some_messages_from_std_msgs,
     'package': some_messages_from_std_msgs,
     'packages': ['std_msgs'],
     'show': ['string data'],
     'show_old_style': ['string data'],
 }
-
-options = [
-    'list',
-    'package',
-    'packages',
-    'show',
-    'show_old_style',
-]
-
-verb = 'msg'
