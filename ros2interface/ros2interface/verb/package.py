@@ -18,7 +18,7 @@ from ros2interface.verb import VerbExtension
 
 
 class PackageVerb(VerbExtension):
-    """Output a list of available message types within one package."""
+    """Output a list of available msg/srv types within one package."""
 
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
@@ -29,8 +29,7 @@ class PackageVerb(VerbExtension):
     def main(self, *, args):
         try:
             names = get_types(args.package_name)
-
         except LookupError as e:
             return str(e)
-        for name in sorted(names):
+        for name in names:
             print('{args.package_name}/{name}'.format_map(locals()))

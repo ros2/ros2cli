@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from ros2action.api import get_all_action_types
 from ros2interface.verb import VerbExtension
 from ros2msg.api import get_all_message_types
 from ros2srv.api import get_all_service_types
@@ -33,6 +34,14 @@ def printServices():
             print('{package_name}/srv/{service_name}'.format_map(locals()))
 
 
+def printActions():
+    print('Actions: ')
+    action_types = get_all_action_types()
+    for package_name in sorted(action_types.keys()):
+        for action_name in sorted(action_types[package_name]):
+            print('{package_name}/action/{action_name}'.format_map(locals()))
+
+
 class ListVerb(VerbExtension):
     """List all .msg and .srv types available."""
 
@@ -43,12 +52,19 @@ class ListVerb(VerbExtension):
         parser.add_argument('-s', '--only-srvs', action='count',
                             help='Print out only the srvs types')
 
+        parser.add_argument('-a', '--only-actions', action='count',
+                            help='Print out only the action types')
+
     def main(self, *, args):
-        if(args.only_msgs == 1):
+        if(args.only_msgs):
             printMessages()
             return
-        if(args.only_srvs == 1):
+        if(args.only_srvs):
             printServices()
+            return
+        if(args.only_actions):
+            printActions()
             return
         printMessages()
         printServices()
+        printActions()

@@ -12,11 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ros2action.api import get_action_path
+from ros2interface.api import get_interface_path
 from ros2interface.api import type_completer
 from ros2interface.verb import VerbExtension
-from ros2msg.api import get_message_path
-from ros2srv.api import get_service_path
 
 
 class ShowVerb(VerbExtension):
@@ -29,25 +27,14 @@ class ShowVerb(VerbExtension):
         arg.completer = type_completer
 
     def main(self, *, args):
+        # TODO(kucheria) this logic should come from a rosidl related package
         try:
             parts = args.type.split('/')
-            if len(parts) < 3:
+            if len(parts) < 2:
                 raise ValueError()
-            if not parts[0] or not parts[1] or not parts[2]:
+            if not all(parts):
                 raise ValueError()
-            # now have to check if msg or srv
-        except ValueError:
-            raise RuntimeError('The passed interface type is invalid')
-
-        try:
-            if parts[1] == 'msg':
-                path = get_message_path(parts[0], parts[2])
-            elif parts[1] == 'srv':
-                path = get_service_path(parts[0], parts[2])
-            elif parts[1] == 'action':
-                path = get_action_path(parts[0], parts[2])
-            else:
-                raise ValueError()
+            path = get_interface_path(parts)
         except ValueError:
             raise RuntimeError('The passed interface type is invalid')
         except LookupError as e:

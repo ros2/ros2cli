@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from ros2interface.api import get_all_types
 from ros2interface.verb import VerbExtension
 from ros2msg.api import get_all_message_types
 from ros2srv.api import get_all_service_types
@@ -33,23 +34,13 @@ class PackagesVerb(VerbExtension):
                             help='Only list packages that generate services')
 
     def main(self, *, args):
-        packs = set()
-        message_types = get_all_message_types()
-        if(args.only_msgs):
-            for package_name in sorted(message_types.keys()):
-                packs.add(package_name)
-            printPackages(packs)
-            return
-
-        service_types = get_all_service_types()
-        if(args.only_srvs):
-            for package_name in sorted(service_types.keys()):
-                packs.add(package_name)
-            printPackages(packs)
-            return
-
-        for package_name in sorted(message_types.keys()):
-            packs.add(package_name)
-        for package_name in sorted(service_types.keys()):
-            packs.add(package_name)
-        printPackages(packs)
+        packages = set()
+        all_interface_types = get_all_types()
+        if args.only_msgs:
+            printPackages(get_all_message_types().keys())
+        elif args.only_srvs:
+            printPackages(get_all_service_types().keys())
+        else:
+            for package in all_interface_types:
+                packages.add(package)
+            printPackages(packages)

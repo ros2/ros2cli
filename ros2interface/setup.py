@@ -3,15 +3,15 @@ from setuptools import setup
 
 setup(
     name='ros2interface',
-    version='0.7.0',
+    version='0.7.4',
     packages=find_packages(exclude=['test']),
     install_requires=['ros2cli'],
     zip_safe=True,
-    author='Dirk Thomas',
-    author_email='dthomas@osrfoundation.org',
-    maintainer='Dirk Thomas',
-    maintainer_email='dthomas@osrfoundation.org',
-    url='https://github.com/ros2/ros2cli/tree/master/ros2msg',
+    author='Siddharth Kucheria',
+    author_email='kucheria@osrfoundation.org',
+    maintainer='Jacob Perron',
+    maintainer_email='jacob@osrfoundation.org',
+    url='https://github.com/ros2/ros2cli/tree/master/ros2interface',
     download_url='https://github.com/ros2/ros2cli/releases',
     keywords=[],
     classifiers=[
@@ -37,7 +37,6 @@ The package provides the interface command for the ROS 2 command line tools.""",
             'packages = ros2interface.verb.packages:PackagesVerb',
             'package = ros2interface.verb.package:PackageVerb',
             'show = ros2interface.verb.show:ShowVerb',
-            'info = ros2interface.verb.info:InfoVerb',
         ],
     }
 )

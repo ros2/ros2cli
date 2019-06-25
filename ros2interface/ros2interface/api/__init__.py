@@ -1,4 +1,4 @@
-# Copyright 2017 Open Source Robotics Foundation, Inc.
+# Copyright 2019 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,10 +11,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import os
 
 from ament_index_python import get_resource
 from ament_index_python import get_resources
 from ament_index_python import has_resource
+from ros2action.api import get_action_types
 from ros2msg.api import get_all_message_types
 from ros2msg.api import get_message_types
 from ros2srv.api import get_all_service_types
@@ -27,39 +29,39 @@ def get_all_types():
         service_types = get_service_types(package_name)
         if service_types:
             all_types.append(package_name)
-    for package_name in get_resources('rosidl_interfaces'):
         message_types = get_message_types(package_name)
         if message_types:
+            all_types.append(package_name)
+        action_types = get_action_types(package_name)
+        if action_types:
             all_types.append(package_name)
     return all_types
 
 
 def get_types(package_name):
     if not has_resource('packages', package_name):
-        raise LookupError('Unknown Packs')
+        raise LookupError('Unknown package {}'.format(package_name))
     try:
         content, _ = get_resource('rosidl_interfaces', package_name)
     except LookupError:
         return []
     interface_names = content.splitlines()
-    msgsList = list(sorted({
+    type_list = list(sorted({
         n[0:-4]
         for n in interface_names
-        if n.startswith('msg/') and n[-4:] in ('.idl', '.msg')}))
-    srvsList = list(sorted({
-        n[0:-4]
-        for n in interface_names
-        if n.startswith('srv/') and n[-4:] in ('.idl', '.srv')}))
-    typeList = []
-    for item in msgsList:
-        typeList.append(item)
-    for item in srvsList:
-        typeList.append(item)
-    return typeList
+        if '_' not in n}))
+    return type_list
+
+
+def get_interface_path(parts):
+    prefix_path = has_resource('packages', parts[0])
+    joined = '/'.join(parts)
+    return os.path.join(
+        prefix_path, 'share', joined + '.idl')
 
 
 def package_name_completer(**kwargs):
-    """Callable returning a list of package name containing messages, services, and action."""
+    """Callable returning a list of types containing messages, services, and action."""
     return get_all_types()
 
 

@@ -44,7 +44,7 @@ def test_cli():
     list_cmd = ['ros2', 'interface', 'list']
     list_result = subprocess.run(list_cmd, stdout=subprocess.PIPE, check=True)
     message_types = list_result.stdout.decode().splitlines()
-    assert len(message_types) == (count+2)
+    assert len(message_types) == (count-2)
 
     package_cmd = ['ros2', 'interface', 'package', '_not_existing_package_name']
     package_result = subprocess.run(
