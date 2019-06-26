@@ -86,7 +86,12 @@ common_send_goal_output = [
     'order: 5',
     'Goal accepted with ID:',
     'Result:',
-    'sequence: [0, 1, 1, 2, 3, 5]',
+    'sequence:',
+    '0',
+    '1',
+    '2',
+    '3',
+    '5',
     'Goal finished with status: SUCCEEDED',
 ]
 
@@ -103,10 +108,7 @@ config.msgs_by_option = {
     'send_goal -f': common_send_goal_output + [
         'Feedback:',
         'partial_sequence:',
-        '[0, 1, 1]',
-        '[0, 1, 1, 2]',
-        '[0, 1, 1, 2, 3]',
-        '[0, 1, 1, 2, 3, 5]'],
+    ],
     'show': [
         'int32 order',
         '---',
