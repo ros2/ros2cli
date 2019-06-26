@@ -20,8 +20,10 @@ if(BUILD_TESTING)
   find_package(rmw_implementation_cmake REQUIRED)
 
   macro(custom_test_process_output test_name config_file_name)
-    set(TEST_NAME ${test_name})
-    set(TEST_CONFIGURATION_FILE ${config_file_name})
+    # Set variables for configuring the test files.
+    set(TEST_NAME ${test_name})  # test name used in the test cases
+    set(TEST_CONFIGURATION_FILE ${config_file_name})  # config file to use
+
     configure_file(
       test/test_process_output_customizable.py.in
       ${test_name}${target_suffix}.py.genexp
@@ -49,13 +51,12 @@ if(BUILD_TESTING)
 
   set(generated_python_files)
   macro(tests)
-    set(test_names
-      "test_ros2action"
-      "test_ros2msg"
-    )
     custom_test_process_output(test_ros2action config_ros2action_test)
     custom_test_process_output(test_ros2msg config_ros2msg_test)
   endmacro()
+  file(INSTALL test/test_config.py
+    DESTINATION "${CMAKE_CURRENT_BINARY_DIR}"
+  )
 
   set(append_library_dirs "${CMAKE_CURRENT_BINARY_DIR}")
   if(WIN32)

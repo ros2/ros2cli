@@ -12,18 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
+import sys
+
 from launch.substitutions import LaunchConfiguration
 
 from launch_ros.actions import Node
 
+sys.path.append(os.path.dirname(__file__))
 
-class Config():
-    pass
+from test_config import TestConfig  # noqa
 
 
-config = Config()
+config = TestConfig()
 
-config.verb = 'action'
+config.command = 'action'
 
 config.options = [
     'info',

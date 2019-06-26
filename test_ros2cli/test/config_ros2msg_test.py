@@ -12,14 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
+import sys
 
-class Config():
-    pass
+sys.path.append(os.path.dirname(__file__))
+
+from test_config import TestConfig  # noqa
 
 
-config = Config()
+config = TestConfig()
 
-config.verb = 'msg'
+config.command = 'msg'
 
 config.options = [
     'list',

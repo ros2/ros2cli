@@ -34,7 +34,7 @@ from @TEST_CONFIGURATION_FILE@ import config  # noqa
 
 @launch_testing.parametrize('option', config.options)
 def generate_test_description(option, ready_fn):
-    cmd = [[FindPackage('ros2cli'), '/bin/ros2'], config.verb]
+    cmd = [[FindPackage('ros2cli'), '/bin/ros2'], config.command]
     cmd.extend(config.arguments_by_option[option])
     process_under_test = ExecuteProcess(
         cmd=cmd,
