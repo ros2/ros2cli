@@ -16,11 +16,6 @@ import os
 from ament_index_python import get_resource
 from ament_index_python import get_resources
 from ament_index_python import has_resource
-from ros2action.api import get_action_types
-from ros2msg.api import get_all_message_types
-from ros2msg.api import get_message_types
-from ros2srv.api import get_all_service_types
-from ros2srv.api import get_service_types
 
 
 def get_all_types():
@@ -78,3 +73,78 @@ def type_completer(**kwargs):
             types.append(
                 '{package_name}/msg/{message_name}'.format_map(locals()))
     return sorted(types)
+
+
+def get_all_action_types():
+    all_action_types = {}
+    for package_name in get_resources('rosidl_interfaces'):
+        action_types = get_action_types(package_name)
+        if action_types:
+            all_action_types[package_name] = action_types
+    return all_action_types
+
+
+def get_action_types(package_name):
+    if not has_resource('packages', package_name):
+        raise LookupError('Unknown package name')
+    try:
+        content, _ = get_resource('rosidl_interfaces', package_name)
+    except LookupError:
+        return []
+    interface_names = content.splitlines()
+    # TODO(jacobperron) this logic should come from a rosidl related package
+    # Only return actions in action folder
+    return list(sorted({
+        n[7:-7]
+        for n in interface_names
+        if n.startswith('action/') and n[-7:] in ('.idl', '.action')}))
+
+
+def get_all_message_types():
+    all_message_types = {}
+    for package_name in get_resources('rosidl_interfaces'):
+        message_types = get_message_types(package_name)
+        if message_types:
+            all_message_types[package_name] = message_types
+    return all_message_types
+
+
+def get_message_types(package_name):
+    if not has_resource('packages', package_name):
+        raise LookupError('Unknown package name')
+    try:
+        content, _ = get_resource('rosidl_interfaces', package_name)
+    except LookupError:
+        return []
+    interface_names = content.splitlines()
+    # TODO(dirk-thomas) this logic should come from a rosidl related package
+    # Only return messages in msg folder
+    return list(sorted({
+        n[4:-4]
+        for n in interface_names
+        if n.startswith('msg/') and n[-4:] in ('.idl', '.msg')}))
+
+
+def get_all_service_types():
+    all_service_types = {}
+    for package_name in get_resources('rosidl_interfaces'):
+        service_types = get_service_types(package_name)
+        if service_types:
+            all_service_types[package_name] = service_types
+    return all_service_types
+
+
+def get_service_types(package_name):
+    if not has_resource('packages', package_name):
+        raise LookupError('Unknown package name')
+    try:
+        content, _ = get_resource('rosidl_interfaces', package_name)
+    except LookupError:
+        return []
+    interface_names = content.splitlines()
+    # TODO(dirk-thomas) this logic should come from a rosidl related package
+    # Only return services in srv folder
+    return list(sorted({
+        n[4:-4]
+        for n in interface_names
+        if n.startswith('srv/') and n[-4:] in ('.idl', '.srv')}))

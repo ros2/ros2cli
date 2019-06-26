@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from ros2interface.api import get_all_message_types
+from ros2interface.api import get_all_service_types
 from ros2interface.api import get_all_types
 from ros2interface.verb import VerbExtension
-from ros2msg.api import get_all_message_types
-from ros2srv.api import get_all_service_types
 
 
 def printPackages(packs):

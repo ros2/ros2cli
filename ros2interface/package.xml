@@ -11,9 +11,6 @@
 
 
   <depend>ros2cli</depend>
-  <depend>ros2action</depend>
-  <depend>ros2msg</depend>
-  <depend>ros2srv</depend>
 
   <exec_depend>ament_index_python</exec_depend>
 
