@@ -41,10 +41,13 @@ def test_cli():
                 show_cmd, stdout=subprocess.PIPE, check=True)
             if message_name == 'String':
                 assert show_result.stdout.rstrip() == b'string data'
-    list_cmd = ['ros2', 'interface', 'list']
-    list_result = subprocess.run(list_cmd, stdout=subprocess.PIPE, check=True)
-    message_types = list_result.stdout.decode().splitlines()
-    assert len(message_types) == (count-2)
+    list_cmd1 = ['ros2', 'interface', 'list']
+    list_cmd2 = ['ros2', 'interface', 'list', '-a']
+    list_result1 = subprocess.run(list_cmd1, stdout=subprocess.PIPE, check=True)
+    list_result2 = subprocess.run(list_cmd2, stdout=subprocess.PIPE, check=True)
+    res1 = list_result1.stdout.decode().splitlines()
+    message_types = res1 + list_result2.stdout.decode().splitlines()
+    assert (len(message_types)-4) == (count)
 
     package_cmd = ['ros2', 'interface', 'package', '_not_existing_package_name']
     package_result = subprocess.run(
