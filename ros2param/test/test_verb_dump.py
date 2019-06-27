@@ -57,9 +57,11 @@ class TestVerbDump(unittest.TestCase):
         cls.node.declare_parameter('int_param', 42)
         cls.node.declare_parameter('double_param', 1.23)
         cls.node.declare_parameter('str_param', 'Hello World')
-        # TODO use PARAMETER_SEPARATOR_STRING
-        cls.node.declare_parameter('foo/str_param', 'foo')
-        cls.node.declare_parameter('foo/bar/str_param', 'foobar')
+        cls.node.declare_parameter('foo' + PARAMETER_SEPARATOR_STRING +
+                                   'str_param', 'foo')
+        cls.node.declare_parameter('foo' + PARAMETER_SEPARATOR_STRING +
+                                   'bar' + PARAMETER_SEPARATOR_STRING +
+                                   'str_param', 'foobar')
 
         # We need both the test node and 'dump'
         # node to be able to spin

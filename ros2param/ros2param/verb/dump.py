@@ -86,8 +86,7 @@ class DumpVerb(VerbExtension):
         return value
 
     def insert_dict(self, dict, key, value):
-        # TODO use PARAMETER_SEPARATOR_STRING
-        split = key.split('/', 1)
+        split = key.split(PARAMETER_SEPARATOR_STRING, 1)
         if len(split) > 1:
             if not split[0] in dict:
                 dict[split[0]] = {}
@@ -133,7 +132,8 @@ class DumpVerb(VerbExtension):
                 response = future.result()
                 for param_name in sorted(response.result.names):
                     pval = self.get_parameter_value(node, absolute_node_name, param_name)
-                    self.insert_dict(yaml_output[node_name.name]['ros__parameters'], param_name, pval)
+                    self.insert_dict(
+                        yaml_output[node_name.name]['ros__parameters'], param_name, pval)
             else:
                 e = future.exception()
                 print(
