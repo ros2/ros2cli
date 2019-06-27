@@ -48,4 +48,6 @@ def test_get_interface_path():
 def test_get_all_interface_pacakges():
     # check all packages being found
     interface_packages = get_all_interface_packages()
+    assert 'std_msgs' in interface_packages
+    assert 'std_srvs' in interface_packages
     assert len(interface_packages) >= 1

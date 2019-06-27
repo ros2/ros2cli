@@ -87,9 +87,9 @@ def get_action_types(package_name):
     # TODO(jacobperron) this logic should come from a rosidl related package
     # Only return actions in action folder
     return list(sorted({
-        n[7:-7]
+        n[7:].rsplit('.', 1)[0]
         for n in interface_names
-        if n.startswith('action/') and n[-7:] in ('.action')}))
+        if n.startswith('action/') and (n[-4:] == '.idl' or n[-7:] == '.action')}))
 
 
 def get_all_message_types():
