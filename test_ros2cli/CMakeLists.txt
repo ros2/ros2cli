@@ -19,7 +19,7 @@ if(BUILD_TESTING)
   find_package(ros_testing REQUIRED)
   find_package(rmw_implementation_cmake REQUIRED)
 
-  macro(custom_test_process_output test_name config_file_name)
+  macro(custom_test_process_output test_name config_file_name timeout)
     # Set variables for configuring the test files.
     set(TEST_NAME ${test_name})  # test name used in the test cases
     set(TEST_CONFIGURATION_FILE ${config_file_name})  # config file to use
@@ -41,7 +41,7 @@ if(BUILD_TESTING)
       TARGET ${test_name}${target_suffix}
       ENV RMW_IMPLEMENTATION=${rmw_implementation}
       APPEND_LIBRARY_DIRS "${append_library_dirs}"
-      TIMEOUT 120
+      TIMEOUT ${timeout}
     )
     list(
       APPEND generated_python_files
@@ -51,8 +51,8 @@ if(BUILD_TESTING)
 
   set(generated_python_files)
   macro(tests)
-    custom_test_process_output(test_ros2action config_ros2action_test)
-    custom_test_process_output(test_ros2msg config_ros2msg_test)
+    custom_test_process_output(test_ros2action config_ros2action_test 120)
+    custom_test_process_output(test_ros2msg config_ros2msg_test 60)
   endmacro()
   file(INSTALL test/test_config.py
     DESTINATION "${CMAKE_CURRENT_BINARY_DIR}"

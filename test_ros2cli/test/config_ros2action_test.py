@@ -15,9 +15,10 @@
 import os
 import sys
 
+from launch.actions import ExecuteProcess
 from launch.substitutions import LaunchConfiguration
 
-from launch_ros.actions import Node
+from launch_ros.substitutions import ExecutableInPackage
 
 sys.path.append(os.path.dirname(__file__))
 
@@ -55,9 +56,11 @@ config.arguments_by_option = {
 
 
 def get_action_server_node_action():
-    return Node(
-        package='action_tutorials',
-        node_executable='fibonacci_action_server.py',
+    return ExecuteProcess(
+        cmd=[
+            sys.executable,
+            ExecutableInPackage('fibonacci_action_server.py', 'action_tutorials'),
+        ],
         sigterm_timeout=LaunchConfiguration('sigterm_timeout', default=30)
     )
 
