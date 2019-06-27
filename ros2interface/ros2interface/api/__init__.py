@@ -30,12 +30,11 @@ def get_interface(package_name):
     except LookupError:
         return []
     interface_names = content.splitlines()
-    type_list = set()
-    for n in interface_names:
-        split = n.rsplit('.', 1)
-        if '_' not in split[0]:
-            type_list.add(split[0])
-    return sorted(type_list)
+    
+    return list(sorted({
+        n.rsplit('.', 1)[0]
+        for n in interface_names
+        if '_' not in n}))
 
 
 def get_interface_path(parts):
