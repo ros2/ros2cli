@@ -41,7 +41,7 @@ if(BUILD_TESTING)
       TARGET ${test_name}${target_suffix}
       ENV RMW_IMPLEMENTATION=${rmw_implementation}
       APPEND_LIBRARY_DIRS "${append_library_dirs}"
-      TIMEOUT 60
+      TIMEOUT 120
     )
     list(
       APPEND generated_python_files
