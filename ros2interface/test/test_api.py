@@ -13,7 +13,8 @@
 # limitations under the License.
 
 import os
-import subprocess
+
+import pytest
 
 from ros2interface.api import get_all_interface_packages
 from ros2interface.api import get_interface
@@ -21,33 +22,30 @@ from ros2interface.api import get_interface_path
 
 
 def test_get_interface():
-    # check not existing package name
-    try:
+    # check nonexistent package name
+    with pytest.raises(LookupError):
         get_interface('_not_existing_package_name')
-        assert False
-    except LookupError:
-        pass
 
-    # check interface getter from package name
+    # check existing package name
     interface_names = get_interface('std_srvs')
     assert len(interface_names) == 3
 
 
 def test_get_interface_path():
-    # check known package name
-    get_interface('std_msgs')
-    path = ['std_msgs', 'msg', 'Empty.msg']
+    # check for existing path
+    path = ['std_msgs', 'msg', 'Empty']
     interface_path = get_interface_path(path)
     assert os.path.isfile(interface_path)
 
+    # check for nonexistent path
+    try:
+        path = ['std_msgs', 'msg', 'InvalidPath']
+        get_interface_path(path)
+    except FileNotFoundError:
+        pass
+
 
 def test_get_all_interface_pacakges():
-    # testing get_all_interface_packages with 'packages' verb
-    packages_cmd = ['ros2', 'interface', 'packages', '-a']
-    packages_result = subprocess.run(packages_cmd, stdout=subprocess.PIPE, check=True)
-    package_names = packages_result.stdout.decode().splitlines()
-    assert len(package_names) == 4
-
     # check all packages being found
     interface_packages = get_all_interface_packages()
-    assert len(interface_packages) == 26
+    assert len(interface_packages) >= 1

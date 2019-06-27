@@ -1,4 +1,4 @@
-# Copyright 2017 Open Source Robotics Foundation, Inc.
+# Copyright 2019 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -38,7 +38,6 @@ class PackagesVerb(VerbExtension):
                             help='Only list packages that generate actions')
 
     def main(self, *, args):
-        packages = set()
         if args.only_msgs:
             print_packages(get_all_message_types().keys())
         elif args.only_srvs:
@@ -47,6 +46,4 @@ class PackagesVerb(VerbExtension):
             print_packages(get_all_action_types().keys())
         else:
             all_interface_packages = get_all_interface_packages()
-            for package in all_interface_packages:
-                packages.add(package)
-            print_packages(packages)
+            print_packages(all_interface_packages)
