@@ -23,7 +23,7 @@ def print_messages():
     message_types = get_all_message_types()
     for package_name in sorted(message_types):
         for message_name in sorted(message_types[package_name]):
-            print('{package_name}/msg/{message_name}'.format_map(locals()))
+            print('    {package_name}/msg/{message_name}'.format_map(locals()))
 
 
 def print_services():
