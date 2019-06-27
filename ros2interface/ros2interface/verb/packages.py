@@ -12,19 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from ros2interface.api import get_all_action_types
+from ros2interface.api import get_all_interface_packages
 from ros2interface.api import get_all_message_types
 from ros2interface.api import get_all_service_types
-from ros2interface.api import get_all_types
 from ros2interface.verb import VerbExtension
 
 
-def printPackages(packs):
+def print_packages(packs):
     for name in sorted(packs):
         print((name))
 
 
 class PackagesVerb(VerbExtension):
-    """Output a list of packages which contain msgs and srvs."""
+    """Output a list of packages which contain msgs, srvs, and actions."""
 
     def add_arguments(self, parser, cli_name):
         parser.add_argument('-m', '--only-msgs', action='count',
@@ -33,14 +34,19 @@ class PackagesVerb(VerbExtension):
         parser.add_argument('-s', '--only-srvs', action='count',
                             help='Only list packages that generate services')
 
+        parser.add_argument('-a', '--only-actions', action='count',
+                            help='Only list packages that generate actions')
+
     def main(self, *, args):
         packages = set()
-        all_interface_types = get_all_types()
         if args.only_msgs:
-            printPackages(get_all_message_types().keys())
+            print_packages(get_all_message_types().keys())
         elif args.only_srvs:
-            printPackages(get_all_service_types().keys())
+            print_packages(get_all_service_types().keys())
+        elif args.only_actions:
+            print_packages(get_all_action_types().keys())
         else:
-            for package in all_interface_types:
+            all_interface_packages = get_all_interface_packages()
+            for package in all_interface_packages:
                 packages.add(package)
-            printPackages(packages)
+            print_packages(packages)

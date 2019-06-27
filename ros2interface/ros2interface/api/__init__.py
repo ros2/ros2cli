@@ -18,22 +18,11 @@ from ament_index_python import get_resources
 from ament_index_python import has_resource
 
 
-def get_all_types():
-    all_types = []
-    for package_name in get_resources('rosidl_interfaces'):
-        service_types = get_service_types(package_name)
-        if service_types:
-            all_types.append(package_name)
-        message_types = get_message_types(package_name)
-        if message_types:
-            all_types.append(package_name)
-        action_types = get_action_types(package_name)
-        if action_types:
-            all_types.append(package_name)
-    return all_types
+def get_all_interface_packages():
+    return get_resources('rosidl_interfaces')
 
 
-def get_types(package_name):
+def get_interface(package_name):
     if not has_resource('packages', package_name):
         raise LookupError('Unknown package {}'.format(package_name))
     try:
@@ -41,23 +30,26 @@ def get_types(package_name):
     except LookupError:
         return []
     interface_names = content.splitlines()
-    type_list = list(sorted({
-        n[0:-4]
-        for n in interface_names
-        if '_' not in n}))
-    return type_list
+    type_list = set()
+    for n in interface_names:
+        split = n.rsplit('.', 1)
+        if '_' not in split[0]:
+            type_list.add(split[0])
+    return sorted(type_list)
 
 
 def get_interface_path(parts):
     prefix_path = has_resource('packages', parts[0])
     joined = '/'.join(parts)
+    if len(parts[-1].rsplit('.', 1)) == 1:
+        joined += '.idl'
     return os.path.join(
-        prefix_path, 'share', joined + '.idl')
+        prefix_path, 'share', joined)
 
 
 def package_name_completer(**kwargs):
     """Callable returning a list of types containing messages, services, and action."""
-    return get_all_types()
+    return get_all_interface_packages()
 
 
 def type_completer(**kwargs):
@@ -148,3 +140,13 @@ def get_service_types(package_name):
         n[4:-4]
         for n in interface_names
         if n.startswith('srv/') and n[-4:] in ('.idl', '.srv')}))
+
+
+def get_message_path(package_name, message_name):
+    message_types = get_message_types(package_name)
+    if message_name not in message_types:
+        raise LookupError('Unknown message name')
+    prefix_path = has_resource('packages', package_name)
+    # TODO(dirk-thomas) this logic should come from a rosidl related package
+    return os.path.join(
+        prefix_path, 'share', package_name, 'msg', message_name + '.msg')

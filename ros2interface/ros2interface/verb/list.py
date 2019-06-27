@@ -18,32 +18,32 @@ from ros2interface.api import get_all_service_types
 from ros2interface.verb import VerbExtension
 
 
-def printMessages():
+def print_messages():
     print('Messages: ')
     message_types = get_all_message_types()
-    for package_name in sorted(message_types.keys()):
+    for package_name in sorted(message_types):
         for message_name in sorted(message_types[package_name]):
             print('{package_name}/msg/{message_name}'.format_map(locals()))
 
 
-def printServices():
+def print_services():
     print('Services: ')
     service_types = get_all_service_types()
-    for package_name in sorted(service_types.keys()):
+    for package_name in sorted(service_types):
         for service_name in sorted(service_types[package_name]):
             print('{package_name}/srv/{service_name}'.format_map(locals()))
 
 
-def printActions():
+def print_actions():
     print('Actions: ')
     action_types = get_all_action_types()
-    for package_name in sorted(action_types.keys()):
+    for package_name in sorted(action_types):
         for action_name in sorted(action_types[package_name]):
             print('{package_name}/action/{action_name}'.format_map(locals()))
 
 
 class ListVerb(VerbExtension):
-    """List all .msg and .srv types available."""
+    """List all interface types available."""
 
     def add_arguments(self, parser, cli_name):
         parser.add_argument('-m', '--only-msgs', action='count',
@@ -57,14 +57,14 @@ class ListVerb(VerbExtension):
 
     def main(self, *, args):
         if(args.only_msgs):
-            printMessages()
+            print_messages()
             return
         if(args.only_srvs):
-            printServices()
+            print_services()
             return
         if(args.only_actions):
-            printActions()
+            print_actions()
             return
-        printMessages()
-        printServices()
-        printActions()
+        print_messages()
+        print_services()
+        print_actions()
