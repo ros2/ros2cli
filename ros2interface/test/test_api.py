@@ -38,11 +38,9 @@ def test_get_interface_path():
     assert os.path.isfile(interface_path)
 
     # check for nonexistent path
-    try:
+    with pytest.raises(LookupError):
         path = ['std_msgs', 'msg', 'InvalidPath']
         get_interface_path(path)
-    except FileNotFoundError:
-        pass
 
 
 def test_get_all_interface_pacakges():

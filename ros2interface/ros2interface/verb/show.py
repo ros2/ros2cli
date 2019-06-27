@@ -34,10 +34,10 @@ class ShowVerb(VerbExtension):
                 raise ValueError()
             if not all(parts):
                 raise ValueError()
-            path = get_interface_path(parts)
+            file_path = get_interface_path(parts)
         except ValueError:
             raise RuntimeError('The passed interface type is invalid')
         except LookupError as e:
             return str(e)
-        with open(path, 'r') as h:
+        with open(file_path, 'r') as h:
             print(h.read(), end='')

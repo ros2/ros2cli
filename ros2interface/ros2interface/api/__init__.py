@@ -30,7 +30,6 @@ def get_interface(package_name):
     except LookupError:
         return []
     interface_names = content.splitlines()
-    
     return list(sorted({
         n.rsplit('.', 1)[0]
         for n in interface_names
@@ -42,8 +41,11 @@ def get_interface_path(parts):
     joined = '/'.join(parts)
     if len(parts[-1].rsplit('.', 1)) == 1:
         joined += '.idl'
-    return os.path.join(
+    interface_path = os.path.join(
         prefix_path, 'share', joined)
+    if not os.path.exists(interface_path):
+        raise LookupError('Could not find the interface! ', interface_path)
+    return interface_path
 
 
 def package_name_completer(**kwargs):

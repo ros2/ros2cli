@@ -9,7 +9,6 @@
   <maintainer email="jacob@osrfoundation.org">Jacob Perron</maintainer>
   <license>Apache License 2.0</license>
 
-
   <depend>ros2cli</depend>
 
   <exec_depend>ament_index_python</exec_depend>
@@ -21,7 +20,6 @@
   <test_depend>python3-pytest</test_depend>
   <test_depend>std_msgs</test_depend>
   <test_depend>std_srvs</test_depend>
-  
 
   <export>
     <build_type>ament_python</build_type>
