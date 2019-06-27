@@ -89,7 +89,7 @@ def get_action_types(package_name):
     return list(sorted({
         n[7:-7]
         for n in interface_names
-        if n.startswith('action/') and n[-7:] in ('.idl', '.action')}))
+        if n.startswith('action/') and n[-7:] in ('.action')}))
 
 
 def get_all_message_types():
