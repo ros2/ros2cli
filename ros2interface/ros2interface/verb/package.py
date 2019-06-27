@@ -18,7 +18,7 @@ from ros2interface.verb import VerbExtension
 
 
 class PackageVerb(VerbExtension):
-    """Output a list of available msg/srv types within one package."""
+    """Output a list of available interface types within one package."""
 
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
