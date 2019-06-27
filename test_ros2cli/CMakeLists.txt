@@ -51,7 +51,7 @@ if(BUILD_TESTING)
 
   set(generated_python_files)
   macro(tests)
-    custom_test_process_output(test_ros2action config_ros2action_test 120)
+    custom_test_process_output(test_ros2action config_ros2action_test 180)
     custom_test_process_output(test_ros2msg config_ros2msg_test 60)
   endmacro()
   file(INSTALL test/test_config.py
