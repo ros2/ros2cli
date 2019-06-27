@@ -21,9 +21,6 @@ from launch import LaunchDescription
 from launch.actions import ExecuteProcess
 from launch.actions import OpaqueFunction
 from launch.substitutions import LaunchConfiguration
-from launch.substitutions import PathJoinSubstitution
-
-from launch_ros.substitutions import FindPackage
 
 import launch_testing
 import launch_testing.asserts
@@ -35,7 +32,7 @@ from @TEST_CONFIGURATION_FILE@ import config  # noqa
 
 @launch_testing.parametrize('option', config.options)
 def generate_test_description(option, ready_fn):
-    cmd = [PathJoinSubstitution([FindPackage('ros2cli'), 'bin', 'ros2']), config.command]
+    cmd = ['ros2', config.command]
     cmd.extend(config.arguments_by_option[option])
     process_under_test = ExecuteProcess(
         cmd=cmd,
