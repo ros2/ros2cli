@@ -44,7 +44,7 @@ def get_interface_path(parts):
     interface_path = os.path.join(
         prefix_path, 'share', joined)
     if not os.path.exists(interface_path):
-        raise LookupError('Could not find the interface! ', interface_path)
+        raise LookupError('Could not find the interface {!r}'.format(interface_path))
     return interface_path
 
 
