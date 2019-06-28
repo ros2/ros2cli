@@ -31,7 +31,7 @@ def print_services():
     service_types = get_all_service_types()
     for package_name in sorted(service_types):
         for service_name in sorted(service_types[package_name]):
-            print('{package_name}/srv/{service_name}'.format_map(locals()))
+            print('    {package_name}/srv/{service_name}'.format_map(locals()))
 
 
 def print_actions():
@@ -39,7 +39,7 @@ def print_actions():
     action_types = get_all_action_types()
     for package_name in sorted(action_types):
         for action_name in sorted(action_types[package_name]):
-            print('{package_name}/action/{action_name}'.format_map(locals()))
+            print('    {package_name}/action/{action_name}'.format_map(locals()))
 
 
 class ListVerb(VerbExtension):
