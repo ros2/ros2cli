@@ -25,36 +25,6 @@ sys.path.append(os.path.dirname(__file__))
 from test_config import TestConfig  # noqa
 
 
-config = TestConfig()
-
-config.command = 'action'
-
-config.options = [
-    'info',
-    'info -t',
-    'info -c',
-    'list',
-    'list -t',
-    'list -c',
-    'send_goal',
-    'send_goal -f',
-    'show',
-]
-
-config.arguments_by_option = {
-    'info': ['info', '/fibonacci'],
-    'info -t': ['info', '-t', '/fibonacci'],
-    'info -c': ['info', '-c', '/fibonacci'],
-    'list': ['list'],
-    'list -t': ['list', '-t'],
-    'list -c': ['list', '-c'],
-    'send_goal': ['send_goal', '/fibonacci', 'action_tutorials/action/Fibonacci', '{order: 5}'],
-    'send_goal -f':
-        ['send_goal', '-f', '/fibonacci', 'action_tutorials/action/Fibonacci', '{order: 5}'],
-    'show': ['show', 'action_tutorials/action/Fibonacci'],
-}
-
-
 def get_action_server_node_action():
     return ExecuteProcess(
         cmd=[
@@ -64,18 +34,6 @@ def get_action_server_node_action():
         sigterm_timeout=LaunchConfiguration('sigterm_timeout', default=30)
     )
 
-
-config.actions_by_option = {
-    'info': [get_action_server_node_action()],
-    'info -t': [get_action_server_node_action()],
-    'info -c': [get_action_server_node_action()],
-    'list': [get_action_server_node_action()],
-    'list -t': [get_action_server_node_action()],
-    'list -c': [get_action_server_node_action()],
-    'send_goal': [get_action_server_node_action()],
-    'send_goal -f': [get_action_server_node_action()],
-    'show': [],
-}
 
 common_info_output = [
     'Action: /fibonacci',
@@ -98,25 +56,75 @@ common_send_goal_output = [
     'Goal finished with status: SUCCEEDED',
 ]
 
-config.msgs_by_option = {
-    'info': common_info_output + ['/fibonacci_action_server'],
-    'info -t':
-        common_info_output +
-        ['/fibonacci_action_server [action_tutorials/action/Fibonacci]'],
-    'info -c': common_info_output,
-    'list': ['/fibonacci'],
-    'list -t': ['/fibonacci [action_tutorials/action/Fibonacci]'],
-    'list -c': ['1'],
-    'send_goal': common_send_goal_output,
-    'send_goal -f': common_send_goal_output + [
-        'Feedback:',
-        'partial_sequence:',
-    ],
-    'show': [
-        'int32 order',
-        '---',
-        'int32[] sequence',
-        '---',
-        'int32[] partial_sequence'
-    ],
-}
+configs = [
+    TestConfig(
+        command='action',
+        arguments=['info', '/fibonacci'],
+        actions=[get_action_server_node_action()],
+        expected_output=common_info_output + ['/fibonacci_action_server'],
+    ),
+    TestConfig(
+        command='action',
+        arguments=['info', '-t', '/fibonacci'],
+        actions=[get_action_server_node_action()],
+        expected_output=common_info_output + [
+            '/fibonacci_action_server [action_tutorials/action/Fibonacci]'
+        ],
+    ),
+    TestConfig(
+        command='action',
+        arguments=['info', '-c', '/fibonacci'],
+        actions=[get_action_server_node_action()],
+        expected_output=common_info_output,
+    ),
+    TestConfig(
+        command='action',
+        arguments=['list'],
+        actions=[get_action_server_node_action()],
+        expected_output=['/fibonacci'],
+    ),
+    TestConfig(
+        command='action',
+        arguments=['list', '-t'],
+        actions=[get_action_server_node_action()],
+        expected_output=['/fibonacci [action_tutorials/action/Fibonacci]'],
+    ),
+    TestConfig(
+        command='action',
+        arguments=['list', '-c'],
+        actions=[get_action_server_node_action()],
+        expected_output=['1'],
+    ),
+    TestConfig(
+        command='action',
+        arguments=['send_goal', '/fibonacci', 'action_tutorials/action/Fibonacci', '{order: 5}'],
+        actions=[get_action_server_node_action()],
+        expected_output=common_send_goal_output,
+    ),
+    TestConfig(
+        command='action',
+        arguments=[
+            'send_goal',
+            '-f',
+            '/fibonacci',
+            'action_tutorials/action/Fibonacci',
+            '{order: 5}'
+        ],
+        actions=[get_action_server_node_action()],
+        expected_output=common_send_goal_output + [
+            'Feedback:',
+            'partial_sequence:',
+        ],
+    ),
+    TestConfig(
+        command='action',
+        arguments=['show', 'action_tutorials/action/Fibonacci'],
+        expected_output=[
+            'int32 order',
+            '---',
+            'int32[] sequence',
+            '---',
+            'int32[] partial_sequence'
+        ],
+    ),
+]

@@ -19,45 +19,36 @@ sys.path.append(os.path.dirname(__file__))
 
 from test_config import TestConfig  # noqa
 
-
-config = TestConfig()
-
-config.command = 'msg'
-
-config.options = [
-    'list',
-    'package',
-    'packages',
-    'show',
-    'show_old_style',
-]
-
-config.arguments_by_option = {
-    'list': ['list'],
-    'package': ['package', 'std_msgs'],
-    'packages': ['packages'],
-    'show': ['show', 'std_msgs/msg/String'],
-    'show_old_style': ['show', 'std_msgs/String'],
-}
-
-config.actions_by_option = {
-    'list': [],
-    'package': [],
-    'packages': [],
-    'show': [],
-    'show_old_style': [],
-}
-
 some_messages_from_std_msgs = [
     'std_msgs/msg/Bool',
     'std_msgs/msg/Float32',
     'std_msgs/msg/Float64',
 ]
 
-config.msgs_by_option = {
-    'list': some_messages_from_std_msgs,
-    'package': some_messages_from_std_msgs,
-    'packages': ['std_msgs'],
-    'show': ['string data'],
-    'show_old_style': ['string data'],
-}
+configs = [
+    TestConfig(
+        command='msg',
+        arguments=['list'],
+        expected_output=some_messages_from_std_msgs,
+    ),
+    TestConfig(
+        command='msg',
+        arguments=['package', 'std_msgs'],
+        expected_output=some_messages_from_std_msgs,
+    ),
+    TestConfig(
+        command='msg',
+        arguments=['packages'],
+        expected_output=['std_msgs'],
+    ),
+    TestConfig(
+        command='msg',
+        arguments=['show', 'std_msgs/msg/String'],
+        expected_output=['string data'],
+    ),
+    TestConfig(
+        command='msg',
+        arguments=['show', 'std_msgs/msg/String'],
+        expected_output=['string data'],
+    ),
+]

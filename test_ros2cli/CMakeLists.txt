@@ -33,7 +33,8 @@ if(BUILD_TESTING)
       OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${test_name}${target_suffix}_$<CONFIG>.py"
       INPUT "${CMAKE_CURRENT_BINARY_DIR}/${test_name}${target_suffix}.py.genexp"
     )
-    file(INSTALL test/${config_file_name}.py
+    install(
+      FILES test/${config_file_name}.py
       DESTINATION "${CMAKE_CURRENT_BINARY_DIR}"
     )
     add_ros_test(
@@ -54,7 +55,8 @@ if(BUILD_TESTING)
     custom_test_process_output(test_ros2action config_ros2action_test 180)
     custom_test_process_output(test_ros2msg config_ros2msg_test 60)
   endmacro()
-  file(INSTALL test/test_config.py
+  install(
+    FILES test/test_config.py
     DESTINATION "${CMAKE_CURRENT_BINARY_DIR}"
   )
 

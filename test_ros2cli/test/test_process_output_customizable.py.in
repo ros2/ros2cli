@@ -27,20 +27,20 @@ import launch_testing.asserts
 
 sys.path.append(os.path.dirname(__file__))
 
-from @TEST_CONFIGURATION_FILE@ import config  # noqa
+from @TEST_CONFIGURATION_FILE@ import configs  # noqa
 
 
-@launch_testing.parametrize('option', config.options)
-def generate_test_description(option, ready_fn):
+@launch_testing.parametrize('config', configs)
+def generate_test_description(config, ready_fn):
     cmd = ['ros2', config.command]
-    cmd.extend(config.arguments_by_option[option])
+    cmd.extend(config.arguments)
     process_under_test = ExecuteProcess(
         cmd=cmd,
         name='@TEST_NAME@',
         output='screen',
         sigterm_timeout=LaunchConfiguration('sigterm_timeout', default=60)
     )
-    actions = config.actions_by_option[option]
+    actions = config.actions
     actions.append(process_under_test)
     launch_description = LaunchDescription(
         actions
@@ -48,7 +48,7 @@ def generate_test_description(option, ready_fn):
     launch_description.add_action(
         OpaqueFunction(function=lambda context: ready_fn())
     )
-    msgs = config.msgs_by_option[option]
+    msgs = config.expected_output
     return launch_description, locals()
 
 

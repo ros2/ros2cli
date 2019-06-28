@@ -12,26 +12,51 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from typing import Iterable
+from typing import Optional
+
+from launch import Action
+from launch import SomeSubstitutionsType
+from launch.utilities import normalize_to_list_of_substitutions
+
 
 class TestConfig():
-    """A class for documenting how to configure `test_process_output_customizable.py.in`."""
+    """A class for configuring the `test_process_output_customizable.py.in` test."""
 
-    __slots__ = (
-        # `ros2cli` command being tested
-        'command',
-        # A list of options for parametrizing the test.
-        # Each element is used as a key for accessing the other dicts.
-        # Usually, it's a string containing the verb and arguments being tested.
-        'options',
-        # A dict, where the keys are the options and
-        # the values are a list specifing the verb and remaining arguments.
-        # e.g.: for `ros2 topic list -t` the list should be `['list', '-t']`.
-        'arguments_by_option',
-        # A dict, where the keys are the options and the values are a list of actions.
-        # The actions are launched before the `ros2cli` command is executed.
-        'actions_by_option',
-        # A dict, where the keys are the options and the values are a list of strings.
-        # After the `ros2cli` command finishes, all the strings are checked to be in its
-        # stdout.
-        'msgs_by_option',
-    )
+    def __init__(
+        self,
+        *,
+        command: str,
+        arguments: Iterable[SomeSubstitutionsType],
+        actions: Iterable[Action] = [],
+        expected_output: Iterable[str] = [],
+        description: Optional[str] = None
+    ):
+        """
+        Constructor.
+
+        :param command: `ros2` command to be tested.
+        :param description: description of the test being done. command to be tested.
+            It usually contains the verb and arguments being tested.
+        :param arguments: A list of `SomeSubstitutionsType`, which are passed
+            as arguments to the command.
+        :param actions: A list of actions, which are launched before the `ros2` command.
+        :param expected_output: A list of str, which are checked to be contained in the output
+            of the `ros2` command.
+        """
+        self.command = command
+        self.arguments = [normalize_to_list_of_substitutions(arg) for arg in arguments]
+        self.actions = actions
+        self.expected_output = expected_output
+        self.description = description
+
+        def describe(some_subs: SomeSubstitutionsType):
+            return ''.join([sub.describe() for sub in some_subs])
+        if description is None:
+            self.description = 'ros2 {} {}'.format(
+                command,
+                ' '.join([describe(some_subs) for some_subs in self.arguments]))
+
+    def __repr__(self):
+        """Return the description."""
+        return self.description
