@@ -40,6 +40,7 @@ class CreateVerb(VerbExtension):
             'package_name',
             help='The package name')
         parser.add_argument(
+            '--package-format',
             '--package_format',
             type=int,
             default=3,
