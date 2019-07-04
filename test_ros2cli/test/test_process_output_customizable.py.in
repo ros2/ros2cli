@@ -20,6 +20,7 @@ import unittest
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess
 from launch.actions import OpaqueFunction
+from launch.actions import TimerAction
 from launch.substitutions import LaunchConfiguration
 
 import launch_testing
@@ -40,11 +41,16 @@ def generate_test_description(config, ready_fn):
         output='screen',
         sigterm_timeout=LaunchConfiguration('sigterm_timeout', default=60)
     )
+    if '@RMW_IMPLEMENTATION@' == 'rmw_connext_cpp':
+        delay = @DELAY@
+    else:
+        delay = 0.0
     actions = config.actions
-    actions.append(process_under_test)
-    launch_description = LaunchDescription(
-        actions
-    )
+    actions.append(TimerAction(
+        period=delay,
+        actions=[process_under_test],
+    ))
+    launch_description = LaunchDescription(actions)
     launch_description.add_action(
         OpaqueFunction(function=lambda context: ready_fn())
     )

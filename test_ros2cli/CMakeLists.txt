@@ -19,10 +19,12 @@ if(BUILD_TESTING)
   find_package(ros_testing REQUIRED)
   find_package(rmw_implementation_cmake REQUIRED)
 
-  macro(custom_test_process_output test_name config_file_name timeout)
+  macro(custom_test_process_output test_name config_file_name timeout delay)
     # Set variables for configuring the test files.
     set(TEST_NAME ${test_name})  # test name used in the test cases
     set(TEST_CONFIGURATION_FILE ${config_file_name})  # config file to use
+    set(DELAY ${delay})  # Delay between the actions are launch and the ros2 command is run
+    set(RMW_IMPLEMENTATION ${rmw_implementation})
 
     configure_file(
       test/test_process_output_customizable.py.in
@@ -52,8 +54,8 @@ if(BUILD_TESTING)
 
   set(generated_python_files)
   macro(tests)
-    custom_test_process_output(test_ros2action config_ros2action_test 180)
-    custom_test_process_output(test_ros2msg config_ros2msg_test 60)
+    custom_test_process_output(test_ros2action config_ros2action_test 180 5.0)
+    custom_test_process_output(test_ros2msg config_ros2msg_test 60 0.0)
   endmacro()
   install(
     FILES test/test_config.py
