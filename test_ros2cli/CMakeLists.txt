@@ -55,6 +55,7 @@ if(BUILD_TESTING)
   macro(tests)
     set(TEST_ROS2ACTION_DELAY 0.0)
     if("${rmw_implementation}" STREQUAL "rmw_connext_cpp")
+      # Connext startup is too slow. It needs a few seconds until discovery starts working.
       set(TEST_ROS2ACTION_DELAY 5.0)
     endif()
     custom_test_process_output(test_ros2action config_ros2action_test 180 ${TEST_ROS2ACTION_DELAY})
