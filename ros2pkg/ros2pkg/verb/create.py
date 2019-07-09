@@ -28,6 +28,7 @@ from ros2pkg.api.create import populate_ament_cmake
 from ros2pkg.api.create import populate_cmake
 from ros2pkg.api.create import populate_cpp_library
 from ros2pkg.api.create import populate_cpp_node
+from ros2pkg.api.create import populate_ament_python
 
 from ros2pkg.verb import VerbExtension
 
@@ -61,7 +62,7 @@ class CreateVerb(VerbExtension):
         parser.add_argument(
             '--build-type',
             default='ament_cmake',
-            choices=['cmake', 'ament_cmake'],
+            choices=['cmake', 'ament_cmake', 'ament_python'],
             help='The build type to process the package with')
         parser.add_argument(
             '--dependencies',
@@ -80,6 +81,9 @@ class CreateVerb(VerbExtension):
         parser.add_argument(
             '--cpp-library-name',
             help='name of the empty cpp library')
+        parser.add_argument(
+            '--python-node-name',
+            help='name of the empty python executable')
 
     def main(self, *, args):
         maintainer = Person(args.maintainer_name)
@@ -148,6 +152,8 @@ class CreateVerb(VerbExtension):
             print('cpp_node_name:', cpp_node_name)
         if args.cpp_library_name:
             print('cpp_library_name:', args.cpp_library_name)
+        if args.python_node_name:
+            print('python_node_name:', args.python_node_name)
 
         package_directory, source_directory, include_directory = \
             create_package_environment(package, args.destination_directory)
@@ -159,6 +165,9 @@ class CreateVerb(VerbExtension):
 
         if args.build_type == 'ament_cmake':
             populate_ament_cmake(package, package_directory, cpp_node_name, args.cpp_library_name)
+
+        if args.build_type == 'ament_python':
+            populate_ament_python(package, package_directory, args.python_node_name)
 
         if cpp_node_name:
             if not source_directory:
