@@ -41,13 +41,9 @@ def generate_test_description(config, ready_fn):
         output='screen',
         sigterm_timeout=LaunchConfiguration('sigterm_timeout', default=60)
     )
-    if '@RMW_IMPLEMENTATION@' == 'rmw_connext_cpp':
-        delay = @DELAY@
-    else:
-        delay = 0.0
     actions = config.actions
     actions.append(TimerAction(
-        period=delay,
+        period=@DELAY@,
         actions=[process_under_test],
     ))
     launch_description = LaunchDescription(actions)

@@ -24,7 +24,6 @@ if(BUILD_TESTING)
     set(TEST_NAME ${test_name})  # test name used in the test cases
     set(TEST_CONFIGURATION_FILE ${config_file_name})  # config file to use
     set(DELAY ${delay})  # Delay between the actions are launch and the ros2 command is run
-    set(RMW_IMPLEMENTATION ${rmw_implementation})
 
     configure_file(
       test/test_process_output_customizable.py.in
@@ -54,7 +53,11 @@ if(BUILD_TESTING)
 
   set(generated_python_files)
   macro(tests)
-    custom_test_process_output(test_ros2action config_ros2action_test 180 5.0)
+    set(TEST_ROS2ACTION_DELAY 0.0)
+    if("${rmw_implementation}" STREQUAL "rmw_connext_cpp")
+      set(TEST_ROS2ACTION_DELAY 5.0)
+    endif()
+    custom_test_process_output(test_ros2action config_ros2action_test 180 ${TEST_ROS2ACTION_DELAY})
     custom_test_process_output(test_ros2msg config_ros2msg_test 60 0.0)
   endmacro()
   install(
