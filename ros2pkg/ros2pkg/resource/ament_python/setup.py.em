@@ -11,9 +11,9 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
     ],
-    install_requires=['setuptools' @[for dep in dependencies]@ ', @dep'@[end for]@ ],
+    install_requires=['setuptools'@[for dep in dependencies]@ , '@dep'@[end for]@ ],
 @[if test_dependencies]@
-    test_requires=[@[for dep in test_dependencies]@ '@dep',@[end for]@ ],
+    test_requires=[@[for dep in test_dependencies]@ '@dep', @[end for]@ ],
 @[end if]@
     zip_safe=True,
     maintainer='@maintainer_name',
