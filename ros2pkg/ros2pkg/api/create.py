@@ -110,7 +110,10 @@ def populate_ament_python(package, package_directory, python_node_name):
         'maintainer_email': package.maintainers[0].email,
         'maintainer_name': package.maintainers[0].name,
         'package_license': package.licenses[0],
-        'node_name': python_node_name
+        'node_name': python_node_name,
+        'dependencies': package.build_depends,
+        'test_dependencies': package.test_depends,
+        'package_description': package.description
         }
 
     _create_template_file('ament_python/setup.py.em',
