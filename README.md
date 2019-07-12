@@ -19,8 +19,10 @@ This [cheat sheet](https://github.com/artivis/ros2_cheats_sheet/blob/master/cli/
 ## Add New Verbs
 
 You can use [Python entry points](https://setuptools.readthedocs.io/en/latest/pkg_resources.html#entry-points) to create new commands and verbs for the CLI.
+
 [Here's an example](https://github.com/ros2/ros2cli/pull/273/files).
-And [here's and example](https://github.com/artivis/ros2hellocli) for how to add a command.
+
+And [here's an example](https://github.com/artivis/ros2hellocli) for how to add a command.
 
 ## Background
 
