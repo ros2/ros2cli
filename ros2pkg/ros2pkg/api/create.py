@@ -104,6 +104,7 @@ def create_package_environment(package, destination_directory):
 
     return package_directory, source_directory, include_directory
 
+
 def populate_ament_python(package, package_directory, python_node_name):
     setup_py_config = {
         'project_name': package.name,
@@ -114,45 +115,39 @@ def populate_ament_python(package, package_directory, python_node_name):
         'dependencies': package.build_depends,
         'test_dependencies': package.test_depends,
         'package_description': package.description
-        }
+    }
 
     _create_template_file('ament_python/setup.py.em',
                           package_directory,
                           'setup.py',
-                          setup_py_config
-    )
+                          setup_py_config)
 
-    setup_cfg_config = {
-        'project_name': package.name
-        }
+    setup_cfg_config = {'project_name': package.name}
     _create_template_file('ament_python/setup.cfg.em',
                           package_directory,
                           'setup.cfg',
-                          setup_cfg_config
-    )
-    
+                          setup_cfg_config)
+
     resource_directory = _create_folder('resource', package_directory)
     _create_template_file('ament_python/resource_file.em',
                           resource_directory,
                           package.name,
-                          {}
-    )
+                          {})
 
     source_directory = _create_folder(package.name, package_directory)
     _create_template_file('ament_python/init.py.em',
                           source_directory,
                           '__init__.py',
-                          {}
-    )
+                          {})
 
     main_py_config = {
         'project_name': package.name
-        }
+    }
     _create_template_file('ament_python/main.py.em',
                           source_directory,
                           python_node_name + '.py',
-                          main_py_config
-    )
+                          main_py_config)
+
 
 def populate_cmake(package, package_directory, cpp_node_name, cpp_library_name):
     cmakelists_config = {

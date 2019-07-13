@@ -113,7 +113,8 @@ class CreateVerb(VerbExtension):
                 cpp_node_name = args.cpp_node_name
                 if args.cpp_node_name == args.cpp_library_name:
                     cpp_node_name = args.cpp_node_name + '_node'
-                    print('[WARNING] node name can not be equal to the library name', file=sys.stderr)
+                    print('[WARNING] node name can not be equal to the library name',
+                          file=sys.stderr)
                     print('[WARNING] renaming node to %s' % cpp_node_name, file=sys.stderr)
 
         python_node_name = None
@@ -122,7 +123,6 @@ class CreateVerb(VerbExtension):
                 python_node_name = args.python_node_name
             else:
                 python_node_name = args.package_name + '_node'
-        
 
         buildtool_depends = args.build_type
         if args.build_type == 'ament_cmake' and args.cpp_library_name:
