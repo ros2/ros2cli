@@ -13,11 +13,21 @@
   <test_depend>action_tutorials_cpp</test_depend>
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
+  <test_depend>demo_nodes_py</test_depend>
+  <test_depend>geometry_msgs</test_depend>
   <test_depend>ros_testing</test_depend>
   <test_depend>ros2action</test_depend>
   <test_depend>ros2cli</test_depend>
+  <test_depend>ros2interface</test_depend>
   <test_depend>ros2msg</test_depend>
+  <test_depend>ros2node</test_depend>
+  <test_depend>ros2param</test_depend>
+  <test_depend>ros2service</test_depend>
+  <test_depend>ros2srv</test_depend>
+  <test_depend>ros2topic</test_depend>
   <test_depend>std_msgs</test_depend>
+  <test_depend>std_srvs</test_depend>
+  <test_depend>test_msgs</test_depend>
 
   <export>
     <build_type>ament_cmake</build_type>

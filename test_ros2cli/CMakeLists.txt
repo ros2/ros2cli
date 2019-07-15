@@ -19,14 +19,35 @@ if(BUILD_TESTING)
   find_package(ros_testing REQUIRED)
   find_package(rmw_implementation_cmake REQUIRED)
 
-  macro(custom_test_process_output test_name config_file_name timeout delay)
+  macro(add_custom_cli_test test_name)
     # Set variables for configuring the test files.
-    set(TEST_NAME ${test_name})  # test name used in the test cases
-    set(TEST_CONFIGURATION_FILE ${config_file_name})  # config file to use
-    set(DELAY ${delay})  # Delay between the actions are launch and the ros2 command is run
+    cmake_parse_arguments(TEST "" "CONFIG_MODULE;SETUP_DELAY;TIMEOUT" "" ${ARGN})
+    # Name for test cases
+    set(TEST_NAME ${test_name})
+    # RMW implementation for test cases
+    set(TEST_RMW_IMPLEMENTATION ${rmw_implementation})
+    # Module carrying test configuration
+    if(NOT DEFINED TEST_CONFIG_MODULE)
+      set(TEST_CONFIG_MODULE ${test_name}_config)
+    endif()
+    # Setup delay for test fixture actions
+    if(NOT DEFINED TEST_SETUP_DELAY)
+      set(TEST_SETUP_DELAY 2.0)
+      if("${TEST_RMW_IMPLEMENTATION}" STREQUAL "rmw_connext_cpp")
+        # Connext startup is too slow. It needs a few extra seconds till
+        # discovery completes.
+        set(TEST_SETUP_DELAY 5.0)
+      endif()
+    endif()
+    # Timeout for test itself
+    if(NOT DEFINED TEST_TIMEOUT)
+      set(TEST_TIMEOUT 0)
+    endif()
+
+
 
     configure_file(
-      test/test_process_output_customizable.py.in
+      test/test_cli.py.in
       ${test_name}${target_suffix}.py.genexp
       @ONLY
     )
@@ -35,7 +56,7 @@ if(BUILD_TESTING)
       INPUT "${CMAKE_CURRENT_BINARY_DIR}/${test_name}${target_suffix}.py.genexp"
     )
     install(
-      FILES test/${config_file_name}.py
+      FILES test/${TEST_CONFIG_MODULE}.py
       DESTINATION "${CMAKE_CURRENT_BINARY_DIR}"
     )
     add_ros_test(
@@ -43,7 +64,7 @@ if(BUILD_TESTING)
       TARGET ${test_name}${target_suffix}
       ENV RMW_IMPLEMENTATION=${rmw_implementation}
       APPEND_LIBRARY_DIRS "${append_library_dirs}"
-      TIMEOUT ${timeout}
+      TIMEOUT ${TEST_TIMEOUT}
     )
     list(
       APPEND generated_python_files
@@ -52,17 +73,40 @@ if(BUILD_TESTING)
   endmacro()
 
   set(generated_python_files)
-  macro(tests)
-    set(TEST_ROS2ACTION_DELAY 0.0)
-    if("${rmw_implementation}" STREQUAL "rmw_connext_cpp")
-      # Connext startup is too slow. It needs a few seconds until discovery starts working.
-      set(TEST_ROS2ACTION_DELAY 5.0)
-    endif()
-    custom_test_process_output(test_ros2action config_ros2action_test 180 ${TEST_ROS2ACTION_DELAY})
-    custom_test_process_output(test_ros2msg config_ros2msg_test 60 0.0)
+  macro(custom_cli_tests)
+    add_custom_cli_test(
+      test_ros2action
+      CONFIG_MODULE ros2action_test_configuration
+      TIMEOUT 300)
+    add_custom_cli_test(
+      test_ros2topic
+      CONFIG_MODULE ros2topic_test_configuration
+      TIMEOUT 300)
+    add_custom_cli_test(
+      test_ros2service
+      CONFIG_MODULE ros2service_test_configuration
+      TIMEOUT 300)
+    add_custom_cli_test(
+      test_ros2node
+      CONFIG_MODULE ros2node_test_configuration
+      TIMEOUT 240)
+    add_custom_cli_test(
+      test_ros2msg
+      CONFIG_MODULE ros2msg_test_configuration
+      TIMEOUT 240)
+    add_custom_cli_test(
+      test_ros2srv
+      CONFIG_MODULE ros2srv_test_configuration
+      TIMEOUT 240)
+    add_custom_cli_test(
+      test_ros2interface
+      CONFIG_MODULE ros2interface_test_configuration
+      TIMEOUT 240)
   endmacro()
   install(
-    FILES test/test_config.py
+    FILES
+      test/cli_test_configuration.py
+      test/fixture_actions.py
     DESTINATION "${CMAKE_CURRENT_BINARY_DIR}"
   )
 
@@ -71,7 +115,7 @@ if(BUILD_TESTING)
     set(append_library_dirs "${append_library_dirs}/$<CONFIG>")
   endif()
 
-  call_for_each_rmw_implementation(tests)
+  call_for_each_rmw_implementation(custom_cli_tests)
 
   find_package(ament_cmake_flake8 REQUIRED)
   ament_flake8(
