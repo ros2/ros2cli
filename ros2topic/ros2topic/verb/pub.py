@@ -17,6 +17,7 @@ import time
 import rclpy
 from ros2cli.node import NODE_NAME_PREFIX
 from ros2topic.api import import_message_type
+from ros2topic.api import TopicMessagePrototypeCompleter
 from ros2topic.api import TopicNameCompleter
 from ros2topic.api import TopicTypeCompleter
 from ros2topic.verb import VerbExtension
@@ -38,11 +39,13 @@ class PubVerb(VerbExtension):
             help="Type of the ROS message (e.g. 'std_msgs/String')")
         arg.completer = TopicTypeCompleter(
             topic_name_key='topic_name')
-        parser.add_argument(
+        arg = parser.add_argument(
             'values', nargs='?', default='{}',
             help='Values to fill the message with in YAML format '
                  '(e.g. "data: Hello World"), '
                  'otherwise the message will be published with default values')
+        arg.completer = TopicMessagePrototypeCompleter(
+            topic_type_key='message_type')
         parser.add_argument(
             '-r', '--rate', metavar='N', type=float, default=1.0,
             help='Publishing rate in Hz (default: 1)')
