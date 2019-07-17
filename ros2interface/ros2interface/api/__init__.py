@@ -17,6 +17,10 @@ from ament_index_python import get_resource
 from ament_index_python import get_resources
 from ament_index_python import has_resource
 
+from rosidl_parser.definition import NamespacedType
+from rosidl_runtime_py.convert import message_to_yaml
+from rosidl_runtime_py.import_message import import_message_from_namespaced_type
+
 
 def get_all_interface_packages():
     return get_resources('rosidl_interfaces')
@@ -151,3 +155,28 @@ def get_message_path(package_name, message_name):
     # TODO(dirk-thomas) this logic should come from a rosidl related package
     return os.path.join(
         prefix_path, 'share', package_name, 'msg', message_name + '.msg')
+
+
+def get_interface_instance(package_name, interface_type, interface_name):
+    MODE_MSG = 'msg'
+    MODE_SRV = 'srv'
+    MODE_ACT = 'action'
+
+    interface = import_message_from_namespaced_type(
+        NamespacedType([package_name, interface_type], interface_name))
+
+    if (interface_type == MODE_SRV):
+        instance = interface.Request()
+    elif (interface_type == MODE_ACT):
+        instance = interface.Goal()
+    elif (interface_type == MODE_MSG):
+        instance = interface()
+    else:
+        raise RuntimeError('Unknown interface type')
+
+    return instance
+
+
+def interface_to_yaml(package_name, interface_type, interface_name):
+    instance = get_interface_instance(package_name, interface_type, interface_name)
+    return message_to_yaml(instance)
