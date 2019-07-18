@@ -1,7 +1,6 @@
-import rclpy
-
 def main():
-    print("Hi from @project_name.")
+    print('Hi from @project_name.')
 
-if __name__ == "__main__":
+
+if __name__ == '__main__':
     main()

@@ -112,7 +112,6 @@ def populate_ament_python(package, package_directory, python_node_name):
         'maintainer_name': package.maintainers[0].name,
         'package_license': package.licenses[0],
         'node_name': python_node_name,
-        'dependencies': package.build_depends,
         'test_dependencies': package.test_depends,
         'package_description': package.description
     }
