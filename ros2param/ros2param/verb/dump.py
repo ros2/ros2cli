@@ -110,10 +110,8 @@ class DumpVerb(VerbExtension):
                         yaml_output[node_name.name]['ros__parameters'], param_name, pval)
             else:
                 e = future.exception()
-                print(
-                    'Exception while calling service of node '
-                    "'{node_name.full_name}': {e}".format_map(locals()),
-                    file=sys.stderr)
+                raise RuntimeError('Exception while calling service of node '
+                                   "'{node_name.full_name}': {e}".format_map(locals()))
 
             print('Saving to: ', os.path.join(args.output_dir, node_name.name + ".yaml"))
             with open(os.path.join(args.output_dir, node_name.name + ".yaml"), "w") as yaml_file:
