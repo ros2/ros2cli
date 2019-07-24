@@ -91,5 +91,4 @@ class TestVerbDump(unittest.TestCase):
 
             # Compare generated parameter file against expected
             generated_param_file = os.path.join(tmpdir, self.node.get_name() + ".yaml")
-            assert (open(generated_param_file, 'r').read() ==
-                    EXPECTED_PARAMETER_FILE)
+            assert (open(generated_param_file, 'r').read() == EXPECTED_PARAMETER_FILE)
