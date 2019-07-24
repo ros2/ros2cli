@@ -44,7 +44,7 @@ class DumpVerb(VerbExtension):
             '--include-hidden-nodes', action='store_true',
             help='Consider hidden nodes as well')
         parser.add_argument(
-            '--file-path',
+            '--output-dir',
             default='.',
             help='The absolute path were to save the generated file')
 
@@ -82,7 +82,7 @@ class DumpVerb(VerbExtension):
             if absolute_node_name not in [n.full_name for n in node_names]:
                 return 'Node not found'
 
-        if not os.path.isdir(args.file_path):
+        if not os.path.isdir(args.output_dir):
             return 'Invalid output directory'
 
         with DirectNode(args) as node:
@@ -117,6 +117,6 @@ class DumpVerb(VerbExtension):
                     "'{node_name.full_name}': {e}".format_map(locals()),
                     file=sys.stderr)
 
-            print('Saving to: ', os.path.join(args.file_path, node_name.name + ".yaml"))
-            with open(os.path.join(args.file_path, node_name.name + ".yaml"), "w") as yaml_file:
+            print('Saving to: ', os.path.join(args.output_dir, node_name.name + ".yaml"))
+            with open(os.path.join(args.output_dir, node_name.name + ".yaml"), "w") as yaml_file:
                 yaml.dump(yaml_output, yaml_file, default_flow_style=False)

@@ -81,13 +81,13 @@ class TestVerbDump(unittest.TestCase):
 
     def test_verb_dump_invalid_path(self):
         assert cli.main(
-                argv=['param', 'dump', 'test_node', '--file-path', 'invalid_path']) \
+                argv=['param', 'dump', 'test_node', '--output-dir', 'invalid_path']) \
                     == 'Invalid output directory'
 
     def test_verb_dump(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             assert cli.main(
-                    argv=['param', 'dump', 'test_node', '--file-path', tmpdir]) is None
+                    argv=['param', 'dump', 'test_node', '--output-dir', tmpdir]) is None
 
             # Compare generated parameter file against expected
             generated_param_file = os.path.join(tmpdir, self.node.get_name() + ".yaml")
