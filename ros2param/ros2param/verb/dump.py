@@ -16,7 +16,6 @@ import os
 import sys
 import yaml
 
-from rcl_interfaces.msg import ParameterType
 from rcl_interfaces.srv import ListParameters
 import rclpy
 from rclpy.parameter import PARAMETER_SEPARATOR_STRING
@@ -28,6 +27,7 @@ from ros2node.api import get_node_names
 from ros2node.api import NodeNameCompleter
 from ros2node.api import parse_node_name
 from ros2param.api import call_get_parameters
+from ros2param.api import get_value
 from ros2param.verb import VerbExtension
 
 
@@ -59,31 +59,7 @@ class DumpVerb(VerbExtension):
             return '# Parameter not set'
 
         # extract type specific value
-        pvalue = response.values[0]
-        if pvalue.type == ParameterType.PARAMETER_BOOL:
-            value = pvalue.bool_value
-        elif pvalue.type == ParameterType.PARAMETER_INTEGER:
-            value = pvalue.integer_value
-        elif pvalue.type == ParameterType.PARAMETER_DOUBLE:
-            value = pvalue.double_value
-        elif pvalue.type == ParameterType.PARAMETER_STRING:
-            value = pvalue.string_value
-        elif pvalue.type == ParameterType.PARAMETER_BYTE_ARRAY:
-            value = pvalue.byte_array_value
-        elif pvalue.type == ParameterType.PARAMETER_BOOL_ARRAY:
-            value = pvalue.bool_array_value
-        elif pvalue.type == ParameterType.PARAMETER_INTEGER_ARRAY:
-            value = pvalue.integer_array_value
-        elif pvalue.type == ParameterType.PARAMETER_DOUBLE_ARRAY:
-            value = pvalue.double_array_value
-        elif pvalue.type == ParameterType.PARAMETER_STRING_ARRAY:
-            value = pvalue.string_array_value
-        elif pvalue.type == ParameterType.PARAMETER_NOT_SET:
-            value = None
-        else:
-            value = None
-
-        return value
+        return get_value(parameter_value=response.values[0])
 
     def insert_dict(self, dict, key, value):
         split = key.split(PARAMETER_SEPARATOR_STRING, 1)
