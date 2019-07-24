@@ -82,7 +82,7 @@ class TestVerbDump(unittest.TestCase):
     def test_verb_dump_invalid_path(self):
         assert cli.main(
                 argv=['param', 'dump', 'test_node', '--output-dir', 'invalid_path']) \
-                    == 'Invalid output directory'
+                    == "'invalid_path' is not a valid directory."
 
     def test_verb_dump(self):
         with tempfile.TemporaryDirectory() as tmpdir:

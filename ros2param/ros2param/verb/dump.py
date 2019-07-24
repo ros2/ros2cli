@@ -81,7 +81,8 @@ class DumpVerb(VerbExtension):
                 return 'Node not found'
 
         if not os.path.isdir(args.output_dir):
-            return 'Invalid output directory'
+            raise RuntimeError(
+                "'{args.output_dir}' is not a valid directory.".format_map(locals()))
 
         with DirectNode(args) as node:
             # create client
@@ -91,7 +92,7 @@ class DumpVerb(VerbExtension):
             client.wait_for_service()
 
             if not client.service_is_ready():
-                return 'Something went wrong'
+                raise RuntimeError("Could not reach service '{service_name}'".format_map(locals()))
 
             request = ListParameters.Request()
             future = client.call_async(request)
