@@ -46,6 +46,9 @@ class DumpVerb(VerbExtension):
             '--output-dir',
             default='.',
             help='The absolute path were to save the generated file')
+        parser.add_argument(
+            '--print', action='store_true',
+            help='Print generated file in terminal rather than saving a file.')
 
     @staticmethod
     def get_parameter_value(node, node_name, param):
@@ -113,6 +116,10 @@ class DumpVerb(VerbExtension):
                 e = future.exception()
                 raise RuntimeError('Exception while calling service of node '
                                    "'{node_name.full_name}': {e}".format_map(locals()))
+
+            if args.print:
+                print(yaml.dump(yaml_output, default_flow_style=False))
+                return
 
             print('Saving to: ', os.path.join(args.output_dir, node_name.name + ".yaml"))
             with open(os.path.join(args.output_dir, node_name.name + ".yaml"), "w") as yaml_file:

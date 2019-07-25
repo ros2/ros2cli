@@ -16,7 +16,9 @@ import os
 import tempfile
 import threading
 
+from io import StringIO
 import unittest
+from unittest.mock import patch
 
 import rclpy
 
@@ -92,3 +94,26 @@ class TestVerbDump(unittest.TestCase):
             # Compare generated parameter file against expected
             generated_param_file = os.path.join(tmpdir, self.node.get_name() + ".yaml")
             assert (open(generated_param_file, 'r').read() == EXPECTED_PARAMETER_FILE)
+
+    def test_verb_dump_print(self):
+        with patch('sys.stdout', new=StringIO()) as fake_stdout:
+            assert cli.main(
+                argv=['param', 'dump', 'test_node', '--print']) is None
+
+            # Compare generated stdout against expected
+            assert fake_stdout.getvalue().strip() == EXPECTED_PARAMETER_FILE[:-1]
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            assert cli.main(
+                argv=['param', 'dump', 'test_node', '--output-dir', tmpdir, '--print']) is None
+
+            not_generated_param_file = os.path.join(tmpdir, self.node.get_name() + ".yaml")
+
+            with self.assertRaises(OSError) as context:
+                open(not_generated_param_file, 'r')
+
+            # Make sure the file was not create, thus '--print' did preempted
+            expected_err = '[Errno 2] No such file or directory: ' \
+                           "'{not_generated_param_file}'".format_map(locals())
+
+            assert expected_err == str(context.exception)
