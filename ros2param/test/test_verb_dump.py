@@ -117,7 +117,7 @@ class TestVerbDump(unittest.TestCase):
             with self.assertRaises(OSError) as context:
                 open(not_generated_param_file, 'r')
 
-            # Make sure the file was not create, thus '--print' did preempted
+            # Make sure the file was not create, thus '--print' did preempt
             expected_err = '[Errno 2] No such file or directory: ' \
                            "'{not_generated_param_file}'".format_map(locals())
 
