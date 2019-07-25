@@ -77,6 +77,16 @@ class TestVerbDump(unittest.TestCase):
         rclpy.shutdown(context=cls.context)
         cls.exec_thread.join()
 
+    def _output_file(self):
+
+        ns = self.node.get_namespace()
+        name = self.node.get_name()
+        if '/' == ns:
+            fqn = ns + name
+        else:
+            fqn = ns + '/' + name
+        return fqn[1:].replace('/', '__') + '.yaml'
+
     def test_verb_dump_invalid_node(self):
         assert cli.main(
                 argv=['param', 'dump', 'invalid_node']) == 'Node not found'
@@ -95,8 +105,7 @@ class TestVerbDump(unittest.TestCase):
                     argv=['param', 'dump', '/foo/test_node', '--output-dir', tmpdir]) is None
 
             # Compare generated parameter file against expected
-            file_name = self.node.get_name().replace('/', '__')
-            generated_param_file = os.path.join(tmpdir, file_name + '.yaml')
+            generated_param_file = os.path.join(tmpdir, self._output_file())
             assert (open(generated_param_file, 'r').read() == EXPECTED_PARAMETER_FILE)
 
     def test_verb_dump_print(self):
@@ -111,8 +120,7 @@ class TestVerbDump(unittest.TestCase):
             assert cli.main(
                 argv=['param', 'dump', 'foo/test_node', '--output-dir', tmpdir, '--print']) is None
 
-            file_name = self.node.get_name().replace('/', '__')
-            not_generated_param_file = os.path.join(tmpdir, file_name + '.yaml')
+            not_generated_param_file = os.path.join(tmpdir, self._output_file())
 
             with self.assertRaises(OSError) as context:
                 open(not_generated_param_file, 'r')

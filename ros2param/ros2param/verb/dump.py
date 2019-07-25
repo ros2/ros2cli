@@ -127,5 +127,5 @@ class DumpVerb(VerbExtension):
                 file_name = absolute_node_name.replace('/', '__')
 
             print('Saving to: ', os.path.join(args.output_dir, file_name + '.yaml'))
-            with open(os.path.join(args.output_dir, node_name.name + '.yaml'), 'w') as yaml_file:
+            with open(os.path.join(args.output_dir, file_name + '.yaml'), 'w') as yaml_file:
                 yaml.dump(yaml_output, yaml_file, default_flow_style=False)
