@@ -121,6 +121,11 @@ class DumpVerb(VerbExtension):
                 print(yaml.dump(yaml_output, default_flow_style=False))
                 return
 
-            print('Saving to: ', os.path.join(args.output_dir, node_name.name + ".yaml"))
-            with open(os.path.join(args.output_dir, node_name.name + ".yaml"), "w") as yaml_file:
+            if absolute_node_name[0] == '/':
+                file_name = absolute_node_name[1:].replace('/', '__')
+            else:
+                file_name = absolute_node_name.replace('/', '__')
+
+            print('Saving to: ', os.path.join(args.output_dir, file_name + '.yaml'))
+            with open(os.path.join(args.output_dir, node_name.name + '.yaml'), "w") as yaml_file:
                 yaml.dump(yaml_output, yaml_file, default_flow_style=False)

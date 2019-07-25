@@ -27,7 +27,7 @@ from rclpy.parameter import PARAMETER_SEPARATOR_STRING
 from ros2cli import cli
 
 TEST_NODE = 'test_node'
-TEST_NAMESPACE = ''
+TEST_NAMESPACE = 'foo'
 
 EXPECTED_PARAMETER_FILE = '''\
 test_node:
@@ -81,33 +81,38 @@ class TestVerbDump(unittest.TestCase):
         assert cli.main(
                 argv=['param', 'dump', 'invalid_node']) == 'Node not found'
 
+        assert cli.main(
+                argv=['param', 'dump', 'invalid_ns/test_node']) == 'Node not found'
+
     def test_verb_dump_invalid_path(self):
         assert cli.main(
-                argv=['param', 'dump', 'test_node', '--output-dir', 'invalid_path']) \
+                argv=['param', 'dump', 'foo/test_node', '--output-dir', 'invalid_path']) \
                     == "'invalid_path' is not a valid directory."
 
     def test_verb_dump(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             assert cli.main(
-                    argv=['param', 'dump', 'test_node', '--output-dir', tmpdir]) is None
+                    argv=['param', 'dump', '/foo/test_node', '--output-dir', tmpdir]) is None
 
             # Compare generated parameter file against expected
-            generated_param_file = os.path.join(tmpdir, self.node.get_name() + ".yaml")
+            file_name = self.node.get_name().replace('/', '__')
+            generated_param_file = os.path.join(tmpdir, file_name + '.yaml')
             assert (open(generated_param_file, 'r').read() == EXPECTED_PARAMETER_FILE)
 
     def test_verb_dump_print(self):
         with patch('sys.stdout', new=StringIO()) as fake_stdout:
             assert cli.main(
-                argv=['param', 'dump', 'test_node', '--print']) is None
+                argv=['param', 'dump', 'foo/test_node', '--print']) is None
 
             # Compare generated stdout against expected
             assert fake_stdout.getvalue().strip() == EXPECTED_PARAMETER_FILE[:-1]
 
         with tempfile.TemporaryDirectory() as tmpdir:
             assert cli.main(
-                argv=['param', 'dump', 'test_node', '--output-dir', tmpdir, '--print']) is None
+                argv=['param', 'dump', 'foo/test_node', '--output-dir', tmpdir, '--print']) is None
 
-            not_generated_param_file = os.path.join(tmpdir, self.node.get_name() + ".yaml")
+            file_name = self.node.get_name().replace('/', '__')
+            not_generated_param_file = os.path.join(tmpdir, file_name + '.yaml')
 
             with self.assertRaises(OSError) as context:
                 open(not_generated_param_file, 'r')
