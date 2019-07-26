@@ -20,6 +20,34 @@ import rclpy
 import yaml
 
 
+def get_value(*, parameter_value):
+    """Get the value from a ParameterValue."""
+    if parameter_value.type == ParameterType.PARAMETER_BOOL:
+        value = parameter_value.bool_value
+    elif parameter_value.type == ParameterType.PARAMETER_INTEGER:
+        value = parameter_value.integer_value
+    elif parameter_value.type == ParameterType.PARAMETER_DOUBLE:
+        value = parameter_value.double_value
+    elif parameter_value.type == ParameterType.PARAMETER_STRING:
+        value = parameter_value.string_value
+    elif parameter_value.type == ParameterType.PARAMETER_BYTE_ARRAY:
+        value = parameter_value.byte_array_value
+    elif parameter_value.type == ParameterType.PARAMETER_BOOL_ARRAY:
+        value = parameter_value.bool_array_value
+    elif parameter_value.type == ParameterType.PARAMETER_INTEGER_ARRAY:
+        value = parameter_value.integer_array_value
+    elif parameter_value.type == ParameterType.PARAMETER_DOUBLE_ARRAY:
+        value = parameter_value.double_array_value
+    elif parameter_value.type == ParameterType.PARAMETER_STRING_ARRAY:
+        value = parameter_value.string_array_value
+    elif parameter_value.type == ParameterType.PARAMETER_NOT_SET:
+        value = None
+    else:
+        value = None
+
+    return value
+
+
 def get_parameter_value(*, string_value):
     """Guess the desired type of the parameter based on the string value."""
     value = ParameterValue()
