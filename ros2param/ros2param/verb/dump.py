@@ -13,21 +13,26 @@
 # limitations under the License.
 
 import os
-import yaml
 
 from rcl_interfaces.srv import ListParameters
+
 import rclpy
 from rclpy.parameter import PARAMETER_SEPARATOR_STRING
+
 from ros2cli.node.direct import DirectNode
 from ros2cli.node.strategy import add_arguments
 from ros2cli.node.strategy import NodeStrategy
+
 from ros2node.api import get_absolute_node_name
 from ros2node.api import get_node_names
 from ros2node.api import NodeNameCompleter
 from ros2node.api import parse_node_name
+
 from ros2param.api import call_get_parameters
 from ros2param.api import get_value
 from ros2param.verb import VerbExtension
+
+import yaml
 
 
 class DumpVerb(VerbExtension):
@@ -63,14 +68,14 @@ class DumpVerb(VerbExtension):
         # extract type specific value
         return get_value(parameter_value=response.values[0])
 
-    def insert_dict(self, dict, key, value):
+    def insert_dict(self, dictionary, key, value):
         split = key.split(PARAMETER_SEPARATOR_STRING, 1)
         if len(split) > 1:
-            if not split[0] in dict:
-                dict[split[0]] = {}
-            self.insert_dict(dict[split[0]], split[1], value)
+            if not split[0] in dictionary:
+                dictionary[split[0]] = {}
+            self.insert_dict(dictionary[split[0]], split[1], value)
         else:
-            dict[key] = value
+            dictionary[key] = value
 
     def main(self, *, args):  # noqa: D102
 

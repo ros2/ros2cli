@@ -12,24 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from io import StringIO
 import os
 import tempfile
 import threading
-
-from io import StringIO
 import unittest
 from unittest.mock import patch
 
 import rclpy
-
 from rclpy.executors import MultiThreadedExecutor
 from rclpy.parameter import PARAMETER_SEPARATOR_STRING
+
 from ros2cli import cli
 
 TEST_NODE = 'test_node'
 TEST_NAMESPACE = 'foo'
 
-EXPECTED_PARAMETER_FILE = '''\
+EXPECTED_PARAMETER_FILE = """\
 test_node:
   ros__parameters:
     bool_param: true
@@ -40,7 +39,7 @@ test_node:
       str_param: foo
     int_param: 42
     str_param: Hello World
-'''
+"""
 
 
 class TestVerbDump(unittest.TestCase):
