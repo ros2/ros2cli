@@ -125,7 +125,4 @@ class TestVerbDump(unittest.TestCase):
                 open(not_generated_param_file, 'r')
 
             # Make sure the file was not create, thus '--print' did preempt
-            expected_err = '[Errno 2] No such file or directory: ' \
-                           "'{not_generated_param_file}'".format_map(locals())
-
-            assert expected_err == str(context.exception)
+            assert '[Errno 2] No such file or directory' in str(context.exception)
