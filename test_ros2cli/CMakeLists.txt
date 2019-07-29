@@ -41,7 +41,7 @@ if(BUILD_TESTING)
     endif()
     # Timeout for test itself
     if(NOT DEFINED TEST_TIMEOUT)
-      set(TEST_TIMEOUT 0)
+      set(TEST_TIMEOUT 30)
     endif()
 
 
