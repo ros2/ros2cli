@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ros2interface.api import get_interface
+from ros2interface.api import get_interfaces
 from ros2interface.api import package_name_completer
 from ros2interface.verb import VerbExtension
 
@@ -28,7 +28,7 @@ class PackageVerb(VerbExtension):
 
     def main(self, *, args):
         try:
-            names = get_interface(args.package_name)
+            names = get_interfaces(args.package_name)
         except LookupError as e:
             return str(e)
         for name in names:
