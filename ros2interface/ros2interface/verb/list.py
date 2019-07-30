@@ -56,14 +56,13 @@ class ListVerb(VerbExtension):
                             help='Print out only the action types')
 
     def main(self, *, args):
-        if(args.only_msgs):
-            print_messages()
-            return
-        if(args.only_srvs):
-            print_services()
-            return
-        if(args.only_actions):
-            print_actions()
+        if args.only_msgs or args.only_srvs or args.only_actions:
+            if args.only_msgs:
+                print_messages()
+            if args.only_srvs:
+                print_services()
+            if args.only_actions:
+                print_actions()
             return
         print_messages()
         print_services()
