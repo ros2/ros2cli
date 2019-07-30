@@ -39,6 +39,7 @@ test_node:
       str_param: foo
     int_param: 42
     str_param: Hello World
+    use_sim_time: false
 """
 
 
