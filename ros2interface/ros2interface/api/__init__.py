@@ -22,7 +22,7 @@ def get_all_interface_packages():
     return get_resources('rosidl_interfaces')
 
 
-def get_interface(package_name):
+def get_interfaces(package_name):
     if not has_resource('packages', package_name):
         raise LookupError('Unknown package {}'.format(package_name))
     try:
