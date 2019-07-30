@@ -47,15 +47,15 @@ class ListVerb(VerbExtension):
 
     def add_arguments(self, parser, cli_name):
         parser.add_argument(
-            '-m', '--only-msgs', action='count',
+            '-m', '--only-msgs', action='store_true',
             help='Print out only the message types')
 
         parser.add_argument(
-            '-s', '--only-srvs', action='count',
-            help='Print out only the srvs types')
+            '-s', '--only-srvs', action='store_true',
+            help='Print out only the service types')
 
         parser.add_argument(
-            '-a', '--only-actions', action='count',
+            '-a', '--only-actions', action='store_true',
             help='Print out only the action types')
 
     def main(self, *, args):
