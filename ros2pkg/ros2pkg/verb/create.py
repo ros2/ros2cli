@@ -76,14 +76,11 @@ class CreateVerb(VerbExtension):
             '--maintainer-name', default=getpass.getuser(),
             help='name of the maintainer of this package'),
         parser.add_argument(
-            '--cpp-node-name',
-            help='name of the empty cpp executable')
+            '--node-name',
+            help='name of the empty executable')
         parser.add_argument(
             '--cpp-library-name',
             help='name of the empty cpp library')
-        parser.add_argument(
-            '--python-node-name',
-            help='name of the empty python executable')
 
     def main(self, *, args):
         maintainer = Person(args.maintainer_name)
@@ -104,25 +101,23 @@ class CreateVerb(VerbExtension):
             if not maintainer.email:
                 maintainer.email = maintainer.name + '@todo.todo'
 
-        cpp_node_name = None
+        node_name = None
         cpp_library_name = None
         if args.build_type == 'ament_cmake' or args.build_type == 'cmake':
             if args.cpp_library_name:
                 cpp_library_name = args.cpp_library_name
-            if args.cpp_node_name:
-                cpp_node_name = args.cpp_node_name
-                if args.cpp_node_name == args.cpp_library_name:
-                    cpp_node_name = args.cpp_node_name + '_node'
+            if args.node_name:
+                node_name = args.node_name
+                if args.node_name == args.cpp_library_name:
+                    node_name = args.node_name + '_node'
                     print('[WARNING] node name can not be equal to the library name',
                           file=sys.stderr)
-                    print('[WARNING] renaming node to %s' % cpp_node_name, file=sys.stderr)
-
-        python_node_name = None
-        if args.build_type == 'ament_python':
-            if args.python_node_name:
-                python_node_name = args.python_node_name
+                    print('[WARNING] renaming node to %s' % node_name, file=sys.stderr)
+        elif args.build_type == 'ament_python':
+            if args.node_name:
+                node_name = args.node_name
             else:
-                python_node_name = args.package_name + '_node'
+                node_name = args.package_name + '_node'
 
         buildtool_depends = args.build_type
         if args.build_type == 'ament_cmake' and args.cpp_library_name:
@@ -160,12 +155,10 @@ class CreateVerb(VerbExtension):
         print('licenses:', [license_ for license_ in package.licenses])
         print('build type:', package.get_build_type())
         print('dependencies:', [str(dependency) for dependency in package.build_depends])
-        if cpp_node_name:
-            print('cpp_node_name:', cpp_node_name)
+        if node_name:
+            print('node_name:', node_name)
         if cpp_library_name:
             print('cpp_library_name:', cpp_library_name)
-        if python_node_name:
-            print('python_node_name:', python_node_name)
 
         package_directory, source_directory, include_directory = \
             create_package_environment(package, args.destination_directory)
@@ -173,18 +166,19 @@ class CreateVerb(VerbExtension):
             return 'unable to create folder: ' + args.destination_directory
 
         if args.build_type == 'cmake':
-            populate_cmake(package, package_directory, cpp_node_name, cpp_library_name)
+            populate_cmake(package, package_directory, node_name, cpp_library_name)
 
         if args.build_type == 'ament_cmake':
-            populate_ament_cmake(package, package_directory, cpp_node_name, cpp_library_name)
+            populate_ament_cmake(package, package_directory, node_name, cpp_library_name)
 
         if args.build_type == 'ament_python':
-            populate_ament_python(package, package_directory, python_node_name)
+            populate_ament_python(package, package_directory, node_name)
 
-        if cpp_node_name:
-            if not source_directory:
-                return 'unable to create source folder in ' + args.destination_directory
-            populate_cpp_node(package, source_directory, cpp_node_name)
+        if args.build_type == 'ament_cmake' or args.build_type == 'cmake':
+            if node_name:
+                if not source_directory:
+                    return 'unable to create source folder in ' + args.destination_directory
+                populate_cpp_node(package, source_directory, node_name)
 
         if cpp_library_name:
             if not source_directory or not include_directory:
