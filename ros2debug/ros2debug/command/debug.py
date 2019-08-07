@@ -25,7 +25,7 @@ class DebugCommand(CommandExtension):
         verb_extensions = get_verb_extensions('ros2debug.verb')
         add_subparsers(
             parser, cli_name, '_verb', verb_extensions, required=False)
-    
+
     def main(self, *, parser, args):
         if not hasattr(args, '_verb'):
             self._subparser.print_help()

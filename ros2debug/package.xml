@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>ros2cli_debug</name>
+  <name>ros2debug</name>
   <version>0.0.0</version>
   <description>The debug command for ROS 2 command line tools</description>
   <maintainer email="clairewang@openrobotics.org">Claire Wang</maintainer>
