@@ -28,6 +28,7 @@ class DebugCommand(CommandExtension):
 
     def main(self, *, parser, args):
         if not hasattr(args, '_verb'):
+            # in case no verb was passed
             self._subparser.print_help()
             return 0
         

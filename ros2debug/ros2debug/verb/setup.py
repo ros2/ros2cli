@@ -24,15 +24,16 @@ class SetupVerb(VerbExtension):
 
     def add_arguments(self, parser, cli_name):
         # determine the args and subcommand taken 
-        add_arguments(parser)
-        parser.add_arguments(
-            '-r', '--report', help='Generate a report of current system information \
-                and the corresponding ROS 2 system requirements.'
-        )
+       parser.add_argument(
+           '-r', '--report', action='store_true',
+           help='Display system seyup information and ROS 2 requirements'
+       )
+        
 
     def main(self, *, args):
         # conduct a series of setup checks on sys and version against ROS2 reqs 
         if args.report: 
             print(platform.platform())
+            print(os.environ.get('ROS_DISTRO'))
         else: 
             print('No report requested')
