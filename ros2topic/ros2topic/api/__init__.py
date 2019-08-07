@@ -23,6 +23,8 @@ from rclpy.topic_or_service_is_hidden import topic_or_service_is_hidden
 from rclpy.validate_full_topic_name import validate_full_topic_name
 from ros2cli.node.strategy import NodeStrategy
 from ros2msg.api import message_type_completer
+from rosidl_runtime_py.convert import message_to_yaml
+from rosidl_runtime_py.utilities import get_message
 
 
 def get_topic_names_and_types(*, node, include_hidden_topics=False):
@@ -137,3 +139,14 @@ def _get_msg_class(node, topic, include_hidden_topics):
         return None
 
     return import_message_type(topic, message_type)
+
+
+class TopicMessagePrototypeCompleter:
+    """Callable returning a message prototype."""
+
+    def __init__(self, *, topic_type_key=None):
+        self.topic_type_key = topic_type_key
+
+    def __call__(self, prefix, parsed_args, **kwargs):
+        message = get_message(getattr(parsed_args, self.topic_type_key))
+        return [message_to_yaml(message())]
