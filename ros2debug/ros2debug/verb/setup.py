@@ -16,6 +16,7 @@ import platform
 import sys
 import os 
 
+from ros2debug.api import print_sys_info, print_ros2_reqs, check_setup_reqs
 from ros2cli.node.strategy import add_arguments
 from ros2debug.verb import VerbExtension
 
@@ -26,14 +27,16 @@ class SetupVerb(VerbExtension):
         # determine the args and subcommand taken 
        parser.add_argument(
            '-r', '--report', action='store_true',
-           help='Display system seyup information and ROS 2 requirements'
+           help='Display system setup information and ROS 2 requirements'
        )
         
 
     def main(self, *, args):
         # conduct a series of setup checks on sys and version against ROS2 reqs 
         if args.report: 
-            print(platform.platform())
-            print(os.environ.get('ROS_DISTRO'))
-        else: 
-            print('No report requested')
+            print_sys_info()
+            print_ros2_reqs()
+        
+        check_setup_reqs()
+        print('Setup check completed!')
+        print()
