@@ -19,7 +19,7 @@ from ros2interface.verb import VerbExtension
 
 
 def print_messages():
-    print('Messages: ')
+    print('Messages:')
     message_types = get_all_message_types()
     for package_name in sorted(message_types):
         for message_name in sorted(message_types[package_name]):
@@ -27,7 +27,7 @@ def print_messages():
 
 
 def print_services():
-    print('Services: ')
+    print('Services:')
     service_types = get_all_service_types()
     for package_name in sorted(service_types):
         for service_name in sorted(service_types[package_name]):
@@ -35,7 +35,7 @@ def print_services():
 
 
 def print_actions():
-    print('Actions: ')
+    print('Actions:')
     action_types = get_all_action_types()
     for package_name in sorted(action_types):
         for action_name in sorted(action_types[package_name]):
@@ -46,24 +46,26 @@ class ListVerb(VerbExtension):
     """List all interface types available."""
 
     def add_arguments(self, parser, cli_name):
-        parser.add_argument('-m', '--only-msgs', action='count',
-                            help='Print out only the message types')
+        parser.add_argument(
+            '-m', '--only-msgs', action='store_true',
+            help='Print out only the message types')
 
-        parser.add_argument('-s', '--only-srvs', action='count',
-                            help='Print out only the srvs types')
+        parser.add_argument(
+            '-s', '--only-srvs', action='store_true',
+            help='Print out only the service types')
 
-        parser.add_argument('-a', '--only-actions', action='count',
-                            help='Print out only the action types')
+        parser.add_argument(
+            '-a', '--only-actions', action='store_true',
+            help='Print out only the action types')
 
     def main(self, *, args):
-        if(args.only_msgs):
-            print_messages()
-            return
-        if(args.only_srvs):
-            print_services()
-            return
-        if(args.only_actions):
-            print_actions()
+        if args.only_msgs or args.only_srvs or args.only_actions:
+            if args.only_msgs:
+                print_messages()
+            if args.only_srvs:
+                print_services()
+            if args.only_actions:
+                print_actions()
             return
         print_messages()
         print_services()

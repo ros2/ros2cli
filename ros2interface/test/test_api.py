@@ -17,17 +17,17 @@ import os
 import pytest
 
 from ros2interface.api import get_all_interface_packages
-from ros2interface.api import get_interface
 from ros2interface.api import get_interface_path
+from ros2interface.api import get_interfaces
 
 
 def test_get_interface():
     # check nonexistent package name
     with pytest.raises(LookupError):
-        get_interface('_not_existing_package_name')
+        get_interfaces('_not_existing_package_name')
 
     # check existing package name
-    interface_names = get_interface('std_srvs')
+    interface_names = get_interfaces('std_srvs')
     assert len(interface_names) == 3
 
 
