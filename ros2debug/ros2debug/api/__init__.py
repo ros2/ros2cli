@@ -93,15 +93,12 @@ def check_setup_reqs():
             print('WARNING: Current system version is not fully supported by ROS2.\
                     Check report for detail.')
         if sys_release:
-            if system_name == 'Darwin' and normal[1] not in sys_release:
+            if system_name == 'Darwin' and platform.release() not in sys_release:
                 print('WARNING: Current system release is not fully supported by ROS2.\
                         Check report for detail.')
-            elif system_name == 'Linux' and normal[-2] not in sys_release:
+            elif system_name == 'Linux' and platform.dist()[1] not in sys_release:
                 print('WARNING: Current system release is not fully supported by ROS2.\
                         Check report for detail.')
         if sys_processor and platform.machine() not in sys_processor:
             print('WARNING: Current processor is not supported by ROS2.\
                     Check report for detail.')
-    
-    
-    
