@@ -12,32 +12,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 import platform
-import sys
-import os 
 
 
 # Installation system requirements of ROS 2
-ROS2_REQS = {'crystal':{'linux':{'version':'Ubuntu', 
-                                'release':['16.04',
-                                            '18.04'], 
-                                'processor':'x86_64'}, 
-                        'darwin':{'release':['15.0.0','15.6.0',
-                                            '16.0.0','16.5.0','16.6.0']},
-                        'windows':{'version':'10',
-                                   'processor':'AMD64'}
-                        }, 
-            'dashing': {'linux':{'version':'Ubuntu',
-                                'release':'18.04',
-                                'processor':'x86_64'}, 
-                        'darwin':{'release':['14.0.0','14.5.0','15.0.0',
-                                            '15.6.0','16.0.0','16.5.0',
-                                            '16.6.0','17.0.0','17.5.0',
-                                            '17.6.0','17.7.0']}, 
-                        'windows':{'version':'10',
-                                   'processor':'AMD64'}
+ROS2_REQS = {'crystal': {'linux': {'version': 'Ubuntu',
+                                   'release': ['16.04', '18.04'], 
+                                   'processor': 'x86_64'},
+                        'darwin': {'release': ['15.0.0', '15.6.0',
+                                               '16.0.0', '16.5.0',
+                                               '16.6.0']},
+                        'windows': {'version': '10',
+                                    'processor': 'AMD64'}
+                        },
+             'dashing': {'linux': {'version': 'Ubuntu',
+                                  'release': '18.04',
+                                  'processor': 'x86_64'},
+                        'darwin': {'release': ['14.0.0', '14.5.0', '15.0.0',
+                                               '15.6.0', '16.0.0', '16.5.0',
+                                               '16.6.0', '17.0.0', '17.5.0',
+                                               '17.6.0', '17.7.0']},
+                        'windows': {'version': '10',
+                                    'processor': 'AMD64'}
                         }
             }
+
 
 def print_sys_info():
     # platform info
@@ -56,6 +56,7 @@ def print_sys_info():
     print('build        :', platform.python_build())
     print()
 
+
 def print_ros2_reqs():
     distro = os.environ.get('ROS_DISTRO').lower()
     system_name = platform.system()
@@ -69,11 +70,12 @@ def print_ros2_reqs():
     print('machine  :', system_req.get('processor'))
     print('----------------------------------------------------')
 
+
 def check_setup_reqs():
     distro = os.environ.get('ROS_DISTRO').lower()
     system_name = platform.system()
     distro_reqs = ROS2_REQS.get(distro)
-    
+
     if distro_reqs:
         system_reqs = distro_reqs.get(system_name.lower())
     else:

@@ -11,27 +11,26 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
- 
-from ros2debug.api import print_sys_info
-from ros2debug.api import print_ros2_reqs
+
 from ros2debug.api import check_setup_reqs
-from ros2cli.node.strategy import add_arguments
+from ros2debug.api import print_ros2_reqs
+from ros2debug.api import print_sys_info
 from ros2debug.verb import VerbExtension
+
 
 class SetupVerb(VerbExtension):
     """Cross check system info and ROS 2 system requirements."""
 
     def add_arguments(self, parser, cli_name):
-        # determine the args and subcommand taken 
-       parser.add_argument(
+        # determine the args and subcommand taken
+        parser.add_argument(
            '-r', '--report', action='store_true',
            help='Display system setup information and ROS 2 requirements'
-       )
-        
+        ) 
 
     def main(self, *, args):
-        # conduct a series of setup checks on sys and version against ROS2 reqs 
-        if args.report: 
+        # conduct a series of setup checks on sys and version against ROS2 reqs
+        if args.report:
             print_sys_info()
             print_ros2_reqs()
 

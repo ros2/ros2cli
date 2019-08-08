@@ -12,10 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ros2cli.plugin_system import PLUGIN_SYSTEM_VERSION 
-from ros2cli.plugin_system import satisfies_version 
+from ros2cli.plugin_system import PLUGIN_SYSTEM_VERSION
+from ros2cli.plugin_system import satisfies_version
 
-class VerbExtension: 
+
+class VerbExtension:
     """
     The extension point for 'debug' verb extensions.
 
@@ -29,7 +30,7 @@ class VerbExtension:
     * `add_arguments`
     """
 
-    NAME = None 
+    NAME = None
     EXTENSION_POINT_VERSION = '0.1'
 
     def __init__(self):
@@ -37,7 +38,8 @@ class VerbExtension:
         satisfies_version(PLUGIN_SYSTEM_VERSION, '^0.1')
 
     def add_arguments(self, parser, cli_name):
-        pass 
+        pass
 
     def main(self, *, args):
         raise NotImplementedError
+
