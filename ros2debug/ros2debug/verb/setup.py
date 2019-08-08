@@ -12,11 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
  
-import platform 
-import sys
-import os 
-
-from ros2debug.api import print_sys_info, print_ros2_reqs, check_setup_reqs
+from ros2debug.api import print_sys_info
+from ros2debug.api import print_ros2_reqs
+from ros2debug.api import check_setup_reqs
 from ros2cli.node.strategy import add_arguments
 from ros2debug.verb import VerbExtension
 
@@ -36,7 +34,7 @@ class SetupVerb(VerbExtension):
         if args.report: 
             print_sys_info()
             print_ros2_reqs()
-        
+
         check_setup_reqs()
         print('Setup check completed!')
         print()
