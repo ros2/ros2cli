@@ -72,35 +72,70 @@ def print_ros2_reqs():
 
 
 def check_setup_reqs():
+    distro_check = False
+    os_check = False
+    version_check = False
+    release_check = False
+    processor_check = False
+
     distro = os.environ.get('ROS_DISTRO').lower()
     system_name = platform.system()
     distro_reqs = ROS2_REQS.get(distro)
 
     if distro_reqs:
+        distro_check = True
         system_reqs = distro_reqs.get(system_name.lower())
     else:
         system_reqs = distro_reqs.get('crystal').get(system_name.lower())
-        print("WARNING: Current ROS2 distribution is no longer supported.\
-                Checking other requirements using Crystal's standard")
-    if not system_reqs:
-        print('WARNING: Current OS is not fully supported by our tests.')
-        print('Please check report for detail.')
-    else:
-        normal = platform.platform().split('-')
+
+    if system_reqs:        
+        os_check = True
         sys_version = system_reqs.get('version')
         sys_release = system_reqs.get('release')
         sys_processor = system_reqs.get('processor')
 
-        if sys_version and sys_version not in normal:
-            print('WARNING: Current system version is not fully supported by ROS2.\
-                    Check report for detail.')
+        if sys_version and sys_version in platform.version():
+            version_check = True
+            
         if sys_release:
-            if system_name == 'Darwin' and platform.release() not in sys_release:
-                print('WARNING: Current system release is not fully supported by ROS2.\
-                        Check report for detail.')
+            if system_name == 'Darwin' and platform.release() in sys_release:
+                release_check = True
+                
             elif system_name == 'Linux' and platform.dist()[1] not in sys_release:
-                print('WARNING: Current system release is not fully supported by ROS2.\
-                        Check report for detail.')
-        if sys_processor and platform.machine() not in sys_processor:
+                processor_check = True
+                
+        if sys_processor and platform.machine() in sys_processor:
+            processor_check = True
+            
+    return distro_check, os_check, version_check, release_check, processor_check
+
+
+def print_warning_msg(distro, os, version, release, processor):
+    os_type = platform.system()
+    if distro == False:
+        print("WARNING: Current ROS2 distribution %s is no longer supported.\
+                Checking other requirements using Crystal's standard" \
+                    % os.environ.get('ROS_DISTRO'))
+    if os == False: 
+        print('WARNING: Current OS %s is not fully supported by our tests.' % os_type)
+    if os_type == 'Linux':
+        if version == False:
+            print('WARNING: Current OS version is not fully supported by ROS2.\
+                    Check report for detail.')
+        if release == False:
+            print('WARNING: Current OS release is not fully supported by ROS2.\
+                    Check report for detail.')
+        if processor == False: 
+            print('WARNING: Current processor is not supported by ROS2.\
+                    Check report for detail.')
+    elif os_type == 'Darwin':
+        if release == False:
+            print('WARNING: Current OS release is not fully supported by ROS2.\
+                    Check report for detail.')
+    elif os_type == 'Windows':
+        if version == False:
+            print('WARNING: Current OS version is not fully supported by ROS2.\
+                    Check report for detail.')
+        if processor == False:
             print('WARNING: Current processor is not supported by ROS2.\
                     Check report for detail.')
