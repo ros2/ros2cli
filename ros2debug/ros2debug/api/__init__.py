@@ -20,24 +20,29 @@ import platform
 ROS2_REQS = {'crystal': {'linux': {'version': 'Ubuntu',
                                    'release': ['16.04', '18.04'], 
                                    'processor': 'x86_64'},
-                        'darwin': {'release': ['15.0.0', '15.6.0',
+                        'darwin': {'version': '',
+                                   'release': ['15.0.0', '15.6.0',
                                                '16.0.0', '16.5.0',
-                                               '16.6.0']},
+                                               '16.6.0'],
+                                   'processor': ''},
                         'windows': {'version': '10',
+                                    'release': [],
                                     'processor': 'AMD64'}
                         },
              'dashing': {'linux': {'version': 'Ubuntu',
                                   'release': '18.04',
                                   'processor': 'x86_64'},
-                        'darwin': {'release': ['14.0.0', '14.5.0', '15.0.0',
+                        'darwin': {'version': '',
+                                   'release': ['14.0.0', '14.5.0', '15.0.0',
                                                '15.6.0', '16.0.0', '16.5.0',
                                                '16.6.0', '17.0.0', '17.5.0',
-                                               '17.6.0', '17.7.0']},
+                                               '17.6.0', '17.7.0'],
+                                   'processor': ''},
                         'windows': {'version': '10',
+                                    'release': [],
                                     'processor': 'AMD64'}
                         }
             }
-
 
 def print_sys_info():
     # platform info
@@ -57,10 +62,10 @@ def print_sys_info():
     print()
 
 
-def print_ros2_reqs():
+def print_ros2_reqs(*, ros2_reqs=ROS2_REQS):
     distro = os.environ.get('ROS_DISTRO').lower()
     system_name = platform.system()
-    system_req = ROS2_REQS.get(distro).get(system_name.lower())
+    system_req = ros2_reqs.get(distro).get(system_name.lower())
 
     print('ROS2 System Requirements')
     print('ROS2 distribution:', distro)
@@ -71,42 +76,38 @@ def print_ros2_reqs():
     print('----------------------------------------------------')
 
 
-def check_setup_reqs():
-    distro_check = False
-    os_check = False
-    version_check = False
-    release_check = False
-    processor_check = False
+def setup_checks(*, ros2_reqs=ROS2_REQS):
+    distro_check = True
+    os_check = True
+    version_check = True
+    release_check = True
+    processor_check = True
 
     distro = os.environ.get('ROS_DISTRO').lower()
     system_name = platform.system()
-    distro_reqs = ROS2_REQS.get(distro)
+    distro_reqs = ros2_reqs.get(distro)
 
     if distro_reqs:
-        distro_check = True
         system_reqs = distro_reqs.get(system_name.lower())
     else:
+        distro_check = False
         system_reqs = distro_reqs.get('crystal').get(system_name.lower())
-
+    
     if system_reqs:        
-        os_check = True
         sys_version = system_reqs.get('version')
         sys_release = system_reqs.get('release')
         sys_processor = system_reqs.get('processor')
-
-        if sys_version and sys_version in platform.version():
-            version_check = True
-            
+        if sys_version and sys_version not in platform.version():
+            version_check = False
         if sys_release:
-            if system_name == 'Darwin' and platform.release() in sys_release:
-                release_check = True
-                
+            if system_name == 'Darwin' and platform.release() not in sys_release:
+                release_check = False
             elif system_name == 'Linux' and platform.dist()[1] not in sys_release:
-                processor_check = True
-                
-        if sys_processor and platform.machine() in sys_processor:
-            processor_check = True
-            
+                processor_check = False
+        if sys_processor and platform.machine() not in sys_processor:
+            processor_check = False
+    else:
+        os_check = False
     return distro_check, os_check, version_check, release_check, processor_check
 
 
