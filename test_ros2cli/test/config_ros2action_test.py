@@ -29,7 +29,7 @@ def get_action_server_node_action():
     return ExecuteProcess(
         cmd=[
             sys.executable,
-            ExecutableInPackage('fibonacci_action_server.py', 'action_tutorials'),
+            ExecutableInPackage('fibonacci_action_server.py', 'action_tutorials_py'),
         ],
         sigterm_timeout=LaunchConfiguration('sigterm_timeout', default=30)
     )
@@ -68,7 +68,7 @@ configs = [
         arguments=['info', '-t', '/fibonacci'],
         actions=[get_action_server_node_action()],
         expected_output=common_info_output + [
-            '/fibonacci_action_server [action_tutorials/action/Fibonacci]'
+            '/fibonacci_action_server [action_tutorials_interfaces/action/Fibonacci]'
         ],
     ),
     TestConfig(
@@ -87,7 +87,7 @@ configs = [
         command='action',
         arguments=['list', '-t'],
         actions=[get_action_server_node_action()],
-        expected_output=['/fibonacci [action_tutorials/action/Fibonacci]'],
+        expected_output=['/fibonacci [action_tutorials_interfaces/action/Fibonacci]'],
     ),
     TestConfig(
         command='action',
@@ -97,7 +97,7 @@ configs = [
     ),
     TestConfig(
         command='action',
-        arguments=['send_goal', '/fibonacci', 'action_tutorials/action/Fibonacci', '{order: 5}'],
+        arguments=['send_goal', '/fibonacci', 'action_tutorials_interfaces/action/Fibonacci', '{order: 5}'],
         actions=[get_action_server_node_action()],
         expected_output=common_send_goal_output,
     ),
@@ -107,7 +107,7 @@ configs = [
             'send_goal',
             '-f',
             '/fibonacci',
-            'action_tutorials/action/Fibonacci',
+            'action_tutorials_interfaces/action/Fibonacci',
             '{order: 5}'
         ],
         actions=[get_action_server_node_action()],
@@ -118,7 +118,7 @@ configs = [
     ),
     TestConfig(
         command='action',
-        arguments=['show', 'action_tutorials/action/Fibonacci'],
+        arguments=['show', 'action_tutorials_interfaces/action/Fibonacci'],
         expected_output=[
             'int32 order',
             '---',
