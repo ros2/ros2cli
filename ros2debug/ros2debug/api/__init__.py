@@ -14,129 +14,67 @@
 
 import os
 import platform
+import rosdistro
 
-
-# Installation system requirements of ROS 2
-ROS2_REQS = {'crystal': {'linux': {'version': 'Ubuntu',
-                                   'release': ['16.04', '18.04'], 
-                                   'processor': 'x86_64'},
-                        'darwin': {'version': '',
-                                   'release': ['15.0.0', '15.6.0',
-                                               '16.0.0', '16.5.0',
-                                               '16.6.0'],
-                                   'processor': ''},
-                        'windows': {'version': '10',
-                                    'release': [],
-                                    'processor': 'AMD64'}
-                        },
-             'dashing': {'linux': {'version': 'Ubuntu',
-                                  'release': '18.04',
-                                  'processor': 'x86_64'},
-                        'darwin': {'version': '',
-                                   'release': ['14.0.0', '14.5.0', '15.0.0',
-                                               '15.6.0', '16.0.0', '16.5.0',
-                                               '16.6.0', '17.0.0', '17.5.0',
-                                               '17.6.0', '17.7.0'],
-                                   'processor': ''},
-                        'windows': {'version': '10',
-                                    'release': [],
-                                    'processor': 'AMD64'}
-                        }
-            }
 
 def print_sys_info():
     # platform info
     print('System Information')
-    print('system   :', platform.system())
-    print('release  :', platform.release())
-    print('version  :', platform.version())
-    print('processor:', platform.processor())
-    print('normal   :', platform.platform())
+    print('system   : ', platform.system())
+    print('Linux distribution   : ', platform.dist())
+    print('Mac OS version       : ', platform.mac_ver())
+    print('release  : ', platform.release())
+    print('processor: ', platform.processor())
     print()
 
-    # python info 
+    # python info
     print('Python')
-    print('version      :', platform.python_version())
-    print('compiler     :', platform.python_compiler())
-    print('build        :', platform.python_build())
+    print('version      : ', platform.python_version())
+    print('compiler     : ', platform.python_compiler())
+    print('build        : ', platform.python_build())
     print()
 
+# printing ROS2 reqs with `rosdistro`
+def print_ros2_reqs():
+    distro_name = os.environ.get('ROS_DISTRO').lower()
+    u = rosdistro.get_index_url()
+    i = rosdistro.get_index(u)
+    distro_info = i.distributions.get(distro_name)
+    distro_data = rosdistro.get_distribution(i,distro_name).get_data()
 
-def print_ros2_reqs(*, ros2_reqs=ROS2_REQS):
-    distro = os.environ.get('ROS_DISTRO').lower()
-    system_name = platform.system()
-    system_req = ros2_reqs.get(distro).get(system_name.lower())
+    print('ROS Information')
+    print('distribution name    : ', distro_name)
+    print('distribution type    : ', distro_info.get('distribution_type'))
+    print('distribution status  : ', distro_info.get('distribution_status'))
+    print('release platforms    : ', distro_data.get('release_platforms'))
+    print()
 
-    print('ROS2 System Requirements')
-    print('ROS2 distribution:', distro)
-    print('system   :', system_name)
-    print('version  :', system_req.get('version'))
-    print('release  :', system_req.get('release'))
-    print('machine  :', system_req.get('processor'))
-    print('----------------------------------------------------')
+def setup_checks():
+    distro_name = os.environ.get('ROS_DISTRO').lower()
+    u = rosdistro.get_index_url()
+    i = rosdistro.get_index(u)
+    distro_info = i.distributions.get(distro_name)
+    distro_data = rosdistro.get_distribution(i, distro_name).get_data()
 
-
-def setup_checks(*, ros2_reqs=ROS2_REQS):
-    distro_check = True
-    os_check = True
-    version_check = True
-    release_check = True
-    processor_check = True
-
-    distro = os.environ.get('ROS_DISTRO').lower()
-    system_name = platform.system()
-    distro_reqs = ros2_reqs.get(distro)
-
-    if distro_reqs:
-        system_reqs = distro_reqs.get(system_name.lower())
+    # check distro status
+    if distro_info.get('distribution_status') == 'prerelease':
+        print('WARNING: Distribution is not fully supported or tested.\
+            Download a stable version at https://index.ros.org/doc/ros2/Installation/')
+    elif distro_info.get('distribution_status') == 'end-of-life':
+        print('WARNING: Distribution is no longer supported or deprecated.\
+            Download the latest version at https://index.ros.org/doc/ros2/Installation/')
     else:
-        distro_check = False
-        system_reqs = distro_reqs.get('crystal').get(system_name.lower())
-    
-    if system_reqs:        
-        sys_version = system_reqs.get('version')
-        sys_release = system_reqs.get('release')
-        sys_processor = system_reqs.get('processor')
-        if sys_version and sys_version not in platform.version():
-            version_check = False
-        if sys_release:
-            if system_name == 'Darwin' and platform.release() not in sys_release:
-                release_check = False
-            elif system_name == 'Linux' and platform.dist()[1] not in sys_release:
-                processor_check = False
-        if sys_processor and platform.machine() not in sys_processor:
-            processor_check = False
+        pass
+
+    # check system platform and distro release platforms
+    supported_platforms = distro_data.get('release_platforms')
+    if platform.system() == 'Linux':
+        releases = supported_platforms.get(platform.dist()[0].lower())
+        if not releases or platform.dist()[2].lower() not in releases:
+            print('WARNING: Current system platform is not supported by this ROS distribution.\
+                User `ros2 debug setup -r` to check report for detail.')
+        else: 
+            pass
     else:
-        os_check = False
-    return distro_check, os_check, version_check, release_check, processor_check
-
-
-def print_warning_msg(distro, os, version, release, processor):
-    os_type = platform.system()
-    if distro == False:
-        print("WARNING: Current ROS2 distribution %s is no longer supported.\
-                Checking other requirements using Crystal's standard" \
-                    % os.environ.get('ROS_DISTRO'))
-    if os == False: 
-        print('WARNING: Current OS %s is not fully supported by our tests.' % os_type)
-    if os_type == 'Linux':
-        if version == False:
-            print('WARNING: Current OS version is not fully supported by ROS2.\
-                    Check report for detail.')
-        if release == False:
-            print('WARNING: Current OS release is not fully supported by ROS2.\
-                    Check report for detail.')
-        if processor == False: 
-            print('WARNING: Current processor is not supported by ROS2.\
-                    Check report for detail.')
-    elif os_type == 'Darwin':
-        if release == False:
-            print('WARNING: Current OS release is not fully supported by ROS2.\
-                    Check report for detail.')
-    elif os_type == 'Windows':
-        if version == False:
-            print('WARNING: Current OS version is not fully supported by ROS2.\
-                    Check report for detail.')
-        if processor == False:
-            print('WARNING: Current processor is not supported by ROS2.\
-                    Check report for detail.')
+        print('WARNING: Limited information on platform requirements on Windows and OSX\
+            are available for auto-check. Use `ros2 debug setup -r` for more detail.')

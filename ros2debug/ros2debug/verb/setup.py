@@ -12,10 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ros2debug.api import setup_checks
 from ros2debug.api import print_ros2_reqs
 from ros2debug.api import print_sys_info
-from ros2debug.api import print_warning_msg
+from ros2debug.api import setup_checks
 from ros2debug.verb import VerbExtension
 
 
@@ -27,15 +26,13 @@ class SetupVerb(VerbExtension):
         parser.add_argument(
            '-r', '--report', action='store_true',
            help='Display system setup information and ROS 2 requirements'
-        ) 
+        )
 
     def main(self, *, args):
         # conduct a series of setup checks on sys and version against ROS2 reqs
         if args.report:
             print_sys_info()
             print_ros2_reqs()
-
-        distro, os, version, release, processor = setup_checks()
-        print_warning_msg(distro, os, version, release, processor)
+        setup_checks()
         print('Setup check completed!')
         print()
