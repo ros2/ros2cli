@@ -12,11 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import importlib
-
-from ros2cli.node.strategy import add_arguments
-from ros2interface.api import type_completer
 from ros2interface.api import interface_to_yaml
+from ros2interface.api import type_completer
 from ros2interface.verb import VerbExtension
 
 
@@ -33,15 +30,7 @@ class ProtoVerb(VerbExtension):
             help='if true output has no outer hyphens.')
 
     def main(self, *, args):
-        try:
-            parts = args.type.split('/')
-            package_name = parts[0]
-            interface_type = parts[1]
-            interface_name = parts[-1]
-        except LookupError as e:
-            return str(e)
-
-        yaml = interface_to_yaml(package_name, interface_type, interface_name)
+        yaml = interface_to_yaml(args.type)
 
         if args.no_hyphens is True:
             print(yaml)
