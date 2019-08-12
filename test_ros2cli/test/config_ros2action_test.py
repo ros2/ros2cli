@@ -26,7 +26,7 @@ from test_config import TestConfig  # noqa
 
 def get_action_server_node_action():
     return Node(
-        package='action_tutorials_py',
+        package='action_tutorials_cpp',
         node_executable='fibonacci_action_server',
         sigterm_timeout=LaunchConfiguration('sigterm_timeout', default=30)
     )
