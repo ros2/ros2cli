@@ -14,6 +14,7 @@
 
 import os
 import platform
+
 import rosdistro
 
 
@@ -34,13 +35,14 @@ def print_sys_info():
     print('build        : ', platform.python_build())
     print()
 
+
 # printing ROS2 reqs with `rosdistro`
 def print_ros2_reqs():
     distro_name = os.environ.get('ROS_DISTRO').lower()
     u = rosdistro.get_index_url()
     i = rosdistro.get_index(u)
     distro_info = i.distributions.get(distro_name)
-    distro_data = rosdistro.get_distribution(i,distro_name).get_data()
+    distro_data = rosdistro.get_distribution(i, distro_name).get_data()
 
     print('ROS Information')
     print('distribution name    : ', distro_name)
@@ -48,6 +50,7 @@ def print_ros2_reqs():
     print('distribution status  : ', distro_info.get('distribution_status'))
     print('release platforms    : ', distro_data.get('release_platforms'))
     print()
+
 
 def setup_checks():
     distro_name = os.environ.get('ROS_DISTRO').lower()
@@ -73,7 +76,7 @@ def setup_checks():
         if not releases or platform.dist()[2].lower() not in releases:
             print('WARNING: Current system platform is not supported by this ROS distribution.\
                 User `ros2 debug setup -r` to check report for detail.')
-        else: 
+        else:
             pass
     else:
         print('WARNING: Limited information on platform requirements on Windows and OSX\

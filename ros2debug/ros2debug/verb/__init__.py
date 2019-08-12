@@ -42,4 +42,3 @@ class VerbExtension:
 
     def main(self, *, args):
         raise NotImplementedError
-
