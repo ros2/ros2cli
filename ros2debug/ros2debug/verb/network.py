@@ -12,10 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from ros2debug.api import print_network_interface
 from ros2debug.verb import VerbExtension
 
 
-class SetupVerb(VerbExtension):
+class NetworkVerb(VerbExtension):
     """Cross check system info and ROS 2 system requirements."""
 
     def add_arguments(self, parser, cli_name):
@@ -27,6 +28,9 @@ class SetupVerb(VerbExtension):
 
     def main(self, *, args):
         """Sanity check network interface."""
-        # if args.report:
-        print('Network check completed!')
-        print()
+        if args.report:
+            print_network_interface()
+            print('To check network interface, use `ros2 debug network`.')
+        else:
+            print('Network check completed!')
+            print('\n')

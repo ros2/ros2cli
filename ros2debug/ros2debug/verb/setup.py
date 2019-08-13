@@ -33,6 +33,8 @@ class SetupVerb(VerbExtension):
         if args.report:
             print_sys_info()
             print_ros2_reqs()
-        setup_checks()
-        print('Setup check completed!')
-        print('\n')
+            print('To check setup requirements use `ros2 debug setup`.')
+        else:
+            setup_checks()
+            print('Setup check completed!')
+            print('\n')

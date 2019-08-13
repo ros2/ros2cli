@@ -34,6 +34,7 @@ setup(
         ],
         'ros2debug.verb': [
             'setup = ros2debug.verb.setup:SetupVerb',
+            'network = ros2debug.verb.network:NetworkVerb',
         ],
     }
 )

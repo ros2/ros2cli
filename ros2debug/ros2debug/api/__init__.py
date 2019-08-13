@@ -28,14 +28,14 @@ def print_sys_info():
     print('Mac OS version       : ', platform.mac_ver())
     print('release  : ', platform.release())
     print('processor: ', platform.processor())
-    print()
+    print('\n')
 
     # python info
     print('Python')
     print('version      : ', platform.python_version())
     print('compiler     : ', platform.python_compiler())
     print('build        : ', platform.python_build())
-    print()
+    print('\n')
 
 
 def print_ros2_reqs():
@@ -51,7 +51,7 @@ def print_ros2_reqs():
     print('distribution type    : ', distro_info.get('distribution_type'))
     print('distribution status  : ', distro_info.get('distribution_status'))
     print('release platforms    : ', distro_data.get('release_platforms'))
-    print()
+    print('\n')
 
 
 def setup_checks():
@@ -81,8 +81,9 @@ def setup_checks():
     if platform.system() == 'Linux':
         releases = supported_platforms.get(platform.dist()[0].lower())
         if not releases or platform.dist()[2].lower() not in releases:
-            print('WARNING: Current system platform is not supported by this ROS distribution.\
-                User `ros2 debug setup -r` to check report for detail.')
+            print('WARNING: Current system platform is not supported\
+                by this ROS distribution.\
+                    User `ros2 debug setup -r` to check report for detail.')
         else:
             pass
     else:
@@ -92,15 +93,27 @@ def setup_checks():
                     Use `ros2 debug setup -r` for more detail.')
 
 
+def print_network_interface_helper(addrs, layer_type):
+    """Format print network interface."""
+    layer_iface = addrs.get(layer_type)
+    if not layer_iface:
+        return
+    print('Address famility number: ', layer_type)
+    for l in layer_iface:
+        for k, v in l.items():
+            print('%s: %s' % (k, v))
+
+
 def print_network_interface():
     """Print out network interface."""
     ids = netifaces.interfaces()
     for i in ids:
+        print('Network Interface Identifier: ', i)
         addrs = netifaces.ifaddresses(i)
-        link = addrs[netifaces.AF_LINK]  # link layer interface eg.Ethernet
-        internet = addrs[netifaces.AF_INET]  # normal internet addresses
-        ipv6 = addrs[netifaces.AF_INET6]  # IPv6
-        print(link)
-        print(internet)
-        print(ipv6)
-    pass
+        print('*************Link Layer**************')
+        print_network_interface_helper(addrs, netifaces.AF_LINK)
+        print('******Normal Internet Addresses******')
+        print_network_interface_helper(addrs, netifaces.AF_INET)
+        print('****************IPv6*****************')
+        print_network_interface_helper(addrs, netifaces.AF_INET6)
+        print('\n')
