@@ -34,3 +34,29 @@ class NetworkVerb(VerbExtension):
         else:
             print('Network check completed!')
             print('\n')
+
+
+def print_network_interface_helper(addrs, layer_type):
+    """Format print network interface."""
+    layer_iface = addrs.get(layer_type)
+    if not layer_iface:
+        return
+    print('Address famility number: ', layer_type)
+    for l in layer_iface:
+        for k, v in l.items():
+            print('%s: %s' % (k, v))
+
+
+def print_network_interface():
+    """Print out network interface."""
+    ids = netifaces.interfaces()
+    for i in ids:
+        print('Network Interface Identifier: ', i)
+        addrs = netifaces.ifaddresses(i)
+        print('*************Link Layer**************')
+        print_network_interface_helper(addrs, netifaces.AF_LINK)
+        print('******Normal Internet Addresses******')
+        print_network_interface_helper(addrs, netifaces.AF_INET)
+        print('****************IPv6*****************')
+        print_network_interface_helper(addrs, netifaces.AF_INET6)
+        print('\n')

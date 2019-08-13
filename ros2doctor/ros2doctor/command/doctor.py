@@ -18,12 +18,12 @@ from ros2cli.command import CommandExtension
 from ros2cli.verb import get_verb_extensions
 
 
-class DebugCommand(CommandExtension):
-    """Various debug related sub-commands."""
+class DoctorCommand(CommandExtension):
+    """Various doctor related sub-commands."""
 
     def add_arguments(self, parser, cli_name):
         self._subparser = parser
-        verb_extensions = get_verb_extensions('ros2debug.verb')
+        verb_extensions = get_verb_extensions('ros2doctor.verb')
         add_subparsers(
             parser, cli_name, '_verb', verb_extensions, required=False)
 

@@ -2,7 +2,7 @@ from setuptools import find_packages
 from setuptools import setup
 
 setup(
-    name='ros2debug',
+    name='ros2doctor',
     version='0.0.0',
     packages=find_packages(exclude=['test']),
     install_requires=['ros2cli'],
@@ -20,21 +20,21 @@ setup(
         'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python',
     ],
-    description='The debug command for ROS 2 command line tools',
+    description='The doctor command for ROS 2 command line tools',
     long_description="""\
-    The package provides the debug command for ROS 2 command line tools""",
+    The package provides a cli tool to check potential issues in ROS2 system""",
     license='Apache License, Version 2.0',
     tests_require=['pytest'],
     entry_points={
         'ros2cli.command': [
-            'debug = ros2debug.command.debug:DebugCommand',
+            'doctor = ros2doctor.command.doctor:DoctorCommand',
+            'wtf = ros2doctor.command.doctor:DoctorCommand',
         ],
         'ros2cli.extension_point': [
-            'ros2debug.verb = ros2debug.verb:VerbExtension',
+            'ros2doctor.verb = ros2doctor.verb:VerbExtension',
         ],
-        'ros2debug.verb': [
-            'setup = ros2debug.verb.setup:SetupVerb',
-            'network = ros2debug.verb.network:NetworkVerb',
+        'ros2doctor.verb': [
+            'platform = ros2doctor.verb.platform:PlatformVerb',
         ],
     }
 )

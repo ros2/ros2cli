@@ -12,29 +12,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ros2debug.api import print_ros2_reqs
-from ros2debug.api import print_sys_info
-from ros2debug.api import setup_checks
-from ros2debug.verb import VerbExtension
+from ros2doctor.api import check_platform
+from ros2doctor.api import print_platform_info
+from ros2doctor.api import print_ros2_reqs
+from ros2doctor.verb import VerbExtension
 
 
-class SetupVerb(VerbExtension):
-    """Cross check system info and ROS 2 system requirements."""
+class PlatformVerb(VerbExtension):
+    """Cross check platform and ROS 2 system requirements."""
 
     def add_arguments(self, parser, cli_name):
         """Determine the args and subcommand taken."""
         parser.add_argument(
             '-r', '--report', action='store_true',
-            help='Display system setup information and ROS 2 requirements'
+            help='Display platform information and ROS 2 requirements'
         )
 
     def main(self, *, args):
-        """Donduct setup checks on system against ROS2 distro reqs."""
+        """Conduct platform checks on machine against ROS2 distro reqs."""
         if args.report:
-            print_sys_info()
+            print_platform_info()
             print_ros2_reqs()
-            print('To check setup requirements use `ros2 debug setup`.')
+            print('To check platform requirements use `ros2 doctor platform`.')
         else:
-            setup_checks()
-            print('Setup check completed!')
+            check_platform()
+            print('Platform check completed!')
             print('\n')

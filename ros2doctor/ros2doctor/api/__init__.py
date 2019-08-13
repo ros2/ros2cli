@@ -15,11 +15,10 @@
 import os
 import platform
 
-import netifaces
 import rosdistro
 
 
-def print_sys_info():
+def print_platform_info():
     """Print out platform information."""
     # platform info
     print('System Information')
@@ -54,7 +53,7 @@ def print_ros2_reqs():
     print('\n')
 
 
-def setup_checks():
+def check_platform():
     """Check platform information against ROS2 requirements."""
     distro_name = os.environ.get('ROS_DISTRO').lower()
     u = rosdistro.get_index_url()
@@ -83,37 +82,11 @@ def setup_checks():
         if not releases or platform.dist()[2].lower() not in releases:
             print('WARNING: Current system platform is not supported\
                 by this ROS distribution.\
-                    User `ros2 debug setup -r` to check report for detail.')
+                    User `ros2 doctor platform -r` to check report for detail.')
         else:
             pass
     else:
         print('WARNING:\
             Limited information on platform requirements on Windows and OSX\
                 are available for auto-check.\
-                    Use `ros2 debug setup -r` for more detail.')
-
-
-def print_network_interface_helper(addrs, layer_type):
-    """Format print network interface."""
-    layer_iface = addrs.get(layer_type)
-    if not layer_iface:
-        return
-    print('Address famility number: ', layer_type)
-    for l in layer_iface:
-        for k, v in l.items():
-            print('%s: %s' % (k, v))
-
-
-def print_network_interface():
-    """Print out network interface."""
-    ids = netifaces.interfaces()
-    for i in ids:
-        print('Network Interface Identifier: ', i)
-        addrs = netifaces.ifaddresses(i)
-        print('*************Link Layer**************')
-        print_network_interface_helper(addrs, netifaces.AF_LINK)
-        print('******Normal Internet Addresses******')
-        print_network_interface_helper(addrs, netifaces.AF_INET)
-        print('****************IPv6*****************')
-        print_network_interface_helper(addrs, netifaces.AF_INET6)
-        print('\n')
+                    Use `ros2 doctor platform -r` for more detail.')
