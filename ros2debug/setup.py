@@ -34,7 +34,6 @@ setup(
         ],
         'ros2debug.verb': [
             'setup = ros2debug.verb.setup:SetupVerb',
-            
         ],
     }
 )

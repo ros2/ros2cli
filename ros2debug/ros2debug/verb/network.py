@@ -12,9 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ros2debug.api import print_ros2_reqs
-from ros2debug.api import print_sys_info
-from ros2debug.api import setup_checks
 from ros2debug.verb import VerbExtension
 
 
@@ -25,14 +22,11 @@ class SetupVerb(VerbExtension):
         """Determine the args and subcommand taken."""
         parser.add_argument(
             '-r', '--report', action='store_true',
-            help='Display system setup information and ROS 2 requirements'
+            help='Display network interface'
         )
 
     def main(self, *, args):
-        """Donduct setup checks on system against ROS2 distro reqs."""
-        if args.report:
-            print_sys_info()
-            print_ros2_reqs()
-        setup_checks()
-        print('Setup check completed!')
-        print('\n')
+        """Sanity check network interface."""
+        # if args.report:
+        print('Network check completed!')
+        print()

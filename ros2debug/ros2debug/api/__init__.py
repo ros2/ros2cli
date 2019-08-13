@@ -15,6 +15,7 @@
 import os
 import platform
 
+import netifaces
 import rosdistro
 
 
@@ -38,7 +39,7 @@ def print_sys_info():
 
 
 def print_ros2_reqs():
-    """Print out ros2 distribution info using `rosdistro`."""
+    """Print out ROS2 distribution info using `rosdistro`."""
     distro_name = os.environ.get('ROS_DISTRO').lower()
     u = rosdistro.get_index_url()
     i = rosdistro.get_index(u)
@@ -54,7 +55,7 @@ def print_ros2_reqs():
 
 
 def setup_checks():
-    """Check platform against ROS2 requirements."""
+    """Check platform information against ROS2 requirements."""
     distro_name = os.environ.get('ROS_DISTRO').lower()
     u = rosdistro.get_index_url()
     i = rosdistro.get_index(u)
@@ -64,10 +65,14 @@ def setup_checks():
     # check distro status
     if distro_info.get('distribution_status') == 'prerelease':
         print('WARNING: Distribution is not fully supported or tested.\
-            Download a stable version at https://index.ros.org/doc/ros2/Installation/')
+            To get more stable features,\
+                Download a stable version at\
+                    https://index.ros.org/doc/ros2/Installation/')
     elif distro_info.get('distribution_status') == 'end-of-life':
         print('WARNING: Distribution is no longer supported or deprecated.\
-            Download the latest version at https://index.ros.org/doc/ros2/Installation/')
+            To get the latest features,\
+                Download the latest version at\
+                    https://index.ros.org/doc/ros2/Installation/')
     else:
         pass
 
@@ -82,5 +87,20 @@ def setup_checks():
             pass
     else:
         print('WARNING:\
-            Limited information on platform requirements on Windows and OSX are available for auto-check.\
-                Use `ros2 debug setup -r` for more detail.')
+            Limited information on platform requirements on Windows and OSX\
+                are available for auto-check.\
+                    Use `ros2 debug setup -r` for more detail.')
+
+
+def print_network_interface():
+    """Print out network interface."""
+    ids = netifaces.interfaces()
+    for i in ids:
+        addrs = netifaces.ifaddresses(i)
+        link = addrs[netifaces.AF_LINK]  # link layer interface eg.Ethernet
+        internet = addrs[netifaces.AF_INET]  # normal internet addresses
+        ipv6 = addrs[netifaces.AF_INET6]  # IPv6
+        print(link)
+        print(internet)
+        print(ipv6)
+    pass
