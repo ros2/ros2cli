@@ -19,6 +19,7 @@ import rosdistro
 
 
 def print_sys_info():
+    """Print out platform information."""
     # platform info
     print('System Information')
     print('system   : ', platform.system())
@@ -36,8 +37,8 @@ def print_sys_info():
     print()
 
 
-# printing ROS2 reqs with `rosdistro`
 def print_ros2_reqs():
+    """Print out ros2 distribution info using `rosdistro`."""
     distro_name = os.environ.get('ROS_DISTRO').lower()
     u = rosdistro.get_index_url()
     i = rosdistro.get_index(u)
@@ -53,6 +54,7 @@ def print_ros2_reqs():
 
 
 def setup_checks():
+    """Check platform against ROS2 requirements."""
     distro_name = os.environ.get('ROS_DISTRO').lower()
     u = rosdistro.get_index_url()
     i = rosdistro.get_index(u)
@@ -79,5 +81,6 @@ def setup_checks():
         else:
             pass
     else:
-        print('WARNING: Limited information on platform requirements on Windows and OSX\
-            are available for auto-check. Use `ros2 debug setup -r` for more detail.')
+        print('WARNING:\
+            Limited information on platform requirements on Windows and OSX are available for auto-check.\
+                Use `ros2 debug setup -r` for more detail.')

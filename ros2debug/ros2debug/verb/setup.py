@@ -22,14 +22,14 @@ class SetupVerb(VerbExtension):
     """Cross check system info and ROS 2 system requirements."""
 
     def add_arguments(self, parser, cli_name):
-        # determine the args and subcommand taken
+        """Determine the args and subcommand taken."""
         parser.add_argument(
-           '-r', '--report', action='store_true',
-           help='Display system setup information and ROS 2 requirements'
+            '-r', '--report', action='store_true',
+            help='Display system setup information and ROS 2 requirements'
         )
 
     def main(self, *, args):
-        # conduct a series of setup checks on sys and version against ROS2 reqs
+        """Donduct setup checks on system against ROS2 distro reqs."""
         if args.report:
             print_sys_info()
             print_ros2_reqs()

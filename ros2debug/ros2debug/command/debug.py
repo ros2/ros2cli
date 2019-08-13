@@ -13,8 +13,8 @@
 # limitations under the License.
 
 
-from ros2cli.command import add_subparsers
 from ros2cli.command import CommandExtension
+from ros2cli.command import add_subparsers
 from ros2cli.verb import get_verb_extensions
 
 
