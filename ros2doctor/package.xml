@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>ros2doctor</name>
-  <version>0.0.0</version>
+  <version>0.7.4</version>
   <description>A command line tool to check potential issues in ROS2 system</description>
   <maintainer email="clairewang@openrobotics.org">Claire Wang</maintainer>
   <license>Apache License 2.0</license>
@@ -10,7 +10,7 @@
   <depend>ros2cli</depend>
 
   <exec_depend>python3-numpy</exec_depend>
-  <exec_depend>python3-rosdistro</exec_depend>
+  <exec_depend>python3-rosdistro-modules</exec_depend>
   
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>

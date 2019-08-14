@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='ros2doctor',
-    version='0.0.0',
+    version='0.7.4',
     packages=find_packages(exclude=['test']),
     install_requires=['ros2cli'],
     zip_safe=True,
@@ -28,7 +28,6 @@ setup(
     entry_points={
         'ros2cli.command': [
             'doctor = ros2doctor.command.doctor:DoctorCommand',
-            'wtf = ros2doctor.command.doctor:DoctorCommand',
         ],
         'ros2cli.extension_point': [
             'ros2doctor.verb = ros2doctor.verb:VerbExtension',
