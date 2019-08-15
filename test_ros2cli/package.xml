@@ -9,7 +9,8 @@
   <maintainer email="ivanpauno@ekumenlabs.com">Ivan Paunovic</maintainer>
   <license>Apache License 2.0</license>
 
-  <test_depend>action_tutorials</test_depend>
+  <test_depend>action_tutorials_interfaces</test_depend>
+  <test_depend>action_tutorials_cpp</test_depend>
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
   <test_depend>ros_testing</test_depend>

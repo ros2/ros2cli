@@ -15,6 +15,8 @@
 from rclpy.topic_or_service_is_hidden import topic_or_service_is_hidden
 from ros2cli.node.strategy import NodeStrategy
 from ros2srv.api import service_type_completer
+from rosidl_runtime_py.convert import message_to_yaml
+from rosidl_runtime_py.utilities import get_service
 
 
 def get_service_names_and_types(*, node, include_hidden_services=False):
@@ -62,3 +64,14 @@ class ServiceTypeCompleter:
                     if n == service_name:
                         return t
         return service_type_completer()
+
+
+class ServicePrototypeCompleter:
+    """Callable returning a service prototype."""
+
+    def __init__(self, *, service_type_key=None):
+        self.service_type_key = service_type_key
+
+    def __call__(self, prefix, parsed_args, **kwargs):
+        service = get_service(getattr(parsed_args, self.service_type_key))
+        return [message_to_yaml(service.Request())]

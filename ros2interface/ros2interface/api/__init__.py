@@ -25,7 +25,7 @@ def get_all_interface_packages():
     return get_resources('rosidl_interfaces')
 
 
-def get_interface(package_name):
+def get_interfaces(package_name):
     if not has_resource('packages', package_name):
         raise LookupError('Unknown package {}'.format(package_name))
     try:
@@ -68,6 +68,12 @@ def type_completer(**kwargs):
         for message_name in message_names:
             types.append(
                 '{package_name}/msg/{message_name}'.format_map(locals()))
+
+    for package_name, action_names in get_all_action_types().items():
+        for action_name in action_names:
+            types.append(
+                '{package_name}/action/{action_name}'.format_map(locals()))
+
     return sorted(types)
 
 

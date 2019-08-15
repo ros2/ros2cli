@@ -123,15 +123,15 @@ class ROSTopicBandwidth(object):
         # min/max and even mean are likely to be much smaller,
         # but for now I prefer unit consistency
         if bytes_per_s < 1000:
-            bw, mean, min_s, max_s = ['%.2fB' % v for v in [bytes_per_s, mean, min_s, max_s]]
+            bw, mean, min_s, max_s = ['%.2fB/s' % v for v in [bytes_per_s, mean, min_s, max_s]]
         elif bytes_per_s < 1000000:
             bw, mean, min_s, max_s = \
-                ['%.2fKB' % (v / 1000) for v in [bytes_per_s, mean, min_s, max_s]]
+                ['%.2fKB/s' % (v / 1000) for v in [bytes_per_s, mean, min_s, max_s]]
         else:
             bw, mean, min_s, max_s = \
-                ['%.2fMB' % (v / 1000000) for v in [bytes_per_s, mean, min_s, max_s]]
+                ['%.2fMB/s' % (v / 1000000) for v in [bytes_per_s, mean, min_s, max_s]]
 
-        print('average: %s/s\n\tmean: %s min: %s max: %s window: %s' % (bw, mean, min_s, max_s, n))
+        print('average: %s\n\tmean: %s min: %s max: %s window: %s' % (bw, mean, min_s, max_s, n))
 
 
 def _rostopic_bw(node, topic, window_size=DEFAULT_WINDOW_SIZE):
