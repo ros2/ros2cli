@@ -12,84 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-import platform
-import sys
-
-import rosdistro
+from ros2doctor.api.platform import check_platform
+from ros2doctor.api.platform import print_platform_info
+from ros2doctor.api.platform import print_ros2_reqs
 
 
-def print_platform_info():
-    """Print out platform information."""
-    # platform info
-    print('System Information')
-    print('system   : ', platform.system())
-    print('Platform Info   : ', platform.platform())
-    print('Mac OS version       : ', platform.mac_ver())
-    print('release  : ', platform.release())
-    print('processor: ', platform.processor())
-    print('\n')
-
-    # python info
-    print('Python')
-    print('version      : ', platform.python_version())
-    print('compiler     : ', platform.python_compiler())
-    print('build        : ', platform.python_build())
-    print('\n')
+def run_checks():
+    """Run all checks when `ros2 doctor/wtf` is called."""
+    check_platform()
 
 
-def check_platform_helper():
-    """Check ROS_DISTRO related environment variables and distribution name."""
-    distro_name = os.environ.get('ROS_DISTRO')
-    if not distro_name:
-        sys.stderr.write('WARNING: ROS_DISTRO is not set.')
-        return
-    else:
-        distro_name = distro_name.lower()
-    u = rosdistro.get_index_url()
-    if not u:
-        sys.stderr.write('WARNING: Unable to access ROSDISTRO_INDEX_URL\
-            or DEFAULT_INDEX_URL.')
-        return
-    # Testing: ROSDISTRO_INDEX_URL value
-    # i = rosdistro.get_index('https://raw.githubusercontent.com/ros/rosdistro/master/index.yaml')
-    i = rosdistro.get_index(u)
-    distro_info = i.distributions.get(distro_name)
-    if not distro_info:
-        sys.stderr.write("WARNING: Distribution name '%s' is not found" % distro_name)
-        return
-    distro_data = rosdistro.get_distribution(i, distro_name).get_data()
-    return distro_name, distro_info, distro_data
-
-
-def print_ros2_reqs():
-    """Print out ROS2 distribution info using `rosdistro`."""
-    if not check_platform_helper():
-        return
-    distro_name, distro_info, distro_data = check_platform_helper()
-
-    print('ROS Information')
-    print('distribution name    : ', distro_name)
-    print('distribution type    : ', distro_info.get('distribution_type'))
-    print('distribution status  : ', distro_info.get('distribution_status'))
-    print('release platforms    : ', distro_data.get('release_platforms'))
-    print('\n')
-
-
-def check_platform():
-    """Check platform information against ROS2 requirements."""
-    if not check_platform_helper():
-        return
-    _, distro_info, _ = check_platform_helper()
-
-    # check distro status
-    if distro_info.get('distribution_status') == 'prerelease':
-        sys.stderr.write('WARNING: Distribution is not fully supported or tested.\
-            To get more stable features,\
-                Download a stable version at\
-                    https://index.ros.org/doc/ros2/Installation/')
-    elif distro_info.get('distribution_status') == 'end-of-life':
-        sys.stderr.write('WARNING: Distribution is no longer supported or deprecated.\
-            To get the latest features,\
-                Download the latest version at\
-                    https://index.ros.org/doc/ros2/Installation/')
+def generate_report():
+    """Print report to terminal when `-r/--report` is attached."""
+    print_platform_info()
+    print_ros2_reqs()

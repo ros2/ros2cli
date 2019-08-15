@@ -28,12 +28,7 @@ setup(
     entry_points={
         'ros2cli.command': [
             'doctor = ros2doctor.command.doctor:DoctorCommand',
-        ],
-        'ros2cli.extension_point': [
-            'ros2doctor.verb = ros2doctor.verb:VerbExtension',
-        ],
-        'ros2doctor.verb': [
-            'platform = ros2doctor.verb.platform:PlatformVerb',
+            'wtf = ros2doctor.command.wtf:WtfCommand',
         ],
     }
 )

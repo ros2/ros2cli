@@ -17,8 +17,8 @@ from ros2doctor.api import generate_report
 from ros2doctor.api import run_checks
 
 
-class DoctorCommand(CommandExtension):
-    """Check ROS setup and other potential issues."""
+class WtfCommand(CommandExtension):
+    """Serves as alias for doctor command."""
 
     def add_arguments(self, parser, cli_name):
         parser.add_argument(
