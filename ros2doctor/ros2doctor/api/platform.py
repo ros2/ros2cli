@@ -93,4 +93,3 @@ def check_platform():
     else:
         passed = True
     return passed
-        
