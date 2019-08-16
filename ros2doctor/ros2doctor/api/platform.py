@@ -21,19 +21,21 @@ import rosdistro
 
 def print_platform_info():
     """Print out platform information."""
+    platform_name = platform.system()
     # platform info
-    print('System Information')
-    print('system   : ', platform.system())
-    print('Platform Info   : ', platform.platform())
-    print('Mac OS version       : ', platform.mac_ver())
-    print('release  : ', platform.release())
-    print('processor: ', platform.processor())
+    print('PLATFORM INFORMATION')
+    print('system               : ', platform_name)
+    print('Platform Info        : ', platform.platform())
+    if platform_name == 'Darwin':
+        print('Mac OS version       : ', platform.mac_ver())
+    print('release              : ', platform.release())
+    print('processor            : ', platform.processor())
 
     # python info
-    print('Python')
-    print('version      : ', platform.python_version())
-    print('compiler     : ', platform.python_compiler())
-    print('build        : ', platform.python_build())
+    print('PYTHON INFORMATION')
+    print('version              : ', platform.python_version())
+    print('compiler             : ', platform.python_compiler())
+    print('build                : ', platform.python_build())
 
 
 def check_platform_helper():
@@ -60,11 +62,12 @@ def check_platform_helper():
 
 def print_ros2_info():
     """Print out ROS2 distribution info using `rosdistro`."""
-    if not check_platform_helper():
+    distros = check_platform_helper()
+    if not distros:
         return
-    distro_name, distro_info, distro_data = check_platform_helper()
+    distro_name, distro_info, distro_data = distros
 
-    print('ROS Information')
+    print('ROS INFORMATION')
     print('distribution name    : ', distro_name)
     print('distribution type    : ', distro_info.get('distribution_type'))
     print('distribution status  : ', distro_info.get('distribution_status'))
@@ -72,7 +75,7 @@ def print_ros2_info():
 
 
 def check_platform():
-    """Check platform information against ROS2 requirements."""
+    """Check platform information against ROS 2 requirements."""
     passed = False
     distros = check_platform_helper()
     if not distros:

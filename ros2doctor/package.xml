@@ -3,7 +3,7 @@
 <package format="3">
   <name>ros2doctor</name>
   <version>0.7.4</version>
-  <description>A command line tool to check potential issues in a ROS2 system</description>
+  <description>A command line tool to check potential issues in a ROS 2 system</description>
   <maintainer email="clairewang@openrobotics.org">Claire Wang</maintainer>
   <license>Apache License 2.0</license>
 
