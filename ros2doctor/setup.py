@@ -28,7 +28,10 @@ setup(
     entry_points={
         'ros2cli.command': [
             'doctor = ros2doctor.command.doctor:DoctorCommand',
-            'wtf = ros2doctor.command.wtf:WtfCommand',
+            'wtf = ros2doctor.command.doctor:WtfCommand',
+        ],
+        'ros2doctor.api':[
+            'check_platform = ros2doctor.api.platform:check_platform',
         ],
     }
 )

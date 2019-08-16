@@ -73,9 +73,10 @@ def print_ros2_reqs():
 
 def check_platform():
     """Check platform information against ROS2 requirements."""
-    if not check_platform_helper():
+    distros = check_platform_helper()
+    if not distros:
         return
-    _, distro_info, _ = check_platform_helper()
+    _, distro_info, _ = distros
 
     # check distro status
     if distro_info.get('distribution_status') == 'prerelease':
@@ -88,4 +89,4 @@ def check_platform():
             To get the latest features,\
                 Download the latest version at\
                     https://index.ros.org/doc/ros2/Installation/')
-    print('Platform checks completed.')
+    print('testing completed')

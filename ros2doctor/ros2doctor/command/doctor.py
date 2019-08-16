@@ -31,3 +31,9 @@ class DoctorCommand(CommandExtension):
             generate_report()
         else:
             run_checks()
+
+
+class WtfCommand(DoctorCommand):
+    """Check ROS setup and other potential issues."""
+
+    pass

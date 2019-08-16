@@ -12,17 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ros2doctor.api.platform import check_platform
-from ros2doctor.api.platform import print_platform_info
-from ros2doctor.api.platform import print_ros2_reqs
+from pkg_resources import iter_entry_points
 
 
 def run_checks():
     """Run all checks when `ros2 doctor/wtf` is called."""
-    check_platform()
+    for check in iter_entry_points('ros2doctor.api'):
+        check.load()
 
 
 def generate_report():
     """Print report to terminal when `-r/--report` is attached."""
-    print_platform_info()
-    print_ros2_reqs()
+    pass
