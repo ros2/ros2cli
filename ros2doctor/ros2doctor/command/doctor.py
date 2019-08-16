@@ -30,10 +30,16 @@ class DoctorCommand(CommandExtension):
         if args.report:
             generate_report()
         else:
-            run_checks()
+            all_result, failed_names = run_checks()  #TODO: print failed check name
+            failed = all_result.count(False)
+            passed = all_result.count(True)
+            if failed != 0:
+                print('%d/%d checks failed' % (failed, len(all_result)))
+                print('Failed checks:', *failed_names)
+            else:
+                print('%d/%d checks passed' % (passed, len(all_result)))
 
 
 class WtfCommand(DoctorCommand):
-    """Check ROS setup and other potential issues."""
-
+    """Add `wtf` as alias to `doctor`"""
     pass

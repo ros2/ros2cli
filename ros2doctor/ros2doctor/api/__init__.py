@@ -17,10 +17,17 @@ from pkg_resources import iter_entry_points
 
 def run_checks():
     """Run all checks when `ros2 doctor/wtf` is called."""
-    for check in iter_entry_points('ros2doctor.api'):
-        check.load()
+    all_results = []
+    failed_names = []
+    for check in iter_entry_points('ros2doctor.checks'):
+        result = check.load()()  # load() returns method
+        all_results.append(result)
+        if result is False:
+            failed_names.append(check.name)
+    return all_results, failed_names
 
 
 def generate_report():
     """Print report to terminal when `-r/--report` is attached."""
-    pass
+    for report in iter_entry_points('ros2doctor.report'):
+        report.load()()  # load() returns method

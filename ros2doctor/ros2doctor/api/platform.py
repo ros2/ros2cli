@@ -58,7 +58,7 @@ def check_platform_helper():
     return distro_name, distro_info, distro_data
 
 
-def print_ros2_reqs():
+def print_ros2_info():
     """Print out ROS2 distribution info using `rosdistro`."""
     if not check_platform_helper():
         return
@@ -73,9 +73,10 @@ def print_ros2_reqs():
 
 def check_platform():
     """Check platform information against ROS2 requirements."""
+    passed = False
     distros = check_platform_helper()
     if not distros:
-        return
+        return passed
     _, distro_info, _ = distros
 
     # check distro status
@@ -89,4 +90,7 @@ def check_platform():
             To get the latest features,\
                 Download the latest version at\
                     https://index.ros.org/doc/ros2/Installation/')
-    print('testing completed')
+    else:
+        passed = True
+    return passed
+        
