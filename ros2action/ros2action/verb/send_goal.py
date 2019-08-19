@@ -73,7 +73,7 @@ def _goal_status_to_string(status):
 
 
 def _feedback_callback(feedback):
-    print('Feedback:\n    {}'.format(message_to_yaml(feedback.feedback, None)))
+    print('Feedback:\n    {}'.format(message_to_yaml(feedback.feedback)))
 
 
 def send_goal(action_name, action_type, goal_values, feedback_callback):
@@ -116,7 +116,7 @@ def send_goal(action_name, action_type, goal_values, feedback_callback):
         print('Waiting for an action server to become available...')
         action_client.wait_for_server()
 
-        print('Sending goal:\n     {}'.format(message_to_yaml(goal, None)))
+        print('Sending goal:\n     {}'.format(message_to_yaml(goal)))
         goal_future = action_client.send_goal_async(goal, feedback_callback)
         rclpy.spin_until_future_complete(node, goal_future)
 
@@ -146,7 +146,7 @@ def send_goal(action_name, action_type, goal_values, feedback_callback):
         # no need to potentially cancel the goal anymore
         goal_handle = None
 
-        print('Result:\n    {}'.format(message_to_yaml(result.result, None)))
+        print('Result:\n    {}'.format(message_to_yaml(result.result)))
         print('Goal finished with status: {}'.format(_goal_status_to_string(result.status)))
     finally:
         # Cancel the goal if it's still active
