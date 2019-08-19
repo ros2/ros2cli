@@ -3,7 +3,7 @@
 This folder contains the source code for ros2doctor.
 It is one of the ROS 2 command line interface tools included with a standard install of any ROS 2 distro.
 `ros2doctor` is similar to `roswtf` from ROS 1.
-It will examine your ROS 2 setup, such as distribution and platform, network interface etc. and look for potential issues in a running ROS system.
+It will examine your ROS 2 setup, such as distribution, platform, network interface, etc., and look for potential issues in a running ROS 2 system.
 
 ## Usage
 
