@@ -90,4 +90,6 @@ def check_network():
 
 def print_network():
     """Print all system and ROS network information."""
+    local_addrs = get_local_addresses()
+    print('Local addresses: ', *local_addrs)
     pass
