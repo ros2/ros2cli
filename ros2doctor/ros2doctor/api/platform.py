@@ -16,6 +16,8 @@ import os
 import platform
 import sys
 
+from ros2doctor.api.format import print_term
+
 import rosdistro
 
 
@@ -24,18 +26,19 @@ def print_platform_info():
     platform_name = platform.system()
     # platform info
     print('PLATFORM INFORMATION')
-    print('system               : ', platform_name)
-    print('Platform Info        : ', platform.platform())
+    print_term('system', platform_name)
+    print_term('platform info', platform.platform())
     if platform_name == 'Darwin':
-        print('Mac OS version       : ', platform.mac_ver())
-    print('release              : ', platform.release())
-    print('processor            : ', platform.processor())
+        print_term('mac OS version', platform.mac_ver())
+    print_term('release', platform.release())
+    print_term('processor', platform.processor())
 
     # python info
     print('PYTHON INFORMATION')
-    print('version              : ', platform.python_version())
-    print('compiler             : ', platform.python_compiler())
-    print('build                : ', platform.python_build())
+    print_term('version', platform.python_version())
+    print_term('compiler', platform.python_compiler())
+    print_term('build', platform.python_build())
+    print('\n')
 
 
 def check_platform_helper():
@@ -68,10 +71,11 @@ def print_ros2_info():
     distro_name, distro_info, distro_data = distros
 
     print('ROS INFORMATION')
-    print('distribution name    : ', distro_name)
-    print('distribution type    : ', distro_info.get('distribution_type'))
-    print('distribution status  : ', distro_info.get('distribution_status'))
-    print('release platforms    : ', distro_data.get('release_platforms'))
+    print_term('distribution name', distro_name)
+    print_term('distribution type', distro_info.get('distribution_type'))
+    print_term('distribution status', distro_info.get('distribution_status'))
+    print_term('release platforms', distro_data.get('release_platforms'))
+    print('\n')
 
 
 def check_platform():

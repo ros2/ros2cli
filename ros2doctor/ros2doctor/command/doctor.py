@@ -41,6 +41,6 @@ class DoctorCommand(CommandExtension):
 
 
 class WtfCommand(DoctorCommand):
-    """Add `wtf` as alias to `doctor`."""
+    """Use `wtf` as alias to `doctor`."""
 
     pass
