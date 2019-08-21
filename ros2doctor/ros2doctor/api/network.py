@@ -12,7 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import ipaddress
 import netifaces
+import os
 import platform
 import socket
 import sys
@@ -23,10 +25,10 @@ def _is_unix_like_platform():
     return platform.system() in ['Linux', 'FreeBSD', 'Darwin']
 
 
-def _use_ipv6():
-    """Check if ROS uses IPV6"""
-    ipv6 = os.environ.get('ROS_IPV6')
-    return ipv6 and ipv6 == 'on'
+# def _use_ipv6():
+#     """Check if ROS uses IPV6"""
+#     ipv6 = os.environ.get('ROS_IPV6')
+#     return ipv6 and ipv6 == 'on'
 
 
 def get_local_addresses():
@@ -38,16 +40,16 @@ def get_local_addresses():
         for i in netifaces.interfaces():
             addrs = netifaces.ifaddresses(i)
             if socket.AF_INET in addrs:
-                v4addrs.extend([addr['addr'] for addr in addrs[socket.AF_INET]])
+                ipv4_addrs.extend([addr['addr'] for addr in addrs[socket.AF_INET]])
             if socket.AF_INET6 in addrs:
-                v6addrs.extend([addr['addr'] for addr in addrs[socket.AF_INET6]])
-        if _use_ipv6():
+                ipv6_addrs.extend([addr['addr'] for addr in addrs[socket.AF_INET6]])
+        if socket.has_ipv6:
             local_addrs = ipv4_addrs + ipv6_addrs
         else:
             local_addrs = ipv4_addrs
     else:
         # can only resolve one address on other platforms?
-        if _use_ipv6():
+        if socket.has_ipv6:
             local_addrs = [host[4][0] for host in socket.getaddrinfo(socket.gethostname(),\
                                 0, 0, 0, socket.SOL_TCP)]
         else:
@@ -56,36 +58,45 @@ def get_local_addresses():
     return local_addrs
 
 
-def check_sys_ips():
-    """Compare roslib's routine against socket resolution to see if they agree."""
-    #TODO figure out the significance of this check
-    pass
-
-# def check_ros_hostname():
-#     """Check if ROS_HOSTNAME resolves to a local IP address."""
-#     hostname = 
-#     pass
-
-def check_ros_ip():
-    """Check if ROS_IP is a local IP address."""
-
-    pass
-
-
-# Error / Warning Rules
-
-warnings = {}
-
-errors = {}
+def check_sys_ips(local_addrs):
+    """Check if loopback and multicast IP addresses are present."""
+    has_loopback = False
+    has_others = False
+    has_multicast = False
+    for addr in local_addrs:
+        try:
+            addr_obj = ipaddress.ip_address(addr)
+        except ValueError:
+            continue
+        if addr_obj.is_loopback:
+            has_loopback = True
+        else:
+            has_others = True
+        # if addr_obj.is_multicast:
+        #     has_multicast = True
+    return has_loopback, has_others, has_multicast
 
 
 def check_network():
     """Conduct network checks and output error/warning messages."""
-
-    pass
+    result = False
+    local_addrs = get_local_addresses()
+    if not local_addrs:
+        sys.stderr.write('ERROR: No local IP addresses found.\n')
+        return result
+    else:
+        has_loopback, has_others, has_multicast = check_sys_ips(local_addrs)
+        if not has_loopback:
+            sys.stderr.write('ERROR: No loopback IP address is found.\n')
+        if not has_others:
+            sys.stderr.write('WARNING: Only loopback IP address is found.\n')
+        # if not has_multicast:
+        #     sys.stderr.write('WARNING: No multicast IP address found.\n')
+        if has_loopback and has_others:
+            result = True
+    return result
 
 
 def print_network():
     """Print all system and ROS network information."""
-
     pass

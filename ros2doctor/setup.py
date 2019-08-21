@@ -32,6 +32,7 @@ setup(
         ],
         'ros2doctor.checks': [
             'check_platform = ros2doctor.api.platform:check_platform',
+            'check_network = ros2doctor.api.network:check_network',
         ],
         'ros2doctor.report': [
             'report_platform = ros2doctor.api.platform:print_platform_info',
