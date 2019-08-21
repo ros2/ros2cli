@@ -21,15 +21,13 @@ from ros2doctor.api.format import print_term
 
 
 def _is_unix_like_platform():
-    """Return True is conforms to UNIX/POSIX-style APIs."""
+    """Return True if conforms to UNIX/POSIX-style APIs."""
     return platform.system() in ['Linux', 'FreeBSD', 'Darwin']
 
 
 def check_sys_ips():
-    """Check if loopback and multicast IP addresses are present."""
-    has_loopback = False
-    has_others = False
-    has_multicast = False
+    """Check if loopback and multicast IP addresses are found."""
+    has_loopback, has_others, has_multicast = False, False, False
     for name, iface in ifcfg.interfaces().items():
         flags = iface.get('flags')
         if 'LOOPBACK' in flags:
