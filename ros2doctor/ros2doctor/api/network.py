@@ -25,12 +25,6 @@ def _is_unix_like_platform():
     return platform.system() in ['Linux', 'FreeBSD', 'Darwin']
 
 
-# def _use_ipv6():
-#     """Check if ROS uses IPV6"""
-#     ipv6 = os.environ.get('ROS_IPV6')
-#     return ipv6 and ipv6 == 'on'
-
-
 def get_local_addresses():
     """Fetch a list of local IP addresses."""
     local_addrs = []
@@ -40,8 +34,10 @@ def get_local_addresses():
         for i in netifaces.interfaces():
             addrs = netifaces.ifaddresses(i)
             if socket.AF_INET in addrs:
+                # get ipv4 addresses from all interfaces
                 ipv4_addrs.extend([addr['addr'] for addr in addrs[socket.AF_INET]])
             if socket.AF_INET6 in addrs:
+                # get ipv6 addresses from all interfaces
                 ipv6_addrs.extend([addr['addr'] for addr in addrs[socket.AF_INET6]])
         if socket.has_ipv6:
             local_addrs = ipv4_addrs + ipv6_addrs
@@ -62,7 +58,6 @@ def check_sys_ips(local_addrs):
     """Check if loopback and multicast IP addresses are present."""
     has_loopback = False
     has_others = False
-    has_multicast = False
     for addr in local_addrs:
         try:
             addr_obj = ipaddress.ip_address(addr)
@@ -72,9 +67,7 @@ def check_sys_ips(local_addrs):
             has_loopback = True
         else:
             has_others = True
-        # if addr_obj.is_multicast:
-        #     has_multicast = True
-    return has_loopback, has_others, has_multicast
+    return has_loopback, has_others
 
 
 def check_network():
@@ -85,13 +78,11 @@ def check_network():
         sys.stderr.write('ERROR: No local IP addresses found.\n')
         return result
     else:
-        has_loopback, has_others, has_multicast = check_sys_ips(local_addrs)
+        has_loopback, has_others = check_sys_ips(local_addrs)
         if not has_loopback:
             sys.stderr.write('ERROR: No loopback IP address is found.\n')
         if not has_others:
             sys.stderr.write('WARNING: Only loopback IP address is found.\n')
-        # if not has_multicast:
-        #     sys.stderr.write('WARNING: No multicast IP address found.\n')
         if has_loopback and has_others:
             result = True
     return result
