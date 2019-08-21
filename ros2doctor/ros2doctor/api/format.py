@@ -17,4 +17,4 @@ def print_term(k, v):
     """Print term only if it exists."""
     if v:
         # TODO: 20 padding needs to be dynamically set
-        print('{:20}: {}'.format(k,v))
+        print('{:20}: {}'.format(k, v))
