@@ -12,6 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
+
+from domain_coordinator import get_coordinated_domain_id
+
 from ros2cli.node.direct import DirectNode
 from ros2cli.node.strategy import NodeStrategy
 
@@ -19,6 +23,10 @@ from ros2component.api import find_container_node_names
 from ros2component.api import get_package_component_types
 
 from ros2node.api import get_node_names
+
+
+domain_id = get_coordinated_domain_id()  # Must keep this as a local to keep it alive
+os.environ['ROS_DOMAIN_ID'] = str(domain_id)
 
 
 def test_find_container_node_names():
