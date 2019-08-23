@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import platform
+import os
 import sys
 
 import ifcfg
@@ -22,36 +22,33 @@ from ros2doctor.api.format import print_term
 
 def _is_unix_like_platform():
     """Return True if conforms to UNIX/POSIX-style APIs."""
-    return platform.system() in ['Linux', 'FreeBSD', 'Darwin']
+    return os.name == 'posix'
 
 
-def check_sys_ips():
+def check_network_config_helper():
     """Check if loopback and multicast IP addresses are found."""
-    has_loopback, has_others, has_multicast = False, False, False
+    has_loopback, has_non_loopback, has_multicast = False, False, False
     for name, iface in ifcfg.interfaces().items():
         flags = iface.get('flags')
         if 'LOOPBACK' in flags:
             has_loopback = True
         else:
-            has_others = True
+            has_non_loopback = True
         if 'MULTICAST' in flags:
             has_multicast = True
-    return has_loopback, has_others, has_multicast
+    return has_loopback, has_non_loopback, has_multicast
 
 
 def check_network_config():
     """Conduct network checks and output error/warning messages."""
-    result = False
-    has_loopback, has_others, has_multicast = check_sys_ips()
+    has_loopback, has_non_loopback, has_multicast = check_network_config_helper()
     if not has_loopback:
         sys.stderr.write('ERROR: No loopback IP address is found.\n')
-    if not has_others:
+    if not has_non_loopback:
         sys.stderr.write('WARNING: Only loopback IP address is found.\n')
     if not has_multicast:
         sys.stderr.write('WARNING: No multicast IP address is found.\n')
-    if has_loopback and has_others and has_multicast:
-        result = True
-    return result
+    return has_loopback and has_non_loopback and has_multicast
 
 
 def print_network():
