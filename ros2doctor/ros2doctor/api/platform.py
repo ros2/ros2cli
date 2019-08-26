@@ -33,12 +33,6 @@ def report_platform_info():
         platform_info['mac OS version'] = platform.mac_ver()
     platform_info['release'] = platform.release()
     platform_info['processor'] = platform.processor()
-
-    # # python info
-    # print('PYTHON INFORMATION')
-    # print_term('version', platform.python_version())
-    # print_term('compiler', platform.python_compiler())
-    # print_term('build', platform.python_build())
     return platform_info
 
 
