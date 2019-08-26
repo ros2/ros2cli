@@ -22,12 +22,15 @@ def run_checks():
     for check in iter_entry_points('ros2doctor.checks'):
         result = check.load()()  # load() returns method
         all_results.append(result)
+        print(check.module_name)
         if result is False:
-            failed_names.append(check.name)
+            failed_names.append(check.module_name)
     return all_results, failed_names
 
 
 def generate_report():
     """Print report to terminal when `-r/--report` is attached."""
+    modules = {}
     for report in iter_entry_points('ros2doctor.report'):
-        report.load()()  # load() returns method
+        modules[report.module_name] = report.load()()  # load() returns method
+    return modules

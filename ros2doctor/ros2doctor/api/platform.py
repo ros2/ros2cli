@@ -21,24 +21,25 @@ from ros2doctor.api.format import print_term
 import rosdistro
 
 
-def print_platform_info():
+def report_platform_info():
     """Print out platform information."""
     platform_name = platform.system()
     # platform info
-    print('PLATFORM INFORMATION')
-    print_term('system', platform_name)
-    print_term('platform info', platform.platform())
-    if platform_name == 'Darwin':
-        print_term('mac OS version', platform.mac_ver())
-    print_term('release', platform.release())
-    print_term('processor', platform.processor())
 
-    # python info
-    print('PYTHON INFORMATION')
-    print_term('version', platform.python_version())
-    print_term('compiler', platform.python_compiler())
-    print_term('build', platform.python_build())
-    print('\n')
+    platform_info = {'NAME': 'PLATFORM INFORMATION'}
+    platform_info['system'] = platform_name
+    platform_info['platform info'] = platform.platform()
+    if platform_name == 'Darwin':
+        platform_info['mac OS version'] = platform.mac_ver()
+    platform_info['release'] = platform.release()
+    platform_info['processor'] = platform.processor()
+
+    # # python info
+    # print('PYTHON INFORMATION')
+    # print_term('version', platform.python_version())
+    # print_term('compiler', platform.python_compiler())
+    # print_term('build', platform.python_build())
+    return platform_info
 
 
 def check_platform_helper():
@@ -63,19 +64,19 @@ def check_platform_helper():
     return distro_name, distro_info, distro_data
 
 
-def print_ros2_info():
+def report_ros2_info():
     """Print out ROS2 distribution info using `rosdistro`."""
     distros = check_platform_helper()
     if not distros:
         return
     distro_name, distro_info, distro_data = distros
 
-    print('ROS INFORMATION')
-    print_term('distribution name', distro_name)
-    print_term('distribution type', distro_info.get('distribution_type'))
-    print_term('distribution status', distro_info.get('distribution_status'))
-    print_term('release platforms', distro_data.get('release_platforms'))
-    print('\n')
+    ros_info = {'NAME': 'ROS 2 INFORMATION'}
+    ros_info['distribution name'] = distro_name
+    ros_info['distribution type'] = distro_info.get('distribution_type')
+    ros_info['distribution status'] = distro_info.get('distribution_status')
+    ros_info['release platforms'] = distro_data.get('release_platforms')
+    return ros_info
 
 
 def check_platform():

@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from ros2cli.command import CommandExtension
+from ros2doctor.api.format import format_print
 from ros2doctor.api import generate_report
 from ros2doctor.api import run_checks
 
@@ -23,21 +24,36 @@ class DoctorCommand(CommandExtension):
     def add_arguments(self, parser, cli_name):
         parser.add_argument(
             '--report', '-r', action='store_true',
-            help='Print out doctor report.'
+            help='Print out all report info.'
+        )
+        parser.add_argument(
+            '--report_failed', '-rf', action='store_true',
+            help="Print out report info on failed checks."
         )
 
     def main(self, *, parser, args):
-        if args.report:
-            generate_report()
+        all_result, failed_names = run_checks()
+        failed = all_result.count(False)
+        passed = all_result.count(True)
+        if failed != 0:
+            print('%d/%d checks failed' % (failed, len(all_result)))
+            print('Failed checks:', *failed_names)
         else:
-            all_result, failed_names = run_checks()
-            failed = all_result.count(False)
-            passed = all_result.count(True)
-            if failed != 0:
-                print('%d/%d checks failed' % (failed, len(all_result)))
-                print('Failed checks:', *failed_names)
-            else:
-                print('%d/%d checks passed' % (passed, len(all_result)))
+            print('%d/%d checks passed' % (passed, len(all_result)))
+
+        if args.report:
+            all_report = generate_report()
+            format_print(all_names, all_report)
+            # for name, module_report in all_report.items():
+            #     for k, v in module_report.items():
+            #         print_term(k, v)
+        if args.report_failed:
+            format_print(failed_names, all_report)
+            # for module_name in failed_names:
+            #     module_report = all_report.get(module_name)
+            #     if module_report:
+            #         for k, v in module_report:
+            #             print_term(k, v)
 
 
 class WtfCommand(DoctorCommand):

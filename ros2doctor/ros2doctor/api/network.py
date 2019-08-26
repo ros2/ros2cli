@@ -51,10 +51,10 @@ def check_network_config():
     return has_loopback and has_non_loopback and has_multicast
 
 
-def print_network():
+def report_network():
     """Print all system and ROS network information."""
-    print('NETWORK CONFIGURATION')
+    network_info = {'NAME': 'NETWORK CONFIGURATION'}
     for name, iface in ifcfg.interfaces().items():
         for k, v in iface.items():
-            print_term(k, v)
-    print('\n')
+            network_info[k] = v
+    return network_info

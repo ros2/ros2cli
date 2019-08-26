@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-def print_term(k, v):
+def format_print(name, report):
     """Print term only if it exists."""
     if v:
         # TODO(clairewang): 20 padding needs to be dynamically set
