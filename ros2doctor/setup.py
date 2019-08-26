@@ -32,10 +32,12 @@ setup(
         ],
         'ros2doctor.checks': [
             'check_platform = ros2doctor.api.platform:check_platform',
+            'check_network_config = ros2doctor.api.network:check_network_config',
         ],
         'ros2doctor.report': [
             'report_platform = ros2doctor.api.platform:print_platform_info',
             'report_ros_distro = ros2doctor.api.platform:print_ros2_info',
+            'report_network_config = ros2doctor.api.network:print_network',
         ],
     }
 )
