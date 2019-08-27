@@ -17,8 +17,6 @@ import sys
 
 import ifcfg
 
-from ros2doctor.api.format import print_term
-
 
 def _is_unix_like_platform():
     """Return True if conforms to UNIX/POSIX-style APIs."""
@@ -56,5 +54,6 @@ def report_network():
     network_info = [('NAME', 'NETWORK CONFIGURATION')]
     for name, iface in ifcfg.interfaces().items():
         for k, v in iface.items():
-            network_info.append((k, v))
+            if v:
+                network_info.append((k, v))
     return network_info

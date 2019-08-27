@@ -16,8 +16,6 @@ import os
 import platform
 import sys
 
-from ros2doctor.api.format import print_term
-
 import rosdistro
 
 
