@@ -26,13 +26,13 @@ def report_platform_info():
     platform_name = platform.system()
     # platform info
 
-    platform_info = {'NAME': 'PLATFORM INFORMATION'}
-    platform_info['system'] = platform_name
-    platform_info['platform info'] = platform.platform()
+    platform_info = [('NAME', 'PLATFORM INFORMATION')]
+    platform_info.append(('system', platform_name))
+    platform_info.append(('platform info', platform.platform()))
     if platform_name == 'Darwin':
-        platform_info['mac OS version'] = platform.mac_ver()
-    platform_info['release'] = platform.release()
-    platform_info['processor'] = platform.processor()
+        platform_info.append(('mac OS version', platform.mac_ver()))
+    platform_info.append(('release', platform.release()))
+    platform_info.append(('processor', platform.processor()))
     return platform_info
 
 
@@ -65,11 +65,11 @@ def report_ros2_info():
         return
     distro_name, distro_info, distro_data = distros
 
-    ros_info = {'NAME': 'ROS 2 INFORMATION'}
-    ros_info['distribution name'] = distro_name
-    ros_info['distribution type'] = distro_info.get('distribution_type')
-    ros_info['distribution status'] = distro_info.get('distribution_status')
-    ros_info['release platforms'] = distro_data.get('release_platforms')
+    ros_info = [('NAME', 'ROS 2 INFORMATION')]
+    ros_info.append(('distribution name', distro_name))
+    ros_info.append(('distribution type', distro_info.get('distribution_type')))
+    ros_info.append(('distribution status', distro_info.get('distribution_status')))
+    ros_info.append(('release platforms', distro_data.get('release_platforms')))
     return ros_info
 
 
