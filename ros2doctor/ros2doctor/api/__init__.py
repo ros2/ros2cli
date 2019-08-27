@@ -28,9 +28,9 @@ def run_checks():
     return all_results, failed_names
 
 
-def generate_report():
+def generate_report(names, report):
     """Print report to terminal when `-r/--report` is attached."""
-    modules = {}
-    for report in iter_entry_points('ros2doctor.report'):
-        modules[report.module_name] = report.load()()  # load() returns method
-    return modules
+    report = {}
+    for r in iter_entry_points('ros2doctor.report'):
+        report[r.module_name] = r.load()()  # load() returns method
+    return report

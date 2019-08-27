@@ -32,6 +32,10 @@ class DoctorCommand(CommandExtension):
         )
 
     def main(self, *, parser, args):
+        if args.report:
+            report = generate_report()
+            format_print(report.keys(), report)
+            return 
         all_result, failed_names = run_checks()
         failed = all_result.count(False)
         passed = all_result.count(True)
@@ -40,20 +44,9 @@ class DoctorCommand(CommandExtension):
             print('Failed checks:', *failed_names)
         else:
             print('%d/%d checks passed' % (passed, len(all_result)))
-
-        if args.report:
-            all_report = generate_report()
-            format_print(all_names, all_report)
-            # for name, module_report in all_report.items():
-            #     for k, v in module_report.items():
-            #         print_term(k, v)
         if args.report_failed:
-            format_print(failed_names, all_report)
-            # for module_name in failed_names:
-            #     module_report = all_report.get(module_name)
-            #     if module_report:
-            #         for k, v in module_report:
-            #             print_term(k, v)
+            report = generate_report()
+            format_print(failed_names, report)
 
 
 class WtfCommand(DoctorCommand):
