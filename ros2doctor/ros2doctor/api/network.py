@@ -53,8 +53,8 @@ def check_network_config():
 
 def report_network():
     """Print all system and ROS network information."""
-    network_info = {'NAME': 'NETWORK CONFIGURATION'}
+    network_info = [('NAME', 'NETWORK CONFIGURATION')]
     for name, iface in ifcfg.interfaces().items():
         for k, v in iface.items():
-            network_info[k] = v
+            network_info.append((k, v))
     return network_info
