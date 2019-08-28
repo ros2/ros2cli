@@ -284,4 +284,6 @@ def run_standalone_container(*, container_node_name):
     if executable_path is None:
         raise RuntimeError('No component container node found!')
 
-    return subprocess.Popen([executable_path, '__node:=' + container_node_name])
+    return subprocess.Popen([
+        executable_path, '--ros-args', '-r', '__node:=' + container_node_name
+    ])
