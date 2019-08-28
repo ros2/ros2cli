@@ -77,17 +77,17 @@ def check_platform():
     distros = check_platform_helper()
     if not distros:
         return passed
-    _, distro_info, _ = distros
+    distro_name, distro_info, _ = distros
 
     # check distro status
     if distro_info.get('distribution_status') == 'prerelease':
-        sys.stderr.write('WARNING: Distribution is not fully supported or tested. '
-                         'To get more stable features, download a stable version at '
-                         'https://index.ros.org/doc/ros2/Installation/\n')
+        sys.stderr.write('WARNING: Distribution %s is not fully supported or tested. '
+                         'To get more consistent features, download a stable version at '
+                         'https://index.ros.org/doc/ros2/Installation/\n' % distro_name)
     elif distro_info.get('distribution_status') == 'end-of-life':
-        sys.stderr.write('WARNING: Distribution is no longer supported or deprecated. '
-                         'To get the latest features, download the latest version at '
-                         'https://index.ros.org/doc/ros2/Installation/')
+        sys.stderr.write('WARNING: Distribution %s is no longer supported or deprecated. '
+                         'To get the latest features, download the new versions at '
+                         'https://index.ros.org/doc/ros2/Installation/' % distro_name)
     else:
         passed = True
     return passed

@@ -15,12 +15,12 @@
 import sys
 
 
-def format_print(names, report):
+def format_print(modules, report):
     """Format print report according to module names."""
-    padding_num = compute_padding(names, report)
-    for n in names:
-        if n in report:
-            module_report = report.get(n)
+    padding_num = compute_padding(modules, report)
+    for m in modules:
+        if m in report:
+            module_report = report.get(m)
             for k, v in module_report:
                 if k == 'NAME':
                     print(v)
@@ -31,14 +31,14 @@ def format_print(names, report):
             sys.stderr.write('WARNING: No report available for this check.')
 
 
-def compute_padding(names, report):
+def compute_padding(modules, report):
     """Compute padding based on report content."""
     padding = 8
-    for n in names:
-        if n in report:
-            module_report = report.get(n)
-            item_names = list(zip(*module_report))[0]
-            max_len = len(max(item_names, key=len))
+    for m in modules:
+        if m in report:
+            module_report = report.get(m)
+            check_items = list(zip(*module_report))[0]  # get first elements of tuples
+            max_len = len(max(check_items, key=len))  # find the longest string
             if max_len >= padding:
-                padding = max_len + 4
+                padding = max_len + 4  # padding number is longest string length + 4
     return padding

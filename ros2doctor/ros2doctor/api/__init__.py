@@ -18,14 +18,15 @@ from pkg_resources import iter_entry_points
 def run_checks():
     """Run all checks when `ros2 doctor/wtf` is called."""
     all_results = []
-    failed_names = []
+    failed_checks = []
+    failed_modules = []
     for check in iter_entry_points('ros2doctor.checks'):
         result = check.load()()  # load() returns method
         all_results.append(result)
-        print(check.module_name)
         if result is False:
-            failed_names.append(check.module_name)
-    return all_results, failed_names
+            failed_checks.append(check.name)
+            failed_modules.append(check.module_name)
+    return all_results, failed_checks, failed_modules
 
 
 def generate_report():

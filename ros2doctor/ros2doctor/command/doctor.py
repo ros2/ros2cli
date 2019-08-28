@@ -36,17 +36,17 @@ class DoctorCommand(CommandExtension):
             report = generate_report()
             format_print(report.keys(), report)
             return 
-        all_result, failed_names = run_checks()
-        failed = all_result.count(False)
-        passed = all_result.count(True)
+        check_results, failed_checks, failed_modules = run_checks()
+        failed = check_results.count(False)
+        passed = check_results.count(True)
         if failed != 0:
-            print('%d/%d checks failed' % (failed, len(all_result)))
-            print('Failed checks:', *failed_names)
+            print('%d/%d checks failed' % (failed, len(check_results)))
+            print('Failed checks:', *failed_checks)
         else:
-            print('%d/%d checks passed' % (passed, len(all_result)))
+            print('%d/%d checks passed' % (passed, len(check_results)))
         if args.report_failed:
             report = generate_report()
-            format_print(failed_names, report)
+            format_print(failed_modules, report)
 
 
 class WtfCommand(DoctorCommand):
