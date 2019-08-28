@@ -101,11 +101,14 @@ def create_package_environment(package, destination_directory):
         print('creating source and include folder')
         source_directory = _create_folder('src', package_directory)
         include_directory = _create_folder(package.name, package_directory + os.sep + 'include')
+    if package.get_build_type() == 'ament_python':
+        print('creating source folder')
+        source_directory = _create_folder(package.name, package_directory)
 
     return package_directory, source_directory, include_directory
 
 
-def populate_ament_python(package, package_directory, python_node_name):
+def populate_ament_python(package, package_directory, source_directory, python_node_name):
     setup_py_config = {
         'project_name': package.name,
         'maintainer_email': package.maintainers[0].email,
@@ -133,12 +136,13 @@ def populate_ament_python(package, package_directory, python_node_name):
                           package.name,
                           {})
 
-    source_directory = _create_folder(package.name, package_directory)
     _create_template_file('ament_python/init.py.em',
                           source_directory,
                           '__init__.py',
                           {})
 
+
+def populate_python_node(package, source_directory, python_node_name):
     main_py_config = {
         'project_name': package.name
     }
@@ -146,6 +150,14 @@ def populate_ament_python(package, package_directory, python_node_name):
                           source_directory,
                           python_node_name + '.py',
                           main_py_config)
+
+
+def populate_python_libary(package, source_directory, python_library_name):
+    library_directory = _create_folder(python_library_name, source_directory)
+    _create_template_file('ament_python/init.py.em',
+                          library_directory,
+                          '__init__.py',
+                          {})
 
 
 def populate_cmake(package, package_directory, cpp_node_name, cpp_library_name):

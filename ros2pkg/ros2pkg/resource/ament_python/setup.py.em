@@ -22,7 +22,9 @@ setup(
     license='@package_license',
     entry_points={
         'console_scripts': [
+@[if node_name]@
             '@node_name = @project_name.@node_name:main'
+@[end if]@
         ],
     },
 )
