@@ -13,9 +13,9 @@
 # limitations under the License.
 
 from ros2cli.command import CommandExtension
-from ros2doctor.api.format import format_print
 from ros2doctor.api import generate_report
 from ros2doctor.api import run_checks
+from ros2doctor.api.format import format_print
 
 
 class DoctorCommand(CommandExtension):
@@ -28,14 +28,15 @@ class DoctorCommand(CommandExtension):
         )
         parser.add_argument(
             '--report_failed', '-rf', action='store_true',
-            help="Print out report info on failed checks."
+            help='Print out report info on failed checks.'
         )
 
     def main(self, *, parser, args):
+        # print report only if no failed checks requested
         if args.report:
             report = generate_report()
             format_print(report.keys(), report)
-            return 
+            return
         check_results, failed_checks, failed_modules = run_checks()
         failed = check_results.count(False)
         passed = check_results.count(True)
@@ -45,6 +46,7 @@ class DoctorCommand(CommandExtension):
         else:
             print('%d/%d checks passed' % (passed, len(check_results)))
         if args.report_failed:
+            # need to run checks to get failed modules
             report = generate_report()
             format_print(failed_modules, report)
 

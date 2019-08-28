@@ -15,7 +15,11 @@
 import os
 import sys
 
-import ifcfg
+try:
+    import ifcfg
+except ImportError:
+    sys.stderr.write('ERROR: No ifcfg module found. '
+                     'Install with `python -m pip install ifcfg`.')
 
 
 def _is_unix_like_platform():

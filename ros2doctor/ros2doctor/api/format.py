@@ -25,7 +25,7 @@ def format_print(modules, report):
                 if k == 'NAME':
                     print(v)
                 else:
-                    print('{:{padding}}: {}'.format(k, v, padding = padding_num))
+                    print('{:{padding}}: {}'.format(k, v, padding=padding_num))
         else:
             # print warning if no report available for a particular check
             sys.stderr.write('WARNING: No report available for this check.')
