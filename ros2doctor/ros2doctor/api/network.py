@@ -61,4 +61,3 @@ def report_network():
             if v:
                 network_info.append((k, v))
     return network_info
-
