@@ -18,23 +18,12 @@ import sys
 
 import rosdistro
 
-
-def report_platform_info():
-    """Print out platform information."""
-    platform_name = platform.system()
-    # platform info
-
-    platform_info = [('NAME', 'PLATFORM INFORMATION')]
-    platform_info.append(('system', platform_name))
-    platform_info.append(('platform info', platform.platform()))
-    if platform_name == 'Darwin':
-        platform_info.append(('mac OS version', platform.mac_ver()))
-    platform_info.append(('release', platform.release()))
-    platform_info.append(('processor', platform.processor()))
-    return platform_info
+from ros2doctor.api import DoctorCheck
+from ros2doctor.api import DoctorReport
+from ros2doctor.api import Report
 
 
-def check_platform_helper():
+def _check_platform_helper():
     """Check ROS_DISTRO related environment variables and distribution name."""
     distro_name = os.environ.get('ROS_DISTRO')
     if not distro_name:
@@ -56,38 +45,64 @@ def check_platform_helper():
     return distro_name, distro_info, distro_data
 
 
-def report_ros2_info():
-    """Print out ROS2 distribution info using `rosdistro`."""
-    distros = check_platform_helper()
-    if not distros:
-        return
-    distro_name, distro_info, distro_data = distros
+class PlatformCheck(DoctorCheck):
+    
+    def target(self):
+        return 'platform'
 
-    ros_info = [('NAME', 'ROS 2 INFORMATION')]
-    ros_info.append(('distribution name', distro_name))
-    ros_info.append(('distribution type', distro_info.get('distribution_type')))
-    ros_info.append(('distribution status', distro_info.get('distribution_status')))
-    ros_info.append(('release platforms', distro_data.get('release_platforms')))
-    return ros_info
+    def check(self):
+        result = False
+        distros = _check_platform_helper()
+        if not distros:
+            return result
+        distro_name, distro_info, _ = distros
+
+        # check distro status
+        if distro_info.get('distribution_status') == 'prerelease':
+            sys.stderr.write('WARNING: Distribution %s is not fully supported or tested. '
+                            'To get more consistent features, download a stable version at '
+                            'https://index.ros.org/doc/ros2/Installation/\n' % distro_name)
+        elif distro_info.get('distribution_status') == 'end-of-life':
+            sys.stderr.write('WARNING: Distribution %s is no longer supported or deprecated. '
+                            'To get the latest features, download the new versions at '
+                            'https://index.ros.org/doc/ros2/Installation/' % distro_name)
+        else:
+            result = True
+        return result 
 
 
-def check_platform():
-    """Check platform information against ROS 2 requirements."""
-    passed = False
-    distros = check_platform_helper()
-    if not distros:
-        return passed
-    distro_name, distro_info, _ = distros
+class PlatformReport(DoctorReport):
 
-    # check distro status
-    if distro_info.get('distribution_status') == 'prerelease':
-        sys.stderr.write('WARNING: Distribution %s is not fully supported or tested. '
-                         'To get more consistent features, download a stable version at '
-                         'https://index.ros.org/doc/ros2/Installation/\n' % distro_name)
-    elif distro_info.get('distribution_status') == 'end-of-life':
-        sys.stderr.write('WARNING: Distribution %s is no longer supported or deprecated. '
-                         'To get the latest features, download the new versions at '
-                         'https://index.ros.org/doc/ros2/Installation/' % distro_name)
-    else:
-        passed = True
-    return passed
+    def target(self):
+        return 'platform'
+
+    def report(self):
+        platform_name = platform.system()
+
+        # platform info
+        platform_report = Report('PLATFORM INFORMATION')
+        platform_report.add_to_report('system', platform_name)
+        platform_report.add_to_report(('platform info', platform.platform()))
+        if platform_name == 'Darwin':
+            platform_report.add_to_report(('mac OS version', platform.mac_ver()))
+        platform_report.add_to_report(('release', platform.release()))
+        platform_report.add_to_report(('processor', platform.processor()))
+        return platform_report
+
+
+class RosdistroReport(DoctorReport):
+
+    def target(self):
+        return 'platform'
+
+    def report(self):
+        distros = _check_platform_helper()
+        if not distros:
+            return
+        distro_name, distro_info, distro_data = distros
+        ros_report = Report('ROS 2 INFORMATION')
+        ros_report.add_to_report('distribution name', distro_name)
+        ros_report.add_to_report('distribution type', distro_info.get('distribution_type'))
+        ros_report.add_to_report('distribution status', distro_info.get('distribution_status'))
+        ros_report.add_to_report('release platforms', distro_data.get('release_platforms'))
+        return ros_report

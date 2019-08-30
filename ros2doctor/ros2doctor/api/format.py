@@ -28,7 +28,7 @@ def format_print(modules, report):
                     print('{:{padding}}: {}'.format(k, v, padding=padding_num))
         else:
             # print warning if no report available for a particular check
-            sys.stderr.write('WARNING: No report available for this check.')
+            sys.stderr.write('WARNING: No report available for this check.', file=sys.stderr)
 
 
 def compute_padding(modules, report):

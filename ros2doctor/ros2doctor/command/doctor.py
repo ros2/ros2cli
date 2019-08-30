@@ -27,7 +27,7 @@ class DoctorCommand(CommandExtension):
             help='Print out all report info.'
         )
         parser.add_argument(
-            '--report_failed', '-rf', action='store_true',
+            '--report-failed', '-rf', action='store_true',
             help='Print out report info on failed checks.'
         )
 
@@ -45,7 +45,7 @@ class DoctorCommand(CommandExtension):
             print('Failed checks:', *failed_checks)
         else:
             print('%d/%d checks passed' % (passed, len(check_results)))
-        if args.report_failed:
+        if args.reportfailed:
             # need to run checks to get failed modules
             report = generate_report()
             format_print(failed_modules, report)

@@ -15,6 +15,34 @@
 from pkg_resources import iter_entry_points
 
 
+class DoctorCheck:
+
+    def target(self):
+        raise NotImplementedError
+
+    def check(self):
+        raise NotImplementedError
+
+
+class DoctorReport:
+
+    def target(self):
+        raise NotImplementedError
+
+    def report(self):
+        raise NotImplementedError
+
+
+class Report:
+
+    def __init__(self):
+        self.name = None
+        self.items = []
+
+    def add_to_report(item_name, item_info):
+        self.items.append((item_name, item_info))
+
+
 def run_checks():
     """Run all checks when `ros2 doctor/wtf` is called."""
     all_results = []
@@ -38,3 +66,4 @@ def generate_report():
         else:
             report[r.module_name] = r.load()()  # load() returns method
     return report
+
