@@ -121,6 +121,9 @@ class CreateVerb(VerbExtension):
         test_dependencies = []
         if args.build_type == 'ament_cmake':
             test_dependencies = ['ament_lint_auto', 'ament_lint_common']
+        if args.build_type == 'ament_python':
+            test_dependencies = ['ament_copyright', 'ament_flake8', 'ament_pep257',
+                                 'python3-pytest']
 
         package = Package(
             package_format=args.package_format,

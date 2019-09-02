@@ -141,6 +141,20 @@ def populate_ament_python(package, package_directory, source_directory, python_n
                           '__init__.py',
                           {})
 
+    test_directory = _create_folder('test', package_directory)
+    _create_template_file('ament_python/test_copyright.py.em',
+                          test_directory,
+                          'test_copyright.py',
+                          {})
+    _create_template_file('ament_python/test_flake8.py.em',
+                          test_directory,
+                          'test_flake8.py',
+                          {})
+    _create_template_file('ament_python/test_pep257.py.em',
+                          test_directory,
+                          'test_pep257.py',
+                          {})
+
 
 def populate_python_node(package, source_directory, python_node_name):
     main_py_config = {
