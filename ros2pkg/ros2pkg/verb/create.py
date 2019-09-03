@@ -125,6 +125,14 @@ class CreateVerb(VerbExtension):
             test_dependencies = ['ament_copyright', 'ament_flake8', 'ament_pep257',
                                  'python3-pytest']
 
+        if args.build_type == 'ament_python':
+            if args.package_name == 'test':
+                # If the package name is 'test', there will be a conflict between
+                # the directory the source code for the package goes in and the
+                # directory the tests for the package go in.
+                return '\nAborted!\nament_python packages can not be named "test". \n' + \
+                    'Please choose a different package name.'
+
         package = Package(
             package_format=args.package_format,
             name=args.package_name,
