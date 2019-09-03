@@ -16,8 +16,13 @@ from pkg_resources import iter_entry_points
 
 
 class DoctorCheck:
+    """
+        Abstract based class of ros2doctor check modules.
+        category method returns a string that includes the module name.
+        check method returns a boolean value based on check result.
+    """
 
-    def target(self):
+    def category(self):
         raise NotImplementedError
 
     def check(self):
@@ -25,8 +30,13 @@ class DoctorCheck:
 
 
 class DoctorReport:
+    """
+        Abstract based class of ros2doctor report modules.
+        category method returns a string that includes the module name.
+        report method returns a Report instance that contains report content. 
+    """
 
-    def target(self):
+    def category(self):
         raise NotImplementedError
 
     def report(self):
@@ -34,6 +44,7 @@ class DoctorReport:
 
 
 class Report:
+    """Contains report name and content."""
 
     def __init__(self):
         self.name = None
@@ -44,26 +55,25 @@ class Report:
 
 
 def run_checks():
-    """Run all checks when `ros2 doctor/wtf` is called."""
-    all_results = []
-    failed_checks = []
-    failed_modules = []
-    for check in iter_entry_points('ros2doctor.checks'):
-        result = check.load()()  # load() returns method
-        all_results.append(result)
-        if result is False:
-            failed_checks.append(check.name)
-            failed_modules.append(check.module_name)
-    return all_results, failed_checks, failed_modules
+    """
+        Run all checks and return check results.
+        Return: list of tuple (string, boolean) => (category, check result)
+    """
+    results = []
+    for check_entry_pt in iter_entry_points('ros2doctor.checks'):
+        check_class = check_entry_pt.load()
+        results.append((check_class.category(), check_class.check()))
+    return results
 
 
 def generate_report():
-    """Print report to terminal when `-r/--report` is attached."""
-    report = {}
-    for r in iter_entry_points('ros2doctor.report'):
-        if r.module_name in report:
-            report[r.module_name].extend(r.load()())
-        else:
-            report[r.module_name] = r.load()()  # load() returns method
-    return report
+    """
+        Print report to terminal.
+        Return:list of tuple (string, list of tuple) => (category, report items)
+    """
+    reports = []
+    for report_entry_pt in iter_entry_points('ros2doctor.report'):
+        report_class = report_entry_pt.load()
+        reports.append((report_class.category(), report_class.report()))
+    return reports
 

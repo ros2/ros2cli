@@ -31,13 +31,13 @@ setup(
             'wtf = ros2doctor.command.doctor:WtfCommand',
         ],
         'ros2doctor.checks': [
-            'check_platform = ros2doctor.api.platform:check_platform',
-            'check_network_config = ros2doctor.api.network:NetworkCheck',
+            'PlatformCheck = ros2doctor.api.platform:PlatformCheck',
+            'NetworkCheck = ros2doctor.api.network:NetworkCheck',
         ],
         'ros2doctor.report': [
-            'report_platform_info = ros2doctor.api.platform:report_platform_info',
-            'report_ros2_info = ros2doctor.api.platform:report_ros2_info',
-            'report_network = ros2doctor.api.network:NetworkCheck',
+            'PlatformReport = ros2doctor.api.platform:PlatformReport',
+            'RosdistroReport = ros2doctor.api.platform:RosdistroReport',
+            'NetworkReport = ros2doctor.api.network:NetworkReport',
         ],
     }
 )

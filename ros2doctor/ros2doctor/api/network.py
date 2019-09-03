@@ -19,32 +19,43 @@ try:
     import ifcfg
 except ImportError:
     sys.stderr.write('ERROR: No ifcfg module found. '
-                     'Install with `python -m pip install ifcfg`.')
+                     'Unable to run network check and report.'
+                     'Use `python -m pip install ifcfg` to install needed package.')
+    raise
+
+from ros2doctor.api import DoctorCheck
+from ros2doctor.api import DoctorReport
+from ros2doctor.api import Report
 
 
-class NetworkCheck():
-    def _is_unix_like_platform():
-        """Return True if conforms to UNIX/POSIX-style APIs."""
-        return os.name == 'posix'
+def _is_unix_like_platform():
+    """Return True if conforms to UNIX/POSIX-style APIs."""
+    return os.name == 'posix'
 
 
-    def check_network_config_helper():
-        """Check if loopback and multicast IP addresses are found."""
-        has_loopback, has_non_loopback, has_multicast = False, False, False
-        for name, iface in ifcfg.interfaces().items():
-            flags = iface.get('flags')
-            if 'LOOPBACK' in flags:
-                has_loopback = True
-            else:
-                has_non_loopback = True
-            if 'MULTICAST' in flags:
-                has_multicast = True
-        return has_loopback, has_non_loopback, has_multicast
+def _check_network_config_helper():
+    """Check if loopback and multicast IP addresses are found."""
+    has_loopback, has_non_loopback, has_multicast = False, False, False
+    for name, iface in ifcfg.interfaces().items():
+        flags = iface.get('flags')
+        if 'LOOPBACK' in flags:
+            has_loopback = True
+        else:
+            has_non_loopback = True
+        if 'MULTICAST' in flags:
+            has_multicast = True
+    return has_loopback, has_non_loopback, has_multicast
 
 
-    def check_network_config():
+class NetworkCheck(DoctorCheck):
+    """Check network interface configuration for loopback and multicast."""
+
+    def category(self):
+        return 'network'
+    
+    def check(self):
         """Conduct network checks and output error/warning messages."""
-        has_loopback, has_non_loopback, has_multicast = check_network_config_helper()
+        has_loopback, has_non_loopback, has_multicast = _check_network_config_helper()
         if not has_loopback:
             sys.stderr.write('ERROR: No loopback IP address is found.\n')
         if not has_non_loopback:
@@ -54,11 +65,17 @@ class NetworkCheck():
         return has_loopback and has_non_loopback and has_multicast
 
 
-    def report_network():
+class NetworkReport(DoctorReport):
+    """Report network interface configuration."""
+
+    def category(self):
+        return 'network'
+
+    def report():
         """Print all system and ROS network information."""
-        network_info = [('NAME', 'NETWORK CONFIGURATION')]
+        network_report = Report('NETWORK CONFIGURATION')
         for name, iface in ifcfg.interfaces().items():
             for k, v in iface.items():
                 if v:
-                    network_info.append((k, v))
-        return network_info
+                    network_report.add_to_report(k, v)
+        return network_report

@@ -32,23 +32,31 @@ class DoctorCommand(CommandExtension):
         )
 
     def main(self, *, parser, args):
-        # print report only if no failed checks requested
+        """Run checks and print report to terminal based on user input args."""
         if args.report:
-            report = generate_report()
-            format_print(report.keys(), report)
+            cat_reports = generate_report()
+            for _, report in cat_reports:
+                format_print(report)
             return
-        check_results, failed_checks, failed_modules = run_checks()
-        failed = check_results.count(False)
-        passed = check_results.count(True)
+        cat_results = run_checks()
+        failed_cats = []
+        failed = 0
+        for cat, result in cat_results:
+            if result is False:
+                failed += 1
+                failed_cats.append(cat)
         if failed != 0:
-            print('%d/%d checks failed' % (failed, len(check_results)))
-            print('Failed checks:', *failed_checks)
+            print('%d/%d checks failed' % (failed, len(cat_results)))
+            print('Failed tests are ', *failed_cats)
         else:
-            print('%d/%d checks passed' % (passed, len(check_results)))
-        if args.reportfailed:
+            print('All %d checks passed' % len(cat_results))
+        if args.report_failed and failed != 0:
             # need to run checks to get failed modules
-            report = generate_report()
-            format_print(failed_modules, report)
+            cat_reports = generate_report()
+            for cat in failed_cats:
+                for rcat, report in cat_reports:
+                    if cat == rcat:
+                        format_print(report)
 
 
 class WtfCommand(DoctorCommand):

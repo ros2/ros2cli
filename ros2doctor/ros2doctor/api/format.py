@@ -15,30 +15,24 @@
 import sys
 
 
-def format_print(modules, report):
-    """Format print report according to module names."""
-    padding_num = compute_padding(modules, report)
-    for m in modules:
-        if m in report:
-            module_report = report.get(m)
-            for k, v in module_report:
-                if k == 'NAME':
-                    print(v)
-                else:
-                    print('{:{padding}}: {}'.format(k, v, padding=padding_num))
-        else:
-            # print warning if no report available for a particular check
-            sys.stderr.write('WARNING: No report available for this check.', file=sys.stderr)
+def format_print(report):
+    """Format print report content."""
+    # padding_num = compute_padding(report)
+    if report is None:
+        sys.stderr.write('ERROR: No report available for this check.', file=sys.stderr)
+    print(report.name)
+    for item_name, item_content in report.items:
+        print('{}: {}'.format(item_name, item_content))
 
 
-def compute_padding(modules, report):
-    """Compute padding based on report content."""
-    padding = 8
-    for m in modules:
-        if m in report:
-            module_report = report.get(m)
-            check_items = list(zip(*module_report))[0]  # get first elements of tuples
-            max_len = len(max(check_items, key=len))  # find the longest string length
-            if max_len >= padding:
-                padding = max_len + 4  # padding number is longest string length + 4
-    return padding
+# def compute_padding(report):
+#     """Compute padding based on report content."""
+#     padding = 8
+#     for m in modules:
+#         if m in report:
+#             module_report = report.get(m)
+#             check_items = list(zip(*module_report))[0]  # get first elements of tuples
+#             max_len = len(max(check_items, key=len))  # find the longest string length
+#             if max_len >= padding:
+#                 padding = max_len + 4  # padding number is longest string length + 4
+#     return padding

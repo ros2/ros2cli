@@ -46,8 +46,9 @@ def _check_platform_helper():
 
 
 class PlatformCheck(DoctorCheck):
-    
-    def target(self):
+    """Check system platform against ROSDistro."""
+
+    def category(self):
         return 'platform'
 
     def check(self):
@@ -72,8 +73,9 @@ class PlatformCheck(DoctorCheck):
 
 
 class PlatformReport(DoctorReport):
+    """Output platform report."""
 
-    def target(self):
+    def category(self):
         return 'platform'
 
     def report(self):
@@ -91,8 +93,9 @@ class PlatformReport(DoctorReport):
 
 
 class RosdistroReport(DoctorReport):
+    """Output ROSDistro report."""
 
-    def target(self):
+    def category(self):
         return 'platform'
 
     def report(self):
