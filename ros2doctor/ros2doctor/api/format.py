@@ -17,22 +17,20 @@ import sys
 
 def format_print(report):
     """Format print report content."""
-    # padding_num = compute_padding(report)
     if report is None:
-        sys.stderr.write('ERROR: No report available for this check.', file=sys.stderr)
+        sys.stderr.write('WARNING: No report found. Skip print...\n')
+        return
     print(report.name)
+    padding_num = compute_padding(report.items)
     for item_name, item_content in report.items:
-        print('{}: {}'.format(item_name, item_content))
+        print('{:{padding}}: {}'.format(item_name, item_content, padding=padding_num))
 
 
-# def compute_padding(report):
-#     """Compute padding based on report content."""
-#     padding = 8
-#     for m in modules:
-#         if m in report:
-#             module_report = report.get(m)
-#             check_items = list(zip(*module_report))[0]  # get first elements of tuples
-#             max_len = len(max(check_items, key=len))  # find the longest string length
-#             if max_len >= padding:
-#                 padding = max_len + 4  # padding number is longest string length + 4
-#     return padding
+def compute_padding(report_items):
+    """Compute padding based on report content."""
+    padding = 8
+    check_items = list(zip(*report_items))[0]  # get first elements of tuples
+    max_len = len(max(check_items, key=len))  # find the longest string length
+    if max_len >= padding:
+        padding = max_len + 4  # padding number is longest string length + 4
+    return padding

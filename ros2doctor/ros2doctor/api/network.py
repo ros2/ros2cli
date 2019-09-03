@@ -18,10 +18,9 @@ import sys
 try:
     import ifcfg
 except ImportError:
-    sys.stderr.write('ERROR: No ifcfg module found. '
-                     'Unable to run network check and report.'
-                     'Use `python -m pip install ifcfg` to install needed package.')
-    raise
+    sys.stderr.write('WARNING: No ifcfg module found. '
+                     'Unable to run network check and report. '
+                     'Use `python -m pip install ifcfg` to install needed package.\n')
 
 from ros2doctor.api import DoctorCheck
 from ros2doctor.api import DoctorReport
@@ -36,6 +35,11 @@ def _is_unix_like_platform():
 def _check_network_config_helper():
     """Check if loopback and multicast IP addresses are found."""
     has_loopback, has_non_loopback, has_multicast = False, False, False
+    # temp fix for ifcfg package, maunually pass network check
+    if 'ifcfg' not in sys.modules:
+        print('WARNING: ifcfg package not imported. Skip network check...\n')
+        return True, True, True
+
     for name, iface in ifcfg.interfaces().items():
         flags = iface.get('flags')
         if 'LOOPBACK' in flags:
@@ -52,7 +56,7 @@ class NetworkCheck(DoctorCheck):
 
     def category(self):
         return 'network'
-    
+
     def check(self):
         """Conduct network checks and output error/warning messages."""
         has_loopback, has_non_loopback, has_multicast = _check_network_config_helper()
@@ -71,9 +75,14 @@ class NetworkReport(DoctorReport):
     def category(self):
         return 'network'
 
-    def report():
+    def report(self):
         """Print all system and ROS network information."""
         network_report = Report('NETWORK CONFIGURATION')
+        # temp fix for ifcfg package, return none for report
+        if 'ifcfg' not in sys.modules:
+            print('ERROR: ifcfg package not imported. Skipping network report...\n')
+            return None
+
         for name, iface in ifcfg.interfaces().items():
             for k, v in iface.items():
                 if v:

@@ -16,11 +16,11 @@ import os
 import platform
 import sys
 
-import rosdistro
-
 from ros2doctor.api import DoctorCheck
 from ros2doctor.api import DoctorReport
 from ros2doctor.api import Report
+
+import rosdistro
 
 
 def _check_platform_helper():
@@ -61,15 +61,15 @@ class PlatformCheck(DoctorCheck):
         # check distro status
         if distro_info.get('distribution_status') == 'prerelease':
             sys.stderr.write('WARNING: Distribution %s is not fully supported or tested. '
-                            'To get more consistent features, download a stable version at '
-                            'https://index.ros.org/doc/ros2/Installation/\n' % distro_name)
+                             'To get more consistent features, download a stable version at '
+                             'https://index.ros.org/doc/ros2/Installation/\n' % distro_name)
         elif distro_info.get('distribution_status') == 'end-of-life':
             sys.stderr.write('WARNING: Distribution %s is no longer supported or deprecated. '
-                            'To get the latest features, download the new versions at '
-                            'https://index.ros.org/doc/ros2/Installation/' % distro_name)
+                             'To get the latest features, download the new versions at '
+                             'https://index.ros.org/doc/ros2/Installation/' % distro_name)
         else:
             result = True
-        return result 
+        return result
 
 
 class PlatformReport(DoctorReport):
@@ -84,11 +84,11 @@ class PlatformReport(DoctorReport):
         # platform info
         platform_report = Report('PLATFORM INFORMATION')
         platform_report.add_to_report('system', platform_name)
-        platform_report.add_to_report(('platform info', platform.platform()))
+        platform_report.add_to_report('platform info', platform.platform())
         if platform_name == 'Darwin':
-            platform_report.add_to_report(('mac OS version', platform.mac_ver()))
-        platform_report.add_to_report(('release', platform.release()))
-        platform_report.add_to_report(('processor', platform.processor()))
+            platform_report.add_to_report('mac OS version', platform.mac_ver())
+        platform_report.add_to_report('release', platform.release())
+        platform_report.add_to_report('processor', platform.processor())
         return platform_report
 
 

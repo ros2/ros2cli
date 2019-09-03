@@ -17,9 +17,10 @@ from pkg_resources import iter_entry_points
 
 class DoctorCheck:
     """
-        Abstract based class of ros2doctor check modules.
-        category method returns a string that includes the module name.
-        check method returns a boolean value based on check result.
+    Abstract based class of ros2doctor check modules.
+
+    category method returns a string that includes the module name.
+    check method returns a boolean value based on check result.
     """
 
     def category(self):
@@ -31,9 +32,10 @@ class DoctorCheck:
 
 class DoctorReport:
     """
-        Abstract based class of ros2doctor report modules.
-        category method returns a string that includes the module name.
-        report method returns a Report instance that contains report content. 
+    Abstract based class of ros2doctor report modules.
+
+    category method returns a string that includes the module name.
+    report method returns a Report instance that contains report content.
     """
 
     def category(self):
@@ -46,34 +48,35 @@ class DoctorReport:
 class Report:
     """Contains report name and content."""
 
-    def __init__(self):
-        self.name = None
+    def __init__(self, name):
+        self.name = name
         self.items = []
 
-    def add_to_report(item_name, item_info):
+    def add_to_report(self, item_name, item_info):
         self.items.append((item_name, item_info))
 
 
 def run_checks():
     """
-        Run all checks and return check results.
-        Return: list of tuple (string, boolean) => (category, check result)
+    Run all checks and return check results.
+
+    Return: list of tuple (string, boolean) => (category, check result)
     """
     results = []
     for check_entry_pt in iter_entry_points('ros2doctor.checks'):
-        check_class = check_entry_pt.load()
+        check_class = check_entry_pt.load()()
         results.append((check_class.category(), check_class.check()))
     return results
 
 
 def generate_report():
     """
-        Print report to terminal.
-        Return:list of tuple (string, list of tuple) => (category, report items)
+    Print report to terminal.
+
+    Return:list of tuple (string, list of tuple) => (category, report items)
     """
     reports = []
     for report_entry_pt in iter_entry_points('ros2doctor.report'):
-        report_class = report_entry_pt.load()
+        report_class = report_entry_pt.load()()
         reports.append((report_class.category(), report_class.report()))
     return reports
-

@@ -22,11 +22,12 @@ class DoctorCommand(CommandExtension):
     """Check ROS setup and other potential issues."""
 
     def add_arguments(self, parser, cli_name):
-        parser.add_argument(
+        group = parser.add_mutually_exclusive_group(required=False)
+        group.add_argument(
             '--report', '-r', action='store_true',
             help='Print out all report info.'
         )
-        parser.add_argument(
+        group.add_argument(
             '--report-failed', '-rf', action='store_true',
             help='Print out report info on failed checks.'
         )
