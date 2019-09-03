@@ -66,7 +66,7 @@ class PlatformCheck(DoctorCheck):
         elif distro_info.get('distribution_status') == 'end-of-life':
             sys.stderr.write('WARNING: Distribution %s is no longer supported or deprecated. '
                              'To get the latest features, download the new versions at '
-                             'https://index.ros.org/doc/ros2/Installation/' % distro_name)
+                             'https://index.ros.org/doc/ros2/Installation/\n' % distro_name)
         else:
             result = True
         return result
