@@ -16,38 +16,32 @@ from pkg_resources import iter_entry_points
 
 
 class DoctorCheck:
-    """
-    Abstract based class of ros2doctor check modules.
-
-    category method returns a string that includes the module name.
-    check method returns a boolean value based on check result.
-    """
+    """Abstract base class of ros2doctor check."""
 
     def category(self):
+        """Return: string linking checks and reports."""
         raise NotImplementedError
 
     def check(self):
+        """Return: boolean indicating result of checks."""
         raise NotImplementedError
 
 
 class DoctorReport:
-    """
-    Abstract based class of ros2doctor report modules.
-
-    category method returns a string that includes the module name.
-    report method returns a Report instance that contains report content.
-    """
+    """Abstract base class of ros2doctor report."""
 
     def category(self):
+        """Return: a string linking checks and reports."""
         raise NotImplementedError
 
     def report(self):
+        """Return: a Report object containing report content."""
         raise NotImplementedError
 
 
 class Report:
     """Contains report name and content."""
-
+    __slots__ = ['name', 'items']
     def __init__(self, name):
         self.name = name
         self.items = []
@@ -73,7 +67,7 @@ def generate_report():
     """
     Print report to terminal.
 
-    Return:list of tuple (string, list of tuple) => (category, report items)
+    Return: list of tuple (string, list of tuple) => (category, report items)
     """
     reports = []
     for report_entry_pt in iter_entry_points('ros2doctor.report'):

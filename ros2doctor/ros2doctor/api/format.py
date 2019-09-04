@@ -17,10 +17,12 @@ import sys
 
 def format_print(report):
     """Format print report content."""
+    # temp fix for missing ifcfg 
     if report is None:
-        sys.stderr.write('WARNING: No report found. Skip print...\n')
+        sys.stderr.write('No report found. Skip print...')
         return
-    print(report.name)
+
+    print('\n', report.name)
     padding_num = compute_padding(report.items)
     for item_name, item_content in report.items:
         print('{:{padding}}: {}'.format(item_name, item_content, padding=padding_num))
@@ -34,3 +36,7 @@ def compute_padding(report_items):
     if max_len >= padding:
         padding = max_len + 4  # padding number is longest string length + 4
     return padding
+
+
+def warning_format(msg, cat, filename, linenum, file=None, line=None):
+    return '%s: %s: %s: %s\n' % (filename, linenum, cat.__name__, msg)

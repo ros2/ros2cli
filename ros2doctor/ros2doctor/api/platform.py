@@ -15,10 +15,14 @@
 import os
 import platform
 import sys
+import warnings
 
 from ros2doctor.api import DoctorCheck
 from ros2doctor.api import DoctorReport
 from ros2doctor.api import Report
+from ros2doctor.api.format import warning_format
+
+warnings.formatwarning = warning_format
 
 import rosdistro
 
@@ -27,19 +31,18 @@ def _check_platform_helper():
     """Check ROS_DISTRO related environment variables and distribution name."""
     distro_name = os.environ.get('ROS_DISTRO')
     if not distro_name:
-        sys.stderr.write('WARNING: ROS_DISTRO is not set.\n')
+        warnings.warn('ROS_DISTRO is not set.')
         return
     else:
         distro_name = distro_name.lower()
     u = rosdistro.get_index_url()
     if not u:
-        sys.stderr.write('WARNING: Unable to access ROSDISTRO_INDEX_URL '
-                         'or DEFAULT_INDEX_URL.\n')
+        warnings.warn('Unable to access ROSDISTRO_INDEX_URL or DEFAULT_INDEX_URL.')
         return
     i = rosdistro.get_index(u)
     distro_info = i.distributions.get(distro_name)
     if not distro_info:
-        sys.stderr.write("WARNING: Distribution name '%s' is not found\n" % distro_name)
+        warnings.warn("Distribution name '%s' is not found" % distro_name)
         return
     distro_data = rosdistro.get_distribution(i, distro_name).get_data()
     return distro_name, distro_info, distro_data
@@ -52,6 +55,7 @@ class PlatformCheck(DoctorCheck):
         return 'platform'
 
     def check(self):
+        """Check system platform against ROS 2 Distro."""
         result = False
         distros = _check_platform_helper()
         if not distros:
@@ -60,13 +64,13 @@ class PlatformCheck(DoctorCheck):
 
         # check distro status
         if distro_info.get('distribution_status') == 'prerelease':
-            sys.stderr.write('WARNING: Distribution %s is not fully supported or tested. '
+            warnings.warn('Distribution %s is not fully supported or tested. '
                              'To get more consistent features, download a stable version at '
-                             'https://index.ros.org/doc/ros2/Installation/\n' % distro_name)
+                             'https://index.ros.org/doc/ros2/Installation/' % distro_name)
         elif distro_info.get('distribution_status') == 'end-of-life':
-            sys.stderr.write('WARNING: Distribution %s is no longer supported or deprecated. '
+            warnings.warn('Distribution %s is no longer supported or deprecated. '
                              'To get the latest features, download the new versions at '
-                             'https://index.ros.org/doc/ros2/Installation/\n' % distro_name)
+                             'https://index.ros.org/doc/ros2/Installation/' % distro_name)
         else:
             result = True
         return result

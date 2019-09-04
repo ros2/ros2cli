@@ -47,10 +47,10 @@ class DoctorCommand(CommandExtension):
                 failed += 1
                 failed_cats.append(cat)
         if failed != 0:
-            print('%d/%d checks failed\n' % (failed, len(cat_results)))
+            print('\n%d/%d checks failed\n' % (failed, len(cat_results)))
             print('Failed tests are ', *failed_cats)
         else:
-            print('All %d checks passed' % len(cat_results))
+            print('\nAll %d checks passed\n' % len(cat_results))
         if args.report_failed and failed != 0:
             # need to run checks to get failed modules
             cat_reports = generate_report()
