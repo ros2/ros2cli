@@ -58,7 +58,7 @@ def run_checks():
 
     Return: list of String, Int, Int
     """
-    failed_cats = []
+    failed_cats = set()  # remove repeating elements
     fail = 0
     total = 0
     for check_entry_pt in iter_entry_points('ros2doctor.checks'):
@@ -67,8 +67,7 @@ def run_checks():
         result = check_class.check()
         if result is False:
             fail += 1
-            if cat not in failed_cats:
-                failed_cats.append(cat)
+            failed_cats.add(cat)
         total += 1
     return failed_cats, fail, total
 
