@@ -17,7 +17,7 @@ import sys
 
 def format_print(report):
     """Format print report content."""
-    # temp fix for missing ifcfg 
+    # temp fix for missing ifcfg
     if report is None:
         sys.stderr.write('No report found. Skip print...')
         return

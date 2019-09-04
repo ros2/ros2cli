@@ -41,7 +41,9 @@ class DoctorReport:
 
 class Report:
     """Contains report name and content."""
+
     __slots__ = ['name', 'items']
+
     def __init__(self, name):
         self.name = name
         self.items = []
