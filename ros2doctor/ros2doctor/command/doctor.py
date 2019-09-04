@@ -13,8 +13,7 @@
 # limitations under the License.
 
 from ros2cli.command import CommandExtension
-from ros2doctor.api import generate_all_reports
-from ros2doctor.api import generate_fail_reports
+from ros2doctor.api import generate_reports
 from ros2doctor.api import run_checks
 from ros2doctor.api.format import format_print
 
@@ -37,7 +36,7 @@ class DoctorCommand(CommandExtension):
         """Run checks and print report to terminal based on user input args."""
         # `ros2 doctor -r`
         if args.report:
-            all_reports = generate_all_reports()
+            all_reports = generate_reports()
             for report_obj in all_reports:
                 format_print(report_obj)
             return
@@ -52,7 +51,7 @@ class DoctorCommand(CommandExtension):
 
         # `ros2 doctor -rf`
         if args.report_failed and fail != 0:
-            fail_reports = generate_fail_reports(failed_cats)
+            fail_reports = generate_reports(cats=failed_cats)
             for report_obj in fail_reports:
                 format_print(report_obj)
 

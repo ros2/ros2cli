@@ -72,28 +72,18 @@ def run_checks():
     return failed_cats, fail, total
 
 
-def generate_all_reports():
+def generate_reports(*, cats=None):
     """
-    Print all reports to terminal.
+    Print all reports or reports of failed checks to terminal.
 
     Return: list of Report objects
     """
     reports = []
     for report_entry_pt in iter_entry_points('ros2doctor.report'):
         report_class = report_entry_pt.load()()
-        reports.append(report_class.report())
-    return reports
-
-
-def generate_fail_reports(failed_cats):
-    """
-    Print reports of failed checks to terminal.
-
-    Return: list of Report objects
-    """
-    reports = []
-    for report_entry_pt in iter_entry_points('ros2doctor.report'):
-        report_class = report_entry_pt.load()()
-        if report_class.category() in failed_cats:
+        if cats:
+            if report_class.category() in cats:
+                reports.append(report_class.report())
+        else:
             reports.append(report_class.report())
     return reports
