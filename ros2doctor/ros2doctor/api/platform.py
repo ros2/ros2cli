@@ -28,7 +28,7 @@ warnings.formatwarning = warning_format
 
 
 def _check_platform_helper():
-    """Check ROS_DISTRO related environment variables and distribution name."""
+    """Check ROS_DISTRO environment variables and distribution installed."""
     distro_name = os.environ.get('ROS_DISTRO')
     if not distro_name:
         warnings.warn('ROS_DISTRO is not set.')

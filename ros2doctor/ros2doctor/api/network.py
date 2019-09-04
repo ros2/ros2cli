@@ -73,13 +73,13 @@ class NetworkCheck(DoctorCheck):
 
 
 class NetworkReport(DoctorReport):
-    """Report network interface configuration."""
+    """Report network configuration."""
 
     def category(self):
         return 'network'
 
     def report(self):
-        """Print all system and ROS network information."""
+        """Print system and ROS network information."""
         network_report = Report('NETWORK CONFIGURATION')
         # temp fix for ifcfg package, return none for report
         if 'ifcfg' not in sys.modules:

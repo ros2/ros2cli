@@ -13,7 +13,8 @@
 # limitations under the License.
 
 from ros2cli.command import CommandExtension
-from ros2doctor.api import generate_report
+from ros2doctor.api import generate_all_reports
+from ros2doctor.api import generate_fail_reports
 from ros2doctor.api import run_checks
 from ros2doctor.api.format import format_print
 
@@ -25,39 +26,35 @@ class DoctorCommand(CommandExtension):
         group = parser.add_mutually_exclusive_group(required=False)
         group.add_argument(
             '--report', '-r', action='store_true',
-            help='Print out all report info.'
+            help='Print all report.'
         )
         group.add_argument(
             '--report-failed', '-rf', action='store_true',
-            help='Print out report info on failed checks.'
+            help='Print report of failed checks only.'
         )
 
     def main(self, *, parser, args):
         """Run checks and print report to terminal based on user input args."""
+        # `ros2 doctor -r`
         if args.report:
-            cat_reports = generate_report()
-            for _, report in cat_reports:
-                format_print(report)
+            all_reports = generate_all_reports()
+            for report_obj in all_reports:
+                format_print(report_obj)
             return
-        cat_results = run_checks()
-        failed_cats = []
-        failed = 0
-        for cat, result in cat_results:
-            if result is False:
-                failed += 1
-                failed_cats.append(cat)
-        if failed != 0:
-            print('\n%d/%d checks failed\n' % (failed, len(cat_results)))
-            print('Failed tests are ', *failed_cats)
+
+        # `ros2 doctor`
+        failed_cats, fail, total = run_checks()
+        if fail != 0:
+            print('\n%d/%d checks failed\n' % (fail, total))
+            print('Failed modules are ', *failed_cats)
         else:
-            print('\nAll %d checks passed\n' % len(cat_results))
-        if args.report_failed and failed != 0:
-            # need to run checks to get failed modules
-            cat_reports = generate_report()
-            for cat in failed_cats:
-                for rcat, report in cat_reports:
-                    if cat == rcat:
-                        format_print(report)
+            print('\nAll %d checks passed\n' % total)
+
+        # `ros2 doctor -rf`
+        if args.report_failed and fail != 0:
+            fail_reports = generate_fail_reports(failed_cats)
+            for report_obj in fail_reports:
+                format_print(report_obj)
 
 
 class WtfCommand(DoctorCommand):

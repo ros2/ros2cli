@@ -19,11 +19,11 @@ class DoctorCheck:
     """Abstract base class of ros2doctor check."""
 
     def category(self):
-        """Return: string linking checks and reports."""
+        """Return: String linking checks and reports."""
         raise NotImplementedError
 
     def check(self):
-        """Return: boolean indicating result of checks."""
+        """Return: Boolean indicating result of checks."""
         raise NotImplementedError
 
 
@@ -31,16 +31,16 @@ class DoctorReport:
     """Abstract base class of ros2doctor report."""
 
     def category(self):
-        """Return: a string linking checks and reports."""
+        """Return: String linking checks and reports."""
         raise NotImplementedError
 
     def report(self):
-        """Return: a Report object containing report content."""
+        """Return: Report object containing report content."""
         raise NotImplementedError
 
 
 class Report:
-    """Contains report name and content."""
+    """Stores report name and content."""
 
     __slots__ = ['name', 'items']
 
@@ -56,23 +56,45 @@ def run_checks():
     """
     Run all checks and return check results.
 
-    Return: list of tuple (string, boolean) => (category, check result)
+    Return: list of String, Int, Int
     """
-    results = []
+    failed_cats = []
+    fail = 0
+    total = 0
     for check_entry_pt in iter_entry_points('ros2doctor.checks'):
         check_class = check_entry_pt.load()()
-        results.append((check_class.category(), check_class.check()))
-    return results
+        cat = check_class.category()
+        result = check_class.check()
+        if result is False:
+            fail += 1
+            if cat not in failed_cats:
+                failed_cats.append(cat)
+        total += 1
+    return failed_cats, fail, total
 
 
-def generate_report():
+def generate_all_reports():
     """
-    Print report to terminal.
+    Print all reports to terminal.
 
-    Return: list of tuple (string, list of tuple) => (category, report items)
+    Return: list of Report objects
     """
     reports = []
     for report_entry_pt in iter_entry_points('ros2doctor.report'):
         report_class = report_entry_pt.load()()
-        reports.append((report_class.category(), report_class.report()))
+        reports.append(report_class.report())
+    return reports
+
+
+def generate_fail_reports(failed_cats):
+    """
+    Print reports of failed checks to terminal.
+
+    Return: list of Report objects
+    """
+    reports = []
+    for report_entry_pt in iter_entry_points('ros2doctor.report'):
+        report_class = report_entry_pt.load()()
+        if report_class.category() in failed_cats:
+            reports.append(report_class.report())
     return reports

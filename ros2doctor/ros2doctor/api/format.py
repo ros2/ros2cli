@@ -34,7 +34,7 @@ def compute_padding(report_items):
     check_items = list(zip(*report_items))[0]  # get first elements of tuples
     max_len = len(max(check_items, key=len))  # find the longest string length
     if max_len >= padding:
-        padding = max_len + 4  # padding number is longest string length + 4
+        padding = max_len + 4  # padding number is longest string length + 4 spaces
     return padding
 
 
