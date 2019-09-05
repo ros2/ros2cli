@@ -12,15 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import sys
 from typing import List
 from typing import Tuple
-import sys
 import warnings
 
 
-def format_print(report: 'Report') -> None:  # using str as wrapper for custom class Report
+def format_print(report):
     """
     Format print report content.
+
     :param report: Report object with name and items list
     """
     # temp fix for missing ifcfg
@@ -28,7 +29,7 @@ def format_print(report: 'Report') -> None:  # using str as wrapper for custom c
         sys.stderr.write('No report found. Skip print...\n')
         return
 
-    print('\n', report.name)
+    print('\n ', report.name)
     padding_num = compute_padding(report.items)
     for item_name, item_content in report.items:
         print('{:{padding}}: {}'.format(item_name, item_content, padding=padding_num))
@@ -37,6 +38,7 @@ def format_print(report: 'Report') -> None:  # using str as wrapper for custom c
 def compute_padding(report_items: List[Tuple[str, str]]) -> int:
     """
     Compute padding based on report content.
+
     :param report_items: list of item name and item content tuple
     :return: padding number
     """
@@ -59,13 +61,21 @@ class CustomWarningFormat:
         self._default_format = warnings.formatwarning
         warnings.formatwarning = custom_warning_format
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(self, t, v, trb):
+        """
+        Define exit action for context manager.
+
+        :param t: type
+        :param v: value
+        :param trb: traceback
+        """
         warnings.formatwarning = self._default_format
 
 
 def doctor_warn(msg: str) -> None:
     """
     Use CustomWarningFormat to print customized warning message.
+
     :param msg: warning message to be printed
     """
     with CustomWarningFormat():

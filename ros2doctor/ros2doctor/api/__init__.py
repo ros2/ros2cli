@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pkg_resources import iter_entry_points
 from typing import List
 from typing import Set
 from typing import Tuple
-import warnings
+
+from pkg_resources import iter_entry_points
 
 from ros2doctor.api.format import doctor_warn
 
@@ -25,15 +25,11 @@ class DoctorCheck:
     """Abstract base class of ros2doctor check."""
 
     def category(self) -> str:
-        """
-        :return: string linking checks and reports
-        """
+        """:return: string linking checks and reports."""
         raise NotImplementedError
 
     def check(self) -> bool:
-        """
-        :return: boolean indicating result of checks
-        """
+        """:return: boolean indicating result of checks."""
         raise NotImplementedError
 
 
@@ -41,15 +37,11 @@ class DoctorReport:
     """Abstract base class of ros2doctor report."""
 
     def category(self) -> str:
-        """
-        :return: string linking checks and reports
-        """
+        """:return: string linking checks and reports."""
         raise NotImplementedError
 
     def report(self) -> 'Report':  # using str as wrapper for custom class Report
-        """
-        :return: Report object storing report content
-        """
+        """:return: Report object storing report content."""
         raise NotImplementedError
 
 
@@ -71,6 +63,7 @@ class Report:
 def run_checks() -> Tuple[Set[str], int, int]:
     """
     Run all checks and return check results.
+
     :return: 3-tuple (categories of failed checks, number of failed checks,
              total number of checks)
     """
@@ -95,6 +88,7 @@ def run_checks() -> Tuple[Set[str], int, int]:
 def generate_reports(*, categories=None) -> List[Report]:
     """
     Print all reports or reports of failed checks to terminal.
+
     :return: list of Report objects
     """
     reports = []

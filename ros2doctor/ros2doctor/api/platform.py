@@ -15,18 +15,19 @@
 import os
 import platform
 from typing import Tuple
-import warnings
 
 from ros2doctor.api import DoctorCheck
 from ros2doctor.api import DoctorReport
 from ros2doctor.api import Report
 from ros2doctor.api.format import doctor_warn
+
 import rosdistro
 
 
 def _check_platform_helper() -> Tuple[str, dict, dict]:
     """
     Check ROS_DISTRO environment variables and distribution installed.
+
     :return: string of distro name, dict of distribution info, dict of release platforms info
     """
     distro_name = os.environ.get('ROS_DISTRO')
@@ -112,4 +113,4 @@ class RosdistroReport(DoctorReport):
         ros_report.add_to_report('distribution type', distro_info.get('distribution_type'))
         ros_report.add_to_report('distribution status', distro_info.get('distribution_status'))
         ros_report.add_to_report('release platforms', distro_data.get('release_platforms'))
-        return ros_reports
+        return ros_report

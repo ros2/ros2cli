@@ -26,8 +26,8 @@ try:
     import ifcfg
 except ImportError:
     warnings.warn('Failed to import ifcfg. '
-                  'Use `python -m pip install ifcfg` to install needed package.',\
-                   ImportWarning)  # ImportWarning is suppressed by default
+                  'Use `python -m pip install ifcfg` to install needed package.',
+                  ImportWarning)  # ImportWarning is suppressed by default
 
 
 def _is_unix_like_platform() -> bool:
