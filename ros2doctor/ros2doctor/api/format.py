@@ -12,14 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from typing import List
+from typing import Tuple
 import sys
 
 
-def format_print(report):
-    """Format print report content."""
+def format_print(report: Report) -> None:
+    """
+    Format print report content.
+    :param report: Report object with name and items list
+    """
     # temp fix for missing ifcfg
     if report is None:
-        sys.stderr.write('No report found. Skip print...')
+        sys.stderr.write('No report found. Skip print...\n')
         return
 
     print('\n', report.name)
@@ -28,8 +33,12 @@ def format_print(report):
         print('{:{padding}}: {}'.format(item_name, item_content, padding=padding_num))
 
 
-def compute_padding(report_items):
-    """Compute padding based on report content."""
+def compute_padding(report_items: List[Tuple[str, str]]) -> int:
+    """
+    Compute padding based on report content.
+    :param report_items: list of item name and item content tuple
+    :return: padding number
+    """
     padding = 8
     check_items = list(zip(*report_items))[0]  # get first elements of tuples
     max_len = len(max(check_items, key=len))  # find the longest string length

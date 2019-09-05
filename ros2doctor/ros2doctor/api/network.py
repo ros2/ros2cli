@@ -14,6 +14,7 @@
 
 import os
 import sys
+from typing import Tuple
 import warnings
 
 from ros2doctor.api import DoctorCheck
@@ -27,15 +28,16 @@ try:
     import ifcfg
 except ImportError:
     warnings.warn('Failed to import ifcfg. '
-                  'Use `python -m pip install ifcfg` to install needed package.')
+                  'Use `python -m pip install ifcfg` to install needed package.',\
+                   ImportWarning)  # suppressed by default
 
 
-def _is_unix_like_platform():
+def _is_unix_like_platform() -> bool:
     """Return True if conforms to UNIX/POSIX-style APIs."""
     return os.name == 'posix'
 
 
-def _check_network_config_helper():
+def _check_network_config_helper() -> Tuple[bool, bool, bool]:
     """Check if loopback and multicast IP addresses are found."""
     has_loopback, has_non_loopback, has_multicast = False, False, False
     # temp fix for ifcfg package, maunually pass network check

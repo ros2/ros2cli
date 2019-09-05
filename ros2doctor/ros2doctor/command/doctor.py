@@ -25,11 +25,11 @@ class DoctorCommand(CommandExtension):
         group = parser.add_mutually_exclusive_group(required=False)
         group.add_argument(
             '--report', '-r', action='store_true',
-            help='Print all report.'
+            help='Print all reports.'
         )
         group.add_argument(
             '--report-failed', '-rf', action='store_true',
-            help='Print report of failed checks only.'
+            help='Print reports of failed checks only.'
         )
 
     def main(self, *, parser, args):
@@ -43,7 +43,7 @@ class DoctorCommand(CommandExtension):
 
         # `ros2 doctor`
         failed_cats, fail, total = run_checks()
-        if fail != 0:
+        if fail:
             print('\n%d/%d checks failed\n' % (fail, total))
             print('Failed modules are ', *failed_cats)
         else:
@@ -51,7 +51,7 @@ class DoctorCommand(CommandExtension):
 
         # `ros2 doctor -rf`
         if args.report_failed and fail != 0:
-            fail_reports = generate_reports(cats=failed_cats)
+            fail_reports = generate_reports(categories=failed_cats)
             for report_obj in fail_reports:
                 format_print(report_obj)
 

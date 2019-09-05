@@ -13,29 +13,41 @@
 # limitations under the License.
 
 from pkg_resources import iter_entry_points
+from typing import List
+from typing import Set
+from typing import Tuple
+import warnings
 
 
 class DoctorCheck:
     """Abstract base class of ros2doctor check."""
 
-    def category(self):
-        """Return: String linking checks and reports."""
+    def category(self) -> str:
+        """
+        :return: string linking checks and reports
+        """
         raise NotImplementedError
 
-    def check(self):
-        """Return: Boolean indicating result of checks."""
+    def check(self) -> bool:
+        """
+        :return: boolean indicating result of checks
+        """
         raise NotImplementedError
 
 
 class DoctorReport:
     """Abstract base class of ros2doctor report."""
 
-    def category(self):
-        """Return: String linking checks and reports."""
+    def category(self) -> str:
+        """
+        :return: string linking checks and reports
+        """
         raise NotImplementedError
 
-    def report(self):
-        """Return: Report object containing report content."""
+    def report(self) -> 'Report':  # can't refer to class not defined, using str as wrapper
+        """
+        :return: Report object storing report content
+        """
         raise NotImplementedError
 
 
@@ -44,25 +56,31 @@ class Report:
 
     __slots__ = ['name', 'items']
 
-    def __init__(self, name):
+    def __init__(self, name: str):
+        """Initialize with report name."""
         self.name = name
         self.items = []
 
-    def add_to_report(self, item_name, item_info):
+    def add_to_report(self, item_name: str, item_info: str) -> None:
+        """Add report content to items list (list of string tuples)."""
         self.items.append((item_name, item_info))
 
 
-def run_checks():
+def run_checks() -> Tuple[Set[str], int, int]:
     """
     Run all checks and return check results.
-
-    Return: list of String, Int, Int
+    :return: 3-tuple (categories of failed checks, number of failed checks,
+             total number of checks)
     """
     failed_cats = set()  # remove repeating elements
     fail = 0
     total = 0
     for check_entry_pt in iter_entry_points('ros2doctor.checks'):
-        check_class = check_entry_pt.load()()
+        try:
+            check_class = check_entry_pt.load()()
+        except ValueError:
+            warnings.warn('Entry point load error.')
+            pass
         cat = check_class.category()
         result = check_class.check()
         if result is False:
@@ -72,17 +90,20 @@ def run_checks():
     return failed_cats, fail, total
 
 
-def generate_reports(*, cats=None):
+def generate_reports(*, categories=None) -> List[Report]:
     """
     Print all reports or reports of failed checks to terminal.
-
-    Return: list of Report objects
+    :return: list of Report objects
     """
     reports = []
     for report_entry_pt in iter_entry_points('ros2doctor.report'):
-        report_class = report_entry_pt.load()()
+        try:
+            report_class = report_entry_pt.load()()
+        except ValueError:
+            warnings.warn('Entry point load error.')
+            pass
         if cats:
-            if report_class.category() in cats:
+            if report_class.category() in categories:
                 reports.append(report_class.report())
         else:
             reports.append(report_class.report())
