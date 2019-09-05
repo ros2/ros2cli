@@ -1,37 +1,31 @@
-# reduced from ament_package/template/package_level/local_setup.bash.in
+# reduced from ament_package/template/package_level/local_setup.fish.in
 
 # provide AMENT_CURRENT_PREFIX to shell script
-AMENT_CURRENT_PREFIX=$(builtin cd "`dirname "${BASH_SOURCE[0]}"`/../.." && pwd)
+set -l AMENT_CURRENT_PREFIX (cd (dirname (status -f))/../.. && pwd)
 # store AMENT_CURRENT_PREFIX to restore it before each environment hook
-_package_local_setup_AMENT_CURRENT_PREFIX=$AMENT_CURRENT_PREFIX
+set -l _package_local_setup_AMENT_CURRENT_PREFIX $AMENT_CURRENT_PREFIX
 
 # unset AMENT_ENVIRONMENT_HOOKS
 # if not appending to them for return
-if [ -z "$AMENT_RETURN_ENVIRONMENT_HOOKS" ]; then
-  unset AMENT_ENVIRONMENT_HOOKS
-fi
+if [ -z "$AMENT_RETURN_ENVIRONMENT_HOOKS"]
+  set -e AMENT_ENVIRONMENT_HOOKS
+end
 
 # restore AMENT_CURRENT_PREFIX before evaluating the environment hooks
-AMENT_CURRENT_PREFIX=$_package_local_setup_AMENT_CURRENT_PREFIX
+set -l AMENT_CURRENT_PREFIX $_package_local_setup_AMENT_CURRENT_PREFIX
 # list all environment hooks of this package
-ament_append_value AMENT_ENVIRONMENT_HOOKS "$AMENT_CURRENT_PREFIX/share/ros2cli/environment/ros2-argcomplete.bash"
+ament_append_value AMENT_ENVIRONMENT_HOOKS "$AMENT_CURRENT_PREFIX/share/ros2cli/environment/ros2-argcomplete.fish"
 # source all shell-specific environment hooks of this package
 # if not returning them
-if [ -z "$AMENT_RETURN_ENVIRONMENT_HOOKS" ]; then
-  _package_local_setup_IFS=$IFS
-  IFS=":"
-  for _hook in $AMENT_ENVIRONMENT_HOOKS; do
+if [ -z "$AMENT_RETURN_ENVIRONMENT_HOOKS"]
+  set -l _package_local_setup_IFS $IFS
+  set -l IFS ":"
+  for _hook in $AMENT_ENVIRONMENT_HOOKS
     # restore AMENT_CURRENT_PREFIX for each environment hook
-    AMENT_CURRENT_PREFIX=$_package_local_setup_AMENT_CURRENT_PREFIX
+    set AMENT_CURRENT_PREFIX $_package_local_setup_AMENT_CURRENT_PREFIX
     # restore IFS before sourcing other files
-    IFS=$_package_local_setup_IFS
-    . "$_hook"
-  done
-  unset _hook
-  IFS=$_package_local_setup_IFS
-  unset _package_local_setup_IFS
-  unset AMENT_ENVIRONMENT_HOOKS
-fi
-
-unset _package_local_setup_AMENT_CURRENT_PREFIX
-unset AMENT_CURRENT_PREFIX
+    set IFS $_package_local_setup_IFS
+    source "$_hook"
+  end
+  set IFS $_package_local_setup_IFS
+end
