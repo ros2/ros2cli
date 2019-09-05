@@ -18,6 +18,8 @@ from typing import Set
 from typing import Tuple
 import warnings
 
+from ros2doctor.api.format import doctor_warn
+
 
 class DoctorCheck:
     """Abstract base class of ros2doctor check."""
@@ -44,7 +46,7 @@ class DoctorReport:
         """
         raise NotImplementedError
 
-    def report(self) -> 'Report':  # can't refer to class not defined, using str as wrapper
+    def report(self) -> 'Report':  # using str as wrapper for custom class Report
         """
         :return: Report object storing report content
         """
@@ -79,7 +81,7 @@ def run_checks() -> Tuple[Set[str], int, int]:
         try:
             check_class = check_entry_pt.load()()
         except ValueError:
-            warnings.warn('Entry point load error.')
+            doctor_warn('Failed to load entry point %s \n' % check_entry_pt.name)
             pass
         cat = check_class.category()
         result = check_class.check()
@@ -100,9 +102,9 @@ def generate_reports(*, categories=None) -> List[Report]:
         try:
             report_class = report_entry_pt.load()()
         except ValueError:
-            warnings.warn('Entry point load error.')
+            doctor_warn('Failed to load entry point %s \n' % report_entry_pt.name)
             pass
-        if cats:
+        if categories:
             if report_class.category() in categories:
                 reports.append(report_class.report())
         else:

@@ -15,9 +15,10 @@
 from typing import List
 from typing import Tuple
 import sys
+import warnings
 
 
-def format_print(report: Report) -> None:
+def format_print(report: 'Report') -> None:  # using str as wrapper for custom class Report
     """
     Format print report content.
     :param report: Report object with name and items list
@@ -47,5 +48,25 @@ def compute_padding(report_items: List[Tuple[str, str]]) -> int:
     return padding
 
 
-def warning_format(msg, cat, filename, linenum, file=None, line=None):
+def custom_warning_format(msg, cat, filename, linenum, file=None, line=None):
     return '%s: %s: %s: %s\n' % (filename, linenum, cat.__name__, msg)
+
+
+class CustomWarningFormat:
+    """Support custom warning format without modifying default format."""
+
+    def __enter__(self):
+        self._default_format = warnings.formatwarning
+        warnings.formatwarning = custom_warning_format
+
+    def __exit__(self, type, value, traceback):
+        warnings.formatwarning = self._default_format
+
+
+def doctor_warn(msg: str) -> None:
+    """
+    Use CustomWarningFormat to print customized warning message.
+    :param msg: warning message to be printed
+    """
+    with CustomWarningFormat():
+        warnings.warn(msg)

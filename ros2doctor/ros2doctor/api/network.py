@@ -20,16 +20,14 @@ import warnings
 from ros2doctor.api import DoctorCheck
 from ros2doctor.api import DoctorReport
 from ros2doctor.api import Report
-from ros2doctor.api.format import warning_format
-
-warnings.formatwarning = warning_format
+from ros2doctor.api.format import doctor_warn
 
 try:
     import ifcfg
 except ImportError:
     warnings.warn('Failed to import ifcfg. '
                   'Use `python -m pip install ifcfg` to install needed package.',\
-                   ImportWarning)  # suppressed by default
+                   ImportWarning)  # ImportWarning is suppressed by default
 
 
 def _is_unix_like_platform() -> bool:
@@ -42,7 +40,7 @@ def _check_network_config_helper() -> Tuple[bool, bool, bool]:
     has_loopback, has_non_loopback, has_multicast = False, False, False
     # temp fix for ifcfg package, maunually pass network check
     if 'ifcfg' not in sys.modules:
-        warnings.warn('ifcfg not imported. Skip network check...')
+        doctor_warn('ifcfg not imported. Skip network check...')
         return True, True, True
 
     for name, iface in ifcfg.interfaces().items():
@@ -66,11 +64,11 @@ class NetworkCheck(DoctorCheck):
         """Check network configuration."""
         has_loopback, has_non_loopback, has_multicast = _check_network_config_helper()
         if not has_loopback:
-            warnings.warn('ERROR: No loopback IP address is found.')
+            doctor_warn('ERROR: No loopback IP address is found.')
         if not has_non_loopback:
-            warnings.warn('Only loopback IP address is found.')
+            doctor_warn('Only loopback IP address is found.')
         if not has_multicast:
-            warnings.warn('No multicast IP address is found.')
+            doctor_warn('No multicast IP address is found.')
         return has_loopback and has_non_loopback and has_multicast
 
 
@@ -85,7 +83,7 @@ class NetworkReport(DoctorReport):
         network_report = Report('NETWORK CONFIGURATION')
         # temp fix for ifcfg package, return none for report
         if 'ifcfg' not in sys.modules:
-            warnings.warn('ERROR: ifcfg package not imported. Skipping network report...')
+            doctor_warn('ERROR: ifcfg package not imported. Skipping network report...')
             return None
 
         for name, iface in ifcfg.interfaces().items():
