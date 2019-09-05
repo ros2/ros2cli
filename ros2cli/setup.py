@@ -14,10 +14,12 @@ setup(
         ]),
         ('share/ros2cli', [
             'resource/local_setup.bash',
+            'resource/local_setup.fish',
             'resource/local_setup.zsh',
         ]),
         ('share/ros2cli/environment', [
             'completion/ros2-argcomplete.bash',
+            'completion/ros2-argcomplete.fish',
             'completion/ros2-argcomplete.zsh'
         ]),
     ],
