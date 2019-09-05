@@ -13,7 +13,7 @@
 # limitations under the License.
 
 if type register-python-argcomplete3 > /dev/null 2>&1
-  eval "register-python-argcomplete3 --shell fish ros2 | ."
+  eval "register-python-argcomplete3 --shell fish ros2 | source"
 else if type register-python-argcomplete > /dev/null 2>&1
-  eval "register-python-argcomplete3 --shell fish ros2 | ."
+  eval "register-python-argcomplete3 --shell fish ros2 | source"
 end
