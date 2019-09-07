@@ -157,12 +157,6 @@ def get_test_configurations(rmw_implementation):
         ),
         CLITestConfiguration(
             command='topic',
-            arguments=['find', 'rcl_interfaces/msg/NotAMessageType'],
-            fixture_actions=[get_talker_node_action()],
-            expected_output=None,
-        ),
-        CLITestConfiguration(
-            command='topic',
             arguments=['echo', '/my_ns/chatter'],
             fixture_actions=[get_talker_node_action()],
             expected_output=itertools.cycle([
@@ -385,7 +379,7 @@ def get_test_configurations(rmw_implementation):
         ),
         CLITestConfiguration(
             command='topic',
-            arguments=['pub', '--once', '/my_ns/chatter', 'std_msgs/msg/String', '{data: test}'],
+            arguments=['pub', '--once', '/my_ns/chatter', 'std_msgs/msg/String', '{data: test_once}'],
             expected_output=[
                 'publisher: beginning loop',
                 re.compile(r"publishing #1: std_msgs\.msg\.String\(data='test'\)"),
