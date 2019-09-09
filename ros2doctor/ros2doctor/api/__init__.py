@@ -71,13 +71,13 @@ def run_checks() -> Tuple[Set[str], int, int]:
     fail = 0
     total = 0
     for check_entry_pt in iter_entry_points('ros2doctor.checks'):
+        check_class = check_entry_pt.load()()
         try:
-            check_class = check_entry_pt.load()()
+            cat = check_class.category()
+            result = check_class.check()
         except ValueError:
-            doctor_warn('Failed to load entry point %s \n' % check_entry_pt.name)
+            doctor_warn('Check class failed to load.')
             pass
-        cat = check_class.category()
-        result = check_class.check()
         if result is False:
             fail += 1
             failed_cats.add(cat)
@@ -93,14 +93,16 @@ def generate_reports(*, categories=None) -> List[Report]:
     """
     reports = []
     for report_entry_pt in iter_entry_points('ros2doctor.report'):
-        try:
-            report_class = report_entry_pt.load()()
-        except ValueError:
-            doctor_warn('Failed to load entry point %s \n' % report_entry_pt.name)
-            pass
+        report_class = report_entry_pt.load()()
         if categories:
-            if report_class.category() in categories:
-                reports.append(report_class.report())
+            try:
+                report_category = report_class.category()
+                report = report_class.report()
+            except ValueError:
+                doctor_warn('Report class failed to load.')
+                pass
+            if report_category in categories:
+                reports.append(report)
         else:
-            reports.append(report_class.report())
+            reports.append(report)
     return reports
