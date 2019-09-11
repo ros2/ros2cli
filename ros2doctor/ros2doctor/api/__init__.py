@@ -94,13 +94,13 @@ def generate_reports(*, categories=None) -> List[Report]:
     reports = []
     for report_entry_pt in iter_entry_points('ros2doctor.report'):
         report_class = report_entry_pt.load()()
+        try:
+            report_category = report_class.category()
+            report = report_class.report()
+        except ValueError:
+            doctor_warn('Report class failed to load.')
+            pass
         if categories:
-            try:
-                report_category = report_class.category()
-                report = report_class.report()
-            except ValueError:
-                doctor_warn('Report class failed to load.')
-                pass
             if report_category in categories:
                 reports.append(report)
         else:
