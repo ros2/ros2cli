@@ -76,7 +76,7 @@ def run_checks() -> Tuple[Set[str], int, int]:
             cat = check_class.category()
             result = check_class.check()
         except ValueError:
-            doctor_warn('Check class failed to load.')
+            doctor_warn('Check class from %s failed to load.' % check_entry_pt.name)
             pass
         if result is False:
             fail += 1
@@ -98,7 +98,7 @@ def generate_reports(*, categories=None) -> List[Report]:
             report_category = report_class.category()
             report = report_class.report()
         except ValueError:
-            doctor_warn('Report class failed to load.')
+            doctor_warn('Report class from %s failed to load.' % report_entry_pt.name)
             pass
         if categories:
             if report_category in categories:
