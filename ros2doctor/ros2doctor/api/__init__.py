@@ -71,15 +71,22 @@ def run_checks() -> Tuple[Set[str], int, int]:
     fail = 0
     total = 0
     for check_entry_pt in iter_entry_points('ros2doctor.checks'):
-        check_class = check_entry_pt.load()()
         try:
-            cat = check_class.category()
-            result = check_class.check()
+            check_class = check_entry_pt.load()
         except ValueError:
-            doctor_warn('Check class from %s failed to load.' % check_entry_pt.name)
+            doctor_warn('Check entry point %s fails to load.' % check_entry_pt.name)
+        try:
+            check_instance = check_class()
+        except ValueError:
+            doctor_warn('Unable to instantiate check object from %s.' % check_entry_pt.name)
+        try:
+            check_category = check_instance.category()
+            result = check_instance.check()
+        except ValueError:
+            doctor_warn('Fail to call %s class functions.' % check_entry_pt.name)
         if result is False:
             fail += 1
-            failed_cats.add(cat)
+            failed_cats.add(check_category)
         total += 1
     return failed_cats, fail, total
 
@@ -92,12 +99,19 @@ def generate_reports(*, categories=None) -> List[Report]:
     """
     reports = []
     for report_entry_pt in iter_entry_points('ros2doctor.report'):
-        report_class = report_entry_pt.load()()
         try:
-            report_category = report_class.category()
-            report = report_class.report()
+            report_class = report_entry_pt.load()
         except ValueError:
-            doctor_warn('Report class from %s failed to load.' % report_entry_pt.name)
+            doctor_warn('Report entry point %s fails to load.' % report_entry_pt.name)
+        try:
+            report_instance = report_class()
+        except ValueError:
+            doctor_warn('Unable to instantiate report object from %s.' % report_entry_pt.name)
+        try:
+            report_category = report_instance.category()
+            report = report_instance.report()
+        except ValueError:
+            doctor_warn('Fail to call %s class functions.' % report_entry_pt.name)
         if categories:
             if report_category in categories:
                 reports.append(report)
