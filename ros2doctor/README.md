@@ -15,16 +15,19 @@ Run `ros2 doctor -r/--report` to see details of checks.
 
 ## Add New Checks
 
-To add your own checks or information to report, use [Python entry points](https://setuptools.readthedocs.io/en/latest/pkg_resources.html#entry-points) to add modules to `setup.py`. See example below:
+To add your own checks or information to report, use [Python entry points](https://setuptools.readthedocs.io/en/latest/pkg_resources.html#entry-points) to add modules to `setup.py`.
+See example below:
 
 ```python
     entry_points={
         'ros2doctor.checks': [
-            'check_platform = ros2doctor.api.platform:check_platform',
+            'PlatformCheck = ros2doctor.api.platform:PlatformCheck',
+            'NetworkCheck = ros2doctor.api.network:NetworkCheck',
         ],
         'ros2doctor.report': [
-            'report_platform = ros2doctor.api.platform:print_platform_info',
-            'report_ros_distro = ros2doctor.api.platform:print_ros2_info',
+            'PlatformReport = ros2doctor.api.platform:PlatformReport',
+            'RosdistroReport = ros2doctor.api.platform:RosdistroReport',
+            'NetworkReport = ros2doctor.api.network:NetworkReport',
         ],
     }
 ```
