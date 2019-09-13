@@ -17,6 +17,7 @@ from typing import Set
 from typing import Tuple
 
 from pkg_resources import iter_entry_points
+from pkg_resources import UnknownExtra
 
 from ros2doctor.api.format import doctor_warn
 
@@ -73,16 +74,16 @@ def run_checks() -> Tuple[Set[str], int, int]:
     for check_entry_pt in iter_entry_points('ros2doctor.checks'):
         try:
             check_class = check_entry_pt.load()
-        except ValueError:
+        except (ImportError, UnknownExtra):
             doctor_warn('Check entry point %s fails to load.' % check_entry_pt.name)
         try:
             check_instance = check_class()
-        except ValueError:
+        except Exception:
             doctor_warn('Unable to instantiate check object from %s.' % check_entry_pt.name)
         try:
             check_category = check_instance.category()
             result = check_instance.check()
-        except ValueError:
+        except Exception:
             doctor_warn('Fail to call %s class functions.' % check_entry_pt.name)
         if result is False:
             fail += 1
@@ -101,16 +102,16 @@ def generate_reports(*, categories=None) -> List[Report]:
     for report_entry_pt in iter_entry_points('ros2doctor.report'):
         try:
             report_class = report_entry_pt.load()
-        except ValueError:
+        except (ImportError, UnknownExtra):
             doctor_warn('Report entry point %s fails to load.' % report_entry_pt.name)
         try:
             report_instance = report_class()
-        except ValueError:
+        except Exception:
             doctor_warn('Unable to instantiate report object from %s.' % report_entry_pt.name)
         try:
             report_category = report_instance.category()
             report = report_instance.report()
-        except ValueError:
+        except Exception:
             doctor_warn('Fail to call %s class functions.' % report_entry_pt.name)
         if categories:
             if report_category in categories:
