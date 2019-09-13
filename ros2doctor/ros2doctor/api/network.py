@@ -15,7 +15,6 @@
 import os
 import sys
 from typing import Tuple
-import warnings
 
 from ros2doctor.api import DoctorCheck
 from ros2doctor.api import DoctorReport
@@ -24,10 +23,9 @@ from ros2doctor.api.format import doctor_warn
 
 try:
     import ifcfg
-except ImportError:
-    warnings.warn('Failed to import ifcfg. '
-                  'Use `python -m pip install ifcfg` to install needed package.',
-                  ImportWarning)  # ImportWarning is suppressed by default
+except ImportError:  # check import error for windows and osx
+    doctor_warn('Failed to import ifcfg. '
+                  'Use `python -m pip install ifcfg` to install needed package.')
 
 
 def _is_unix_like_platform() -> bool:
@@ -35,15 +33,10 @@ def _is_unix_like_platform() -> bool:
     return os.name == 'posix'
 
 
-def _check_network_config_helper() -> Tuple[bool, bool, bool]:
+def _check_network_config_helper(ifcfg_ifaces: dict) -> Tuple[bool, bool, bool]:
     """Check if loopback and multicast IP addresses are found."""
     has_loopback, has_non_loopback, has_multicast = False, False, False
-    # temp fix for ifcfg package, maunually pass network check
-    if 'ifcfg' not in sys.modules:
-        doctor_warn('ifcfg not imported. Skip network check...')
-        return True, True, True
-
-    for name, iface in ifcfg.interfaces().items():
+    for name, iface in ifcfg_ifaces.items():
         flags = iface.get('flags')
         if 'LOOPBACK' in flags:
             has_loopback = True
@@ -62,7 +55,14 @@ class NetworkCheck(DoctorCheck):
 
     def check(self):
         """Check network configuration."""
-        has_loopback, has_non_loopback, has_multicast = _check_network_config_helper()
+        # check ifcfg import for windows and osx users
+        try:
+            ifcfg_ifaces = ifcfg.interfaces()
+        except NameError:
+            doctor_warn('ifcfg not imported. Unable to run network check.')
+            return None
+
+        has_loopback, has_non_loopback, has_multicast = _check_network_config_helper(ifcfg_ifaces)
         if not has_loopback:
             doctor_warn('ERROR: No loopback IP address is found.')
         if not has_non_loopback:
@@ -80,13 +80,15 @@ class NetworkReport(DoctorReport):
 
     def report(self):
         """Print system and ROS network information."""
-        network_report = Report('NETWORK CONFIGURATION')
-        # temp fix for ifcfg package, return none for report
-        if 'ifcfg' not in sys.modules:
-            doctor_warn('ERROR: ifcfg package not imported. Skipping network report...')
+        # check ifcfg import for windows and osx users
+        try:
+            ifcfg_ifaces = ifcfg.interfaces()
+        except NameError:
+            doctor_warn('ifcfg not imported. Unable to generate network report.')
             return None
 
-        for name, iface in ifcfg.interfaces().items():
+        network_report = Report('NETWORK CONFIGURATION')
+        for name, iface in ifcfg_ifaces.items():
             for k, v in iface.items():
                 if v:
                     network_report.add_to_report(k, v)
