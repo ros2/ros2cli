@@ -12,9 +12,71 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import sys
+from typing import List
+from typing import Tuple
+import warnings
 
-def print_term(k, v):
-    """Print term only if it exists."""
-    if v:
-        # TODO(clairewang): 20 padding needs to be dynamically set
-        print('{:20}: {}'.format(k, v))
+
+def format_print(report):
+    """
+    Format print report content.
+
+    :param report: Report object with name and items list
+    """
+    # temp fix for missing ifcfg
+    if report is None:
+        sys.stderr.write('No report found. Skip print...\n')
+        return
+
+    print('\n ', report.name)
+    padding_num = compute_padding(report.items)
+    for item_name, item_content in report.items:
+        print('{:{padding}}: {}'.format(item_name, item_content, padding=padding_num))
+
+
+def compute_padding(report_items: List[Tuple[str, str]]) -> int:
+    """
+    Compute padding based on report content.
+
+    :param report_items: list of item name and item content tuple
+    :return: padding number
+    """
+    padding = 8
+    check_items = list(zip(*report_items))[0]  # get first elements of tuples
+    max_len = len(max(check_items, key=len))  # find the longest string length
+    if max_len >= padding:
+        padding = max_len + 4  # padding number is longest string length + 4 spaces
+    return padding
+
+
+def custom_warning_format(msg, cat, filename, linenum, file=None, line=None):
+    return '%s: %s: %s: %s\n' % (filename, linenum, cat.__name__, msg)
+
+
+class CustomWarningFormat:
+    """Support custom warning format without modifying default format."""
+
+    def __enter__(self):
+        self._default_format = warnings.formatwarning
+        warnings.formatwarning = custom_warning_format
+
+    def __exit__(self, t, v, trb):
+        """
+        Define exit action for context manager.
+
+        :param t: type
+        :param v: value
+        :param trb: traceback
+        """
+        warnings.formatwarning = self._default_format
+
+
+def doctor_warn(msg: str) -> None:
+    """
+    Use CustomWarningFormat to print customized warning message.
+
+    :param msg: warning message to be printed
+    """
+    with CustomWarningFormat():
+        warnings.warn(msg)

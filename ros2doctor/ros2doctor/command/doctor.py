@@ -13,31 +13,47 @@
 # limitations under the License.
 
 from ros2cli.command import CommandExtension
-from ros2doctor.api import generate_report
+from ros2doctor.api import generate_reports
 from ros2doctor.api import run_checks
+from ros2doctor.api.format import format_print
 
 
 class DoctorCommand(CommandExtension):
     """Check ROS setup and other potential issues."""
 
     def add_arguments(self, parser, cli_name):
-        parser.add_argument(
+        group = parser.add_mutually_exclusive_group(required=False)
+        group.add_argument(
             '--report', '-r', action='store_true',
-            help='Print out doctor report.'
+            help='Print all reports.'
+        )
+        group.add_argument(
+            '--report-failed', '-rf', action='store_true',
+            help='Print reports of failed checks only.'
         )
 
     def main(self, *, parser, args):
+        """Run checks and print report to terminal based on user input args."""
+        # `ros2 doctor -r`
         if args.report:
-            generate_report()
+            all_reports = generate_reports()
+            for report_obj in all_reports:
+                format_print(report_obj)
+            return
+
+        # `ros2 doctor`
+        failed_cats, fail, total = run_checks()
+        if fail:
+            print('\n%d/%d checks failed\n' % (fail, total))
+            print('Failed modules are ', *failed_cats)
         else:
-            all_result, failed_names = run_checks()
-            failed = all_result.count(False)
-            passed = all_result.count(True)
-            if failed != 0:
-                print('%d/%d checks failed' % (failed, len(all_result)))
-                print('Failed checks:', *failed_names)
-            else:
-                print('%d/%d checks passed' % (passed, len(all_result)))
+            print('\nAll %d checks passed\n' % total)
+
+        # `ros2 doctor -rf`
+        if args.report_failed and fail != 0:
+            fail_reports = generate_reports(categories=failed_cats)
+            for report_obj in fail_reports:
+                format_print(report_obj)
 
 
 class WtfCommand(DoctorCommand):
