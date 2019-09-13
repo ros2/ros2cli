@@ -1,10 +1,15 @@
 from setuptools import find_packages
 from setuptools import setup
 
+package_name = 'ros2interface'
+
 setup(
-    name='ros2interface',
+    name=package_name,
     version='0.7.4',
     packages=find_packages(exclude=['test']),
+    data_files=[
+        ('share/' + package_name, ['package.xml']),
+    ],
     install_requires=['ros2cli'],
     zip_safe=True,
     author='Siddharth Kucheria',
