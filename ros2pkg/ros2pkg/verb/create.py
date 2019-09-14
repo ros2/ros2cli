@@ -129,8 +129,8 @@ class CreateVerb(VerbExtension):
             # If the package name is 'test', there will be a conflict between
             # the directory the source code for the package goes in and the
             # directory the tests for the package go in.
-            return 'Aborted! ament_python packages can not be named "test". Please choose a ' + \
-                'different package name.'
+            return "Aborted since 'ament_python' packages can't be named 'test'. Please " + \
+                'choose a different package name.'
 
         package = Package(
             package_format=args.package_format,
