@@ -44,12 +44,12 @@ def _check_network_config_helper() -> Tuple[bool, bool, bool]:
         return True, True, True
 
     for name, iface in ifcfg.interfaces().items():
-        flags = iface.get('flags')
-        if 'LOOPBACK' in flags:
+        flags = [f.lower() for f in iface.get('flags')]
+        if 'loopback' in flags:
             has_loopback = True
         else:
             has_non_loopback = True
-        if 'MULTICAST' in flags:
+        if 'multicast' in flags:
             has_multicast = True
     return has_loopback, has_non_loopback, has_multicast
 
