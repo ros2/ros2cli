@@ -91,7 +91,7 @@ def run_checks() -> Tuple[Set[str], int, int]:
                 failed_cats.add(check_category)
             total += 1
         else:
-            doctor_warn('Check result is invalid in %s.' % check_entry_pt.name)
+            doctor_warn('Check result from %s is invalid.' % check_entry_pt.name)
     return failed_cats, fail, total
 
 
@@ -123,5 +123,5 @@ def generate_reports(*, categories=None) -> List[Report]:
             else:
                 reports.append(report)
         else:
-            doctor_warn('Report is invalid for %s.' % report_entry_pt.name)
+            doctor_warn('Report from %s is invalid.' % report_entry_pt.name)
     return reports
