@@ -25,7 +25,7 @@ try:
     import ifcfg
 except ImportError:  # check import error for windows and osx
     doctor_warn('Failed to import ifcfg. '
-                  'Use `python -m pip install ifcfg` to install needed package.')
+                'Use `python -m pip install ifcfg` to install needed package.')
 
 
 def _is_unix_like_platform() -> bool:
@@ -59,7 +59,7 @@ class NetworkCheck(DoctorCheck):
         try:
             ifcfg_ifaces = ifcfg.interfaces()
         except NameError:
-            doctor_warn('ifcfg not imported. Unable to run network check.')
+            doctor_warn('ifcfg is not imported. Unable to run network check.')
             return None
 
         has_loopback, has_non_loopback, has_multicast = _check_network_config_helper(ifcfg_ifaces)
@@ -84,7 +84,7 @@ class NetworkReport(DoctorReport):
         try:
             ifcfg_ifaces = ifcfg.interfaces()
         except NameError:
-            doctor_warn('ifcfg not imported. Unable to generate network report.')
+            doctor_warn('ifcfg is not imported. Unable to generate network report.')
             return None
 
         network_report = Report('NETWORK CONFIGURATION')
