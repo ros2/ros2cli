@@ -7,6 +7,8 @@ It will examine your ROS 2 setup, such as distribution, platform, network interf
 
 ## Usage
 
+Windows and OSX users: run `python3 -m pip install ifcfg` to enable network check.
+
 Run `ros2 doctor` or `ros2 wtf`(alias) to conduct checks.
 
 Run `ros2 doctor -h/--help` to print all available command extensions.
