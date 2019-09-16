@@ -44,7 +44,7 @@ def _check_network_config_helper() -> Tuple[bool, bool, bool]:
         return True, True, True
 
     for name, iface in ifcfg.interfaces().items():
-        flags = [f.lower() for f in iface.get('flags')]
+        flags = iface.get('flags').lower()
         if 'loopback' in flags:
             has_loopback = True
         else:
