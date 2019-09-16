@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import os
-import sys
 from typing import Tuple
 
 from ros2doctor.api import DoctorCheck

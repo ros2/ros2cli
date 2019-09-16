@@ -85,7 +85,7 @@ def run_checks() -> Tuple[Set[str], int, int]:
             result = check_instance.check()
         except Exception:
             doctor_warn('Fail to call %s class functions.' % check_entry_pt.name)
-        if type(result) == type(True):
+        if isinstance(result, bool):
             if result is False:
                 fail += 1
                 failed_cats.add(check_category)
@@ -116,7 +116,7 @@ def generate_reports(*, categories=None) -> List[Report]:
             report = report_instance.report()
         except Exception:
             doctor_warn('Fail to call %s class functions.' % report_entry_pt.name)
-        if type(report) == Report(''):
+        if isinstance(report, Report):
             if categories:
                 if report_category in categories:
                     reports.append(report)
