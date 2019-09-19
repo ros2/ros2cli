@@ -25,5 +25,5 @@ class RMWReport(DoctorReport):
 
     def report(self):
         rmw_report = Report('RMW Middleware')
-        rmw_report.add_to_report('RMW library', get_rmw_implementation_identifier())
+        rmw_report.add_to_report('middleware name', get_rmw_implementation_identifier())
         return rmw_report
