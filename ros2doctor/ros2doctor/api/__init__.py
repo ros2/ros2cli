@@ -72,7 +72,7 @@ def run_checks() -> Tuple[Set[str], int, int]:
     fail = 0
     total = 0
     for check_entry_pt in iter_entry_points('ros2doctor.checks'):
-        result = ''  # default to invalid
+        result = False
         try:
             check_class = check_entry_pt.load()
         except (ImportError, UnknownExtra):
@@ -86,13 +86,10 @@ def run_checks() -> Tuple[Set[str], int, int]:
             result = check_instance.check()
         except Exception:
             doctor_warn('Fail to call %s class functions.' % check_entry_pt.name)
-        if isinstance(result, bool):
-            if result is False:
-                fail += 1
-                failed_cats.add(check_category)
-            total += 1
-        else:
-            doctor_warn('Check result from %s is invalid.' % check_entry_pt.name)
+        if result is False:
+            fail += 1
+            failed_cats.add(check_category)
+        total += 1
     return failed_cats, fail, total
 
 
@@ -104,8 +101,8 @@ def generate_reports(*, categories=None) -> List[Report]:
     """
     reports = []
     for report_entry_pt in iter_entry_points('ros2doctor.report'):
-        report = ''  # default to invalid
-        report_category = ''  # init val
+        report = Report('')  # default to invalid
+        report_category = ''
         try:
             report_class = report_entry_pt.load()
         except (ImportError, UnknownExtra):
@@ -119,12 +116,9 @@ def generate_reports(*, categories=None) -> List[Report]:
             report = report_instance.report()
         except Exception:
             doctor_warn('Fail to call %s class functions.' % report_entry_pt.name)
-        if isinstance(report, Report):
-            if categories:
-                if report_category in categories:
-                    reports.append(report)
-            else:
+        if categories:
+            if report_category in categories:
                 reports.append(report)
         else:
-            doctor_warn('Report from %s is invalid.' % report_entry_pt.name)
+            reports.append(report)
     return reports
