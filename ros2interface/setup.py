@@ -1,10 +1,15 @@
 from setuptools import find_packages
 from setuptools import setup
 
+package_name = 'ros2interface'
+
 setup(
-    name='ros2interface',
+    name=package_name,
     version='0.7.4',
     packages=find_packages(exclude=['test']),
+    data_files=[
+        ('share/' + package_name, ['package.xml']),
+    ],
     install_requires=['ros2cli'],
     zip_safe=True,
     author='Siddharth Kucheria',
@@ -35,6 +40,7 @@ The package provides the interface command for the ROS 2 command line tools.""",
         'ros2interface.verb': [
             'list = ros2interface.verb.list:ListVerb',
             'package = ros2interface.verb.package:PackageVerb',
+            'proto = ros2interface.verb.proto:ProtoVerb',
             'packages = ros2interface.verb.packages:PackagesVerb',
             'show = ros2interface.verb.show:ShowVerb',
         ],
