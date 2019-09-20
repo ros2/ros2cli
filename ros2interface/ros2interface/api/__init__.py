@@ -17,6 +17,9 @@ from ament_index_python import get_resource
 from ament_index_python import get_resources
 from ament_index_python import has_resource
 
+from rosidl_runtime_py import utilities
+from rosidl_runtime_py.convert import message_to_yaml
+
 
 def get_all_interface_packages():
     return get_resources('rosidl_interfaces')
@@ -157,3 +160,15 @@ def get_message_path(package_name, message_name):
     # TODO(dirk-thomas) this logic should come from a rosidl related package
     return os.path.join(
         prefix_path, 'share', package_name, 'msg', message_name + '.msg')
+
+
+def interface_to_yaml(identifier):
+    interface = utilities.get_interface(identifier)
+    if utilities.is_action(interface):
+        instance = interface.Goal()
+    elif utilities.is_service(interface):
+        instance = interface.Request()
+    else:
+        instance = interface()
+
+    return message_to_yaml(instance)
