@@ -26,13 +26,13 @@ class ProtoVerb(VerbExtension):
                 help='Show an interface definition (e.g. "std_msgs/msg/String")')
         arg.completer = type_completer
         parser.add_argument(
-            '--no-hyphens', action='store_true',
-            help='if true output has no outer hyphens.')
+            '--no-quotes', action='store_true',
+            help='if true output has no outer quotes.')
 
     def main(self, *, args):
         yaml = interface_to_yaml(args.type)
 
-        if args.no_hyphens is True:
+        if args.no_quotes is True:
             print(yaml)
         else:
             print('"' + yaml + '"')
