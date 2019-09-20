@@ -59,7 +59,7 @@ class NetworkCheck(DoctorCheck):
             ifcfg_ifaces = ifcfg.interfaces()
         except NameError:
             doctor_warn('ifcfg is not imported. Unable to run network check.')
-            return None
+            return False
 
         has_loopback, has_non_loopback, has_multicast = _check_network_config_helper(ifcfg_ifaces)
         if not has_loopback:
@@ -84,7 +84,7 @@ class NetworkReport(DoctorReport):
             ifcfg_ifaces = ifcfg.interfaces()
         except NameError:
             doctor_warn('ifcfg is not imported. Unable to generate network report.')
-            return None
+            return Report('')
 
         network_report = Report('NETWORK CONFIGURATION')
         for name, iface in ifcfg_ifaces.items():
