@@ -43,6 +43,7 @@ setup(
             'PlatformReport = ros2doctor.api.platform:PlatformReport',
             'RosdistroReport = ros2doctor.api.platform:RosdistroReport',
             'NetworkReport = ros2doctor.api.network:NetworkReport',
+            'RMWReport = ros2doctor.api.rmw:RMWReport',
         ],
     }
 )
