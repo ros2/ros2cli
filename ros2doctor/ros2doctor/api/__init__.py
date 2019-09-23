@@ -70,7 +70,7 @@ class Result:
         """Initialize with no error or warning."""
         self.error = 0
         self.warning = 0
-    
+
     def increment_error(self) -> None:
         self.error += 1
 
