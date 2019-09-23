@@ -101,8 +101,6 @@ def generate_reports(*, categories=None) -> List[Report]:
     """
     reports = []
     for report_entry_pt in iter_entry_points('ros2doctor.report'):
-        report = Report('')  # default to invalid
-        report_category = ''
         try:
             report_class = report_entry_pt.load()
         except (ImportError, UnknownExtra):
