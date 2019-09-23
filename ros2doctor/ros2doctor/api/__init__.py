@@ -114,11 +114,11 @@ def generate_reports(*, categories=None) -> List[Report]:
         try:
             report_category = report_instance.category()
             report = report_instance.report()
+            if categories:
+                if report_category in categories:
+                    reports.append(report)
+            else:
+                reports.append(report)
         except Exception:
             doctor_warn('Fail to call %s class functions.' % report_entry_pt.name)
-        if categories:
-            if report_category in categories:
-                reports.append(report)
-        else:
-            reports.append(report)
     return reports
