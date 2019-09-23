@@ -72,6 +72,7 @@ def run_checks() -> Tuple[Set[str], int, int]:
     fail = 0
     total = 0
     for check_entry_pt in iter_entry_points('ros2doctor.checks'):
+        result = False
         try:
             check_class = check_entry_pt.load()
         except (ImportError, UnknownExtra):
@@ -111,11 +112,11 @@ def generate_reports(*, categories=None) -> List[Report]:
         try:
             report_category = report_instance.category()
             report = report_instance.report()
+            if categories:
+                if report_category in categories:
+                    reports.append(report)
+            else:
+                reports.append(report)
         except Exception:
             doctor_warn('Fail to call %s class functions.' % report_entry_pt.name)
-        if categories:
-            if report_category in categories:
-                reports.append(report)
-        else:
-            reports.append(report)
     return reports

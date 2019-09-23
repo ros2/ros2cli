@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys
 from typing import List
 from typing import Tuple
 import warnings
@@ -24,11 +23,6 @@ def format_print(report):
 
     :param report: Report object with name and items list
     """
-    # temp fix for missing ifcfg
-    if report is None:
-        sys.stderr.write('No report found. Skip print...\n')
-        return
-
     print('\n ', report.name)
     padding_num = compute_padding(report.items)
     for item_name, item_content in report.items:
