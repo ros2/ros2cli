@@ -19,6 +19,7 @@ from typing import Tuple
 from ros2doctor.api import DoctorCheck
 from ros2doctor.api import DoctorReport
 from ros2doctor.api import Report
+from ros2doctor.api import Result
 from ros2doctor.api.format import doctor_warn
 
 import rosdistro
@@ -57,9 +58,10 @@ class PlatformCheck(DoctorCheck):
 
     def check(self):
         """Check system platform against ROS 2 Distro."""
-        result = False
+        result = Result()
         distros = _check_platform_helper()
         if not distros:
+            result.increment_error()
             return result
         distro_name, distro_info, _ = distros
 
@@ -68,12 +70,12 @@ class PlatformCheck(DoctorCheck):
             doctor_warn('Distribution %s is not fully supported or tested. '
                         'To get more consistent features, download a stable version at '
                         'https://index.ros.org/doc/ros2/Installation/' % distro_name)
+            result.increment_warning()
         elif distro_info.get('distribution_status') == 'end-of-life':
             doctor_warn('Distribution %s is no longer supported or deprecated. '
                         'To get the latest features, download the new versions at '
                         'https://index.ros.org/doc/ros2/Installation/' % distro_name)
-        else:
-            result = True
+            result.increment_warning()
         return result
 
 

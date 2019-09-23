@@ -31,6 +31,10 @@ class DoctorCommand(CommandExtension):
             '--report-failed', '-rf', action='store_true',
             help='Print reports of failed checks only.'
         )
+        parser.add_argument(
+            '--include-warnings', '-iw', action='store_true',
+            help='Include warnings as failed checks. Default sets warnings to be ignored.'
+        )
 
     def main(self, *, parser, args):
         """Run checks and print report to terminal based on user input args."""
@@ -41,8 +45,11 @@ class DoctorCommand(CommandExtension):
                 format_print(report_obj)
             return
 
-        # `ros2 doctor`
-        failed_cats, fail, total = run_checks()
+        # `ros2 doctor
+        if args.include_warnings:
+            failed_cats, fail, total = run_checks(include_warnings=True)
+        else:
+            failed_cats, fail, total = run_checks()
         if fail:
             print('\n%d/%d checks failed\n' % (fail, total))
             print('Failed modules are ', *failed_cats)

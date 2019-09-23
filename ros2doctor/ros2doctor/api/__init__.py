@@ -61,7 +61,24 @@ class Report:
         self.items.append((item_name, item_info))
 
 
-def run_checks() -> Tuple[Set[str], int, int]:
+class Result:
+    """Stores check result."""
+
+    __slots__ = ['error', 'warning']
+
+    def __init__(self):
+        """Initialize with no error or warning."""
+        self.error = 0
+        self.warning = 0
+    
+    def increment_error(self) -> None:
+        self.error += 1
+
+    def increment_warning(self) -> None:
+        self.warning += 1
+
+
+def run_checks(*, include_warnings=False) -> Tuple[Set[str], int, int]:
     """
     Run all checks and return check results.
 
@@ -72,7 +89,6 @@ def run_checks() -> Tuple[Set[str], int, int]:
     fail = 0
     total = 0
     for check_entry_pt in iter_entry_points('ros2doctor.checks'):
-        result = False
         try:
             check_class = check_entry_pt.load()
         except (ImportError, UnknownExtra):
@@ -84,12 +100,12 @@ def run_checks() -> Tuple[Set[str], int, int]:
         try:
             check_category = check_instance.category()
             result = check_instance.check()
+            if result.error or (include_warnings and result.warning):
+                fail += 1
+                failed_cats.add(check_category)
+            total += 1
         except Exception:
             doctor_warn('Fail to call %s class functions.' % check_entry_pt.name)
-        if result is False:
-            fail += 1
-            failed_cats.add(check_category)
-        total += 1
     return failed_cats, fail, total
 
 
