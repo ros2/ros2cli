@@ -33,7 +33,7 @@ class DoctorCommand(CommandExtension):
         )
         parser.add_argument(
             '--include-warnings', '-iw', action='store_true',
-            help='Include warnings as failed checks. Default sets warnings to be ignored.'
+            help='Include warnings as failed checks. Warnings are ignored by default.'
         )
 
     def main(self, *, parser, args):
