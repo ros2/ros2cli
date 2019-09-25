@@ -21,18 +21,30 @@ PLUGIN_RESOURCE_TYPE = '__pluginlib__plugin'
 
 
 def is_plugin_ressource_type(resource_type):
-    """Return True if resource_type has the plugin extension."""
+    """
+    Whether resource_type has the plugin extension.
+
+    :return: a boolean, True if resource_type has the plugin extension.
+    """
     assert resource_type, 'The resource type must not be empty'
     return PLUGIN_RESOURCE_TYPE in resource_type
 
 
 def get_registered_plugin_ressource_list():
-    """Get all plugin ressources registered in the ament index."""
+    """
+    Get all plugin ressources registered in the ament index.
+
+    :return: a filtered list containing the plugin ressouce types.
+    """
     return filter(is_plugin_ressource_type, get_resource_types())
 
 
 def get_package_names_with_plugin_ressource_types():
-    """Get the names of all packages that register a plugin ressource in the ament index."""
+    """
+    Get the names of all packages that register a plugin ressource in the ament index.
+
+    :return: a list of packages exporting plugins.
+    """
     packages = []
     for plugin in get_registered_plugin_ressource_list():
         packages += list(get_resources(plugin).keys())
