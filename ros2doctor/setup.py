@@ -40,12 +40,14 @@ setup(
         'ros2doctor.checks': [
             'PlatformCheck = ros2doctor.api.platform:PlatformCheck',
             'NetworkCheck = ros2doctor.api.network:NetworkCheck',
+            'TopicCheck = ros2doctor.api.topic:TopicCheck',
         ],
         'ros2doctor.report': [
             'PlatformReport = ros2doctor.api.platform:PlatformReport',
             'RosdistroReport = ros2doctor.api.platform:RosdistroReport',
             'NetworkReport = ros2doctor.api.network:NetworkReport',
             'RMWReport = ros2doctor.api.rmw:RMWReport',
+            'TopicReport = ros2doctor.api.topic:TopicReport',
         ],
     }
 )
