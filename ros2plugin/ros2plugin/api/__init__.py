@@ -22,7 +22,9 @@ PLUGIN_RESOURCE_TYPE = '__pluginlib__plugin'
 
 def is_plugin_ressource_type(resource_type):
     """
-    Whether resource_type has the plugin extension.
+    Check if resource_type has the plugin extension.
+
+    :param str resource_type: the ressource type name to be evaluated.
 
     :return: a boolean, True if resource_type has the plugin extension.
     """
