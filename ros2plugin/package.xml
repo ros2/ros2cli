@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="2">
+  <name>ros2plugin</name>
+  <version>0.7.4</version>
+  <description>
+    The plugin command for ROS 2 command line tools.
+  </description>
+  <maintainer email="michel@ekumenlabs.com">Jeremie Deray</maintainer>
+  <license>Apache License 2.0</license>
+
+  <exec_depend>ament_index_python</exec_depend>
+  <!-- <exec_depend>composition_interfaces</exec_depend> -->
+  <!-- <exec_depend>rcl_interfaces</exec_depend> -->
+  <!-- <exec_depend>rclcpp_components</exec_depend> -->
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>ros2cli</exec_depend>
+  <!-- <exec_depend>ros2node</exec_depend> -->
+  <!-- <exec_depend>ros2param</exec_depend> -->
+  <exec_depend>ros2pkg</exec_depend>
+
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>ament_xmllint</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
