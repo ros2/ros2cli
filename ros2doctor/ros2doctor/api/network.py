@@ -60,20 +60,16 @@ class NetworkCheck(DoctorCheck):
         try:
             ifcfg_ifaces = ifcfg.interfaces()
         except NameError:
-            doctor_warn('ifcfg is not imported. Unable to run network check.')
-            result.increment_error()
+            result.add_error('ERROR: ifcfg is not imported. Unable to run network check.')
             return result
 
         has_loopback, has_non_loopback, has_multicast = _check_network_config_helper(ifcfg_ifaces)
         if not has_loopback:
-            doctor_warn('ERROR: No loopback IP address is found.')
-            result.increment_error()
+            result.add_error('ERROR: No loopback IP address is found.')
         if not has_non_loopback:
-            doctor_warn('Only loopback IP address is found.')
-            result.increment_warning()
+            result.add_warning('Only loopback IP address is found.')
         if not has_multicast:
-            doctor_warn('No multicast IP address is found.')
-            result.increment_warning()
+            result.add_warning('No multicast IP address is found.')
         return result
 
 

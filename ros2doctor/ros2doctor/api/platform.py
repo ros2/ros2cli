@@ -61,21 +61,19 @@ class PlatformCheck(DoctorCheck):
         result = Result()
         distros = _check_platform_helper()
         if not distros:
-            result.increment_error()
+            result.add_error('ERROR: Missing rosdistro info. Unable to check platform.')
             return result
         distro_name, distro_info, _ = distros
 
         # check distro status
         if distro_info.get('distribution_status') == 'prerelease':
-            doctor_warn('Distribution %s is not fully supported or tested. '
-                        'To get more consistent features, download a stable version at '
-                        'https://index.ros.org/doc/ros2/Installation/' % distro_name)
-            result.increment_warning()
+            result.add_warning('Distribution %s is not fully supported or tested. '
+                               'To get more consistent features, download a stable version at '
+                               'https://index.ros.org/doc/ros2/Installation/' % distro_name)
         elif distro_info.get('distribution_status') == 'end-of-life':
-            doctor_warn('Distribution %s is no longer supported or deprecated. '
-                        'To get the latest features, download the new versions at '
-                        'https://index.ros.org/doc/ros2/Installation/' % distro_name)
-            result.increment_warning()
+            result.add_warning('Distribution %s is no longer supported or deprecated. '
+                               'To get the latest features, download the new versions at '
+                               'https://index.ros.org/doc/ros2/Installation/' % distro_name)
         return result
 
 

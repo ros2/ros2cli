@@ -71,10 +71,12 @@ class Result:
         self.error = 0
         self.warning = 0
 
-    def increment_error(self) -> None:
+    def add_error(self, msg) -> None:
+        doctor_warn(msg)
         self.error += 1
 
-    def increment_warning(self) -> None:
+    def add_warning(self, msg) -> None:
+        doctor_warn(msg)
         self.warning += 1
 
 
