@@ -18,6 +18,7 @@ from typing import Tuple
 from ros2doctor.api import DoctorCheck
 from ros2doctor.api import DoctorReport
 from ros2doctor.api import Report
+from ros2doctor.api import Result
 from ros2doctor.api.format import doctor_warn
 
 try:
@@ -54,21 +55,22 @@ class NetworkCheck(DoctorCheck):
 
     def check(self):
         """Check network configuration."""
+        result = Result()
         # check ifcfg import for windows and osx users
         try:
             ifcfg_ifaces = ifcfg.interfaces()
         except NameError:
-            doctor_warn('ifcfg is not imported. Unable to run network check.')
-            return False
+            result.add_error('ERROR: ifcfg is not imported. Unable to run network check.')
+            return result
 
         has_loopback, has_non_loopback, has_multicast = _check_network_config_helper(ifcfg_ifaces)
         if not has_loopback:
-            doctor_warn('ERROR: No loopback IP address is found.')
+            result.add_error('ERROR: No loopback IP address is found.')
         if not has_non_loopback:
-            doctor_warn('Only loopback IP address is found.')
+            result.add_warning('Only loopback IP address is found.')
         if not has_multicast:
-            doctor_warn('No multicast IP address is found.')
-        return has_loopback and has_non_loopback and has_multicast
+            result.add_warning('No multicast IP address is found.')
+        return result
 
 
 class NetworkReport(DoctorReport):
