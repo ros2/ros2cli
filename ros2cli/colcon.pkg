@@ -1,6 +1,7 @@
 {
     "hooks": [
         "share/ros2cli/environment/ros2-argcomplete.bash",
+        "share/ros2cli/environment/ros2-argcomplete.fish",
         "share/ros2cli/environment/ros2-argcomplete.zsh"
     ]
 }
