@@ -23,7 +23,7 @@ from ros2doctor.api import Result
 
 
 def _get_topic_names() -> List:
-    """Get all topic names using ros2topic API."""
+    """Get all topic names using rclpy API."""
     white_list = ['/parameter_events', '/rosout']
     topics = []
     with NodeStrategy(None) as node:
@@ -56,7 +56,7 @@ class TopicCheck(DoctorCheck):
 
 
 class TopicReport(DoctorReport):
-    """Report `ros2 topic info` output."""
+    """Report topic related information."""
 
     def category(self):
         return 'topic'
