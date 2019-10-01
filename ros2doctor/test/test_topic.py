@@ -18,16 +18,24 @@ from ros2doctor.api.topic import TopicReport
 
 
 def test_topic_check():
+    """Assume no topics are publishing or subscribing other than whitelisted ones."""
     topic_check = TopicCheck()
     check_result = topic_check.check()
     assert check_result.error == 0
     assert check_result.warning == 0
 
 
-def _generate_expected_report(report_name, pub_count, sub_count):
-    pass
+def _generate_expected_report(topic, pub_count, sub_count):
+    expected_report = Report('TOPIC LIST')
+    expected_report.add_to_report('topic', topic)
+    expected_report.add_to_report('publisher count', pub_count)
+    expected_report.add_to_report('subscriber count', sub_count)
+    return expected_report
 
 
 def test_topic_report():
-    
-    pass
+    """Assume no topics are publishing or subscribing other than whitelisted ones."""
+    report = TopicReport().report()
+    expected_report = _generate_expected_report('none', 0, 0)
+    assert report.name == expected_report.name
+    assert report.items == expected_report.items

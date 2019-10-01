@@ -66,6 +66,8 @@ class TopicReport(DoctorReport):
         to_be_reported = _get_topic_names()
         if not to_be_reported:
             report.add_to_report('topic', 'none')
+            report.add_to_report('publisher count', 0)
+            report.add_to_report('subscriber count', 0)
         with DirectNode(None) as node:
             for topic in to_be_reported:
                 report.add_to_report('topic', topic)
