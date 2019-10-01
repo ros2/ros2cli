@@ -20,16 +20,15 @@ from ros2doctor.api import DoctorCheck
 from ros2doctor.api import DoctorReport
 from ros2doctor.api import Report
 from ros2doctor.api import Result
-from ros2topic.api import get_topic_names
 
 
-def _get_topics() -> List:
+def _get_topic_names() -> List:
     """Get all topic names using ros2topic API."""
     white_list = ['/parameter_events', '/rosout']
     topics = []
-    with NodeStrategy('') as node:
-        all_topic_names = get_topic_names(node=node)
-        for t_name in all_topic_names:
+    with NodeStrategy(None) as node:
+        topic_names_types = node.get_topic_names_and_types()
+        for t_name, _ in topic_names_types:
             if t_name not in white_list:
                 topics.append(t_name)
     return topics
@@ -44,9 +43,9 @@ class TopicCheck(DoctorCheck):
     def check(self):
         """Check publisher and subscriber counts."""
         result = Result()
-        to_be_checked = _get_topics()
-        for topic in to_be_checked:
-            with DirectNode(topic) as node:
+        to_be_checked = _get_topic_names()
+        with DirectNode(None) as node:
+            for topic in to_be_checked:
                 pub_count = node.count_publishers(topic)
                 sub_count = node.count_subscribers(topic)
                 if pub_count > sub_count:
@@ -64,11 +63,11 @@ class TopicReport(DoctorReport):
 
     def report(self):
         report = Report('TOPIC LIST')
-        to_be_reported = _get_topics()
+        to_be_reported = _get_topic_names()
         if not to_be_reported:
             report.add_to_report('topic', 'none')
-        for topic in to_be_reported:
-            with DirectNode(topic) as node:
+        with DirectNode(None) as node:
+            for topic in to_be_reported:
                 report.add_to_report('topic', topic)
                 report.add_to_report('publisher count', node.count_publishers(topic))
                 report.add_to_report('subscriber count', node.count_subscribers(topic))
