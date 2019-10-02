@@ -15,6 +15,7 @@
 from ros2cli.node.direct import DirectNode
 from ros2cli.node.strategy import add_arguments
 from ros2cli.node.strategy import NodeStrategy
+from ros2node.api import get_action_info
 from ros2node.api import get_node_names
 from ros2node.api import get_publisher_info
 from ros2node.api import get_service_info
@@ -52,5 +53,8 @@ class InfoVerb(VerbExtension):
                 services = get_service_info(node=node, remote_node_name=args.node_name)
                 print('  Services:')
                 print_names_and_types(services)
+                actions = get_action_info(remote_node_name=args.node_name)
+                print('  Actions:')
+                print_names_and_types(actions)
         else:
             return "Unable to find node '" + args.node_name + "'"

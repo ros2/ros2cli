@@ -14,8 +14,10 @@
 
 from collections import namedtuple
 
+from rclpy.action.graph import get_action_names_and_types
 from rclpy.node import HIDDEN_NODE_PREFIX
 from ros2cli.node.strategy import NodeStrategy
+
 
 NodeName = namedtuple('NodeName', ('name', 'namespace', 'full_name'))
 TopicInfo = namedtuple('Topic', ('name', 'types'))
@@ -74,6 +76,16 @@ def get_publisher_info(*, node, remote_node_name):
 
 def get_service_info(*, node, remote_node_name):
     return get_topics(remote_node_name, node.get_service_names_and_types_by_node)
+
+
+def get_action_info(*, remote_node_name):
+    node = parse_node_name(remote_node_name)
+    names_and_types = get_action_names_and_types(node)
+    return [
+        TopicInfo(
+            name=n,
+            types=t)
+        for n, t in names_and_types]
 
 
 class NodeNameCompleter:
