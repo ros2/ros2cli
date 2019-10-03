@@ -82,7 +82,7 @@ def get_service_info(*, node, remote_node_name):
 def get_action_server_info(*, node, remote_node_name):
     remote_node = parse_node_name(remote_node_name)
     names_and_types = get_action_server_names_and_types_by_node(
-                        node, remote_node.name, remote_node.namespace)
+        node, remote_node.name, remote_node.namespace)
     return [
         TopicInfo(
             name=n,
@@ -93,7 +93,7 @@ def get_action_server_info(*, node, remote_node_name):
 def get_action_client_info(*, node, remote_node_name):
     remote_node = parse_node_name(remote_node_name)
     names_and_types = get_action_client_names_and_types_by_node(
-                        node, remote_node.name, remote_node.namespace)
+        node, remote_node.name, remote_node.namespace)
     return [
         TopicInfo(
             name=n,
