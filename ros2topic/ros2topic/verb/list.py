@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from ros2cli.node.direct import DirectNode
 from ros2cli.node.strategy import add_arguments as add_strategy_node_arguments
 from ros2cli.node.strategy import NodeStrategy
 from ros2topic.api import get_topic_names_and_types
@@ -39,17 +40,43 @@ class ListVerb(VerbExtension):
             help='list full details about each topic')
 
     def main(self, *, args):
-        with NodeStrategy(args) as node:
+        topic_info = []
+        with DirectNode(args) as node:
             topic_names_and_types = get_topic_names_and_types(
                 node=node,
                 include_hidden_topics=args.include_hidden_topics)
+            for (topic_name, topic_types) in topic_names_and_types:
+                pub_cnt = node.count_publishers(topic_name)
+                sub_cnt = node.count_subscribers(topic_name)
+                topic_info.append((topic_name, topic_types, pub_cnt, sub_cnt))
 
         if args.count_topics:
             print(len(topic_names_and_types))
         elif topic_names_and_types:
-            for (topic_name, topic_types) in topic_names_and_types:
-                msg = f'{topic_name}'
-                topic_types_formatted = ', '.join(topic_types)
-                if args.show_types:
-                    msg += f' [{topic_types_formatted}]'
-                print(msg)
+            if args.verbose:
+                print('Published topics:')
+                for (topic_name, topic_types, pub_cnt, sub_cnt) in topic_info:
+                    if pub_cnt < 1:
+                        continue
+                    topic_types_formatted = ', '.join(topic_types)
+                    cnt_str = str(pub_cnt) + ' publisher' + ('s' if pub_cnt > 1 else '')
+                    msg = ' * {topic_name} [{topic_types_formatted}] {cnt_str}'
+                    print(msg.format_map(locals()))
+                print('')
+                print('Subscribed topics:')
+                for (topic_name, topic_types, pub_cnt, sub_cnt) in topic_info:
+                    if sub_cnt < 1:
+                        continue
+                    topic_types_formatted = ', '.join(topic_types)
+                    cnt_str = str(sub_cnt) + ' subscriber' + ('s' if sub_cnt > 1 else '')
+                    msg = ' * {topic_name} [{topic_types_formatted}] {cnt_str}'
+                    print(msg.format_map(locals()))
+                print('')
+            else:
+                for (topic_name, topic_types, pub_cnt, sub_cnt) in topic_info:
+                    msg = '{topic_name}'
+                    topic_types_formatted = ', '.join(topic_types)
+                    if args.show_types:
+                        msg += ' [{topic_types_formatted}]'
+                    print(msg.format_map(locals()))
+
