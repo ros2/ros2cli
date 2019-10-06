@@ -34,6 +34,9 @@ class ListVerb(VerbExtension):
         parser.add_argument(
             '--include-hidden-topics', action='store_true',
             help='Consider hidden topics as well')
+        parser.add_argument(
+            '-v', '--verbose', action='store_true',
+            help='list full details about each topic')
 
     def main(self, *, args):
         with NodeStrategy(args) as node:
