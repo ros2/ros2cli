@@ -34,7 +34,7 @@ The package provides the multicast command for the ROS 2 command line tools.""",
     tests_require=['pytest'],
     entry_points={
         'ros2cli.command': [
-            'multicast = ros2node.command.multicast:MulticastCommand',
+            'multicast = ros2multicast.command.multicast:MulticastCommand',
         ],
         'ros2cli.extension_point': [
             'ros2node.verb = ros2node.verb:VerbExtension',
