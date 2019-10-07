@@ -1,4 +1,4 @@
-# Copyright 2017 Open Source Robotics Foundation, Inc.
+# Copyright 2017-2019 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -101,6 +101,8 @@ class _DirectNode:
 
     def __init__(self, args):
         self.args = args
+        # TODO(ivanpauno): A race condition is possible here, since it isn't possible to know
+        # exactly which interfaces were available at node creation.
         self.node = DirectNode(args)
         self.addresses_at_start = self.interfaces_ip_addresses()
 
@@ -129,15 +131,17 @@ class _DirectNode:
         for (kind, info) in netifaces.gateways().items():
             if kind not in (netifaces.AF_INET, netifaces.AF_INET6):
                 continue
+            print('Interface kind: {}, info: {}'.format(kind, info))
             if isinstance(info, dict):
                 continue
             info_list = info
             if isinstance(info, tuple):
                 info_list = [info]
             addresses_by_interfaces[kind] = {}
-            for info in info_list:
+            for item in info_list:
                 # info[1] is the interface name
-                addresses_by_interfaces[kind][info[1]] = netifaces.ifaddresses(info[1])[kind][0]['addr']
+                addresses_by_interfaces[kind][item[1]] = netifaces.ifaddresses(item[1])[kind][0]['addr']
+        print('Addresses by interfaces: {}'.format(addresses_by_interfaces))
         return addresses_by_interfaces
 
     def reset_if_addresses_changed(self):
@@ -157,6 +161,7 @@ class _DirectNode:
             rclpy.shutdown()
             self.node = DirectNode(self.args)
             self.node.__enter__()
+            print('Daemon node was reset')
 
 
 class LocalXMLRPCServer(SimpleXMLRPCServer):

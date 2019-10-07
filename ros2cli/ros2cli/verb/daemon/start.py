@@ -22,6 +22,11 @@ from ros2cli.verb.daemon import VerbExtension
 class StartVerb(VerbExtension):
     """Start the daemon if it isn't running."""
 
+    def add_arguments(self, parser, cli_name):
+        parser.add_argument(
+            '--debug', '-d', action='store_true',
+            help='Print debug messages')
+
     def main(self, *, args):
         running = is_daemon_running(args)
         if running:
