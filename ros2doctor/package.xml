@@ -11,6 +11,7 @@
 
   <exec_depend>python3-ifcfg</exec_depend>
   <exec_depend>python3-rosdistro-modules</exec_depend>
+  <exec_depend>vcstool</exec_depend>
   
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
