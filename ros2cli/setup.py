@@ -13,9 +13,8 @@ setup(
             'resource/ros2cli',
         ]),
         ('share/ros2cli', [
+            'package.dsv',
             'package.xml',
-            'resource/local_setup.bash',
-            'resource/local_setup.zsh',
         ]),
         ('share/ros2cli/environment', [
             'completion/ros2-argcomplete.bash',

@@ -1,0 +1,2 @@
+source;share/ros2cli/environment/ros2-argcomplete.bash
+source;share/ros2cli/environment/ros2-argcomplete.zsh
