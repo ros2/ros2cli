@@ -22,6 +22,7 @@ from ros2doctor.api.format import doctor_warn
 
 import rosdistro
 from vcstool.commands.command import add_common_arguments
+from vcstool.commands.export import ExportCommand
 from vcstool.commands.export import get_parser
 from vcstool.commands.export import output_export_data
 from vcstool.crawler import find_repositories
@@ -41,11 +42,11 @@ def _get_ros_package_info() -> dict:
         return
     else:
         distro_name = distro_name.lower()
-    u = rosdistro.get_index_url()
-    if not u:
+    url = rosdistro.get_index_url()
+    if not url:
         doctor_warn('Unable to access ROSDISTRO_INDEX_URL or DEFAULT_INDEX_URL.')
         return
-    i = rosdistro.get_index(u)
+    i = rosdistro.get_index(url)
     distro_data = rosdistro.get_distribution(i, distro_name).get_data()
     return distro_data.get('repositories')
 
@@ -56,6 +57,14 @@ def _get_local_package_info() -> dict:
 
     :return: a dictionary contains package name, type, url, version
     """
+    parser = get_parser()
+    add_common_arguments(parser, skip_hide_empty=True, path_nargs='?')
+    args = parser.parse_args(args)
+
+    command = ExportCommand(args)
+    clients = find_repositories(command.paths, nested=command.nested)
+    jobs  = generate_jobs(clients, command)
+    results = execute_jobs(jobs, number_of_workers=args.workers)
     pass
 
 
@@ -66,6 +75,7 @@ class PackageCheck(DoctorCheck):
         return 'package'
 
     def check(self):
+        """Check packages within the directory where command is called."""
         result = Result()
         pass
 
@@ -77,5 +87,6 @@ class PackageReport(DoctorReport):
         return 'package'
 
     def report(self):
+        """Report packages within the directory where command is called."""
         report = Report('PACKAGE VERSIONS')
         pass
