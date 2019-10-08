@@ -9,9 +9,14 @@ It will examine your ROS 2 setup, such as distribution, platform, network interf
 
 Run `ros2 doctor` or `ros2 wtf`(alias) to conduct checks.
 
-Run `ros2 doctor -h/--help` to print all available command extensions.
+Run `ros2 doctor -h/--help` to print all available command arguments.
 
-Run `ros2 doctor -r/--report` to see details of checks.
+Run `ros2 doctor -r/--report` to see report of all checked items.
+
+Run `ros2 doctor -rf/--report-fail` to see report of failed checks only.
+
+Run `ros2 doctor -iw/--include-warnings` to include warnings as failed checks.
+`-iw` and `-rf` can be used in combination.
 
 ## Add New Checks
 
@@ -26,7 +31,6 @@ See example below:
         ],
         'ros2doctor.report': [
             'PlatformReport = ros2doctor.api.platform:PlatformReport',
-            'RosdistroReport = ros2doctor.api.platform:RosdistroReport',
             'NetworkReport = ros2doctor.api.network:NetworkReport',
         ],
     }
