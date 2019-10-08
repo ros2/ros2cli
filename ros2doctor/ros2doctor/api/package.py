@@ -12,29 +12,56 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
+
 from ros2doctor.api import DoctorCheck
 from ros2doctor.api import DoctorReport
 from ros2doctor.api import Report
 from ros2doctor.api import Result
+from ros2doctor.api.format import doctor_warn
 
 import rosdistro
+from vcstool.commands.command import add_common_arguments
+from vcstool.commands.export import get_parser
+from vcstool.commands.export import output_export_data
+from vcstool.crawler import find_repositories
+from vcstool.executor import generate_jobs
+from vcstool.executor import execute_jobs
 
 
 def _get_ros_package_info() -> dict:
     """
-    Return all of current distro's package information.
-    
-    :return: a dictionary contains package names, release, source and status info
+    Return all current distro's packages info using rosdistro API.
+
+    :return: a dictionary contains package name, release, source and status
+    """
+    distro_name = os.environ.get('ROS_DISTRO')
+    if not distro_name:
+        doctor_warn('ROS_DISTRO is not set.')
+        return
+    else:
+        distro_name = distro_name.lower()
+    u = rosdistro.get_index_url()
+    if not u:
+        doctor_warn('Unable to access ROSDISTRO_INDEX_URL or DEFAULT_INDEX_URL.')
+        return
+    i = rosdistro.get_index(u)
+    distro_data = rosdistro.get_distribution(i, distro_name).get_data()
+    return distro_data.get('repositories')
+
+
+def _get_local_package_info() -> dict:
+    """
+    Return all locally installed packages info using vcstool API.
+
+    :return: a dictionary contains package name, type, url, version
     """
     pass
 
 
-def _get_local_package_info() -> dict:
-    pass
-
 class PackageCheck(DoctorCheck):
     """Check local package versions against release versions on rosdistro."""
-    
+
     def category(self):
         return 'package'
 
