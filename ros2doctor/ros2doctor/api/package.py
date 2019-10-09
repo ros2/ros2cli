@@ -13,24 +13,20 @@
 # limitations under the License.
 
 import os
+import xml.etree.ElementTree as ET
 
 from ros2doctor.api import DoctorCheck
 from ros2doctor.api import DoctorReport
 from ros2doctor.api import Report
 from ros2doctor.api import Result
 from ros2doctor.api.format import doctor_warn
+from ament_index_python import get_package_prefix
+from ament_index_python.packages import PackageNotFoundError
 
 import rosdistro
-from vcstool.commands.command import add_common_arguments
-from vcstool.commands.export import ExportCommand
-from vcstool.commands.export import get_parser
-from vcstool.commands.export import output_export_data
-from vcstool.crawler import find_repositories
-from vcstool.executor import generate_jobs
-from vcstool.executor import execute_jobs
 
 
-def _get_ros_package_info() -> dict:
+def _get_ros_packages_info() -> dict:
     """
     Return all current distro's packages info using rosdistro API.
 
@@ -51,21 +47,31 @@ def _get_ros_package_info() -> dict:
     return distro_data.get('repositories')
 
 
-def _get_local_package_info() -> dict:
+def _get_local_package_info(package_name) -> dict:
     """
-    Return all locally installed packages info using vcstool API.
+    Return all locally installed packages info.
 
-    :return: a dictionary contains package name, type, url, version
+    :return:
     """
-    parser = get_parser()
-    add_common_arguments(parser, skip_hide_empty=True, path_nargs='?')
-    args = parser.parse_args(args)
-
-    command = ExportCommand(args)
-    clients = find_repositories(command.paths, nested=command.nested)
-    jobs  = generate_jobs(clients, command)
-    results = execute_jobs(jobs, number_of_workers=args.workers)
-    pass
+    package_info = {}
+    try:
+        prefix = get_package_prefix(package_name)
+    except PackageNotFoundError:
+        doctor_warn('Unable to find prefix for package %s using index system.' % package_name)
+        return package_info
+    xml_file = os.path.join(prefix, 'share', package_name, 'package.xml')
+    try:
+        tree = ET.parse(xml_file)
+        root = tree.getroot()
+        for child in root:
+            if child.tag not in package_info:
+                package_info[child.tag] = child.text
+            else:
+                package_info[child.tag] = list(package_info.get(child.tag))
+                package_info[child.tag].append(child.text)
+    except FileNotFoundError:
+        doctor_warn('Unable to find package.xml of package %s.' % package_name)
+    return package_info  # dict of xml content 
 
 
 class PackageCheck(DoctorCheck):
@@ -77,7 +83,28 @@ class PackageCheck(DoctorCheck):
     def check(self):
         """Check packages within the directory where command is called."""
         result = Result()
-        pass
+        distro_packages_info = _get_ros_packages_info()
+        if not distro_packages_info:
+            result.add_error('ERROR: Unable to obtain current distro package information from rosdistro.')
+            return result
+        for package_name, info in distro_packages_info.items():
+            local_package_info = _get_local_package_info(package_name)
+            try:
+                local_ver = local_package_info.get('version')
+            except AttributeError:
+                result.add_warning('Package %s not installed or package info not found.' % local_package_info)
+            try:
+                distro_release = info.get('release')
+                distro_ver = distro_release.get('version')
+            except AttributeError:
+                result.add_warning("Unable to obtain the rosdistro version of package %s." % package_name)
+            if local_ver and distro_ver:
+                if distro_ver[:3] != local_ver[:3]:  # 0.8.0 vs. 0.8.0-1
+                    result.add_warning('Package %s has different local version %s from required version %s'
+                        % (package_name, distro_ver, local_ver))
+                else:
+                    result.add_warning('Missing local or rosdistro version info of package %s' % package_name)
+        return result
 
 
 class PackageReport(DoctorReport):
