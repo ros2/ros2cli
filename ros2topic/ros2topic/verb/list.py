@@ -19,6 +19,18 @@ from ros2topic.api import get_topic_names_and_types
 from ros2topic.verb import VerbExtension
 
 
+def show_topic_info(topic_info, isPub):
+    print('\n' + ('Published' if isPub else 'Subscribed') + ' topics:')
+    for (topic_name, topic_types, pub_cnt, sub_cnt) in topic_info:
+        cnt = pub_cnt if isPub else sub_cnt
+        if cnt:
+            topic_types_formatted = ', '.join(topic_types)
+            cnt_str = str(cnt) + ' ' + ('publisher' if isPub else 'subscriber') \
+                                     + ('s' if cnt > 1 else '')
+            msg = ' * {topic_name} [{topic_types_formatted}] {cnt_str}'
+            print(msg.format_map(locals()))
+
+
 class ListVerb(VerbExtension):
     """Output a list of available topics."""
 
@@ -54,24 +66,8 @@ class ListVerb(VerbExtension):
             print(len(topic_names_and_types))
         elif topic_names_and_types:
             if args.verbose:
-                print('Published topics:')
-                for (topic_name, topic_types, pub_cnt, sub_cnt) in topic_info:
-                    if pub_cnt < 1:
-                        continue
-                    topic_types_formatted = ', '.join(topic_types)
-                    cnt_str = str(pub_cnt) + ' publisher' + ('s' if pub_cnt > 1 else '')
-                    msg = ' * {topic_name} [{topic_types_formatted}] {cnt_str}'
-                    print(msg.format_map(locals()))
-                print('')
-                print('Subscribed topics:')
-                for (topic_name, topic_types, pub_cnt, sub_cnt) in topic_info:
-                    if sub_cnt < 1:
-                        continue
-                    topic_types_formatted = ', '.join(topic_types)
-                    cnt_str = str(sub_cnt) + ' subscriber' + ('s' if sub_cnt > 1 else '')
-                    msg = ' * {topic_name} [{topic_types_formatted}] {cnt_str}'
-                    print(msg.format_map(locals()))
-                print('')
+                show_topic_info(topic_info, isPub=True)
+                show_topic_info(topic_info, isPub=False)
             else:
                 for (topic_name, topic_types, pub_cnt, sub_cnt) in topic_info:
                     msg = '{topic_name}'
