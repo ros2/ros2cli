@@ -26,7 +26,7 @@ from ros2doctor.api.format import doctor_warn
 import rosdistro
 
 
-def _get_ros_packages_info() -> dict:
+def _get_ros_packages_info(*, check=True) -> dict:
     """
     Return all current distro's packages info using rosdistro API.
 
@@ -34,28 +34,32 @@ def _get_ros_packages_info() -> dict:
     """
     distro_name = os.environ.get('ROS_DISTRO')
     if not distro_name:
-        doctor_warn('ROS_DISTRO is not set.')
+        if check:  # suppress warning when printing report
+            doctor_warn('ROS_DISTRO is not set.')
         return
     distro_name = distro_name.lower()
     url = rosdistro.get_index_url()
     if not url:
-        doctor_warn('Unable to access ROSDISTRO_INDEX_URL or DEFAULT_INDEX_URL.')
+        if check:  # suppress warning when printing report
+            doctor_warn('Unable to access ROSDISTRO_INDEX_URL or DEFAULT_INDEX_URL.')
         return
     i = rosdistro.get_index(url)
     distro_data = rosdistro.get_distribution(i, distro_name).get_data()
     return distro_data.get('repositories')
 
 
-def _get_local_package_version(package_name) -> str:
+def _get_local_package_version(package_name, *, check=True) -> str:
     """
     Return all locally installed packages info.
 
+    :param: str of package name
     :return: a string contains local package version
     """
     try:
         prefix = get_package_prefix(package_name)
     except PackageNotFoundError:
-        doctor_warn('Unable to find prefix for `%s` using index system.' % package_name)
+        if check:  # suppress warning when printing report
+            doctor_warn('Unable to find prefix for `%s` using index system.' % package_name)
         return
     xml_file = os.path.join(prefix, 'share', package_name, 'package.xml')
     try:
@@ -64,7 +68,8 @@ def _get_local_package_version(package_name) -> str:
             if child.tag == 'version':
                 return child.text
     except FileNotFoundError:
-        doctor_warn('Unable to find package.xml of `%s`.' % package_name)
+        if check:  # suppress warning when printing report
+            doctor_warn('Unable to find package.xml of `%s`.' % package_name)
 
 
 class PackageCheck(DoctorCheck):
@@ -105,5 +110,18 @@ class PackageReport(DoctorReport):
     def report(self):
         """Report packages within the directory where command is called."""
         report = Report('PACKAGE VERSIONS')
+        distro_packages_info = _get_ros_packages_info(check=False)
+        try:
+            for package_name, info in distro_packages_info.items():
+                local_ver = _get_local_package_version(package_name, check=False)
+                try:
+                    distro_release = info.get('release')
+                    distro_ver = distro_release.get('version')
+                    version_str = 'required=' + (distro_ver if distro_ver else '') + \
+                        ', local=' + (local_ver if local_ver else '')
+                    report.add_to_report(package_name, version_str)
+                except AttributeError:
+                    pass
+        except AttributeError:
+            pass
         return report
-        pass
