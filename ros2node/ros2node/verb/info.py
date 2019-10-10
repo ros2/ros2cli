@@ -56,11 +56,11 @@ class InfoVerb(VerbExtension):
                 print_names_and_types(services)
                 actions_servers = get_action_server_info(
                     node=node, remote_node_name=args.node_name)
-                print('  Actions Servers:')
+                print('  Action Servers:')
                 print_names_and_types(actions_servers)
                 actions_clients = get_action_client_info(
                     node=node, remote_node_name=args.node_name)
-                print('  Actions Clients:')
+                print('  Action Clients:')
                 print_names_and_types(actions_clients)
         else:
             return "Unable to find node '" + args.node_name + "'"
