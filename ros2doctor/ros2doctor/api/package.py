@@ -13,63 +13,30 @@
 # limitations under the License.
 
 import os
-import xml.etree.ElementTree as ET
 
-from ament_index_python import get_package_prefix
-from ament_index_python.packages import PackageNotFoundError
+from ament_index_python import get_packages_with_prefixes
+from catkin_pkg.package import InvalidPackage
+from catkin_pkg.package import parse_package
 from ros2doctor.api import DoctorCheck
 from ros2doctor.api import DoctorReport
 from ros2doctor.api import Report
 from ros2doctor.api import Result
-from ros2doctor.api.format import doctor_warn
 
 import rosdistro
 
 
-def _get_ros_packages_info(*, check=True) -> dict:
+def get_ros_packages_info() -> dict:
     """
     Return all current distro's packages info using rosdistro API.
 
     :return: a dictionary contains package name, release, source and status
     """
     distro_name = os.environ.get('ROS_DISTRO')
-    if not distro_name:
-        if check:  # suppress warning when printing report
-            doctor_warn('ROS_DISTRO is not set.')
-        return
     distro_name = distro_name.lower()
     url = rosdistro.get_index_url()
-    if not url:
-        if check:  # suppress warning when printing report
-            doctor_warn('Unable to access ROSDISTRO_INDEX_URL or DEFAULT_INDEX_URL.')
-        return
     i = rosdistro.get_index(url)
     distro_data = rosdistro.get_distribution(i, distro_name).get_data()
     return distro_data.get('repositories')
-
-
-def _get_local_package_version(package_name, *, check=True) -> str:
-    """
-    Return all locally installed packages info.
-
-    :param: str of package name
-    :return: a string contains local package version
-    """
-    try:
-        prefix = get_package_prefix(package_name)
-    except PackageNotFoundError:
-        if check:  # suppress warning when printing report
-            doctor_warn('Unable to find prefix for `%s` using index system.' % package_name)
-        return
-    xml_file = os.path.join(prefix, 'share', package_name, 'package.xml')
-    try:
-        root = ET.parse(xml_file).getroot()
-        for child in root:
-            if child.tag == 'version':
-                return child.text
-    except FileNotFoundError:
-        if check:  # suppress warning when printing report
-            doctor_warn('Unable to find package.xml of `%s`.' % package_name)
 
 
 class PackageCheck(DoctorCheck):
@@ -81,23 +48,36 @@ class PackageCheck(DoctorCheck):
     def check(self):
         """Check packages within the directory where command is called."""
         result = Result()
-        distro_packages_info = _get_ros_packages_info()
-        if not distro_packages_info:
+        try:
+            distro_packages_info = get_ros_packages_info()
+        except AttributeError:
             result.add_error('ERROR: Unable to obtain current distro package information \
                 from rosdistro.')
             return result
-        for package_name, info in distro_packages_info.items():
-            local_ver = _get_local_package_version(package_name)
+        local_packages_prefixes = get_packages_with_prefixes()
+        if not local_packages_prefixes or not distro_packages_info:
+            result.add_error('ERROR: local packages info or distro packages info is empty.')
+            return result
+        for package_name, package_prefix in local_packages_prefixes.items():
+            file_path = os.path.join(package_prefix, 'share', package_name)
+            if package_name in distro_packages_info:
+                try:
+                    package_info = distro_packages_info.get(package_name)
+                    required_ver = package_info.get('release').get('version')
+                except AttributeError:
+                    result.add_warning('`%s` is not found in distribution release list.'
+                                       % package_name)
+                    required_ver = ''
             try:
-                distro_release = info.get('release')
-                distro_ver = distro_release.get('version')
-            except AttributeError:
-                result.add_warning('Unable to obtain the rosdistro version \
-                    of `%s`.' % package_name)
-            if local_ver and distro_ver:
-                if distro_ver[:3] != local_ver[:3]:  # 0.8.0 vs. 0.8.0-1
-                    result.add_warning('`%s` has different local version %s from \
-                        required version %s' % (package_name, distro_ver, local_ver))
+                package_obj = parse_package(file_path)
+                local_ver = package_obj.version
+            except (AttributeError, IOError, InvalidPackage):
+                result.add_warning('Unable to parse `%s` package.xml file.' % package_name)
+                local_ver = ''
+            if required_ver and local_ver:
+                if required_ver[:3] != package_obj.version[:3]:
+                    result.add_warning('%s local version %s does not match required version %s.'
+                                       % (package_name, package_obj.version, required_ver))
         return result
 
 
@@ -110,18 +90,23 @@ class PackageReport(DoctorReport):
     def report(self):
         """Report packages within the directory where command is called."""
         report = Report('PACKAGE VERSIONS')
-        distro_packages_info = _get_ros_packages_info(check=False)
         try:
-            for package_name, info in distro_packages_info.items():
-                local_ver = _get_local_package_version(package_name, check=False)
-                try:
-                    distro_release = info.get('release')
-                    distro_ver = distro_release.get('version')
-                    version_str = 'required=' + (distro_ver if distro_ver else '') + \
-                        ', local=' + (local_ver if local_ver else '')
-                    report.add_to_report(package_name, version_str)
-                except AttributeError:
-                    pass
+            distro_packages_info = get_ros_packages_info()
         except AttributeError:
-            pass
+            return report
+        local_package_prefixes = get_packages_with_prefixes()
+        if distro_packages_info and local_package_prefixes:
+            for package_name, package_prefix in local_package_prefixes.items():
+                try:
+                    package_info = distro_packages_info.get(package_name)
+                    required_ver = package_info.get('release').get('version')
+                except AttributeError:
+                    required_ver = ''
+                file_path = os.path.join(package_prefix, 'share', package_name)
+                try:
+                    package_obj = parse_package(file_path)
+                    local_ver = package_obj.version
+                except (IOError, InvalidPackage):
+                    local_ver = ''
+                report.add_to_report(package_name, 'required='+required_ver+', local='+local_ver)
         return report
