@@ -15,13 +15,13 @@
 import os
 import xml.etree.ElementTree as ET
 
+from ament_index_python import get_package_prefix
+from ament_index_python.packages import PackageNotFoundError
 from ros2doctor.api import DoctorCheck
 from ros2doctor.api import DoctorReport
 from ros2doctor.api import Report
 from ros2doctor.api import Result
 from ros2doctor.api.format import doctor_warn
-from ament_index_python import get_package_prefix
-from ament_index_python.packages import PackageNotFoundError
 
 import rosdistro
 
@@ -36,8 +36,7 @@ def _get_ros_packages_info() -> dict:
     if not distro_name:
         doctor_warn('ROS_DISTRO is not set.')
         return
-    else:
-        distro_name = distro_name.lower()
+    distro_name = distro_name.lower()
     url = rosdistro.get_index_url()
     if not url:
         doctor_warn('Unable to access ROSDISTRO_INDEX_URL or DEFAULT_INDEX_URL.')
@@ -47,31 +46,25 @@ def _get_ros_packages_info() -> dict:
     return distro_data.get('repositories')
 
 
-def _get_local_package_info(package_name) -> dict:
+def _get_local_package_version(package_name) -> str:
     """
     Return all locally installed packages info.
 
-    :return:
+    :return: a string contains local package version
     """
-    package_info = {}
     try:
         prefix = get_package_prefix(package_name)
     except PackageNotFoundError:
-        doctor_warn('Unable to find prefix for package %s using index system.' % package_name)
-        return package_info
+        doctor_warn('Unable to find prefix for `%s` using index system.' % package_name)
+        return
     xml_file = os.path.join(prefix, 'share', package_name, 'package.xml')
     try:
-        tree = ET.parse(xml_file)
-        root = tree.getroot()
+        root = ET.parse(xml_file).getroot()
         for child in root:
-            if child.tag not in package_info:
-                package_info[child.tag] = child.text
-            else:
-                package_info[child.tag] = list(package_info.get(child.tag))
-                package_info[child.tag].append(child.text)
+            if child.tag == 'version':
+                return child.text
     except FileNotFoundError:
-        doctor_warn('Unable to find package.xml of package %s.' % package_name)
-    return package_info  # dict of xml content 
+        doctor_warn('Unable to find package.xml of `%s`.' % package_name)
 
 
 class PackageCheck(DoctorCheck):
@@ -85,25 +78,21 @@ class PackageCheck(DoctorCheck):
         result = Result()
         distro_packages_info = _get_ros_packages_info()
         if not distro_packages_info:
-            result.add_error('ERROR: Unable to obtain current distro package information from rosdistro.')
+            result.add_error('ERROR: Unable to obtain current distro package information \
+                from rosdistro.')
             return result
         for package_name, info in distro_packages_info.items():
-            local_package_info = _get_local_package_info(package_name)
-            try:
-                local_ver = local_package_info.get('version')
-            except AttributeError:
-                result.add_warning('Package %s not installed or package info not found.' % local_package_info)
+            local_ver = _get_local_package_version(package_name)
             try:
                 distro_release = info.get('release')
                 distro_ver = distro_release.get('version')
             except AttributeError:
-                result.add_warning("Unable to obtain the rosdistro version of package %s." % package_name)
+                result.add_warning('Unable to obtain the rosdistro version \
+                    of `%s`.' % package_name)
             if local_ver and distro_ver:
                 if distro_ver[:3] != local_ver[:3]:  # 0.8.0 vs. 0.8.0-1
-                    result.add_warning('Package %s has different local version %s from required version %s'
-                        % (package_name, distro_ver, local_ver))
-                else:
-                    result.add_warning('Missing local or rosdistro version info of package %s' % package_name)
+                    result.add_warning('`%s` has different local version %s from \
+                        required version %s' % (package_name, distro_ver, local_ver))
         return result
 
 
@@ -116,4 +105,5 @@ class PackageReport(DoctorReport):
     def report(self):
         """Report packages within the directory where command is called."""
         report = Report('PACKAGE VERSIONS')
+        return report
         pass
