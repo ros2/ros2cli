@@ -50,7 +50,7 @@ def _get_local_package_version(package_name) -> str:
     """
     Return all locally installed packages info.
 
-    :return:
+    :return: a string contains local package version
     """
     try:
         prefix = get_package_prefix(package_name)
