@@ -145,17 +145,8 @@ class _DirectNode:
         return addresses_by_interfaces
 
     def reset_if_addresses_changed(self):
-        def have_addresses_changed(new_addresses):
-            for (kind, addresses_by_interfaces) in self.addresses_at_start.items():
-                for (interface, addr) in addresses_by_interfaces.items():
-                    try:
-                        if new_addresses[kind][interface] != addr:
-                            return True
-                    except KeyError:
-                        return True
-            return False
         new_addresses = self.interfaces_ip_addresses()
-        if have_addresses_changed(new_addresses):
+        if new_addresses != self.addresses_at_start:
             self.addresses_at_start = new_addresses
             self.node.destroy_node()
             rclpy.shutdown()
