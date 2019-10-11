@@ -115,7 +115,7 @@ class _DirectNode:
 
         def wrapper():
             self.reset_if_addresses_changed()
-            return self.node.__getattr__(name)
+            return self.node.__getattr__(name)()
         wrapper.__name__ = attr.__name__
 
         if inspect.ismethod(attr):

@@ -76,7 +76,7 @@ def spawn_daemon(args, wait_until_spawned=None):
         # the arguments are only passed for visibility in e.g. the process list
         '--rmw-implementation', rmw_implementation_identifier,
         '--ros-domain-id', str(ros_domain_id)])
-    if not args.debug:
+    if not hasattr(args, 'debug') or not args.debug:
         kwargs['stdout'] = subprocess.DEVNULL
         kwargs['stderr'] = subprocess.DEVNULL
     subprocess.Popen(cmd, **kwargs)
