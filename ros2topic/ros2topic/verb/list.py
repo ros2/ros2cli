@@ -69,7 +69,7 @@ class ListVerb(VerbExtension):
                 show_topic_info(topic_info, isPub=True)
                 show_topic_info(topic_info, isPub=False)
             else:
-                for (topic_name, topic_types, pub_cnt, sub_cnt) in topic_info:
+                for (topic_name, topic_types, _, _) in topic_info:
                     msg = '{topic_name}'
                     topic_types_formatted = ', '.join(topic_types)
                     if args.show_types:
