@@ -26,7 +26,7 @@ def show_topic_info(topic_info, isPub):
         if cnt:
             topic_types_formatted = ', '.join(topic_types)
             cnt_str = str(cnt) + ' ' + ('publisher' if isPub else 'subscriber') \
-                                     + ('s' if cnt > 1 else '')
+                + ('s' if cnt > 1 else '')
             msg = ' * {topic_name} [{topic_types_formatted}] {cnt_str}'
             print(msg.format_map(locals()))
 
