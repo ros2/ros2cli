@@ -54,7 +54,6 @@ def get_echo_call_output(**kwargs):
     ]
 
 
-# TODO(hidmic): check Opensplice service types
 @pytest.mark.rostest
 @launch_testing.parametrize('rmw_implementation', get_available_rmw_implementations())
 def generate_test_description(rmw_implementation, ready_fn):
