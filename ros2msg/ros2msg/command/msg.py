@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import warnings
+
 from ros2cli.command import add_subparsers
 from ros2cli.command import CommandExtension
 from ros2cli.verb import get_verb_extensions
@@ -28,6 +30,10 @@ class MsgCommand(CommandExtension):
             parser, cli_name, '_verb', verb_extensions, required=False)
 
     def main(self, *, parser, args):
+        warnings.warn(
+            "'ros2 msg' is deprecated and will be removed in a future ROS release. "
+            "It has been replaced by 'ros2 interface'"
+        )
         if not hasattr(args, '_verb'):
             # in case no verb was passed
             self._subparser.print_help()
