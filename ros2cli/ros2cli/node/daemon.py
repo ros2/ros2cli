@@ -42,7 +42,7 @@ def is_daemon_running(args):
     return False
 
 
-def spawn_daemon(args, wait_until_spawned=None):
+def spawn_daemon(args, wait_until_spawned=None, debug=False):
     ros_domain_id = int(os.environ.get('ROS_DOMAIN_ID', 0))
     kwargs = {}
     if platform.system() != 'Windows':
@@ -76,7 +76,7 @@ def spawn_daemon(args, wait_until_spawned=None):
         # the arguments are only passed for visibility in e.g. the process list
         '--rmw-implementation', rmw_implementation_identifier,
         '--ros-domain-id', str(ros_domain_id)])
-    if not hasattr(args, 'debug') or not args.debug:
+    if not debug:
         kwargs['stdout'] = subprocess.DEVNULL
         kwargs['stderr'] = subprocess.DEVNULL
     subprocess.Popen(cmd, **kwargs)

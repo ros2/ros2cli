@@ -33,7 +33,7 @@ class StartVerb(VerbExtension):
             print('The daemon is already running')
             return
 
-        spawned = spawn_daemon(args, wait_until_spawned=10.0)
+        spawned = spawn_daemon(args, wait_until_spawned=10.0, debug=args.debug)
         if spawned:
             print('The daemon has been started')
         else:
