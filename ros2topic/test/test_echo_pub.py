@@ -82,9 +82,9 @@ def test_pub_basic(echo_pub_node, topic: str, provide_qos: bool, compatible_qos:
             expected_minimum_message_count = 0
 
     process = subprocess.Popen(
-        ['ros2', 'topic', 'pub'] +
-        pub_extra_options +
-        [topic, 'std_msgs/String', 'data: hello'], stdout=subprocess.PIPE)
+        ['ros2', 'topic', 'pub'] + pub_extra_options + [topic, 'std_msgs/String', 'data: hello'],
+        stdout=subprocess.PIPE,
+        stdin=subprocess.DEVNULL)
 
     def shutdown():
         process.send_signal(signal.SIGINT)
@@ -156,9 +156,9 @@ def test_echo_basic(echo_pub_node, topic: str, provide_qos: bool, compatible_qos
                 durability=DurabilityPolicy.VOLATILE)
 
     process = subprocess.Popen(
-        ['ros2', 'topic', 'echo'] +
-        echo_extra_options +
-        [topic], stdout=subprocess.PIPE)
+        ['ros2', 'topic', 'echo'] + echo_extra_options + [topic],
+        stdout=subprocess.PIPE,
+        stdin=subprocess.DEVNULL)
 
     publisher = node.create_publisher(String, topic, publisher_qos_profile)
     assert publisher
@@ -168,7 +168,7 @@ def test_echo_basic(echo_pub_node, topic: str, provide_qos: bool, compatible_qos
 
     publish_timer = node.create_timer(0.5, publish_message)
     # The future won't complete - we will hit the timeout
-    executor.spin_until_future_complete(rclpy.task.Future(), timeout_sec=2)
+    executor.spin_until_future_complete(rclpy.task.Future(), timeout_sec=4)
     # Note it is important to send SIGINT - terminate will make the stdout unavailable
     process.send_signal(signal.SIGINT)
     try:
