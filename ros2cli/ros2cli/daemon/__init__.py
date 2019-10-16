@@ -14,6 +14,7 @@
 
 import argparse
 from collections import namedtuple
+import functools
 import inspect
 import os
 from xmlrpc.server import SimpleXMLRPCRequestHandler
@@ -96,6 +97,27 @@ def main(*, script_name='_ros2_daemon', argv=None):
             server.server_close()
 
 
+def get_interfaces_ip_addresses():
+    addresses_by_interfaces = {}
+    for (kind, info) in netifaces.gateways().items():
+        if kind not in (netifaces.AF_INET, netifaces.AF_INET6):
+            continue
+        print('Interface kind: {}, info: {}'.format(kind, info))
+        if isinstance(info, dict):
+            continue
+        info_list = info
+        if isinstance(info, tuple):
+            info_list = [info]
+        addresses_by_interfaces[kind] = {}
+        for item in info_list:
+            interface_name = info[1]
+            addresses_by_interfaces[kind][interface_name] = (
+                netifaces.ifaddresses(interface_name)[kind][0]['addr']
+            )
+    print('Addresses by interfaces: {}'.format(addresses_by_interfaces))
+    return addresses_by_interfaces
+
+
 class _DirectNode:
     """A direct node, that resets itself when a network interface changes."""
 
@@ -104,21 +126,21 @@ class _DirectNode:
         # TODO(ivanpauno): A race condition is possible here, since it isn't possible to know
         # exactly which interfaces were available at node creation.
         self.node = DirectNode(args)
-        self.addresses_at_start = self.interfaces_ip_addresses()
+        self.addresses_at_start = get_interfaces_ip_addresses()
 
     def __enter__(self):
         self.node.__enter__()
         return self
 
     def __getattr__(self, name):
-        attr = self.node.__getattr__(name)
-
-        def wrapper():
-            self.reset_if_addresses_changed()
-            return self.node.__getattr__(name)()
-        wrapper.__name__ = attr.__name__
+        attr = getattr(self.node, name)
 
         if inspect.ismethod(attr):
+            @functools.wraps(attr)
+            def wrapper(*args, **kwargs):
+                self.reset_if_addresses_changed()
+                return getattr(self.node, name)(*args, **kwargs)
+            wrapper.__signature__ = inspect.signature(attr)
             return wrapper
         self.reset_if_addresses_changed()
         return attr
@@ -126,26 +148,8 @@ class _DirectNode:
     def __exit__(self, exc_type, exc_value, traceback):
         self.node.__exit__(exc_type, exc_value, traceback)
 
-    def interfaces_ip_addresses(self):
-        addresses_by_interfaces = {}
-        for (kind, info) in netifaces.gateways().items():
-            if kind not in (netifaces.AF_INET, netifaces.AF_INET6):
-                continue
-            print('Interface kind: {}, info: {}'.format(kind, info))
-            if isinstance(info, dict):
-                continue
-            info_list = info
-            if isinstance(info, tuple):
-                info_list = [info]
-            addresses_by_interfaces[kind] = {}
-            for item in info_list:
-                # info[1] is the interface name
-                addresses_by_interfaces[kind][item[1]] = netifaces.ifaddresses(item[1])[kind][0]['addr']
-        print('Addresses by interfaces: {}'.format(addresses_by_interfaces))
-        return addresses_by_interfaces
-
     def reset_if_addresses_changed(self):
-        new_addresses = self.interfaces_ip_addresses()
+        new_addresses = get_interfaces_ip_addresses()
         if new_addresses != self.addresses_at_start:
             self.addresses_at_start = new_addresses
             self.node.destroy_node()
