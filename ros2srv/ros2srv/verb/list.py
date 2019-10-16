@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import warnings
+
 from ros2srv.api import get_all_service_types
 from ros2srv.verb import VerbExtension
 
@@ -20,6 +22,10 @@ class ListVerb(VerbExtension):
     """Output a list of available service types."""
 
     def main(self, *, args):
+        warnings.warn(
+            "'ros2 srv' is deprecated and will be removed in a future ROS release. "
+            "Instead use: 'ros2 interface list -s'"
+        )
         service_types = get_all_service_types()
         for package_name in sorted(service_types.keys()):
             for service_name in sorted(service_types[package_name]):

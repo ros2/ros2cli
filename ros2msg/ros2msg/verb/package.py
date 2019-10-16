@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import warnings
+
 from ros2msg.api import get_message_types
 from ros2msg.api import message_package_name_completer
 from ros2msg.verb import VerbExtension
@@ -27,6 +29,10 @@ class PackageVerb(VerbExtension):
         arg.completer = message_package_name_completer
 
     def main(self, *, args):
+        warnings.warn(
+            "'ros2 msg' is deprecated and will be removed in a future ROS release. "
+            f"Instead use: 'ros2 interface package {args.package_name}'"
+        )
         try:
             message_names = get_message_types(args.package_name)
         except LookupError as e:
