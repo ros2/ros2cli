@@ -48,7 +48,7 @@ def echo_pub_node():
         ('/clitest/topic/pub_incompatible_qos', True, False)
     ]
 )
-def test_pub(echo_pub_node, topic: str, provide_qos: bool, compatible_qos: bool):
+def test_pub_basic(echo_pub_node, topic: str, provide_qos: bool, compatible_qos: bool):
     # Check for inconsistent arguments
     assert provide_qos if not compatible_qos else True
     node, executor, context = echo_pub_node
@@ -84,11 +84,10 @@ def test_pub(echo_pub_node, topic: str, provide_qos: bool, compatible_qos: bool)
     process = subprocess.Popen(
         ['ros2', 'topic', 'pub'] +
         pub_extra_options +
-        [topic, 'std_msgs/String', 'data: hello'])
+        [topic, 'std_msgs/String', 'data: hello'], stdout=subprocess.PIPE)
 
     def shutdown():
         process.send_signal(signal.SIGINT)
-        timeout_timer.cancel()
         future.set_result(True)
 
     def message_callback(msg):
@@ -101,15 +100,15 @@ def test_pub(echo_pub_node, topic: str, provide_qos: bool, compatible_qos: bool)
         String, topic, message_callback, subscription_qos_profile)
     assert subscription
 
-    timeout_timer = node.create_timer(3, shutdown)
-    executor.spin_until_future_complete(future)
+    executor.spin_until_future_complete(future, timeout_sec=3)
     try:
-        process.wait(1)
+        process.terminate()
+        process.wait(timeout=2)
     except subprocess.TimeoutExpired:
+        process.kill()
         assert False, "CLI subprocess didn't shut down correctly"
 
     # Cleanup
-    node.destroy_timer(timeout_timer)
     node.destroy_subscription(subscription)
 
     # Check results
@@ -128,12 +127,11 @@ def test_pub(echo_pub_node, topic: str, provide_qos: bool, compatible_qos: bool)
         ('/clitest/topic/echo_incompatible_qos', True, False)
     ]
 )
-def test_echo(echo_pub_node, topic: str, provide_qos: bool, compatible_qos: bool):
+def test_echo_basic(echo_pub_node, topic: str, provide_qos: bool, compatible_qos: bool):
     """Run a local publisher, check that `ros2 topic echo` receives at least one message."""
     # Check for inconsistent arguments
     assert provide_qos if not compatible_qos else True
     node, executor, context = echo_pub_node
-    future = rclpy.task.Future()
     echo_extra_options = []
     publisher_qos_profile = 10
     if provide_qos:
@@ -162,27 +160,24 @@ def test_echo(echo_pub_node, topic: str, provide_qos: bool, compatible_qos: bool
         echo_extra_options +
         [topic], stdout=subprocess.PIPE)
 
-    def shutdown():
-        process.send_signal(signal.SIGINT)
-        timeout_timer.cancel()
-        future.set_result(True)
+    publisher = node.create_publisher(String, topic, publisher_qos_profile)
+    assert publisher
 
     def publish_message():
         publisher.publish(String(data='hello'))
 
-    publisher = node.create_publisher(String, topic, publisher_qos_profile)
-    assert publisher
-
-    timeout_timer = node.create_timer(2, shutdown)
     publish_timer = node.create_timer(0.5, publish_message)
-    executor.spin_until_future_complete(future)
+    # The future won't complete - we will hit the timeout
+    executor.spin_until_future_complete(rclpy.task.Future(), timeout_sec=2)
+    # Note it is important to send SIGINT - terminate will make the stdout unavailable
+    process.send_signal(signal.SIGINT)
     try:
-        out, errs = process.communicate(1)
+        out, _ = process.communicate(timeout=0.5)
     except subprocess.TimeoutExpired:
+        process.kill()
         assert False, "CLI subprocess didn't shut down correctly"
 
     # Cleanup
-    node.destroy_timer(timeout_timer)
     node.destroy_timer(publish_timer)
     node.destroy_publisher(publisher)
 
