@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import os
-from packaging import version
 
 from ament_index_python import get_packages_with_prefixes
 from catkin_pkg.package import InvalidPackage
