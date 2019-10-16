@@ -53,7 +53,7 @@ def main(*, script_name='_ros2_daemon', argv=None):
     node_args = NodeArgs(
         node_name_suffix='_daemon_%d' % args.ros_domain_id,
         start_parameter_services=False)
-    with _DirectNode(node_args) as node:
+    with NetworkAwareNode(node_args) as node:
         server = LocalXMLRPCServer(
             addr, logRequests=False, requestHandler=RequestHandler,
             allow_none=True)
@@ -99,17 +99,12 @@ def main(*, script_name='_ros2_daemon', argv=None):
 
 def get_interfaces_ip_addresses():
     addresses_by_interfaces = {}
-    for (kind, info) in netifaces.gateways().items():
+    for (kind, info_list) in netifaces.gateways().items():
         if kind not in (netifaces.AF_INET, netifaces.AF_INET6):
             continue
-        print('Interface kind: {}, info: {}'.format(kind, info))
-        if isinstance(info, dict):
-            continue
-        info_list = info
-        if isinstance(info, tuple):
-            info_list = [info]
+        print('Interface kind: {}, info: {}'.format(kind, info_list))
         addresses_by_interfaces[kind] = {}
-        for item in info_list:
+        for info in info_list:
             interface_name = info[1]
             addresses_by_interfaces[kind][interface_name] = (
                 netifaces.ifaddresses(interface_name)[kind][0]['addr']
@@ -118,7 +113,7 @@ def get_interfaces_ip_addresses():
     return addresses_by_interfaces
 
 
-class _DirectNode:
+class NetworkAwareNode:
     """A direct node, that resets itself when a network interface changes."""
 
     def __init__(self, args):
