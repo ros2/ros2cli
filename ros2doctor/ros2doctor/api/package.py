@@ -95,7 +95,7 @@ class PackageCheck(DoctorCheck):
             if required_ver and local_ver:
                 if version.parse(local_ver) < version.parse(required_ver):
                     result.add_warning('%s local version %s does not match required version %s.'
-                        % (package_name, package_obj.version, required_ver))
+                                       % (package_name, package_obj.version, required_ver))
         return result
 
 
