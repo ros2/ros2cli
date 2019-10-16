@@ -18,7 +18,6 @@ from packaging import version
 from ament_index_python import get_packages_with_prefixes
 from catkin_pkg.package import InvalidPackage
 from catkin_pkg.package import parse_package
-
 from packaging import version
 
 from ros2doctor.api import DoctorCheck
@@ -84,10 +83,7 @@ class PackageCheck(DoctorCheck):
             return result
         for package_name, package_prefix in local_packages_prefixes.items():
             file_path = os.path.join(package_prefix, 'share', package_name)
-            try:
-                required_ver = packages_versions.get(package_name)
-            except AttributeError:
-                required_ver = ''
+            required_ver = packages_versions.get(package_name)
             try:
                 package_obj = parse_package(file_path)
                 local_ver = package_obj.version
@@ -118,10 +114,7 @@ class PackageReport(DoctorReport):
         local_package_prefixes = get_packages_with_prefixes()
         if local_package_prefixes and packages_versions:
             for package_name, package_prefix in local_package_prefixes.items():
-                try:
-                    required_ver = packages_versions.get(package_name)
-                except AttributeError:
-                    required_ver = ''
+                required_ver = packages_versions.get(package_name)
                 file_path = os.path.join(package_prefix, 'share', package_name)
                 try:
                     package_obj = parse_package(file_path)
@@ -129,5 +122,6 @@ class PackageReport(DoctorReport):
                 except (IOError, InvalidPackage):
                     local_ver = ''
                 report.add_to_report(package_name, 'required=' +
-                                     required_ver + ', local='+local_ver)
+                                     (required_ver if required_ver else '') +
+                                     ', local='+local_ver)
         return report
