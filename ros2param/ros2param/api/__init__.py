@@ -14,8 +14,8 @@
 
 from rcl_interfaces.msg import ParameterType
 from rcl_interfaces.msg import ParameterValue
-from rcl_interfaces.srv import GetParameters
 from rcl_interfaces.srv import DescribeParameters
+from rcl_interfaces.srv import GetParameters
 from rcl_interfaces.srv import ListParameters
 from rcl_interfaces.srv import SetParameters
 import rclpy

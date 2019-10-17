@@ -93,4 +93,3 @@ def get_parameter_type_string(parameter_type):
         ParameterType.PARAMETER_NOT_SET: 'not set',
     }
     return mapping[parameter_type]
-
