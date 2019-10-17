@@ -15,6 +15,7 @@
 from rcl_interfaces.msg import ParameterType
 from rcl_interfaces.msg import ParameterValue
 from rcl_interfaces.srv import GetParameters
+from rcl_interfaces.srv import DescribeParameters
 from rcl_interfaces.srv import ListParameters
 from rcl_interfaces.srv import SetParameters
 import rclpy
@@ -89,6 +90,33 @@ def get_parameter_value(*, string_value):
         value.type = ParameterType.PARAMETER_STRING
         value.string_value = string_value
     return value
+
+
+def call_describe_parameters(*, node, node_name, parameter_names=None):
+    # create client
+    client = node.create_client(
+        DescribeParameters,
+        '{node_name}/describe_parameters'.format_map(locals()))
+
+    # call as soon as ready
+    ready = client.wait_for_service(timeout_sec=5.0)
+    if not ready:
+        raise RuntimeError('Wait for service timed out')
+
+    request = DescribeParameters.Request()
+    if parameter_names:
+        request.names = parameter_names
+    future = client.call_async(request)
+    rclpy.spin_until_future_complete(node, future)
+
+    # handle response
+    response = future.result()
+    if response is None:
+        e = future.exception()
+        raise RuntimeError(
+            "Exception while calling service of node '{node_name}': {e}"
+            .format_map(locals()))
+    return response
 
 
 def call_get_parameters(*, node, node_name, parameter_names):
