@@ -40,4 +40,4 @@ class ShowVerb(VerbExtension):
         except LookupError as e:
             return str(e)
         with open(file_path, 'r', encoding='utf-8') as h:
-            print(h.read(), end='')
+            print(h.read().rstrip())

@@ -46,4 +46,4 @@ class ShowVerb(VerbExtension):
         except LookupError as e:
             return str(e)
         with open(path, 'r') as h:
-            print(h.read(), end='')
+            print(h.read().rstrip())
