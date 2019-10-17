@@ -23,6 +23,7 @@ from ros2node.api import get_node_names
 from ros2node.api import NodeNameCompleter
 from ros2param.api import call_set_parameters
 from ros2param.api import get_parameter_value
+from ros2param.api import ParameterNameCompleter
 from ros2param.verb import VerbExtension
 
 
@@ -38,8 +39,9 @@ class SetVerb(VerbExtension):
         parser.add_argument(
             '--include-hidden-nodes', action='store_true',
             help='Consider hidden nodes as well')
-        parser.add_argument(
-            'name', help='Name of the parameter')
+        arg = parser.add_argument(
+            'parameter_name', help='Name of the parameter')
+        arg.completer = ParameterNameCompleter()
         parser.add_argument(
             'value', help='Value of the parameter')
 
@@ -54,7 +56,7 @@ class SetVerb(VerbExtension):
 
         with DirectNode(args) as node:
             parameter = Parameter()
-            Parameter.name = args.name
+            Parameter.name = args.parameter_name
             parameter.value = get_parameter_value(string_value=args.value)
 
             response = call_set_parameters(
