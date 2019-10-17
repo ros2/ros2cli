@@ -77,10 +77,10 @@ class CreateVerb(VerbExtension):
             '--maintainer-name', default=getpass.getuser(),
             help='name of the maintainer of this package'),
         parser.add_argument(
-            '--node-name',
+            '--node-name', '--cpp-node-name',
             help='name of the empty executable')
         parser.add_argument(
-            '--library-name',
+            '--library-name', '--cpp-library-name',
             help='name of the empty library')
 
     def main(self, *, args):
