@@ -17,8 +17,8 @@ from rcl_interfaces.msg import ParameterValue
 from rcl_interfaces.srv import GetParameters
 from rcl_interfaces.srv import ListParameters
 from rcl_interfaces.srv import SetParameters
-from ros2cli.node.direct import DirectNode
 import rclpy
+from ros2cli.node.direct import DirectNode
 import yaml
 
 
