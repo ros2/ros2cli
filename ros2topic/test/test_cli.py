@@ -402,7 +402,7 @@ class TestROS2TopicCLI(unittest.TestCase):
                     'alignment_check: 0',
                     '---'
                 ], strict=False
-            ), timeout=5), 'Output does not match: ' + topic_command.output
+            ), timeout=10), 'Output does not match: ' + topic_command.output
         assert topic_command.wait_for_shutdown(timeout=5)
 
     @launch_testing.markers.retry_on_failure(times=5)
@@ -446,7 +446,7 @@ class TestROS2TopicCLI(unittest.TestCase):
                     'alignment_check: 0',
                     '---'
                 ], strict=True
-            ), timeout=5)
+            ), timeout=10)
         assert topic_command.wait_for_shutdown(timeout=5)
 
     @launch_testing.markers.retry_on_failure(times=5)
@@ -491,7 +491,7 @@ class TestROS2TopicCLI(unittest.TestCase):
                     'alignment_check: 0',
                     '---'
                 ], strict=True
-            ), timeout=5)
+            ), timeout=10)
         assert topic_command.wait_for_shutdown(timeout=5)
 
     @launch_testing.markers.retry_on_failure(times=5)
@@ -540,7 +540,7 @@ class TestROS2TopicCLI(unittest.TestCase):
                     "publishing #1: std_msgs.msg.String(data='bar')",
                     ''
                 ], strict=True
-            ), timeout=5)
+            ), timeout=10)
             assert topic_command.wait_for_shutdown(timeout=5)
             self.listener_node.wait_for_output(functools.partial(
                 launch_testing.tools.expect_output, expected_lines=[
@@ -567,12 +567,12 @@ class TestROS2TopicCLI(unittest.TestCase):
                     "publishing #4: std_msgs.msg.String(data='fizz')",
                     ''
                 ], strict=True
-            ), timeout=6), 'Output does not match: ' + topic_command.output
+            ), timeout=10), 'Output does not match: ' + topic_command.output
             self.listener_node.wait_for_output(functools.partial(
                 launch_testing.tools.expect_output, expected_lines=[
                     '[INFO] [listener]: I heard: [fizz]'
                 ], strict=True
-            ), timeout=5)
+            ), timeout=10)
         assert topic_command.wait_for_shutdown(timeout=5)
 
     @launch_testing.markers.retry_on_failure(times=5)

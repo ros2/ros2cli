@@ -172,9 +172,9 @@ class TestROS2NodeCLI(unittest.TestCase):
             ], itertools.repeat(re.compile(
                 r'\s*/complex_node/.*parameter.*: rcl_interfaces/srv/.*Parameter.*'
             ), 6), [
-                '  Actions Servers:',
+                '  Action Servers:',
                 '    /fibonacci: test_msgs/action/Fibonacci',
-                '  Actions Clients:',
+                '  Action Clients:',
                 ''
             ]),
             text=node_command.output, strict=False
