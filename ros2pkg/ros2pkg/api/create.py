@@ -101,8 +101,77 @@ def create_package_environment(package, destination_directory):
         print('creating source and include folder')
         source_directory = _create_folder('src', package_directory)
         include_directory = _create_folder(package.name, package_directory + os.sep + 'include')
+    if package.get_build_type() == 'ament_python':
+        print('creating source folder')
+        source_directory = _create_folder(package.name, package_directory)
 
     return package_directory, source_directory, include_directory
+
+
+def populate_ament_python(package, package_directory, source_directory, python_node_name):
+    setup_py_config = {
+        'project_name': package.name,
+        'maintainer_email': package.maintainers[0].email,
+        'maintainer_name': package.maintainers[0].name,
+        'package_license': package.licenses[0],
+        'node_name': python_node_name,
+        'test_dependencies': package.test_depends,
+        'package_description': package.description
+    }
+
+    _create_template_file('ament_python/setup.py.em',
+                          package_directory,
+                          'setup.py',
+                          setup_py_config)
+
+    setup_cfg_config = {'project_name': package.name}
+    _create_template_file('ament_python/setup.cfg.em',
+                          package_directory,
+                          'setup.cfg',
+                          setup_cfg_config)
+
+    resource_directory = _create_folder('resource', package_directory)
+    _create_template_file('ament_python/resource_file.em',
+                          resource_directory,
+                          package.name,
+                          {})
+
+    _create_template_file('ament_python/init.py.em',
+                          source_directory,
+                          '__init__.py',
+                          {})
+
+    test_directory = _create_folder('test', package_directory)
+    _create_template_file('ament_python/test_copyright.py.em',
+                          test_directory,
+                          'test_copyright.py',
+                          {})
+    _create_template_file('ament_python/test_flake8.py.em',
+                          test_directory,
+                          'test_flake8.py',
+                          {})
+    _create_template_file('ament_python/test_pep257.py.em',
+                          test_directory,
+                          'test_pep257.py',
+                          {})
+
+
+def populate_python_node(package, source_directory, python_node_name):
+    main_py_config = {
+        'project_name': package.name
+    }
+    _create_template_file('ament_python/main.py.em',
+                          source_directory,
+                          python_node_name + '.py',
+                          main_py_config)
+
+
+def populate_python_libary(package, source_directory, python_library_name):
+    library_directory = _create_folder(python_library_name, source_directory)
+    _create_template_file('ament_python/init.py.em',
+                          library_directory,
+                          '__init__.py',
+                          {})
 
 
 def populate_cmake(package, package_directory, cpp_node_name, cpp_library_name):
