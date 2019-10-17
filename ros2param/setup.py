@@ -41,6 +41,7 @@ The package provides the param command for the ROS 2 command line tools.""",
         ],
         'ros2param.verb': [
             'delete = ros2param.verb.delete:DeleteVerb',
+            'describe = ros2param.verb.describe:DescribeVerb',
             'dump = ros2param.verb.dump:DumpVerb',
             'get = ros2param.verb.get:GetVerb',
             'list = ros2param.verb.list:ListVerb',
