@@ -15,7 +15,9 @@
 from rcl_interfaces.msg import ParameterType
 from rcl_interfaces.msg import ParameterValue
 from rcl_interfaces.srv import GetParameters
+from rcl_interfaces.srv import ListParameters
 from rcl_interfaces.srv import SetParameters
+from ros2cli.node.direct import DirectNode
 import rclpy
 import yaml
 
@@ -139,3 +141,40 @@ def call_set_parameters(*, node, node_name, parameters):
             'Exception while calling service of node '
             "'{args.node_name}': {e}".format_map(locals()))
     return response
+
+
+def call_list_parameters(*, node, node_name, prefix=None):
+    # create client
+    client = node.create_client(
+        ListParameters,
+        '{node_name}/list_parameters'.format_map(locals()))
+
+    # call as soon as ready
+    ready = client.wait_for_service(timeout_sec=5.0)
+    if not ready:
+        raise RuntimeError('Wait for service timed out')
+
+    request = ListParameters.Request()
+    future = client.call_async(request)
+    rclpy.spin_until_future_complete(node, future)
+
+    # handle response
+    response = future.result()
+    if response is None:
+        e = future.exception()
+        raise RuntimeError(
+            "Exception while calling service of node '{node_name}': {e}"
+            .format_map(locals()))
+    return response.result.names
+
+
+class ParameterNameCompleter:
+    """Callable returning a list of parameter names."""
+
+    def __call__(self, prefix, parsed_args, **kwargs):
+        with DirectNode(parsed_args) as node:
+            parameter_names = call_list_parameters(
+                node=node, node_name=parsed_args.node_name)
+            return [
+                n for n in parameter_names
+                if not prefix or n.startswith(prefix)]
