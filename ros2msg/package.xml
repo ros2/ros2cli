@@ -22,6 +22,10 @@
   <test_depend>std_srvs</test_depend>
 
   <export>
+    <deprecated>
+      This package has been replaced by 'ros2interface' and will be removed in a future ROS distro.
+    </deprecated>
+
     <build_type>ament_python</build_type>
   </export>
 </package>

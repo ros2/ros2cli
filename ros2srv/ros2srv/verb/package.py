@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import warnings
+
 from ros2srv.api import get_service_types
 from ros2srv.api import service_package_name_completer
 from ros2srv.verb import VerbExtension
@@ -27,6 +29,10 @@ class PackageVerb(VerbExtension):
         arg.completer = service_package_name_completer
 
     def main(self, *, args):
+        warnings.warn(
+            "'ros2 srv' is deprecated and will be removed in a future ROS release. "
+            f"Instead use: 'ros2 interface package {args.package_name}'"
+        )
         try:
             service_names = get_service_types(args.package_name)
         except LookupError as e:

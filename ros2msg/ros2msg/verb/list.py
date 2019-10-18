@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import warnings
+
 from ros2msg.api import get_all_message_types
 from ros2msg.verb import VerbExtension
 
@@ -20,6 +22,10 @@ class ListVerb(VerbExtension):
     """Output a list of available message types."""
 
     def main(self, *, args):
+        warnings.warn(
+            "'ros2 msg' is deprecated and will be removed in a future ROS release. "
+            "Instead use: 'ros2 interface list -m'"
+        )
         message_types = get_all_message_types()
         for package_name in sorted(message_types.keys()):
             for message_name in sorted(message_types[package_name]):
