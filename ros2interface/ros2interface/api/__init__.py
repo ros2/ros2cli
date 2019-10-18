@@ -41,6 +41,8 @@ def get_interfaces(package_name):
 
 def get_interface_path(parts):
     prefix_path = has_resource('packages', parts[0])
+    if not prefix_path:
+        raise LookupError('Unknown package {}'.format(parts[0]))
     joined = '/'.join(parts)
     if len(parts[-1].rsplit('.', 1)) == 1:
         joined += '.idl'
