@@ -9,6 +9,7 @@
   <maintainer email="dthomas@osrfoundation.org">Dirk Thomas</maintainer>
   <license>Apache License 2.0</license>
 
+  <exec_depend>python3-netifaces</exec_depend>
   <exec_depend>python3-pkg-resources</exec_depend>
   <exec_depend>rclpy</exec_depend>
 

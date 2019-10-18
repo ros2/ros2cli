@@ -1,4 +1,4 @@
-# Copyright 2017 Open Source Robotics Foundation, Inc.
+# Copyright 2017-2019 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,11 +14,16 @@
 
 import argparse
 from collections import namedtuple
+import functools
+import inspect
 import os
 from xmlrpc.server import SimpleXMLRPCRequestHandler
 from xmlrpc.server import SimpleXMLRPCServer
 
+import netifaces
+
 import rclpy
+
 from ros2cli.node.direct import DirectNode
 
 
@@ -48,7 +53,7 @@ def main(*, script_name='_ros2_daemon', argv=None):
     node_args = NodeArgs(
         node_name_suffix='_daemon_%d' % args.ros_domain_id,
         start_parameter_services=False)
-    with DirectNode(node_args) as node:
+    with NetworkAwareNode(node_args) as node:
         server = LocalXMLRPCServer(
             addr, logRequests=False, requestHandler=RequestHandler,
             allow_none=True)
@@ -90,6 +95,63 @@ def main(*, script_name='_ros2_daemon', argv=None):
                 pass
         finally:
             server.server_close()
+
+
+def get_interfaces_ip_addresses():
+    addresses_by_interfaces = {}
+    for (kind, info_list) in netifaces.gateways().items():
+        if kind not in (netifaces.AF_INET, netifaces.AF_INET6):
+            continue
+        print('Interface kind: {}, info: {}'.format(kind, info_list))
+        addresses_by_interfaces[kind] = {}
+        for info in info_list:
+            interface_name = info[1]
+            addresses_by_interfaces[kind][interface_name] = (
+                netifaces.ifaddresses(interface_name)[kind][0]['addr']
+            )
+    print('Addresses by interfaces: {}'.format(addresses_by_interfaces))
+    return addresses_by_interfaces
+
+
+class NetworkAwareNode:
+    """A direct node, that resets itself when a network interface changes."""
+
+    def __init__(self, args):
+        self.args = args
+        # TODO(ivanpauno): A race condition is possible here, since it isn't possible to know
+        # exactly which interfaces were available at node creation.
+        self.node = DirectNode(args)
+        self.addresses_at_start = get_interfaces_ip_addresses()
+
+    def __enter__(self):
+        self.node.__enter__()
+        return self
+
+    def __getattr__(self, name):
+        attr = getattr(self.node, name)
+
+        if inspect.ismethod(attr):
+            @functools.wraps(attr)
+            def wrapper(*args, **kwargs):
+                self.reset_if_addresses_changed()
+                return getattr(self.node, name)(*args, **kwargs)
+            wrapper.__signature__ = inspect.signature(attr)
+            return wrapper
+        self.reset_if_addresses_changed()
+        return attr
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.node.__exit__(exc_type, exc_value, traceback)
+
+    def reset_if_addresses_changed(self):
+        new_addresses = get_interfaces_ip_addresses()
+        if new_addresses != self.addresses_at_start:
+            self.addresses_at_start = new_addresses
+            self.node.destroy_node()
+            rclpy.shutdown()
+            self.node = DirectNode(self.args)
+            self.node.__enter__()
+            print('Daemon node was reset')
 
 
 class LocalXMLRPCServer(SimpleXMLRPCServer):
