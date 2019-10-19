@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ros2interface.api import get_interfaces
+from rosidl_runtime_py import get_interfaces
 from ros2interface.api import package_name_completer
 from ros2interface.verb import VerbExtension
 
@@ -28,8 +28,9 @@ class PackageVerb(VerbExtension):
 
     def main(self, *, args):
         try:
-            names = get_interfaces(args.package_name)
+            interfaces = get_interfaces([args.package_name])
         except LookupError as e:
             return str(e)
-        for name in names:
-            print('{args.package_name}/{name}'.format_map(locals()))
+        for package_name in sorted(interfaces):
+            for interface_name in interfaces[package_name]:
+                print(f"{package_name}/{interface_name}")
