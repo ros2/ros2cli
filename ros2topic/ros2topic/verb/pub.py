@@ -13,16 +13,24 @@
 # limitations under the License.
 
 import time
+from typing import Optional
+from typing import TypeVar
 
 import rclpy
-from ros2cli.node import NODE_NAME_PREFIX
+from rclpy.node import Node
+from rclpy.qos import QoSProfile
+from ros2cli.node.direct import DirectNode
+from ros2topic.api import add_qos_arguments_to_argument_parser
 from ros2topic.api import import_message_type
+from ros2topic.api import qos_profile_from_short_keys
 from ros2topic.api import TopicMessagePrototypeCompleter
 from ros2topic.api import TopicNameCompleter
 from ros2topic.api import TopicTypeCompleter
 from ros2topic.verb import VerbExtension
 from rosidl_runtime_py import set_message_fields
 import yaml
+
+MsgType = TypeVar('MsgType')
 
 
 class PubVerb(VerbExtension):
@@ -58,21 +66,8 @@ class PubVerb(VerbExtension):
         parser.add_argument(
             '-n', '--node-name',
             help='Name of the created publishing node')
-        parser.add_argument(
-            '--qos-profile',
-            choices=rclpy.qos.QoSPresetProfiles.short_keys(),
-            default='system_default',
-            help='Quality of service profile to publish with')
-        parser.add_argument(
-            '--qos-reliability',
-            choices=rclpy.qos.QoSReliabilityPolicy.short_keys(),
-            help='Quality of service reliability setting to publish with. '
-                 '(Will override reliability value of --qos-profile option)')
-        parser.add_argument(
-            '--qos-durability',
-            choices=rclpy.qos.QoSDurabilityPolicy.short_keys(),
-            help='Quality of service durability setting to publish with. '
-                 '(Will override durability value of --qos-profile option)')
+        add_qos_arguments_to_argument_parser(
+            parser, is_publisher=True, default_preset='system_default')
 
     def main(self, *, args):
         if args.rate <= 0:
@@ -82,34 +77,37 @@ class PubVerb(VerbExtension):
 
 
 def main(args):
-    return publisher(
-        args.message_type, args.topic_name, args.values,
-        args.node_name, 1. / args.rate, args.print, args.once,
-        args.qos_profile, args.qos_reliability, args.qos_durability)
+    qos_profile = qos_profile_from_short_keys(
+        args.qos_profile, reliability=args.qos_reliability, durability=args.qos_durability)
+    with DirectNode(args) as node:
+        return publisher(
+            node.node,
+            args.message_type,
+            args.topic_name,
+            args.values,
+            1. / args.rate,
+            args.print,
+            args.once,
+            qos_profile)
 
 
 def publisher(
-    message_type, topic_name, values, node_name, period, print_nth, once,
-    qos_profile, qos_reliability, qos_durability
-):
+    node: Node,
+    message_type: MsgType,
+    topic_name: str,
+    values: dict,
+    period: float,
+    print_nth: int,
+    once: bool,
+    qos_profile: QoSProfile,
+) -> Optional[str]:
+    """Initialize a node with a single publisher and run its publish loop (maybe only once)."""
     msg_module = import_message_type(topic_name, message_type)
     values_dictionary = yaml.safe_load(values)
     if not isinstance(values_dictionary, dict):
         return 'The passed value needs to be a dictionary in YAML format'
-    if not node_name:
-        node_name = NODE_NAME_PREFIX + '_publisher_%s' % (message_type.replace('/', '_'), )
-    rclpy.init()
 
-    # Build a QoS profile based on user-supplied arguments
-    profile = rclpy.qos.QoSPresetProfiles.get_from_short_key(qos_profile)
-    if qos_durability:
-        profile.durability = rclpy.qos.QoSDurabilityPolicy.get_from_short_key(qos_durability)
-    if qos_reliability:
-        profile.reliability = rclpy.qos.QoSReliabilityPolicy.get_from_short_key(qos_reliability)
-
-    node = rclpy.create_node(node_name)
-
-    pub = node.create_publisher(msg_module, topic_name, profile)
+    pub = node.create_publisher(msg_module, topic_name, qos_profile)
 
     msg = msg_module()
     try:
@@ -135,5 +133,3 @@ def publisher(
         rclpy.spin(node)
 
     node.destroy_timer(timer)
-    node.destroy_node()
-    rclpy.shutdown()

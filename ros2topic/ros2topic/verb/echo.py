@@ -13,20 +13,28 @@
 # limitations under the License.
 
 from argparse import ArgumentTypeError
+from typing import Any
+from typing import Callable
+from typing import Optional
+from typing import TypeVar
 
 import rclpy
 from rclpy.expand_topic_name import expand_topic_name
-from rclpy.qos import qos_profile_sensor_data
+from rclpy.node import Node
+from rclpy.qos import QoSProfile
 from rclpy.validate_full_topic_name import validate_full_topic_name
 from ros2cli.node.direct import DirectNode
+from ros2topic.api import add_qos_arguments_to_argument_parser
 from ros2topic.api import get_topic_names_and_types
 from ros2topic.api import import_message_type
+from ros2topic.api import qos_profile_from_short_keys
 from ros2topic.api import TopicNameCompleter
 from ros2topic.verb import VerbExtension
 from rosidl_runtime_py import message_to_csv
 from rosidl_runtime_py import message_to_yaml
 
 DEFAULT_TRUNCATE_LENGTH = 128
+MsgType = TypeVar('MsgType')
 
 
 def unsigned_int(string):
@@ -51,6 +59,8 @@ class EchoVerb(VerbExtension):
         parser.add_argument(
             'message_type', nargs='?',
             help="Type of the ROS message (e.g. 'std_msgs/String')")
+        add_qos_arguments_to_argument_parser(
+            parser, is_publisher=False, default_preset='sensor_data')
         parser.add_argument(
             '--csv', action='store_true',
             help='Output all recursive fields separated by commas (e.g. for '
@@ -80,12 +90,21 @@ def main(args):
     else:
         truncate_length = args.truncate_length if not args.full_length else None
         callback = subscriber_cb_csv(truncate_length, args.no_arr, args.no_str)
+    qos_profile = qos_profile_from_short_keys(
+        args.qos_profile, reliability=args.qos_reliability, durability=args.qos_durability)
     with DirectNode(args) as node:
         subscriber(
-            node.node, args.topic_name, args.message_type, callback)
+            node.node, args.topic_name, args.message_type, callback, qos_profile)
 
 
-def subscriber(node, topic_name, message_type, callback):
+def subscriber(
+    node: Node,
+    topic_name: str,
+    message_type: MsgType,
+    callback: Callable[[MsgType], Any],
+    qos_profile: QoSProfile
+) -> Optional[str]:
+    """Initialize a node with a single subscription and spin."""
     if message_type is None:
         topic_names_and_types = get_topic_names_and_types(node=node, include_hidden_topics=True)
         try:
@@ -112,10 +131,9 @@ def subscriber(node, topic_name, message_type, callback):
     msg_module = import_message_type(topic_name, message_type)
 
     node.create_subscription(
-        msg_module, topic_name, callback, qos_profile_sensor_data)
+        msg_module, topic_name, callback, qos_profile)
 
-    while rclpy.ok():
-        rclpy.spin_once(node)
+    rclpy.spin(node)
 
 
 def subscriber_cb(truncate_length, noarr, nostr):

@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import argparse
 import importlib
 
 from time import sleep
@@ -150,3 +151,39 @@ class TopicMessagePrototypeCompleter:
     def __call__(self, prefix, parsed_args, **kwargs):
         message = get_message(getattr(parsed_args, self.topic_type_key))
         return [message_to_yaml(message())]
+
+
+def qos_profile_from_short_keys(
+    preset_profile: str, reliability: str = None, durability: str = None,
+) -> rclpy.qos.QoSProfile:
+    """Construct a QoSProfile given the name of a preset, and optional overrides."""
+    # Build a QoS profile based on user-supplied arguments
+    profile = rclpy.qos.QoSPresetProfiles.get_from_short_key(preset_profile)
+    if durability:
+        profile.durability = rclpy.qos.QoSDurabilityPolicy.get_from_short_key(durability)
+    if reliability:
+        profile.reliability = rclpy.qos.QoSReliabilityPolicy.get_from_short_key(reliability)
+
+    return profile
+
+
+def add_qos_arguments_to_argument_parser(
+    parser: argparse.ArgumentParser, is_publisher: bool = True, default_preset: str = 'sensor_data'
+) -> None:
+    """Extend an existing ArgumentParser to allow input of QoS policy overrides."""
+    verb = 'publish' if is_publisher else 'subscribe'
+    parser.add_argument(
+        '--qos-profile',
+        choices=rclpy.qos.QoSPresetProfiles.short_keys(),
+        default=default_preset,
+        help='Quality of service preset profile to {} with.'.format(verb))
+    parser.add_argument(
+        '--qos-reliability',
+        choices=rclpy.qos.QoSReliabilityPolicy.short_keys(),
+        help='Quality of service reliability setting to {} with. '
+             '(Will override reliability value of --qos-profile option)'.format(verb))
+    parser.add_argument(
+        '--qos-durability',
+        choices=rclpy.qos.QoSDurabilityPolicy.short_keys(),
+        help='Quality of service durability setting to {} with. '
+             '(Will override durability value of --qos-profile option)'.format(verb))
