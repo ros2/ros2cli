@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ros2interface.api import get_all_action_types
-from ros2interface.api import get_all_interface_packages
-from ros2interface.api import get_all_message_types
-from ros2interface.api import get_all_service_types
 from ros2interface.verb import VerbExtension
+from rosidl_runtime_py import get_action_interfaces
+from rosidl_runtime_py import get_interface_packages
+from rosidl_runtime_py import get_message_interfaces
+from rosidl_runtime_py import get_service_interfaces
 
 
 def print_packages(packs):
@@ -39,11 +39,10 @@ class PackagesVerb(VerbExtension):
 
     def main(self, *, args):
         if args.only_msgs:
-            print_packages(get_all_message_types().keys())
+            print_packages(sorted(get_message_interfaces()))
         elif args.only_srvs:
-            print_packages(get_all_service_types().keys())
+            print_packages(sorted(get_service_interfaces()))
         elif args.only_actions:
-            print_packages(get_all_action_types().keys())
+            print_packages(sorted(get_action_interfaces()))
         else:
-            all_interface_packages = get_all_interface_packages()
-            print_packages(all_interface_packages)
+            print_packages(sorted(get_interface_packages()))

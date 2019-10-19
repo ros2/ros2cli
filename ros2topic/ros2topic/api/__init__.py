@@ -23,8 +23,8 @@ from rclpy.expand_topic_name import expand_topic_name
 from rclpy.topic_or_service_is_hidden import topic_or_service_is_hidden
 from rclpy.validate_full_topic_name import validate_full_topic_name
 from ros2cli.node.strategy import NodeStrategy
-from ros2msg.api import message_type_completer
-from rosidl_runtime_py.convert import message_to_yaml
+from rosidl_runtime_py import get_message_interfaces
+from rosidl_runtime_py import message_to_yaml
 from rosidl_runtime_py.utilities import get_message
 
 
@@ -73,6 +73,15 @@ def import_message_type(topic_name, message_type):
 
     module = importlib.import_module(package_name + '.' + middle_module)
     return getattr(module, message_name[-1])
+
+
+def message_type_completer(**kwargs):
+    """Callable returning a list of message types."""
+    message_types = []
+    for package_name, message_names in get_message_interfaces().items():
+        for message_name in message_names:
+            message_types.append(f'{package_name}/{message_name}')
+    return message_types
 
 
 class TopicTypeCompleter:

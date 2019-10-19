@@ -12,34 +12,34 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ros2interface.api import get_all_action_types
-from ros2interface.api import get_all_message_types
-from ros2interface.api import get_all_service_types
 from ros2interface.verb import VerbExtension
+from rosidl_runtime_py import get_action_interfaces
+from rosidl_runtime_py import get_message_interfaces
+from rosidl_runtime_py import get_service_interfaces
 
 
 def print_messages():
     print('Messages:')
-    message_types = get_all_message_types()
-    for package_name in sorted(message_types):
-        for message_name in sorted(message_types[package_name]):
-            print('    {package_name}/msg/{message_name}'.format_map(locals()))
+    message_interfaces = get_message_interfaces()
+    for package_name in sorted(message_interfaces):
+        for message_name in sorted(message_interfaces[package_name]):
+            print(f'    {package_name}/{message_name}')
 
 
 def print_services():
     print('Services:')
-    service_types = get_all_service_types()
-    for package_name in sorted(service_types):
-        for service_name in sorted(service_types[package_name]):
-            print('    {package_name}/srv/{service_name}'.format_map(locals()))
+    service_interfaces = get_service_interfaces()
+    for package_name in sorted(service_interfaces):
+        for service_name in sorted(service_interfaces[package_name]):
+            print(f'    {package_name}/{service_name}')
 
 
 def print_actions():
     print('Actions:')
-    action_types = get_all_action_types()
-    for package_name in sorted(action_types):
-        for action_name in sorted(action_types[package_name]):
-            print('    {package_name}/action/{action_name}'.format_map(locals()))
+    action_interfaces = get_action_interfaces()
+    for package_name in sorted(action_interfaces):
+        for action_name in sorted(action_interfaces[package_name]):
+            print(f'    {package_name}/{action_name}')
 
 
 class ListVerb(VerbExtension):
