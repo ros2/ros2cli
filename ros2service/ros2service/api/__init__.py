@@ -14,8 +14,8 @@
 
 from rclpy.topic_or_service_is_hidden import topic_or_service_is_hidden
 from ros2cli.node.strategy import NodeStrategy
-from ros2srv.api import service_type_completer
-from rosidl_runtime_py.convert import message_to_yaml
+from rosidl_runtime_py import get_service_interfaces
+from rosidl_runtime_py import message_to_yaml
 from rosidl_runtime_py.utilities import get_service
 
 
@@ -32,6 +32,15 @@ def get_service_names(*, node, include_hidden_services=False):
     service_names_and_types = get_service_names_and_types(
         node=node, include_hidden_services=include_hidden_services)
     return [n for (n, t) in service_names_and_types]
+
+
+def service_type_completer(**kwargs):
+    """Callable returning a list of service types."""
+    service_types = []
+    for package_name, service_names in get_service_interfaces().items():
+        for service_name in service_names:
+            service_types.append(f'{package_name}/{service_name}')
+    return service_types
 
 
 class ServiceNameCompleter:
