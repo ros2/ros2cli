@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from ros2interface.verb import VerbExtension
 from rosidl_runtime_py import get_action_interfaces
 from rosidl_runtime_py import get_interface_packages
 from rosidl_runtime_py import get_message_interfaces
 from rosidl_runtime_py import get_service_interfaces
-from ros2interface.verb import VerbExtension
 
 
 def print_packages(packs):

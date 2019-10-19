@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from rosidl_runtime_py import get_interfaces
 from ros2interface.api import package_name_completer
 from ros2interface.verb import VerbExtension
+from rosidl_runtime_py import get_interfaces
 
 
 class PackageVerb(VerbExtension):
@@ -33,4 +33,4 @@ class PackageVerb(VerbExtension):
             return str(e)
         for package_name in sorted(interfaces):
             for interface_name in interfaces[package_name]:
-                print(f"{package_name}/{interface_name}")
+                print(f'{package_name}/{interface_name}')
