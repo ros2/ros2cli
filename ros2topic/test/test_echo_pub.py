@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import os
+import platform
 import signal
 import subprocess
 
@@ -42,7 +43,6 @@ def echo_pub_node():
     rclpy.shutdown(context=context)
 
 
-@pytest.mark.skipif(os.name == 'nt', reason='Subprocess bug in Windows Python 3.7.4')
 @pytest.mark.parametrize(
     'topic,provide_qos,compatible_qos', [
         ('/clitest/topic/pub_basic', False, True),
@@ -89,7 +89,11 @@ def test_pub_basic(echo_pub_node, topic: str, provide_qos: bool, compatible_qos:
         stdin=subprocess.DEVNULL)
 
     def shutdown():
-        process.send_signal(signal.SIGINT)
+        if platform.system() == 'Windows':
+            # TODO: remove this when/if SIGINT is fixed on Windows
+            process.send_signal(signal.SIGTERM)
+        else:
+            process.send_signal(signal.SIGINT)
         future.set_result(True)
 
     def message_callback(msg):
@@ -173,7 +177,11 @@ def test_echo_basic(echo_pub_node, topic: str, provide_qos: bool, compatible_qos
     # The future won't complete - we will hit the timeout
     executor.spin_until_future_complete(rclpy.task.Future(), timeout_sec=4)
     # Note it is important to send SIGINT - terminate will make the stdout unavailable
-    process.send_signal(signal.SIGINT)
+    if platform.system() == 'Windows':
+        # TODO: remove this when/if SIGINT is fixed on Windows
+        process.send_signal(signal.SIGTERM)
+    else:
+        process.send_signal(signal.SIGINT)
     try:
         out, _ = process.communicate(timeout=0.5)
     except subprocess.TimeoutExpired:
