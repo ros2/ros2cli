@@ -132,7 +132,7 @@ class TestROS2PkgCLI(unittest.TestCase):
                 expected_lines=[
                     'going to create a new package',
                     'package name: a_test_package',
-                    'destination directory: ' + tmpdir,
+                    'destination directory: ' + os.path.abspath(tmpdir),
                     'package format: 3',
                     'version: 0.0.0',
                     'description: A test package dummy description',
