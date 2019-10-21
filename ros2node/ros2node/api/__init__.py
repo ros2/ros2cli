@@ -26,10 +26,7 @@ TopicInfo = namedtuple('Topic', ('name', 'types'))
 
 def _is_hidden_name(name):
     # note, we're assuming the hidden node prefix is the same for other hidden names
-    return (
-        name and
-        any(part.startswith(HIDDEN_NODE_PREFIX) for part in name.split('/'))
-    )
+    return any(part.startswith(HIDDEN_NODE_PREFIX) for part in name.split('/'))
 
 
 def get_absolute_node_name(node_name):
@@ -65,7 +62,7 @@ def get_node_names(*, node, include_hidden_nodes=False):
     ]
 
 
-def get_topics(remote_node_name, func, include_hidden_topics=False):
+def get_topics(remote_node_name, func, *, include_hidden_topics=False):
     node = parse_node_name(remote_node_name)
     names_and_types = func(node.name, node.namespace)
     return [
@@ -77,17 +74,26 @@ def get_topics(remote_node_name, func, include_hidden_topics=False):
 
 def get_subscriber_info(*, node, remote_node_name, include_hidden=False):
     return get_topics(
-        remote_node_name, node.get_subscriber_names_and_types_by_node, include_hidden)
+        remote_node_name,
+        node.get_subscriber_names_and_types_by_node,
+        include_hidden_topics=include_hidden
+    )
 
 
 def get_publisher_info(*, node, remote_node_name, include_hidden=False):
     return get_topics(
-        remote_node_name, node.get_publisher_names_and_types_by_node, include_hidden)
+        remote_node_name,
+        node.get_publisher_names_and_types_by_node,
+        include_hidden_topics=include_hidden
+    )
 
 
 def get_service_info(*, node, remote_node_name, include_hidden=False):
     return get_topics(
-        remote_node_name, node.get_service_names_and_types_by_node, include_hidden)
+        remote_node_name,
+        node.get_service_names_and_types_by_node,
+        include_hidden_topics=include_hidden
+    )
 
 
 def get_action_server_info(*, node, remote_node_name, include_hidden=False):
