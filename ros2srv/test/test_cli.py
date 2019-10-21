@@ -59,7 +59,12 @@ class TestROS2SrvCLI(unittest.TestCase):
                 output='screen'
             )
             with launch_testing.tools.launch_process(
-                launch_service, srv_command_action, proc_info, proc_output
+                launch_service, srv_command_action, proc_info, proc_output,
+                output_filter=launch_testing.tools.basic_output_filter(
+                    filtered_patterns=[
+                        r".*'ros2 srv' is deprecated and will be removed in a future ROS release.*"
+                    ]
+                )
             ) as srv_command:
                 yield srv_command
         cls.launch_srv_command = launch_srv_command

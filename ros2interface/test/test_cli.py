@@ -91,13 +91,19 @@ class TestROS2MsgCLI(unittest.TestCase):
         output_lines = filter_(interface_command.output).splitlines()
         assert launch_testing.tools.expect_output(
             expected_lines=itertools.repeat(
-                re.compile(r'\s*[A-z0-9_]+/(msg|srv|action)/[A-z0-9_]+'), len(output_lines)
+                re.compile(r'\s*[A-z0-9_]+/[A-z0-9_]+'), len(output_lines)
             ),
             lines=output_lines,
             strict=True
         )
+        some_interfaces_without_ns = []
+        for ifc in some_interfaces:
+            parts = ifc.split('/')
+            some_interfaces_without_ns.append(
+                '/'.join([parts[0], *parts[2:]])
+            )
         assert launch_testing.tools.expect_output(
-            expected_lines=some_interfaces,
+            expected_lines=some_interfaces_without_ns,
             lines=output_lines,
             strict=False
         )
@@ -110,14 +116,20 @@ class TestROS2MsgCLI(unittest.TestCase):
         assert launch_testing.tools.expect_output(
             expected_lines=itertools.chain(
                 ['Messages:'], itertools.repeat(
-                    re.compile(r'\s*[A-z0-9_]+/msg/[A-z0-9_]+'), len(output_lines) - 1
+                    re.compile(r'\s*[A-z0-9_]+/[A-z0-9_]+'), len(output_lines) - 1
                 )
             ),
             lines=output_lines,
             strict=True
         )
+        some_messages_from_std_msgs_without_ns = []
+        for msg in some_messages_from_std_msgs:
+            parts = msg.split('/')
+            some_messages_from_std_msgs_without_ns.append(
+                '/'.join([parts[0], *parts[2:]])
+            )
         assert launch_testing.tools.expect_output(
-            expected_lines=some_messages_from_std_msgs,
+            expected_lines=some_messages_from_std_msgs_without_ns,
             lines=output_lines,
             strict=False
         )
@@ -130,14 +142,20 @@ class TestROS2MsgCLI(unittest.TestCase):
         assert launch_testing.tools.expect_output(
             expected_lines=itertools.chain(
                 ['Services:'], itertools.repeat(
-                    re.compile(r'\s*[A-z0-9_]+/srv/[A-z0-9_]+'), len(output_lines) - 1
+                    re.compile(r'\s*[A-z0-9_]+/[A-z0-9_]+'), len(output_lines) - 1
                 )
             ),
             lines=output_lines,
             strict=True
         )
+        some_services_from_std_srvs_without_ns = []
+        for srv in some_services_from_std_srvs:
+            parts = srv.split('/')
+            some_services_from_std_srvs_without_ns.append(
+                '/'.join([parts[0], *parts[2:]])
+            )
         assert launch_testing.tools.expect_output(
-            expected_lines=some_services_from_std_srvs,
+            expected_lines=some_services_from_std_srvs_without_ns,
             lines=output_lines,
             strict=False
         )
@@ -150,14 +168,20 @@ class TestROS2MsgCLI(unittest.TestCase):
         assert launch_testing.tools.expect_output(
             expected_lines=itertools.chain(
                 ['Actions:'], itertools.repeat(
-                    re.compile(r'\s*[A-z0-9_]+/action/[A-z0-9_]+'), len(output_lines) - 1
+                    re.compile(r'\s*[A-z0-9_]+/[A-z0-9_]+'), len(output_lines) - 1
                 )
             ),
             lines=output_lines,
             strict=True
         )
+        some_actions_from_test_msgs_without_ns = []
+        for action in some_actions_from_test_msgs:
+            parts = action.split('/')
+            some_actions_from_test_msgs_without_ns.append(
+                '/'.join([parts[0], *parts[2:]])
+            )
         assert launch_testing.tools.expect_output(
-            expected_lines=some_actions_from_test_msgs,
+            expected_lines=some_actions_from_test_msgs_without_ns,
             lines=output_lines,
             strict=False
         )
@@ -169,7 +193,7 @@ class TestROS2MsgCLI(unittest.TestCase):
             assert interface_command.wait_for_shutdown(timeout=2)
         assert interface_command.exit_code == 1
         assert launch_testing.tools.expect_output(
-            expected_lines=['Unknown package not_a_package'],
+            expected_lines=["Unknown package 'not_a_package'"],
             text=interface_command.output,
             strict=True
         )
@@ -272,16 +296,10 @@ class TestROS2MsgCLI(unittest.TestCase):
         assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
-                'module std_msgs {',
-                '  module msg {',
-                '    struct String {',
-                '      string data;',
-                '    };',
-                '  };',
-                '};'
+                'string data'
             ],
             text=interface_command.output,
-            strict=False
+            strict=True
         )
 
     def test_show_service(self):
@@ -292,20 +310,13 @@ class TestROS2MsgCLI(unittest.TestCase):
         assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
-                'module std_srvs {',
-                '  module srv {',
-                '    struct SetBool_Request {',
-                '      boolean data;',
-                '    };',
-                '    struct SetBool_Response {',
-                '      boolean success;',
-                '      string message;',
-                '    };',
-                '  };',
-                '};'
+                'bool data # e.g. for hardware enabling / disabling',
+                '---',
+                'bool success   # indicate successful run of triggered service',
+                'string message # informational, e.g. for error messages'
             ],
             text=interface_command.output,
-            strict=False
+            strict=True
         )
 
     def test_show_action(self):
@@ -316,32 +327,27 @@ class TestROS2MsgCLI(unittest.TestCase):
         assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
-                'module test_msgs {',
-                '  module action {',
-                '    struct Fibonacci_Goal {',
-                '      int32 order;',
-                '    };',
-                '    struct Fibonacci_Result {',
-                '      sequence<int32> sequence;',
-                '    };',
-                '    struct Fibonacci_Feedback {',
-                '      sequence<int32> sequence;',
-                '    };',
-                '  };',
-                '};'
+                '#goal definition',
+                'int32 order',
+                '---',
+                '#result definition',
+                'int32[] sequence',
+                '---',
+                '#feedback',
+                'int32[] sequence',
             ],
             text=interface_command.output,
-            strict=False
+            strict=True
         )
 
     def test_show_not_a_package(self):
         with self.launch_interface_command(
-            arguments=['show', 'not_a_package/msg/NotAMessageTypeName']
+            arguments=['show', 'not_a_package/msg/String']
         ) as interface_command:
             assert interface_command.wait_for_shutdown(timeout=2)
         assert interface_command.exit_code == 1
         assert launch_testing.tools.expect_output(
-            expected_lines=['Unknown package not_a_package'],
+            expected_lines=["Unknown package 'not_a_package'"],
             text=interface_command.output,
             strict=True
         )

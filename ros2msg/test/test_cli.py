@@ -58,7 +58,12 @@ class TestROS2MsgCLI(unittest.TestCase):
                 name='ros2msg-cli', output='screen'
             )
             with launch_testing.tools.launch_process(
-                launch_service, msg_command_action, proc_info, proc_output
+                launch_service, msg_command_action, proc_info, proc_output,
+                output_filter=launch_testing.tools.basic_output_filter(
+                    filtered_patterns=[
+                        r".*'ros2 msg' is deprecated and will be removed in a future ROS release.*"
+                    ]
+                )
             ) as msg_command:
                 yield msg_command
         cls.launch_msg_command = launch_msg_command
