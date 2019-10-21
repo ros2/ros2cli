@@ -38,6 +38,9 @@ class InfoVerb(VerbExtension):
             'node_name',
             help='Node name to request information')
         argument.completer = NodeNameCompleter()
+        parser.add_argument(
+            '--include-hidden', action='store_true',
+            help='Display hidden topics, services, and actions as well')
 
     def main(self, *, args):
         with NodeStrategy(args) as node:
@@ -45,21 +48,24 @@ class InfoVerb(VerbExtension):
         if args.node_name in (n.full_name for n in node_names):
             with DirectNode(args) as node:
                 print(args.node_name)
-                subscribers = get_subscriber_info(node=node, remote_node_name=args.node_name)
+                subscribers = get_subscriber_info(
+                    node=node, remote_node_name=args.node_name, include_hidden=args.include_hidden)
                 print('  Subscribers:')
                 print_names_and_types(subscribers)
-                publishers = get_publisher_info(node=node, remote_node_name=args.node_name)
+                publishers = get_publisher_info(
+                    node=node, remote_node_name=args.node_name, include_hidden=args.include_hidden)
                 print('  Publishers:')
                 print_names_and_types(publishers)
-                services = get_service_info(node=node, remote_node_name=args.node_name)
+                services = get_service_info(
+                    node=node, remote_node_name=args.node_name, include_hidden=args.include_hidden)
                 print('  Services:')
                 print_names_and_types(services)
                 actions_servers = get_action_server_info(
-                    node=node, remote_node_name=args.node_name)
+                    node=node, remote_node_name=args.node_name, include_hidden=args.include_hidden)
                 print('  Action Servers:')
                 print_names_and_types(actions_servers)
                 actions_clients = get_action_client_info(
-                    node=node, remote_node_name=args.node_name)
+                    node=node, remote_node_name=args.node_name, include_hidden=args.include_hidden)
                 print('  Action Clients:')
                 print_names_and_types(actions_clients)
         else:
