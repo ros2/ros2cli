@@ -202,7 +202,8 @@ def find_container_node_names(*, node, node_names):
     container_node_names = []
     for n in node_names:
         try:
-            services = get_service_info(node=node, remote_node_name=n.full_name)
+            services = get_service_info(
+                node=node, remote_node_name=n.full_name, include_hidden=True)
         except rclpy.node.NodeNameNonExistentError:
             continue
         if not any(s.name.endswith('_container/load_node') and
