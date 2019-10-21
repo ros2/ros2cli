@@ -27,6 +27,9 @@ class ShowVerb(VerbExtension):
         arg.completer = type_completer
 
     def main(self, *, args):
-        file_path = get_interface_path(args.type)
+        try:
+            file_path = get_interface_path(args.type)
+        except LookupError as e:
+            return str(e)
         with open(file_path, 'r', encoding='utf-8') as h:
             print(h.read().rstrip())
