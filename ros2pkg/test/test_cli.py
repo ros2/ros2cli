@@ -132,7 +132,7 @@ class TestROS2PkgCLI(unittest.TestCase):
                 expected_lines=[
                     'going to create a new package',
                     'package name: a_test_package',
-                    'destination directory: ' + os.path.abspath(tmpdir),
+                    'destination directory: ' + os.path.realpath(tmpdir),
                     'package format: 3',
                     'version: 0.0.0',
                     'description: A test package dummy description',
@@ -142,16 +142,26 @@ class TestROS2PkgCLI(unittest.TestCase):
                     "dependencies: ['ros2pkg']",
                     'node_name: test_node',
                     'library_name: test_library',
-                    'creating folder ./a_test_package',
-                    'creating ./a_test_package/package.xml',
+                    'creating folder ' + os.path.join('.', 'a_test_package'),
+                    'creating ' + os.path.join('.', 'a_test_package', 'package.xml'),
                     'creating source and include folder',
-                    'creating folder ./a_test_package/src',
-                    'creating folder ./a_test_package/include/a_test_package',
-                    'creating ./a_test_package/CMakeLists.txt',
-                    'creating ./a_test_package/src/test_node.cpp',
-                    'creating ./a_test_package/include/a_test_package/test_library.hpp',
-                    'creating ./a_test_package/src/test_library.cpp',
-                    'creating ./a_test_package/include/a_test_package/visibility_control.h',
+                    'creating folder ' + os.path.join('.', 'a_test_package', 'src'),
+                    'creating folder ' + os.path.join(
+                        '.', 'a_test_package', 'include', 'a_test_package'
+                    ),
+                    'creating ' + os.path.join('.', 'a_test_package', 'CMakeLists.txt'),
+                    'creating ' + os.path.join(
+                        '.', 'a_test_package', 'src', 'test_node.cpp'
+                    ),
+                    'creating ' + os.path.join(
+                        '.', 'a_test_package', 'include', 'a_test_package', 'test_library.hpp'
+                    ),
+                    'creating ' + os.path.join(
+                        '.', 'a_test_package', 'src', 'test_library.cpp'
+                    ),
+                    'creating ' + os.path.join(
+                        '.', 'a_test_package', 'include', 'a_test_package', 'visibility_control.h'
+                    ),
                 ],
                 text=pkg_command.output,
                 strict=True

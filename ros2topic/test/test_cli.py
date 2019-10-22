@@ -309,7 +309,7 @@ class TestROS2TopicCLI(unittest.TestCase):
         with self.launch_topic_command(
             arguments=['find', 'rcl_interfaces/msg/Log']
         ) as topic_command:
-            assert topic_command.wait_for_shutdown(timeout=2)
+            assert topic_command.wait_for_shutdown(timeout=10)
         assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=['/rosout'], text=topic_command.output, strict=True
@@ -319,7 +319,7 @@ class TestROS2TopicCLI(unittest.TestCase):
         with self.launch_topic_command(
             arguments=['find', 'rcl_interfaces/msg/NotAMessageTypeName']
         ) as topic_command:
-            assert topic_command.wait_for_shutdown(timeout=2)
+            assert topic_command.wait_for_shutdown(timeout=5)
         assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
         assert not topic_command.output
 
@@ -334,7 +334,7 @@ class TestROS2TopicCLI(unittest.TestCase):
                     '---'
                 ], strict=True
             ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=5)
+        assert topic_command.wait_for_shutdown(timeout=10)
 
     @launch_testing.markers.retry_on_failure(times=5)
     def test_no_str_topic_echo(self):
@@ -347,7 +347,7 @@ class TestROS2TopicCLI(unittest.TestCase):
                     '---'
                 ], strict=True
             ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=5)
+        assert topic_command.wait_for_shutdown(timeout=10)
 
     @launch_testing.markers.retry_on_failure(times=5)
     def test_csv_topic_echo(self):
@@ -359,7 +359,7 @@ class TestROS2TopicCLI(unittest.TestCase):
                     "True,b'2',100,1.125,1.125,-50,200,-1000,2000,-30000,60000,-40000000,50000000"
                 ], strict=True
             ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=5)
+        assert topic_command.wait_for_shutdown(timeout=10)
 
     @launch_testing.markers.retry_on_failure(times=5)
     def test_no_arr_topic_echo_on_array_message(self):
@@ -403,7 +403,7 @@ class TestROS2TopicCLI(unittest.TestCase):
                     '---'
                 ], strict=False
             ), timeout=10), 'Output does not match: ' + topic_command.output
-        assert topic_command.wait_for_shutdown(timeout=5)
+        assert topic_command.wait_for_shutdown(timeout=10)
 
     @launch_testing.markers.retry_on_failure(times=5)
     def test_no_arr_topic_echo_on_seq_message(self):
@@ -447,7 +447,7 @@ class TestROS2TopicCLI(unittest.TestCase):
                     '---'
                 ], strict=True
             ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=5)
+        assert topic_command.wait_for_shutdown(timeout=10)
 
     @launch_testing.markers.retry_on_failure(times=5)
     def test_no_arr_topic_echo_on_bounded_seq_message(self):
@@ -492,7 +492,7 @@ class TestROS2TopicCLI(unittest.TestCase):
                     '---'
                 ], strict=True
             ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=5)
+        assert topic_command.wait_for_shutdown(timeout=10)
 
     @launch_testing.markers.retry_on_failure(times=5)
     def test_truncate_length_topic_echo(self):
@@ -505,7 +505,7 @@ class TestROS2TopicCLI(unittest.TestCase):
                     '---'
                 ], strict=True
             ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=5)
+        assert topic_command.wait_for_shutdown(timeout=10)
 
     def test_topic_pub(self):
         with self.launch_topic_command(
@@ -523,7 +523,7 @@ class TestROS2TopicCLI(unittest.TestCase):
                     '[INFO] [listener]: I heard: [foo]'
                 ] * 3, strict=True
             ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=5)
+        assert topic_command.wait_for_shutdown(timeout=10)
 
     def test_topic_pub_once(self):
         with self.launch_topic_command(
@@ -541,7 +541,7 @@ class TestROS2TopicCLI(unittest.TestCase):
                     ''
                 ], strict=True
             ), timeout=10)
-            assert topic_command.wait_for_shutdown(timeout=5)
+            assert topic_command.wait_for_shutdown(timeout=10)
             self.listener_node.wait_for_output(functools.partial(
                 launch_testing.tools.expect_output, expected_lines=[
                     '[INFO] [listener]: I heard: [bar]'
@@ -573,7 +573,7 @@ class TestROS2TopicCLI(unittest.TestCase):
                     '[INFO] [listener]: I heard: [fizz]'
                 ], strict=True
             ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=5)
+        assert topic_command.wait_for_shutdown(timeout=10)
 
     @launch_testing.markers.retry_on_failure(times=5)
     def test_topic_delay(self):
@@ -587,7 +587,7 @@ class TestROS2TopicCLI(unittest.TestCase):
                     average_delay_line_pattern, stats_line_pattern
                 ], strict=True
             ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=5)
+        assert topic_command.wait_for_shutdown(timeout=10)
 
         head_line = topic_command.output.splitlines()[0]
         average_delay = float(average_delay_line_pattern.match(head_line).group(1))
@@ -605,7 +605,7 @@ class TestROS2TopicCLI(unittest.TestCase):
                     average_rate_line_pattern, stats_line_pattern
                 ], strict=True
             ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=5)
+        assert topic_command.wait_for_shutdown(timeout=10)
 
         head_line = topic_command.output.splitlines()[0]
         average_rate = float(average_rate_line_pattern.match(head_line).group(1))
@@ -630,7 +630,7 @@ class TestROS2TopicCLI(unittest.TestCase):
                     average_rate_line_pattern, stats_line_pattern
                 ], strict=True
             ), timeout=10), 'Output does not match: ' + topic_command.output
-        assert topic_command.wait_for_shutdown(timeout=5)
+        assert topic_command.wait_for_shutdown(timeout=10)
 
         head_line = topic_command.output.splitlines()[0]
         average_rate = float(average_rate_line_pattern.match(head_line).group(1))
@@ -649,4 +649,4 @@ class TestROS2TopicCLI(unittest.TestCase):
                     )
                 ], strict=True
             ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=5)
+        assert topic_command.wait_for_shutdown(timeout=10)
