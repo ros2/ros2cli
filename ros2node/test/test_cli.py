@@ -21,11 +21,11 @@ import unittest
 
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess
-from launch.actions import OpaqueFunction
 
 from launch_ros.actions import Node
 
 import launch_testing
+import launch_testing.actions
 import launch_testing.asserts
 import launch_testing.markers
 import launch_testing.tools
@@ -38,7 +38,7 @@ from rclpy.utilities import get_available_rmw_implementations
 
 @pytest.mark.rostest
 @launch_testing.parametrize('rmw_implementation', get_available_rmw_implementations())
-def generate_test_description(rmw_implementation, ready_fn):
+def generate_test_description(rmw_implementation):
     path_to_complex_node_script = os.path.join(
         os.path.dirname(__file__), 'fixtures', 'complex_node.py'
     )
@@ -66,7 +66,7 @@ def generate_test_description(rmw_implementation, ready_fn):
                             node_name='_hidden_complex_node',
                             additional_env=additional_env
                         ),
-                        OpaqueFunction(function=lambda context: ready_fn())
+                        launch_testing.actions.ReadyToTest()
                     ],
                     additional_env=additional_env
                 )

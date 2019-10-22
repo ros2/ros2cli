@@ -19,9 +19,9 @@ import unittest
 
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess
-from launch.actions import OpaqueFunction
 
 import launch_testing
+import launch_testing.actions
 import launch_testing.asserts
 import launch_testing.markers
 import launch_testing.tools
@@ -54,8 +54,8 @@ some_interfaces = (
 
 @pytest.mark.rostest
 @launch_testing.markers.keep_alive
-def generate_test_description(ready_fn):
-    return LaunchDescription([OpaqueFunction(function=lambda context: ready_fn())])
+def generate_test_description():
+    return LaunchDescription([launch_testing.actions.ReadyToTest()])
 
 
 class TestROS2InterfaceCLI(unittest.TestCase):
