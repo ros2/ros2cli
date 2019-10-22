@@ -319,7 +319,7 @@ class TestROS2TopicCLI(unittest.TestCase):
         with self.launch_topic_command(
             arguments=['find', 'rcl_interfaces/msg/NotAMessageTypeName']
         ) as topic_command:
-            assert topic_command.wait_for_shutdown(timeout=5)
+            assert topic_command.wait_for_shutdown(timeout=10)
         assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
         assert not topic_command.output
 
