@@ -43,6 +43,7 @@ def echo_pub_node():
 
 
 @pytest.mark.skipif(os.name == 'nt', reason='Subprocess bug in Windows Python 3.7.4')
+@pytest.mark.timeout(60)
 @pytest.mark.parametrize(
     'topic,provide_qos,compatible_qos', [
         ('/clitest/topic/pub_basic', False, True),
@@ -123,6 +124,7 @@ def test_pub_basic(echo_pub_node, topic: str, provide_qos: bool, compatible_qos:
 
 
 @pytest.mark.skipif(os.name == 'nt', reason='Subprocess bug in Windows Python 3.7.4')
+@pytest.mark.timeout(60)
 @pytest.mark.parametrize(
     'topic,provide_qos,compatible_qos', [
         ('/clitest/topic/echo_basic', False, True),
