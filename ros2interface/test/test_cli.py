@@ -58,7 +58,7 @@ def generate_test_description(ready_fn):
     return LaunchDescription([OpaqueFunction(function=lambda context: ready_fn())])
 
 
-class TestROS2MsgCLI(unittest.TestCase):
+class TestROS2InterfaceCLI(unittest.TestCase):
 
     @classmethod
     def setUpClass(
