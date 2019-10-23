@@ -12,7 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import sys
+
 from ros2cli.node.direct import DirectNode
+from ros2topic.api import get_topic_names_and_types
 from ros2topic.api import TopicNameCompleter
 from ros2topic.verb import VerbExtension
 
@@ -29,7 +32,16 @@ class InfoVerb(VerbExtension):
 
     def main(self, *, args):
         with DirectNode(args) as node:
+            topic_names_and_types = get_topic_names_and_types(node=node)
             topic_name = args.topic_name
-            print('Topic: %s' % topic_name)
+            for (t_name, t_types) in topic_names_and_types:
+                if t_name == topic_name:
+                    topic_types = t_types
+                    break
+            else:
+                print("ERROR: Unknown topic '%s'" % topic_name, file=sys.stderr)
+                return
+            type_str = topic_types[0] if len(topic_types) == 1 else topic_types
+            print('Type: %s' % type_str)
             print('Publisher count: %d' % node.count_publishers(topic_name))
             print('Subscriber count: %d' % node.count_subscribers(topic_name))
