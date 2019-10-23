@@ -13,17 +13,15 @@
 # limitations under the License.
 
 from argparse import Namespace
-from contextlib import redirect_stdout
+from contextlib import redirect_stderr
 from io import StringIO
 
 from ros2topic.verb.info import InfoVerb
 
 
-def _generate_expected_output(topic_name, count_publishers, count_subscribers):
+def _generate_expected_error_output(topic_name):
     return [
-        'Topic: %s' % topic_name,
-        'Publisher count: %d' % count_publishers,
-        'Subscriber count: %d' % count_subscribers,
+        "ERROR: Unknown topic '%s'" % topic_name,
     ]
 
 
@@ -31,8 +29,8 @@ def test_info_zero_publishers_subscribers():
     args = Namespace()
     args.topic_name = '/test_ros2_topic_cli'
     s = StringIO()
-    with redirect_stdout(s):
+    with redirect_stderr(s):
         info_verb = InfoVerb()
         info_verb.main(args=args)
-        expected_output = _generate_expected_output(args.topic_name, 0, 0)
+        expected_output = _generate_expected_error_output(args.topic_name)
         assert expected_output == s.getvalue().splitlines()

@@ -262,7 +262,7 @@ class TestROS2TopicCLI(unittest.TestCase):
         assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
-                'Topic: /chatter',
+                'Type: std_msgs/msg/String',
                 'Publisher count: 1',
                 'Subscriber count: 0'
             ],
@@ -276,9 +276,7 @@ class TestROS2TopicCLI(unittest.TestCase):
         assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
-                'Topic: /unknown_topic',
-                'Publisher count: 0',
-                'Subscriber count: 0'
+                "ERROR: Unknown topic '/unknown_topic'",
             ],
             text=topic_command.output,
             strict=True
