@@ -49,7 +49,7 @@ class DoctorCommand(CommandExtension):
         failed_cats, fail, total = run_checks(include_warnings=args.include_warnings)
         if fail:
             print('\n%d/%d checks failed\n' % (fail, total))
-            print('Failed modules: ', *failed_cats)
+            print('Failed modules:', *failed_cats)
         else:
             print('\nAll %d checks passed\n' % total)
 
