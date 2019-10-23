@@ -35,6 +35,8 @@ from rclpy.qos import DurabilityPolicy
 from rclpy.qos import QoSProfile
 from rclpy.qos import ReliabilityPolicy
 
+from rmw_implementation import get_available_rmw_implementations
+
 from std_msgs.msg import String
 
 
@@ -43,7 +45,7 @@ TEST_NAMESPACE = 'cli_echo_pub'
 
 
 @pytest.mark.rostest
-@launch_testing.parametrize('rmw_implementation', ['rmw_fastrtps_cpp'])
+@launch_testing.parametrize('rmw_implementation', get_available_rmw_implementations())
 @launch_testing.markers.keep_alive
 def generate_test_description(rmw_implementation, ready_fn):
     return LaunchDescription([
@@ -139,7 +141,10 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                     command_action = ExecuteProcess(
                         cmd=(['ros2', 'topic', 'pub'] + pub_extra_options +
                              [topic, 'std_msgs/String', 'data: hello']),
-                        additional_env={'RMW_IMPLEMENTATION': rmw_implementation},
+                        additional_env={
+                            'RMW_IMPLEMENTATION': rmw_implementation,
+                            'PYTHONUNBUFFERED': '1'
+                        },
                         output='screen'
                     )
                     with launch_testing.tools.launch_process(
@@ -213,7 +218,10 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                         cmd=(['ros2', 'topic', 'echo'] +
                              echo_extra_options +
                              [topic, 'std_msgs/String']),
-                        additional_env={'RMW_IMPLEMENTATION': rmw_implementation},
+                        additional_env={
+                            'RMW_IMPLEMENTATION': rmw_implementation,
+                            'PYTHONUNBUFFERED': '1'
+                        },
                         output='screen'
                     )
                     with launch_testing.tools.launch_process(
@@ -224,7 +232,7 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                     ) as command:
                         # The future won't complete - we will hit the timeout
                         self.executor.spin_until_future_complete(
-                            rclpy.task.Future(), timeout_sec=20
+                            rclpy.task.Future(), timeout_sec=5
                         )
                     command.wait_for_shutdown(timeout=10)
                     # Check results
