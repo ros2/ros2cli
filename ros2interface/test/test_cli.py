@@ -91,19 +91,13 @@ class TestROS2InterfaceCLI(unittest.TestCase):
         output_lines = filter_(interface_command.output).splitlines()
         assert launch_testing.tools.expect_output(
             expected_lines=itertools.repeat(
-                re.compile(r'\s*[A-z0-9_]+/[A-z0-9_]+'), len(output_lines)
+                re.compile(r'\s*[A-z0-9_]+(/[A-z0-9_]+)+'), len(output_lines)
             ),
             lines=output_lines,
             strict=True
         )
-        some_interfaces_without_ns = []
-        for ifc in some_interfaces:
-            parts = ifc.split('/')
-            some_interfaces_without_ns.append(
-                '/'.join([parts[0], *parts[2:]])
-            )
         assert launch_testing.tools.expect_output(
-            expected_lines=some_interfaces_without_ns,
+            expected_lines=some_interfaces,
             lines=output_lines,
             strict=False
         )
@@ -116,20 +110,14 @@ class TestROS2InterfaceCLI(unittest.TestCase):
         assert launch_testing.tools.expect_output(
             expected_lines=itertools.chain(
                 ['Messages:'], itertools.repeat(
-                    re.compile(r'\s*[A-z0-9_]+/[A-z0-9_]+'), len(output_lines) - 1
+                    re.compile(r'\s*[A-z0-9_]+(/[A-z0-9_]+)+'), len(output_lines) - 1
                 )
             ),
             lines=output_lines,
             strict=True
         )
-        some_messages_from_std_msgs_without_ns = []
-        for msg in some_messages_from_std_msgs:
-            parts = msg.split('/')
-            some_messages_from_std_msgs_without_ns.append(
-                '/'.join([parts[0], *parts[2:]])
-            )
         assert launch_testing.tools.expect_output(
-            expected_lines=some_messages_from_std_msgs_without_ns,
+            expected_lines=some_messages_from_std_msgs,
             lines=output_lines,
             strict=False
         )
@@ -142,20 +130,14 @@ class TestROS2InterfaceCLI(unittest.TestCase):
         assert launch_testing.tools.expect_output(
             expected_lines=itertools.chain(
                 ['Services:'], itertools.repeat(
-                    re.compile(r'\s*[A-z0-9_]+/[A-z0-9_]+'), len(output_lines) - 1
+                    re.compile(r'\s*[A-z0-9_]+(/[A-z0-9_]+)+'), len(output_lines) - 1
                 )
             ),
             lines=output_lines,
             strict=True
         )
-        some_services_from_std_srvs_without_ns = []
-        for srv in some_services_from_std_srvs:
-            parts = srv.split('/')
-            some_services_from_std_srvs_without_ns.append(
-                '/'.join([parts[0], *parts[2:]])
-            )
         assert launch_testing.tools.expect_output(
-            expected_lines=some_services_from_std_srvs_without_ns,
+            expected_lines=some_services_from_std_srvs,
             lines=output_lines,
             strict=False
         )
@@ -168,20 +150,14 @@ class TestROS2InterfaceCLI(unittest.TestCase):
         assert launch_testing.tools.expect_output(
             expected_lines=itertools.chain(
                 ['Actions:'], itertools.repeat(
-                    re.compile(r'\s*[A-z0-9_]+/[A-z0-9_]+'), len(output_lines) - 1
+                    re.compile(r'\s*[A-z0-9_]+(/[A-z0-9_]+)+'), len(output_lines) - 1
                 )
             ),
             lines=output_lines,
             strict=True
         )
-        some_actions_from_test_msgs_without_ns = []
-        for action in some_actions_from_test_msgs:
-            parts = action.split('/')
-            some_actions_from_test_msgs_without_ns.append(
-                '/'.join([parts[0], *parts[2:]])
-            )
         assert launch_testing.tools.expect_output(
-            expected_lines=some_actions_from_test_msgs_without_ns,
+            expected_lines=some_actions_from_test_msgs,
             lines=output_lines,
             strict=False
         )
