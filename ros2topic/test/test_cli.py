@@ -273,10 +273,9 @@ class TestROS2TopicCLI(unittest.TestCase):
     def test_info_on_unknown_topic(self):
         with self.launch_topic_command(arguments=['info', '/unknown_topic']) as topic_command:
             assert topic_command.wait_for_shutdown(timeout=10)
-        assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
-                "ERROR: Unknown topic '/unknown_topic'",
+                "Unknown topic '/unknown_topic'",
             ],
             text=topic_command.output,
             strict=True

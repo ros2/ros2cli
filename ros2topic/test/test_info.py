@@ -20,9 +20,7 @@ from ros2topic.verb.info import InfoVerb
 
 
 def _generate_expected_error_output(topic_name):
-    return [
-        "ERROR: Unknown topic '%s'" % topic_name,
-    ]
+    return "Unknown topic '%s'" % topic_name
 
 
 def test_info_zero_publishers_subscribers():
@@ -31,6 +29,6 @@ def test_info_zero_publishers_subscribers():
     s = StringIO()
     with redirect_stderr(s):
         info_verb = InfoVerb()
-        info_verb.main(args=args)
+        err_msg = info_verb.main(args=args)
         expected_output = _generate_expected_error_output(args.topic_name)
-        assert expected_output == s.getvalue().splitlines()
+        assert expected_output == err_msg
