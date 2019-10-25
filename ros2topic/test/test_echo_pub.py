@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-
 import unittest
 
 from launch import LaunchDescription
@@ -26,7 +24,6 @@ import launch_testing.markers
 import launch_testing.tools
 import launch_testing_ros.tools
 
-
 import pytest
 
 import rclpy
@@ -34,6 +31,7 @@ from rclpy.executors import SingleThreadedExecutor
 from rclpy.qos import DurabilityPolicy
 from rclpy.qos import QoSProfile
 from rclpy.qos import ReliabilityPolicy
+from rclpy.utilities import get_rmw_implementation_identifier
 
 from std_msgs.msg import String
 
@@ -149,7 +147,7 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                     with launch_testing.tools.launch_process(
                         launch_service, command_action, proc_info, proc_output,
                         output_filter=launch_testing_ros.tools.basic_output_filter(
-                            filtered_rmw_implementation=os.environ.get('RMW_IMPLEMENTATION', '')
+                            filtered_rmw_implementation=get_rmw_implementation_identifier()
                         )
                     ) as command:
                         self.executor.spin_until_future_complete(future, timeout_sec=10)
@@ -225,7 +223,7 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                     with launch_testing.tools.launch_process(
                         launch_service, command_action, proc_info, proc_output,
                         output_filter=launch_testing_ros.tools.basic_output_filter(
-                            filtered_rmw_implementation=os.environ.get('RMW_IMPLEMENTATION', '')
+                            filtered_rmw_implementation=get_rmw_implementation_identifier()
                         )
                     ) as command:
                         # The future won't complete - we will hit the timeout
