@@ -91,6 +91,7 @@ def generate_test_description(rmw_implementation, ready_fn):
         ),
     ]), locals()
 
+
 # TODO(BMarchi): Open splice is returning a different code (2) when
 # the launch of a component verb ends. It should return EXIT_OK unless
 # the command returns a error string, which should be code 1.
