@@ -97,7 +97,7 @@ class TestROS2ParamDeleteCLI(unittest.TestCase):
             with launch_testing.tools.launch_process(
                 launch_service, node_command_action, proc_info, proc_output,
                 output_filter=launch_testing_ros.tools.basic_output_filter(
-                    # ignore launch_ros and ros2cli daemon nodes
+                    # ignore ros2cli daemon node
                     filtered_patterns=['.*ros2cli.*'],
                     filtered_rmw_implementation=rmw_implementation
                 )
@@ -164,9 +164,9 @@ class TestROS2ParamDeleteCLI(unittest.TestCase):
         )
 
     @launch_testing.markers.retry_on_failure(times=3)
-    def test_delete_any_param_unexisting_node(self):
+    def test_delete_any_param_nonexistent_node(self):
         with self.launch_node_command(
-                arguments=['delete', '/foo/unexisting_node', 'int_param']) as node_command:
+                arguments=['delete', '/foo/nonexistent_node', 'int_param']) as node_command:
             assert node_command.wait_for_shutdown(timeout=5)
         assert node_command.exit_code == 1
         assert launch_testing.tools.expect_output(
@@ -176,7 +176,7 @@ class TestROS2ParamDeleteCLI(unittest.TestCase):
         )
 
     @launch_testing.markers.retry_on_failure(times=3)
-    def test_delete_unexistent_param_existent_node(self):
+    def test_delete_nonexistent_param_existent_node(self):
         with self.launch_node_command(
                 arguments=['delete', '/param_delete_node', 'foo_param']) as node_command:
             assert node_command.wait_for_shutdown(timeout=5)
