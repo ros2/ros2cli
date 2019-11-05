@@ -29,6 +29,8 @@ import launch_testing.markers
 import launch_testing.tools
 import launch_testing_ros.tools
 
+import param_node
+
 import pytest
 
 from rmw_implementation import get_available_rmw_implementations
@@ -55,13 +57,13 @@ def generate_test_description(rmw_implementation, ready_fn):
                         Node(
                             node_executable=sys.executable,
                             arguments=[path_to_param_node_script],
-                            node_name='param_delete_node',
+                            node_name='param_node',
                             additional_env=additional_env
                         ),
                         Node(
                             node_executable=sys.executable,
                             arguments=[path_to_param_node_script],
-                            node_name='_hidden_param_delete_node',
+                            node_name='_hidden_param_node',
                             additional_env=additional_env
                         ),
                         OpaqueFunction(function=lambda context: ready_fn())
@@ -73,7 +75,7 @@ def generate_test_description(rmw_implementation, ready_fn):
     ])
 
 
-class TestROS2ParamDeleteCLI(unittest.TestCase):
+class TestROS2ParamSetCLI(unittest.TestCase):
 
     @classmethod
     def setUpClass(
@@ -97,7 +99,7 @@ class TestROS2ParamDeleteCLI(unittest.TestCase):
             with launch_testing.tools.launch_process(
                 launch_service, node_command_action, proc_info, proc_output,
                 output_filter=launch_testing_ros.tools.basic_output_filter(
-                    # ignore launch_ros and ros2cli daemon nodes
+                    # ignore ros2cli daemon node
                     filtered_patterns=['.*ros2cli.*'],
                     filtered_rmw_implementation=rmw_implementation
                 )
@@ -106,83 +108,83 @@ class TestROS2ParamDeleteCLI(unittest.TestCase):
         cls.launch_node_command = launch_node_command
 
     @launch_testing.markers.retry_on_failure(times=3)
-    def test_delete_int_param_existing_node(self):
+    def test_set_nonexistent_param_existing_node(self):
         with self.launch_node_command(
-                arguments=['delete', '/param_delete_node', 'int_param']) as node_command:
+                arguments=['set', '/param_node', 'nonexistent_parameter', '1']) as node_command:
             assert node_command.wait_for_shutdown(timeout=5)
         assert node_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
-            expected_lines=['Deleted parameter successfully'],
-            text=node_command.output,
-            strict=True
-        )
-        with self.launch_node_command(
-                arguments=['get', '/param_delete_node', 'int_param']) as node_command:
-            assert node_command.wait_for_shutdown(timeout=5)
-        assert node_command.exit_code == launch_testing.asserts.EXIT_OK
-        assert launch_testing.tools.expect_output(
-            expected_lines=['Parameter not set.'],
+            expected_lines=[
+                "Setting parameter failed: ('Invalid access to undeclared parameter(s)', [])"],
             text=node_command.output,
             strict=True
         )
 
     @launch_testing.markers.retry_on_failure(times=3)
-    def test_delete_int_param_hidden_node(self):
+    def test_set_valid_param_existing_node(self):
+        new_parameters = param_node.ParamNode.get_modified_parameters()
+        # Byte array is unsupported for the yaml parser in get_parameter_value
+        new_parameters.pop('byte_array')
+        for param_key, param_value in new_parameters.items():
+            with self.launch_node_command(
+                    arguments=['set', '/param_node', param_key, str(param_value)]) as node_command:
+                assert node_command.wait_for_shutdown(timeout=5)
+            assert node_command.exit_code == launch_testing.asserts.EXIT_OK
+            assert launch_testing.tools.expect_output(
+                expected_lines=['Set parameter successful'],
+                text=node_command.output,
+                strict=True
+            )
+        for param_key, param_value in new_parameters.items():
+            with self.launch_node_command(
+                    arguments=['get', '/param_node', param_key]) as node_command:
+                assert node_command.wait_for_shutdown(timeout=5)
+            assert node_command.exit_code == launch_testing.asserts.EXIT_OK
+            if param_value is None:
+                param_node.GET_VERB_PARAM_VALUES[param_key] = \
+                    param_node.GET_VERB_PARAM_VALUES['str_param']
+            assert launch_testing.tools.expect_output(
+                expected_text=param_node.GET_VERB_PARAM_VALUES[param_key].format(str(param_value)),
+                text=node_command.output,
+                strict=True
+            )
+
+    @launch_testing.markers.retry_on_failure(times=3)
+    def test_set_nonexistent_param_hidden_node_no_hidden_argument(self):
         with self.launch_node_command(
-                arguments=['delete', '/_hidden_param_delete_node', 'int_param']) as node_command:
+                arguments=[
+                    'set', '/_hidden_param_node', 'nonexistent_parameter', '1']) as node_command:
             assert node_command.wait_for_shutdown(timeout=5)
         assert node_command.exit_code == 1
         assert launch_testing.tools.expect_output(
-            expected_text='Node not found\n',
-            text=node_command.output,
-            strict=True
-        )
-
-    @launch_testing.markers.retry_on_failure(times=5)
-    def test_delete_int_param_hidden_node_with_hidden_flag(self):
-        with self.launch_node_command(
-                arguments=[
-                    'delete', '--include-hidden-nodes',
-                    '/_hidden_param_delete_node', 'int_param']) as node_command:
-            assert node_command.wait_for_shutdown(timeout=8)
-        assert node_command.exit_code == launch_testing.asserts.EXIT_OK
-        assert launch_testing.tools.expect_output(
-            expected_lines=['Deleted parameter successfully'],
-            text=node_command.output,
-            strict=True
-        )
-        with self.launch_node_command(
-                arguments=[
-                    'get', '--include-hidden-nodes',
-                    '/_hidden_param_delete_node', 'int_param']) as node_command:
-            assert node_command.wait_for_shutdown(timeout=5)
-        assert node_command.exit_code == launch_testing.asserts.EXIT_OK
-        assert launch_testing.tools.expect_output(
-            expected_lines=['Parameter not set.'],
+            expected_lines=['Node not found'],
             text=node_command.output,
             strict=True
         )
 
     @launch_testing.markers.retry_on_failure(times=3)
-    def test_delete_any_param_unexisting_node(self):
+    def test_set_nonexistent_param_hidden_node_hidden_argument(self):
         with self.launch_node_command(
-                arguments=['delete', '/foo/unexisting_node', 'int_param']) as node_command:
+                arguments=[
+                    'set', '/_hidden_param_node',
+                    'nonexistent_parameter', '1', '--include-hidden-nodes']) as node_command:
+            assert node_command.wait_for_shutdown(timeout=5)
+        assert node_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=[
+                "Setting parameter failed: ('Invalid access to undeclared parameter(s)', [])"],
+            text=node_command.output,
+            strict=True
+        )
+
+    @launch_testing.markers.retry_on_failure(times=3)
+    def test_set_nonexistent_node(self):
+        with self.launch_node_command(
+                arguments=['set', '/foo/nonexistent_node', 'test_param', '3.14']) as node_command:
             assert node_command.wait_for_shutdown(timeout=5)
         assert node_command.exit_code == 1
         assert launch_testing.tools.expect_output(
-            expected_text='Node not found\n',
-            text=node_command.output,
-            strict=True
-        )
-
-    @launch_testing.markers.retry_on_failure(times=3)
-    def test_delete_unexistent_param_existent_node(self):
-        with self.launch_node_command(
-                arguments=['delete', '/param_delete_node', 'foo_param']) as node_command:
-            assert node_command.wait_for_shutdown(timeout=5)
-        assert node_command.exit_code == launch_testing.asserts.EXIT_OK
-        assert launch_testing.tools.expect_output(
-            expected_lines=['Deleting parameter failed'],
+            expected_lines=['Node not found'],
             text=node_command.output,
             strict=True
         )
