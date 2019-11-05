@@ -31,43 +31,13 @@ import pytest
 
 from rmw_implementation import get_available_rmw_implementations
 
-DEMO_NODES_TYPES = """\
-demo_nodes_cpp
-  demo_nodes_cpp::OneOffTimerNode
-  demo_nodes_cpp::ReuseTimerNode
-  demo_nodes_cpp::ServerNode
-  demo_nodes_cpp::ClientNode
-  demo_nodes_cpp::ListParameters
-  demo_nodes_cpp::ParameterBlackboard
-  demo_nodes_cpp::SetAndGetParameters
-  demo_nodes_cpp::ParameterEventsAsyncNode
-  demo_nodes_cpp::EvenParameterNode
-  demo_nodes_cpp::Talker
-  demo_nodes_cpp::LoanedMessageTalker
-  demo_nodes_cpp::SerializedMessageTalker
-  demo_nodes_cpp::Listener
-  demo_nodes_cpp::SerializedMessageListener
-  demo_nodes_cpp::ListenerBestEffort
-"""
 
-LIST_THREE_NODES = """\
-/ComponentManager
-  2  /listener
-  3  /talker
-  4  /talker
-"""
-
-LIST_FOUR_NODES = """\
-/ComponentManager
-  2  /listener
-  3  /talker
-  4  /talker
-  5  /talker
-"""
-
-
+# TODO(BMarchi): Opensplice doesn't get along with running any cli command with ExecuteProcess,
+# it just hangs there making `wait_for_timeout` fail. All tests should run fine with opensplice.
 @pytest.mark.rostest
-@launch_testing.parametrize('rmw_implementation', get_available_rmw_implementations())
+@launch_testing.parametrize(
+    'rmw_implementation',
+    [v for v in get_available_rmw_implementations() if v != 'rmw_opensplice_cpp'])
 def generate_test_description(rmw_implementation, ready_fn):
     additional_env = {'RMW_IMPLEMENTATION': rmw_implementation}
     component_node = Node(
@@ -92,10 +62,7 @@ def generate_test_description(rmw_implementation, ready_fn):
     ]), locals()
 
 
-# TODO(BMarchi): Open splice is returning a different code (2) when
-# the launch of a component verb ends. It should return EXIT_OK unless
-# the command returns a error string, which should be code 1.
-class TestROS2ComponentCLI(unittest.TestCase):
+class TestROS2ComponentLoadCLI(unittest.TestCase):
 
     @classmethod
     def setUpClass(
@@ -127,25 +94,12 @@ class TestROS2ComponentCLI(unittest.TestCase):
                 yield node_command
         cls.launch_node_command = launch_node_command
 
-    # Set verb tests
-    @launch_testing.markers.retry_on_failure(times=3)
-    def test_types_component(self):
-        with self.launch_node_command(
-                arguments=['types']) as node_command:
-            assert node_command.wait_for_shutdown(timeout=20)
-        assert node_command.exit_code == launch_testing.asserts.EXIT_OK
-        assert launch_testing.tools.expect_output(
-            expected_text=DEMO_NODES_TYPES,
-            text=node_command.output,
-            strict=True
-        )
-
     @launch_testing.markers.retry_on_failure(times=2)
-    def test_load_unload_verb(self):
+    def test_load_verb(self):
         with self.launch_node_command(
                 arguments=[
                     'load', '/ComponentManager',
-                    'demo_nodes_cpp', 'demo_nodes_cpp::Talker']) as talker_node:
+                    'composition', 'composition::Talker']) as talker_node:
             assert talker_node.wait_for_shutdown(timeout=20)
         assert talker_node.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
@@ -158,7 +112,7 @@ class TestROS2ComponentCLI(unittest.TestCase):
         with self.launch_node_command(
                 arguments=[
                     'load', '/ComponentManager',
-                    'demo_nodes_cpp', 'demo_nodes_cpp::Listener']) as listener_node:
+                    'composition', 'composition::Listener']) as listener_node:
             assert listener_node.wait_for_shutdown(timeout=20)
         assert listener_node.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
@@ -182,7 +136,7 @@ class TestROS2ComponentCLI(unittest.TestCase):
         with self.launch_node_command(
                 arguments=[
                     'load', '/ComponentManager',
-                    'demo_nodes_cpp', 'demo_nodes_cpp::Talker']) as talker_node:
+                    'composition', 'composition::Talker']) as talker_node:
             assert talker_node.wait_for_shutdown(timeout=20)
         assert talker_node.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
@@ -196,7 +150,7 @@ class TestROS2ComponentCLI(unittest.TestCase):
         with self.launch_node_command(
                 arguments=[
                     'load', '/ComponentManager',
-                    'demo_nodes_cpp', 'demo_nodes_cpp::Talker']) as talker_node:
+                    'composition', 'composition::Talker']) as talker_node:
             assert talker_node.wait_for_shutdown(timeout=20)
         assert talker_node.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
@@ -206,21 +160,13 @@ class TestROS2ComponentCLI(unittest.TestCase):
             text=talker_node.output,
             strict=True
         )
-        with self.launch_node_command(
-                arguments=['list']) as list_command:
-            assert list_command.wait_for_shutdown(timeout=20)
-        assert list_command.exit_code == launch_testing.asserts.EXIT_OK
-        assert launch_testing.tools.expect_output(
-            expected_text=LIST_THREE_NODES,
-            text=list_command.output,
-            strict=True
-        )
 
-        # Unexisting class in existing plugin
+    @launch_testing.markers.retry_on_failure(times=2)
+    def test_load_verb_nonexistent_class(self):
         with self.launch_node_command(
                 arguments=[
                     'load', '/ComponentManager',
-                    'demo_nodes_cpp', 'demo_nodes_cpp::NonExistingPlugin']) as command:
+                    'composition', 'composition::NonExistingPlugin']) as command:
             assert command.wait_for_shutdown(timeout=20)
         assert command.exit_code == 1
         assert launch_testing.tools.expect_output(
@@ -230,11 +176,13 @@ class TestROS2ComponentCLI(unittest.TestCase):
             text=command.output,
             strict=True
         )
-        # Test unexisting plugin
+
+    @launch_testing.markers.retry_on_failure(times=2)
+    def test_load_verb_nonexistent_plugin(self):
         with self.launch_node_command(
                 arguments=[
                     'load', '/ComponentManager',
-                    'non_existing_plugin', 'non_existing_plugin::Test']) as command:
+                    'non_existent_plugin', 'non_existent_plugin::Test']) as command:
             assert command.wait_for_shutdown(timeout=20)
         assert command.exit_code == 1
         assert launch_testing.tools.expect_output(
@@ -242,28 +190,5 @@ class TestROS2ComponentCLI(unittest.TestCase):
                 'Failed to load component: '
                 'Could not find requested resource in ament index'],
             text=command.output,
-            strict=True
-        )
-        with self.launch_node_command(
-                arguments=[
-                    'load', '/ComponentManager',
-                    'demo_nodes_cpp', 'demo_nodes_cpp::Talker']) as talker_node:
-            assert talker_node.wait_for_shutdown(timeout=20)
-        assert talker_node.exit_code == launch_testing.asserts.EXIT_OK
-        assert launch_testing.tools.expect_output(
-            expected_lines=[
-                "Loaded component 5 into '/ComponentManager' "
-                "container node as '/talker'"],
-            text=talker_node.output,
-            strict=True
-        )
-        # Verify that we added just one talker and not the non existent nodes.
-        with self.launch_node_command(
-                arguments=['list']) as list_command:
-            assert list_command.wait_for_shutdown(timeout=20)
-        assert list_command.exit_code == launch_testing.asserts.EXIT_OK
-        assert launch_testing.tools.expect_output(
-            expected_text=LIST_FOUR_NODES,
-            text=list_command.output,
             strict=True
         )
