@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-
 import unittest
 
 from launch import LaunchDescription
@@ -26,7 +24,6 @@ import launch_testing.markers
 import launch_testing.tools
 import launch_testing_ros.tools
 
-
 import pytest
 
 import rclpy
@@ -34,8 +31,7 @@ from rclpy.executors import SingleThreadedExecutor
 from rclpy.qos import DurabilityPolicy
 from rclpy.qos import QoSProfile
 from rclpy.qos import ReliabilityPolicy
-
-from rmw_implementation import get_available_rmw_implementations
+from rclpy.utilities import get_rmw_implementation_identifier
 
 from std_msgs.msg import String
 
@@ -45,9 +41,8 @@ TEST_NAMESPACE = 'cli_echo_pub'
 
 
 @pytest.mark.rostest
-@launch_testing.parametrize('rmw_implementation', get_available_rmw_implementations())
 @launch_testing.markers.keep_alive
-def generate_test_description(rmw_implementation, ready_fn):
+def generate_test_description(ready_fn):
     return LaunchDescription([
         # Always restart daemon to isolate tests.
         ExecuteProcess(
@@ -60,7 +55,6 @@ def generate_test_description(rmw_implementation, ready_fn):
                     on_exit=[
                         OpaqueFunction(function=lambda context: ready_fn())
                     ],
-                    additional_env={'RMW_IMPLEMENTATION': rmw_implementation}
                 )
             ]
         )
@@ -69,22 +63,26 @@ def generate_test_description(rmw_implementation, ready_fn):
 
 class TestROS2TopicEchoPub(unittest.TestCase):
 
-    @classmethod
-    def setUpClass(cls, rmw_implementation):
-        os.environ['RMW_IMPLEMENTATION'] = rmw_implementation
-        cls.context = rclpy.context.Context()
-        rclpy.init(context=cls.context)
-        cls.node = rclpy.create_node(TEST_NODE, namespace=TEST_NAMESPACE, context=cls.context)
-        cls.executor = SingleThreadedExecutor(context=cls.context)
-        cls.executor.add_node(cls.node)
+    # TODO(hidmic): investigate why making use of the same rclpy node, executor
+    #               and context for all tests on a per rmw implementation basis
+    #               makes them fail on Linux-aarch64 when using 'rmw_opensplice_cpp'.
+    #               Presumably, interfaces creation/destruction and/or executor spinning
+    #               on one test is affecting the other.
+    def setUp(self):
+        self.context = rclpy.context.Context()
+        rclpy.init(context=self.context)
+        self.node = rclpy.create_node(
+            TEST_NODE, namespace=TEST_NAMESPACE, context=self.context
+        )
+        self.executor = SingleThreadedExecutor(context=self.context)
+        self.executor.add_node(self.node)
 
-    @classmethod
-    def tearDownClass(cls):
-        cls.node.destroy_node()
-        rclpy.shutdown(context=cls.context)
+    def tearDown(self):
+        self.node.destroy_node()
+        rclpy.shutdown(context=self.context)
 
     @launch_testing.markers.retry_on_failure(times=5)
-    def test_pub_basic(self, launch_service, proc_info, proc_output, rmw_implementation):
+    def test_pub_basic(self, launch_service, proc_info, proc_output):
         params = [
             ('/clitest/topic/pub_basic', False, True),
             ('/clitest/topic/pub_compatible_qos', True, True),
@@ -142,7 +140,6 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                         cmd=(['ros2', 'topic', 'pub'] + pub_extra_options +
                              [topic, 'std_msgs/String', 'data: hello']),
                         additional_env={
-                            'RMW_IMPLEMENTATION': rmw_implementation,
                             'PYTHONUNBUFFERED': '1'
                         },
                         output='screen'
@@ -150,7 +147,7 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                     with launch_testing.tools.launch_process(
                         launch_service, command_action, proc_info, proc_output,
                         output_filter=launch_testing_ros.tools.basic_output_filter(
-                            filtered_rmw_implementation=rmw_implementation
+                            filtered_rmw_implementation=get_rmw_implementation_identifier()
                         )
                     ) as command:
                         self.executor.spin_until_future_complete(future, timeout_sec=10)
@@ -160,9 +157,9 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                     assert (
                         received_message_count >= expected_minimum_message_count and
                         received_message_count <= expected_maximum_message_count), \
-                        'Received {} messages from pub, which is not in expected range {}-{}' \
-                        .format(
-                            received_message_count,
+                        ('Received {} messages from pub on {},'
+                         'which is not in expected range {}-{}').format(
+                            received_message_count, topic,
                             expected_minimum_message_count,
                             expected_maximum_message_count
                         )
@@ -171,7 +168,7 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                     self.node.destroy_subscription(subscription)
 
     @launch_testing.markers.retry_on_failure(times=5)
-    def test_echo_basic(self, launch_service, proc_info, proc_output, rmw_implementation):
+    def test_echo_basic(self, launch_service, proc_info, proc_output):
         params = [
             ('/clitest/topic/echo_basic', False, True),
             ('/clitest/topic/echo_compatible_qos', True, True),
@@ -219,7 +216,6 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                              echo_extra_options +
                              [topic, 'std_msgs/String']),
                         additional_env={
-                            'RMW_IMPLEMENTATION': rmw_implementation,
                             'PYTHONUNBUFFERED': '1'
                         },
                         output='screen'
@@ -227,7 +223,7 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                     with launch_testing.tools.launch_process(
                         launch_service, command_action, proc_info, proc_output,
                         output_filter=launch_testing_ros.tools.basic_output_filter(
-                            filtered_rmw_implementation=rmw_implementation
+                            filtered_rmw_implementation=get_rmw_implementation_identifier()
                         )
                     ) as command:
                         # The future won't complete - we will hit the timeout
