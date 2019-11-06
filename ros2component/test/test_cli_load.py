@@ -99,7 +99,7 @@ class TestROS2ComponentLoadCLI(unittest.TestCase):
         with self.launch_node_command(
                 arguments=[
                     'load', '/ComponentManager',
-                    'composition', 'composition::Talker']) as talker_node:
+                    'ros2component_fixtures', 'ros2component_fixtures::Talker']) as talker_node:
             assert talker_node.wait_for_shutdown(timeout=20)
         assert talker_node.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
@@ -112,7 +112,8 @@ class TestROS2ComponentLoadCLI(unittest.TestCase):
         with self.launch_node_command(
                 arguments=[
                     'load', '/ComponentManager',
-                    'composition', 'composition::Listener']) as listener_node:
+                    'ros2component_fixtures',
+                    'ros2component_fixtures::Listener']) as listener_node:
             assert listener_node.wait_for_shutdown(timeout=20)
         assert listener_node.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
@@ -136,7 +137,7 @@ class TestROS2ComponentLoadCLI(unittest.TestCase):
         with self.launch_node_command(
                 arguments=[
                     'load', '/ComponentManager',
-                    'composition', 'composition::Talker']) as talker_node:
+                    'ros2component_fixtures', 'ros2component_fixtures::Talker']) as talker_node:
             assert talker_node.wait_for_shutdown(timeout=20)
         assert talker_node.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
@@ -150,7 +151,7 @@ class TestROS2ComponentLoadCLI(unittest.TestCase):
         with self.launch_node_command(
                 arguments=[
                     'load', '/ComponentManager',
-                    'composition', 'composition::Talker']) as talker_node:
+                    'ros2component_fixtures', 'ros2component_fixtures::Talker']) as talker_node:
             assert talker_node.wait_for_shutdown(timeout=20)
         assert talker_node.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
@@ -166,7 +167,8 @@ class TestROS2ComponentLoadCLI(unittest.TestCase):
         with self.launch_node_command(
                 arguments=[
                     'load', '/ComponentManager',
-                    'composition', 'composition::NonExistingPlugin']) as command:
+                    'ros2component_fixtures',
+                    'ros2component_fixtures::NonExistingPlugin']) as command:
             assert command.wait_for_shutdown(timeout=20)
         assert command.exit_code == 1
         assert launch_testing.tools.expect_output(

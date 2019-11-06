@@ -32,12 +32,9 @@ import pytest
 from rmw_implementation import get_available_rmw_implementations
 
 DEMO_NODES_TYPES = """\
-composition
-  composition::Talker
-  composition::Listener
-  composition::NodeLikeListener
-  composition::Server
-  composition::Client
+ros2component_fixtures
+  ros2component_fixtures::Talker
+  ros2component_fixtures::Listener
 """
 
 

@@ -49,7 +49,7 @@ def generate_test_description(rmw_implementation, ready_fn):
         package='rclcpp_components', node_executable='component_container', output='screen')
     listener_command_action = ExecuteProcess(
         cmd=['ros2', 'component', 'load', '/ComponentManager',
-             'composition', 'composition::Listener'],
+             'ros2component_fixtures', 'ros2component_fixtures::Listener'],
         additional_env={
             'RMW_IMPLEMENTATION': rmw_implementation,
             'PYTHONUNBUFFERED': '1'
@@ -59,7 +59,7 @@ def generate_test_description(rmw_implementation, ready_fn):
         on_exit=[
             ExecuteProcess(
                 cmd=['ros2', 'component', 'load', '/ComponentManager',
-                     'composition', 'composition::Talker'],
+                     'ros2component_fixtures', 'ros2component_fixtures::Talker'],
                 additional_env={
                     'RMW_IMPLEMENTATION': rmw_implementation,
                     'PYTHONUNBUFFERED': '1'
@@ -69,7 +69,7 @@ def generate_test_description(rmw_implementation, ready_fn):
                 on_exit=[
                     ExecuteProcess(
                         cmd=['ros2', 'component', 'load', '/ComponentManager',
-                             'composition', 'composition::Talker'],
+                             'ros2component_fixtures', 'ros2component_fixtures::Talker'],
                         additional_env={
                             'RMW_IMPLEMENTATION': rmw_implementation,
                             'PYTHONUNBUFFERED': '1'
