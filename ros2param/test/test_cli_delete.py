@@ -84,8 +84,8 @@ class TestROS2ParamDeleteCLI(unittest.TestCase):
         rmw_implementation
     ):
         @contextlib.contextmanager
-        def launch_node_command(self, arguments):
-            node_command_action = ExecuteProcess(
+        def launch_param_command(self, arguments):
+            param_command_action = ExecuteProcess(
                 cmd=['ros2', 'param', *arguments],
                 additional_env={
                     'RMW_IMPLEMENTATION': rmw_implementation,
@@ -95,94 +95,94 @@ class TestROS2ParamDeleteCLI(unittest.TestCase):
                 output='screen'
             )
             with launch_testing.tools.launch_process(
-                launch_service, node_command_action, proc_info, proc_output,
+                launch_service, param_command_action, proc_info, proc_output,
                 output_filter=launch_testing_ros.tools.basic_output_filter(
                     # ignore ros2cli daemon node
                     filtered_patterns=['.*ros2cli.*'],
                     filtered_rmw_implementation=rmw_implementation
                 )
-            ) as node_command:
-                yield node_command
-        cls.launch_node_command = launch_node_command
+            ) as param_command:
+                yield param_command
+        cls.launch_param_command = launch_param_command
 
     @launch_testing.markers.retry_on_failure(times=3)
     def test_delete_int_param_existing_node(self):
-        with self.launch_node_command(
-                arguments=['delete', '/param_delete_node', 'int_param']) as node_command:
-            assert node_command.wait_for_shutdown(timeout=5)
-        assert node_command.exit_code == launch_testing.asserts.EXIT_OK
+        with self.launch_param_command(
+                arguments=['delete', '/param_delete_node', 'int_param']) as param_command:
+            assert param_command.wait_for_shutdown(timeout=5)
+        assert param_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=['Deleted parameter successfully'],
-            text=node_command.output,
+            text=param_command.output,
             strict=True
         )
-        with self.launch_node_command(
-                arguments=['get', '/param_delete_node', 'int_param']) as node_command:
-            assert node_command.wait_for_shutdown(timeout=5)
-        assert node_command.exit_code == launch_testing.asserts.EXIT_OK
+        with self.launch_param_command(
+                arguments=['get', '/param_delete_node', 'int_param']) as param_command:
+            assert param_command.wait_for_shutdown(timeout=5)
+        assert param_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=['Parameter not set.'],
-            text=node_command.output,
+            text=param_command.output,
             strict=True
         )
 
     @launch_testing.markers.retry_on_failure(times=3)
     def test_delete_int_param_hidden_node(self):
-        with self.launch_node_command(
-                arguments=['delete', '/_hidden_param_delete_node', 'int_param']) as node_command:
-            assert node_command.wait_for_shutdown(timeout=5)
-        assert node_command.exit_code == 1
+        with self.launch_param_command(
+                arguments=['delete', '/_hidden_param_delete_node', 'int_param']) as param_command:
+            assert param_command.wait_for_shutdown(timeout=5)
+        assert param_command.exit_code == 1
         assert launch_testing.tools.expect_output(
             expected_text='Node not found\n',
-            text=node_command.output,
+            text=param_command.output,
             strict=True
         )
 
     @launch_testing.markers.retry_on_failure(times=5)
     def test_delete_int_param_hidden_node_with_hidden_flag(self):
-        with self.launch_node_command(
+        with self.launch_param_command(
                 arguments=[
                     'delete', '--include-hidden-nodes',
-                    '/_hidden_param_delete_node', 'int_param']) as node_command:
-            assert node_command.wait_for_shutdown(timeout=8)
-        assert node_command.exit_code == launch_testing.asserts.EXIT_OK
+                    '/_hidden_param_delete_node', 'int_param']) as param_command:
+            assert param_command.wait_for_shutdown(timeout=8)
+        assert param_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=['Deleted parameter successfully'],
-            text=node_command.output,
+            text=param_command.output,
             strict=True
         )
-        with self.launch_node_command(
+        with self.launch_param_command(
                 arguments=[
                     'get', '--include-hidden-nodes',
-                    '/_hidden_param_delete_node', 'int_param']) as node_command:
-            assert node_command.wait_for_shutdown(timeout=5)
-        assert node_command.exit_code == launch_testing.asserts.EXIT_OK
+                    '/_hidden_param_delete_node', 'int_param']) as param_command:
+            assert param_command.wait_for_shutdown(timeout=5)
+        assert param_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=['Parameter not set.'],
-            text=node_command.output,
+            text=param_command.output,
             strict=True
         )
 
     @launch_testing.markers.retry_on_failure(times=3)
     def test_delete_any_param_nonexistent_node(self):
-        with self.launch_node_command(
-                arguments=['delete', '/foo/nonexistent_node', 'int_param']) as node_command:
-            assert node_command.wait_for_shutdown(timeout=5)
-        assert node_command.exit_code == 1
+        with self.launch_param_command(
+                arguments=['delete', '/foo/nonexistent_node', 'int_param']) as param_command:
+            assert param_command.wait_for_shutdown(timeout=5)
+        assert param_command.exit_code == 1
         assert launch_testing.tools.expect_output(
             expected_text='Node not found\n',
-            text=node_command.output,
+            text=param_command.output,
             strict=True
         )
 
     @launch_testing.markers.retry_on_failure(times=3)
     def test_delete_nonexistent_param_existent_node(self):
-        with self.launch_node_command(
-                arguments=['delete', '/param_delete_node', 'foo_param']) as node_command:
-            assert node_command.wait_for_shutdown(timeout=5)
-        assert node_command.exit_code == launch_testing.asserts.EXIT_OK
+        with self.launch_param_command(
+                arguments=['delete', '/param_delete_node', 'foo_param']) as param_command:
+            assert param_command.wait_for_shutdown(timeout=5)
+        assert param_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=['Deleting parameter failed'],
-            text=node_command.output,
+            text=param_command.output,
             strict=True
         )

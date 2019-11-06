@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import contextlib
+import copy
 import os
 import sys
 import unittest
@@ -34,6 +35,9 @@ import param_node
 import pytest
 
 from rmw_implementation import get_available_rmw_implementations
+
+SET_VERB_PARAM_VALUES = copy.deepcopy(param_node.GET_VERB_PARAM_VALUES)
+SET_VERB_PARAM_VALUES['parameter_with_no_value'] = SET_VERB_PARAM_VALUES['str_param']
 
 
 @pytest.mark.rostest
@@ -86,8 +90,8 @@ class TestROS2ParamSetCLI(unittest.TestCase):
         rmw_implementation
     ):
         @contextlib.contextmanager
-        def launch_node_command(self, arguments):
-            node_command_action = ExecuteProcess(
+        def launch_param_command(self, arguments):
+            param_command_action = ExecuteProcess(
                 cmd=['ros2', 'param', *arguments],
                 additional_env={
                     'RMW_IMPLEMENTATION': rmw_implementation,
@@ -97,26 +101,26 @@ class TestROS2ParamSetCLI(unittest.TestCase):
                 output='screen'
             )
             with launch_testing.tools.launch_process(
-                launch_service, node_command_action, proc_info, proc_output,
+                launch_service, param_command_action, proc_info, proc_output,
                 output_filter=launch_testing_ros.tools.basic_output_filter(
                     # ignore ros2cli daemon node
                     filtered_patterns=['.*ros2cli.*'],
                     filtered_rmw_implementation=rmw_implementation
                 )
-            ) as node_command:
-                yield node_command
-        cls.launch_node_command = launch_node_command
+            ) as param_command:
+                yield param_command
+        cls.launch_param_command = launch_param_command
 
     @launch_testing.markers.retry_on_failure(times=3)
     def test_set_nonexistent_param_existing_node(self):
-        with self.launch_node_command(
-                arguments=['set', '/param_node', 'nonexistent_parameter', '1']) as node_command:
-            assert node_command.wait_for_shutdown(timeout=5)
-        assert node_command.exit_code == launch_testing.asserts.EXIT_OK
+        with self.launch_param_command(
+                arguments=['set', '/param_node', 'nonexistent_parameter', '1']) as param_command:
+            assert param_command.wait_for_shutdown(timeout=5)
+        assert param_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
                 "Setting parameter failed: ('Invalid access to undeclared parameter(s)', [])"],
-            text=node_command.output,
+            text=param_command.output,
             strict=True
         )
 
@@ -126,65 +130,64 @@ class TestROS2ParamSetCLI(unittest.TestCase):
         # Byte array is unsupported for the yaml parser in get_parameter_value
         new_parameters.pop('byte_array')
         for param_key, param_value in new_parameters.items():
-            with self.launch_node_command(
-                    arguments=['set', '/param_node', param_key, str(param_value)]) as node_command:
-                assert node_command.wait_for_shutdown(timeout=5)
-            assert node_command.exit_code == launch_testing.asserts.EXIT_OK
-            assert launch_testing.tools.expect_output(
-                expected_lines=['Set parameter successful'],
-                text=node_command.output,
-                strict=True
-            )
-        for param_key, param_value in new_parameters.items():
-            with self.launch_node_command(
-                    arguments=['get', '/param_node', param_key]) as node_command:
-                assert node_command.wait_for_shutdown(timeout=5)
-            assert node_command.exit_code == launch_testing.asserts.EXIT_OK
-            if param_value is None:
-                param_node.GET_VERB_PARAM_VALUES[param_key] = \
-                    param_node.GET_VERB_PARAM_VALUES['str_param']
-            assert launch_testing.tools.expect_output(
-                expected_text=param_node.GET_VERB_PARAM_VALUES[param_key].format(str(param_value)),
-                text=node_command.output,
-                strict=True
-            )
+            with self.subTest(param_key=param_key, param_value=param_value):
+                with self.launch_param_command(
+                        arguments=['set', '/param_node',
+                                   param_key, str(param_value)]) as param_command:
+                    assert param_command.wait_for_shutdown(timeout=5)
+                assert param_command.exit_code == launch_testing.asserts.EXIT_OK
+                assert launch_testing.tools.expect_output(
+                    expected_lines=['Set parameter successful'],
+                    text=param_command.output,
+                    strict=True
+                )
+                with self.launch_param_command(
+                        arguments=['get', '/param_node', param_key]) as param_command:
+                    assert param_command.wait_for_shutdown(timeout=5)
+                assert param_command.exit_code == launch_testing.asserts.EXIT_OK
+                assert launch_testing.tools.expect_output(
+                    expected_text=SET_VERB_PARAM_VALUES[param_key].format(
+                        str(param_value)),
+                    text=param_command.output,
+                    strict=True
+                )
 
     @launch_testing.markers.retry_on_failure(times=3)
     def test_set_nonexistent_param_hidden_node_no_hidden_argument(self):
-        with self.launch_node_command(
+        with self.launch_param_command(
                 arguments=[
-                    'set', '/_hidden_param_node', 'nonexistent_parameter', '1']) as node_command:
-            assert node_command.wait_for_shutdown(timeout=5)
-        assert node_command.exit_code == 1
+                    'set', '/_hidden_param_node', 'nonexistent_parameter', '1']) as param_command:
+            assert param_command.wait_for_shutdown(timeout=5)
+        assert param_command.exit_code == 1
         assert launch_testing.tools.expect_output(
             expected_lines=['Node not found'],
-            text=node_command.output,
+            text=param_command.output,
             strict=True
         )
 
     @launch_testing.markers.retry_on_failure(times=3)
     def test_set_nonexistent_param_hidden_node_hidden_argument(self):
-        with self.launch_node_command(
+        with self.launch_param_command(
                 arguments=[
                     'set', '/_hidden_param_node',
-                    'nonexistent_parameter', '1', '--include-hidden-nodes']) as node_command:
-            assert node_command.wait_for_shutdown(timeout=5)
-        assert node_command.exit_code == launch_testing.asserts.EXIT_OK
+                    'nonexistent_parameter', '1', '--include-hidden-nodes']) as param_command:
+            assert param_command.wait_for_shutdown(timeout=5)
+        assert param_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
                 "Setting parameter failed: ('Invalid access to undeclared parameter(s)', [])"],
-            text=node_command.output,
+            text=param_command.output,
             strict=True
         )
 
     @launch_testing.markers.retry_on_failure(times=3)
     def test_set_nonexistent_node(self):
-        with self.launch_node_command(
-                arguments=['set', '/foo/nonexistent_node', 'test_param', '3.14']) as node_command:
-            assert node_command.wait_for_shutdown(timeout=5)
-        assert node_command.exit_code == 1
+        with self.launch_param_command(
+                arguments=['set', '/foo/nonexistent_node', 'test_param', '3.14']) as param_command:
+            assert param_command.wait_for_shutdown(timeout=5)
+        assert param_command.exit_code == 1
         assert launch_testing.tools.expect_output(
             expected_lines=['Node not found'],
-            text=node_command.output,
+            text=param_command.output,
             strict=True
         )
