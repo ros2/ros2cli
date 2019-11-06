@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import contextlib
-import copy
 import os
 import sys
 import unittest
@@ -36,8 +35,18 @@ import pytest
 
 from rmw_implementation import get_available_rmw_implementations
 
-SET_VERB_PARAM_VALUES = copy.deepcopy(param_node.GET_VERB_PARAM_VALUES)
-SET_VERB_PARAM_VALUES['parameter_with_no_value'] = SET_VERB_PARAM_VALUES['str_param']
+SET_VERB_PARAM_VALUES = {
+    'bool_param': 'Boolean value is: {}\n',
+    'int_param': 'Integer value is: {}\n',
+    'double_param': 'Double value is: {}\n',
+    'str_param': 'String value is: {}\n',
+    'byte_array': 'Byte values are: {}\n',
+    'bool_array': 'Boolean values are: {}\n',
+    'int_array': "Integer values are: array('q', {})\n",
+    'double_array': "Double values are: array('d', {})\n",
+    'str_array': 'String values are: {}\n',
+    'parameter_with_no_value': 'String value is: {}\n'
+}
 
 
 @pytest.mark.rostest

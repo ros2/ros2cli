@@ -18,19 +18,6 @@ from rcl_interfaces.msg import ParameterDescriptor
 import rclpy
 from rclpy.node import Node
 
-GET_VERB_PARAM_VALUES = {
-    'bool_param': 'Boolean value is: {}\n',
-    'int_param': 'Integer value is: {}\n',
-    'double_param': 'Double value is: {}\n',
-    'str_param': 'String value is: {}\n',
-    'byte_array': 'Byte values are: {}\n',
-    'bool_array': 'Boolean values are: {}\n',
-    'int_array': "Integer values are: array('q', {})\n",
-    'double_array': "Double values are: array('d', {})\n",
-    'str_array': 'String values are: {}\n',
-    'parameter_with_no_value': 'Parameter not set.{}\n'
-}
-
 
 class ParamNode(Node):
 
