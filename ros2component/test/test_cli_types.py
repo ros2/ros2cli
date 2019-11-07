@@ -31,19 +31,14 @@ import pytest
 
 from rmw_implementation import get_available_rmw_implementations
 
-DEMO_NODES_TYPES = """\
-ros2component_fixtures
-  ros2component_fixtures::Talker
-  ros2component_fixtures::Listener
-"""
-
 
 @pytest.mark.rostest
 @launch_testing.parametrize('rmw_implementation', get_available_rmw_implementations())
 def generate_test_description(rmw_implementation, ready_fn):
     additional_env = {'RMW_IMPLEMENTATION': rmw_implementation}
     component_node = Node(
-        package='rclcpp_components', node_executable='component_container', output='screen')
+        package='rclcpp_components', node_executable='component_container', output='screen',
+        additional_env=additional_env)
     return LaunchDescription([
         # Always restart daemon to isolate tests.
         ExecuteProcess(
@@ -75,8 +70,8 @@ class TestROS2ComponentTypesCLI(unittest.TestCase):
         rmw_implementation
     ):
         @contextlib.contextmanager
-        def launch_node_command(self, arguments):
-            node_command_action = ExecuteProcess(
+        def launch_component_command(self, arguments):
+            component_command_action = ExecuteProcess(
                 cmd=['ros2', 'component', *arguments],
                 additional_env={
                     'RMW_IMPLEMENTATION': rmw_implementation,
@@ -86,25 +81,30 @@ class TestROS2ComponentTypesCLI(unittest.TestCase):
                 output='screen'
             )
             with launch_testing.tools.launch_process(
-                launch_service, node_command_action, proc_info, proc_output,
+                launch_service, component_command_action, proc_info, proc_output,
                 output_filter=launch_testing_ros.tools.basic_output_filter(
                     # ignore ros2cli daemon nodes
                     filtered_patterns=['.*ros2cli.*'],
                     filtered_rmw_implementation=rmw_implementation
                 )
-            ) as node_command:
-                yield node_command
-        cls.launch_node_command = launch_node_command
+            ) as component_command:
+                yield component_command
+        cls.launch_component_command = launch_component_command
 
     # Set verb tests
     @launch_testing.markers.retry_on_failure(times=3)
     def test_types_verb(self):
-        with self.launch_node_command(
-                arguments=['types']) as node_command:
-            assert node_command.wait_for_shutdown(timeout=20)
-        assert node_command.exit_code == launch_testing.asserts.EXIT_OK
+        with self.launch_component_command(
+                arguments=['types']) as component_command:
+            assert component_command.wait_for_shutdown(timeout=20)
+        assert component_command.exit_code == launch_testing.asserts.EXIT_OK
+        DEMO_NODES_TYPES = [
+            'ros2component_test_fixtures',
+            '  ros2component_test_fixtures::Talker',
+            '  ros2component_test_fixtures::Listener'
+        ]
         assert launch_testing.tools.expect_output(
-            expected_text=DEMO_NODES_TYPES,
-            text=node_command.output,
+            expected_lines=DEMO_NODES_TYPES,
+            text=component_command.output,
             strict=True
         )

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(ros2component_fixtures)
+project(ros2component_test_fixtures)
 
 # Default to C++14
 if(NOT CMAKE_CXX_STANDARD)
@@ -18,30 +18,25 @@ find_package(std_msgs REQUIRED)
 
 include_directories(include)
 
-# create ament index resource which references the libraries in the binary dir
-set(node_plugins "")
-
 add_library(talker_component SHARED
   src/talker_component.cpp)
 target_compile_definitions(talker_component
-  PRIVATE "ROS2COMPONENT_FIXTURES_BUILDING_DLL")
+  PRIVATE "ros2component_test_fixtures_BUILDING_DLL")
 ament_target_dependencies(talker_component
   "rclcpp"
   "rclcpp_components"
   "std_msgs")
-rclcpp_components_register_nodes(talker_component "ros2component_fixtures::Talker")
-set(node_plugins "${node_plugins}ros2component_fixtures::Talker;$<TARGET_FILE:talker_component>\n")
+rclcpp_components_register_nodes(talker_component "ros2component_test_fixtures::Talker")
 
 add_library(listener_component SHARED
   src/listener_component.cpp)
 target_compile_definitions(listener_component
-  PRIVATE "ROS2COMPONENT_FIXTURES_BUILDING_DLL")
+  PRIVATE "ros2component_test_fixtures_BUILDING_DLL")
 ament_target_dependencies(listener_component
   "rclcpp"
   "rclcpp_components"
   "std_msgs")
-rclcpp_components_register_nodes(listener_component "ros2component_fixtures::Listener")
-set(node_plugins "${node_plugins}ros2component_fixtures::Listener;$<TARGET_FILE:listener_component>\n")
+rclcpp_components_register_nodes(listener_component "ros2component_test_fixtures::Listener")
 
 # since the package installs libraries without exporting them
 # it needs to make sure that the library path is being exported

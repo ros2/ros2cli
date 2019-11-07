@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>ros2component_fixtures</name>
+  <name>ros2component_test_fixtures</name>
   <version>0.1.0</version>
   <description>Examples for ros2component cli</description>
   <maintainer email="dthomas@osrfoundation.org">Dirk Thomas</maintainer>

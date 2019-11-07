@@ -31,27 +31,17 @@ import pytest
 
 from rmw_implementation import get_available_rmw_implementations
 
-LIST_THREE_NODES = """\
-/ComponentManager
-  1  /listener
-  2  /talker
-  3  /talker
-"""
 
-
-# TODO(BMarchi): Opensplice doesn't get along with running any cli command with ExecuteProcess,
-# it just hangs there making `wait_for_timeout` fail. All tests should run fine with opensplice.
 @pytest.mark.rostest
-@launch_testing.parametrize(
-    'rmw_implementation',
-    [v for v in get_available_rmw_implementations() if v != 'rmw_opensplice_cpp'])
+@launch_testing.parametrize('rmw_implementation', get_available_rmw_implementations())
 def generate_test_description(rmw_implementation, ready_fn):
     additional_env = {'RMW_IMPLEMENTATION': rmw_implementation}
     component_node = Node(
-        package='rclcpp_components', node_executable='component_container', output='screen')
+        package='rclcpp_components', node_executable='component_container', output='screen',
+        additional_env=additional_env)
     listener_command_action = ExecuteProcess(
         cmd=['ros2', 'component', 'load', '/ComponentManager',
-             'ros2component_fixtures', 'ros2component_fixtures::Listener'],
+             'ros2component_test_fixtures', 'ros2component_test_fixtures::Listener'],
         additional_env={
             'RMW_IMPLEMENTATION': rmw_implementation,
             'PYTHONUNBUFFERED': '1'
@@ -61,7 +51,7 @@ def generate_test_description(rmw_implementation, ready_fn):
         on_exit=[
             ExecuteProcess(
                 cmd=['ros2', 'component', 'load', '/ComponentManager',
-                     'ros2component_fixtures', 'ros2component_fixtures::Talker'],
+                     'ros2component_test_fixtures', 'ros2component_test_fixtures::Talker'],
                 additional_env={
                     'RMW_IMPLEMENTATION': rmw_implementation,
                     'PYTHONUNBUFFERED': '1'
@@ -71,7 +61,7 @@ def generate_test_description(rmw_implementation, ready_fn):
                 on_exit=[
                     ExecuteProcess(
                         cmd=['ros2', 'component', 'load', '/ComponentManager',
-                             'ros2component_fixtures', 'ros2component_fixtures::Talker'],
+                             'ros2component_test_fixtures', 'ros2component_test_fixtures::Talker'],
                         additional_env={
                             'RMW_IMPLEMENTATION': rmw_implementation,
                             'PYTHONUNBUFFERED': '1'
@@ -94,8 +84,8 @@ def generate_test_description(rmw_implementation, ready_fn):
                     name='daemon-start',
                     on_exit=[
                         component_node,
-                        OpaqueFunction(function=lambda context: ready_fn()),
-                        listener_command_action
+                        listener_command_action,
+                        OpaqueFunction(function=lambda context: ready_fn())
                     ],
                     additional_env=additional_env
                 )
@@ -115,8 +105,8 @@ class TestROS2ComponentListCLI(unittest.TestCase):
         rmw_implementation
     ):
         @contextlib.contextmanager
-        def launch_node_command(self, arguments):
-            node_command_action = ExecuteProcess(
+        def launch_component_command(self, arguments):
+            component_command_action = ExecuteProcess(
                 cmd=['ros2', 'component', *arguments],
                 additional_env={
                     'RMW_IMPLEMENTATION': rmw_implementation,
@@ -126,25 +116,30 @@ class TestROS2ComponentListCLI(unittest.TestCase):
                 output='screen'
             )
             with launch_testing.tools.launch_process(
-                launch_service, node_command_action, proc_info, proc_output,
+                launch_service, component_command_action, proc_info, proc_output,
                 output_filter=launch_testing_ros.tools.basic_output_filter(
                     # ignore ros2cli daemon nodes
                     filtered_patterns=['.*ros2cli.*'],
                     filtered_rmw_implementation=rmw_implementation
                 )
-            ) as node_command:
-                yield node_command
-        cls.launch_node_command = launch_node_command
-        cls.rmw_implementation = rmw_implementation
+            ) as component_command:
+                yield component_command
+        cls.launch_component_command = launch_component_command
 
     @launch_testing.markers.retry_on_failure(times=5)
     def test_list_verb(self):
-        with self.launch_node_command(
+        with self.launch_component_command(
                 arguments=['list']) as list_command:
-            assert list_command.wait_for_shutdown(timeout=5)
+            assert list_command.wait_for_shutdown(timeout=10)
         assert list_command.exit_code == launch_testing.asserts.EXIT_OK
+        LIST_THREE_NODES = [
+            '/ComponentManager',
+            '  1  /listener',
+            '  2  /talker',
+            '  3  /talker'
+        ]
         assert launch_testing.tools.expect_output(
-            expected_text=LIST_THREE_NODES,
+            expected_lines=LIST_THREE_NODES,
             text=list_command.output,
-            strict=True
+            strict=False
         )

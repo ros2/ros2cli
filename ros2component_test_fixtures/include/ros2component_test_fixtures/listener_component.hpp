@@ -12,31 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ROS2COMPONENT_FIXTURES__TALKER_COMPONENT_HPP_
-#define ROS2COMPONENT_FIXTURES__TALKER_COMPONENT_HPP_
+#ifndef ROS2COMPONENT_TEST_FIXTURES__LISTENER_COMPONENT_HPP_
+#define ROS2COMPONENT_TEST_FIXTURES__LISTENER_COMPONENT_HPP_
 
-#include "ros2component_fixtures/visibility_control.h"
+#include "ros2component_test_fixtures/visibility_control.h"
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 
-namespace ros2component_fixtures
+namespace ros2component_test_fixtures
 {
 
-class Talker : public rclcpp::Node
+class Listener : public rclcpp::Node
 {
 public:
-  ROS2COMPONENT_FIXTURES_PUBLIC
-  explicit Talker(const rclcpp::NodeOptions & options);
-
-protected:
-  void on_timer();
+  ROS2COMPONENT_TEST_FIXTURES_PUBLIC
+  explicit Listener(const rclcpp::NodeOptions & options);
 
 private:
-  size_t count_;
-  rclcpp::Publisher<std_msgs::msg::String>::SharedPtr pub_;
-  rclcpp::TimerBase::SharedPtr timer_;
+  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr sub_;
 };
 
-}  // namespace ros2component_fixtures
+}  // namespace ros2component_test_fixtures
 
-#endif  // ROS2COMPONENT_FIXTURES__TALKER_COMPONENT_HPP_
+#endif  // ROS2COMPONENT_TEST_FIXTURES__LISTENER_COMPONENT_HPP_

@@ -32,16 +32,13 @@ import pytest
 from rmw_implementation import get_available_rmw_implementations
 
 
-# TODO(BMarchi): Opensplice doesn't get along with running any cli command with ExecuteProcess,
-# it just hangs there making `wait_for_timeout` fail. All tests should run fine with opensplice.
 @pytest.mark.rostest
-@launch_testing.parametrize(
-    'rmw_implementation',
-    [v for v in get_available_rmw_implementations() if v != 'rmw_opensplice_cpp'])
+@launch_testing.parametrize('rmw_implementation', get_available_rmw_implementations())
 def generate_test_description(rmw_implementation, ready_fn):
     additional_env = {'RMW_IMPLEMENTATION': rmw_implementation}
     component_node = Node(
-        package='rclcpp_components', node_executable='component_container', output='screen')
+        package='rclcpp_components', node_executable='component_container', output='screen',
+        additional_env=additional_env)
     return LaunchDescription([
         # Always restart daemon to isolate tests.
         ExecuteProcess(
@@ -73,8 +70,8 @@ class TestROS2ComponentLoadCLI(unittest.TestCase):
         rmw_implementation
     ):
         @contextlib.contextmanager
-        def launch_node_command(self, arguments):
-            node_command_action = ExecuteProcess(
+        def launch_component_command(self, arguments):
+            component_command_action = ExecuteProcess(
                 cmd=['ros2', 'component', *arguments],
                 additional_env={
                     'RMW_IMPLEMENTATION': rmw_implementation,
@@ -84,46 +81,47 @@ class TestROS2ComponentLoadCLI(unittest.TestCase):
                 output='screen'
             )
             with launch_testing.tools.launch_process(
-                launch_service, node_command_action, proc_info, proc_output,
+                launch_service, component_command_action, proc_info, proc_output,
                 output_filter=launch_testing_ros.tools.basic_output_filter(
                     # ignore ros2cli daemon nodes
                     filtered_patterns=['.*ros2cli.*'],
                     filtered_rmw_implementation=rmw_implementation
                 )
-            ) as node_command:
-                yield node_command
-        cls.launch_node_command = launch_node_command
+            ) as component_command:
+                yield component_command
+        cls.launch_component_command = launch_component_command
 
     @launch_testing.markers.retry_on_failure(times=2)
     def test_load_verb(self):
-        with self.launch_node_command(
+        with self.launch_component_command(
                 arguments=[
                     'load', '/ComponentManager',
-                    'ros2component_fixtures', 'ros2component_fixtures::Talker']) as talker_node:
-            assert talker_node.wait_for_shutdown(timeout=20)
-        assert talker_node.exit_code == launch_testing.asserts.EXIT_OK
+                    'ros2component_test_fixtures',
+                    'ros2component_test_fixtures::Talker']) as load_command:
+            assert load_command.wait_for_shutdown(timeout=20)
+        assert load_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
                 "Loaded component 1 into '/ComponentManager' "
                 "container node as '/talker'"],
-            text=talker_node.output,
-            strict=True
+            text=load_command.output,
+            strict=False
         )
-        with self.launch_node_command(
+        with self.launch_component_command(
                 arguments=[
                     'load', '/ComponentManager',
-                    'ros2component_fixtures',
-                    'ros2component_fixtures::Listener']) as listener_node:
-            assert listener_node.wait_for_shutdown(timeout=20)
-        assert listener_node.exit_code == launch_testing.asserts.EXIT_OK
+                    'ros2component_test_fixtures',
+                    'ros2component_test_fixtures::Listener']) as load_command:
+            assert load_command.wait_for_shutdown(timeout=20)
+        assert load_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
                 "Loaded component 2 into '/ComponentManager' "
                 "container node as '/listener'"],
-            text=listener_node.output,
-            strict=True
+            text=load_command.output,
+            strict=False
         )
-        with self.launch_node_command(
+        with self.launch_component_command(
                 arguments=[
                     'unload', '/ComponentManager', '1']) as unload_command:
             assert unload_command.wait_for_shutdown(timeout=20)
@@ -131,66 +129,68 @@ class TestROS2ComponentLoadCLI(unittest.TestCase):
         assert launch_testing.tools.expect_output(
             expected_lines=["Unloaded component 1 from '/ComponentManager' container"],
             text=unload_command.output,
-            strict=True
+            strict=False
         )
         # Test the unique id for loaded nodes.
-        with self.launch_node_command(
+        with self.launch_component_command(
                 arguments=[
                     'load', '/ComponentManager',
-                    'ros2component_fixtures', 'ros2component_fixtures::Talker']) as talker_node:
-            assert talker_node.wait_for_shutdown(timeout=20)
-        assert talker_node.exit_code == launch_testing.asserts.EXIT_OK
+                    'ros2component_test_fixtures',
+                    'ros2component_test_fixtures::Talker']) as load_command:
+            assert load_command.wait_for_shutdown(timeout=20)
+        assert load_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
                 "Loaded component 3 into '/ComponentManager' "
                 "container node as '/talker'"],
-            text=talker_node.output,
-            strict=True
+            text=load_command.output,
+            strict=False
         )
         # Test we can load the same node more than once.
-        with self.launch_node_command(
+        with self.launch_component_command(
                 arguments=[
                     'load', '/ComponentManager',
-                    'ros2component_fixtures', 'ros2component_fixtures::Talker']) as talker_node:
-            assert talker_node.wait_for_shutdown(timeout=20)
-        assert talker_node.exit_code == launch_testing.asserts.EXIT_OK
+                    'ros2component_test_fixtures',
+                    'ros2component_test_fixtures::Talker']) as load_command:
+            assert load_command.wait_for_shutdown(timeout=20)
+        assert load_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
                 "Loaded component 4 into '/ComponentManager' "
                 "container node as '/talker'"],
-            text=talker_node.output,
-            strict=True
+            text=load_command.output,
+            strict=False
         )
 
     @launch_testing.markers.retry_on_failure(times=2)
-    def test_load_verb_nonexistent_class(self):
-        with self.launch_node_command(
+    def test_load_nonexistent_component(self):
+        with self.launch_component_command(
                 arguments=[
                     'load', '/ComponentManager',
-                    'ros2component_fixtures',
-                    'ros2component_fixtures::NonExistingPlugin']) as command:
-            assert command.wait_for_shutdown(timeout=20)
-        assert command.exit_code == 1
+                    'ros2component_test_fixtures',
+                    'ros2component_test_fixtures::NonExistentComponent']) as load_command:
+            assert load_command.wait_for_shutdown(timeout=20)
+        assert load_command.exit_code == 1
         assert launch_testing.tools.expect_output(
             expected_lines=[
                 'Failed to load component: '
                 'Failed to find class with the requested plugin name.'],
-            text=command.output,
-            strict=True
+            text=load_command.output,
+            strict=False
         )
 
     @launch_testing.markers.retry_on_failure(times=2)
-    def test_load_verb_nonexistent_plugin(self):
-        with self.launch_node_command(
+    def test_load_nonexistent_plugin(self):
+        with self.launch_component_command(
                 arguments=[
                     'load', '/ComponentManager',
-                    'non_existent_plugin', 'non_existent_plugin::Test']) as command:
-            assert command.wait_for_shutdown(timeout=20)
-        assert command.exit_code == 1
+                    'non_existent_plugin', 'non_existent_plugin::Test']) as load_command:
+            assert load_command.wait_for_shutdown(timeout=20)
+        assert load_command.exit_code == 1
         assert launch_testing.tools.expect_output(
             expected_lines=[
                 'Failed to load component: '
                 'Could not find requested resource in ament index'],
-            text=command.output,
-            strict=True
+            text=load_command.output,
+            strict=False
         )
