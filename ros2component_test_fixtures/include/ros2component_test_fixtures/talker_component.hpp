@@ -28,13 +28,8 @@ public:
   ROS2COMPONENT_TEST_FIXTURES_PUBLIC
   explicit Talker(const rclcpp::NodeOptions & options);
 
-protected:
-  void on_timer();
-
 private:
-  size_t count_;
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr pub_;
-  rclcpp::TimerBase::SharedPtr timer_;
 };
 
 }  // namespace ros2component_test_fixtures

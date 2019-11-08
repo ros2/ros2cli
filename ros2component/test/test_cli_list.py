@@ -18,6 +18,7 @@ import unittest
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess
 from launch.actions import OpaqueFunction
+from launch.actions import TimerAction
 
 from launch_ros.actions import Node
 
@@ -84,7 +85,7 @@ def generate_test_description(rmw_implementation, ready_fn):
                     name='daemon-start',
                     on_exit=[
                         component_node,
-                        listener_command_action,
+                        TimerAction(period=3.0, actions=[listener_command_action]),
                         OpaqueFunction(function=lambda context: ready_fn())
                     ],
                     additional_env=additional_env
@@ -130,16 +131,15 @@ class TestROS2ComponentListCLI(unittest.TestCase):
     def test_list_verb(self):
         with self.launch_component_command(
                 arguments=['list']) as list_command:
-            assert list_command.wait_for_shutdown(timeout=10)
+            assert list_command.wait_for_shutdown(timeout=20)
         assert list_command.exit_code == launch_testing.asserts.EXIT_OK
-        LIST_THREE_NODES = [
-            '/ComponentManager',
-            '  1  /listener',
-            '  2  /talker',
-            '  3  /talker'
-        ]
         assert launch_testing.tools.expect_output(
-            expected_lines=LIST_THREE_NODES,
+            expected_lines=[
+                '/ComponentManager',
+                '  1  /listener',
+                '  2  /talker',
+                '  3  /talker'
+            ],
             text=list_command.output,
             strict=False
         )
