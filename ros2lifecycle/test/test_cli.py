@@ -183,7 +183,7 @@ class TestROS2LifecycleCLI(unittest.TestCase):
         with self.launch_lifecycle_command(
             arguments=['list', 'lc_node']
         ) as lifecycle_command:
-            assert lifecycle_command.wait_for_shutdown(timeout=10)
+            assert lifecycle_command.wait_for_shutdown(timeout=20)
         assert lifecycle_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
@@ -203,7 +203,7 @@ class TestROS2LifecycleCLI(unittest.TestCase):
         with self.launch_lifecycle_command(
             arguments=['list', 'lc_node', '-a']
         ) as lifecycle_command:
-            assert lifecycle_command.wait_for_shutdown(timeout=10)
+            assert lifecycle_command.wait_for_shutdown(timeout=20)
         assert lifecycle_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=ALL_LIFECYCLE_NODE_TRANSITIONS,
@@ -214,9 +214,9 @@ class TestROS2LifecycleCLI(unittest.TestCase):
     @launch_testing.markers.retry_on_failure(times=5)
     def test_list_all_lifecycle_hidden_node_transitions(self):
         with self.launch_lifecycle_command(
-            arguments=['list', '_hidden_lc_node', '-a']
+            arguments=['list', '--include-hidden-nodes', '_hidden_lc_node', '-a']
         ) as lifecycle_command:
-            assert lifecycle_command.wait_for_shutdown(timeout=10)
+            assert lifecycle_command.wait_for_shutdown(timeout=20)
         assert lifecycle_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=ALL_LIFECYCLE_NODE_TRANSITIONS,
@@ -227,7 +227,7 @@ class TestROS2LifecycleCLI(unittest.TestCase):
     @launch_testing.markers.retry_on_failure(times=5)
     def test_list_lifecycle_nodes(self):
         with self.launch_lifecycle_command(arguments=['nodes']) as lifecycle_command:
-            assert lifecycle_command.wait_for_shutdown(timeout=10)
+            assert lifecycle_command.wait_for_shutdown(timeout=20)
         assert lifecycle_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=['/lc_node'],
@@ -238,7 +238,7 @@ class TestROS2LifecycleCLI(unittest.TestCase):
     @launch_testing.markers.retry_on_failure(times=5)
     def test_list_all_lifecycle_nodes(self):
         with self.launch_lifecycle_command(arguments=['nodes', '-a']) as lifecycle_command:
-            assert lifecycle_command.wait_for_shutdown(timeout=10)
+            assert lifecycle_command.wait_for_shutdown(timeout=20)
         assert lifecycle_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
@@ -250,9 +250,18 @@ class TestROS2LifecycleCLI(unittest.TestCase):
         )
 
     @launch_testing.markers.retry_on_failure(times=5)
+    def test_count_lifecycle_nodes(self):
+        with self.launch_lifecycle_command(arguments=['nodes', '-c']) as lifecycle_command:
+            assert lifecycle_command.wait_for_shutdown(timeout=20)
+        assert lifecycle_command.exit_code == launch_testing.asserts.EXIT_OK
+        output_lines = lifecycle_command.output.splitlines()
+        assert len(output_lines) == 1
+        assert int(output_lines[0]) == 1
+
+    @launch_testing.markers.retry_on_failure(times=5)
     def test_count_all_lifecycle_nodes(self):
         with self.launch_lifecycle_command(arguments=['nodes', '-a', '-c']) as lifecycle_command:
-            assert lifecycle_command.wait_for_shutdown(timeout=10)
+            assert lifecycle_command.wait_for_shutdown(timeout=20)
         assert lifecycle_command.exit_code == launch_testing.asserts.EXIT_OK
         output_lines = lifecycle_command.output.splitlines()
         assert len(output_lines) == 1
@@ -263,7 +272,7 @@ class TestROS2LifecycleCLI(unittest.TestCase):
         with self.launch_lifecycle_command(
             arguments=['set', '/lc_node', 'noop']
         ) as lifecycle_command:
-            assert lifecycle_command.wait_for_shutdown(timeout=10)
+            assert lifecycle_command.wait_for_shutdown(timeout=20)
         assert lifecycle_command.exit_code == 1
         assert launch_testing.tools.expect_output(
             expected_lines=[
@@ -276,11 +285,11 @@ class TestROS2LifecycleCLI(unittest.TestCase):
         )
 
     @launch_testing.markers.retry_on_failure(times=5)
-    def test_set_nonexistent_node_state(self):
+    def test_set_nonexistent_lifecycle_node_state(self):
         with self.launch_lifecycle_command(
-            arguments=['set', '/nonexistent_node', 'configure']
+            arguments=['set', '/nonexistent_lc_node', 'configure']
         ) as lifecycle_command:
-            assert lifecycle_command.wait_for_shutdown(timeout=10)
+            assert lifecycle_command.wait_for_shutdown(timeout=20)
         assert lifecycle_command.exit_code == 1
         assert launch_testing.tools.expect_output(
             expected_lines=['Node not found'],
@@ -289,14 +298,64 @@ class TestROS2LifecycleCLI(unittest.TestCase):
         )
 
     @launch_testing.markers.retry_on_failure(times=5)
-    def test_get_nonexistent_node_state(self):
+    def test_set_hidden_lifecycle_node_transition(self):
         with self.launch_lifecycle_command(
-            arguments=['get', '/nonexistent_node']
+            arguments=['set', '/_hidden_lc_node', 'configure']
         ) as lifecycle_command:
-            assert lifecycle_command.wait_for_shutdown(timeout=10)
+            assert lifecycle_command.wait_for_shutdown(timeout=20)
         assert lifecycle_command.exit_code == 1
         assert launch_testing.tools.expect_output(
             expected_lines=['Node not found'],
+            text=lifecycle_command.output,
+            strict=True
+        )
+
+    @launch_testing.markers.retry_on_failure(times=5)
+    def test_get_nonexistent_lifecycle_node_state(self):
+        with self.launch_lifecycle_command(
+            arguments=['get', '/nonexistent_lc_node']
+        ) as lifecycle_command:
+            assert lifecycle_command.wait_for_shutdown(timeout=20)
+        assert lifecycle_command.exit_code == 1
+        assert launch_testing.tools.expect_output(
+            expected_lines=['Node not found'],
+            text=lifecycle_command.output,
+            strict=True
+        )
+
+    @launch_testing.markers.retry_on_failure(times=5)
+    def test_get_hidden_lifecycle_node_state(self):
+        with self.launch_lifecycle_command(
+            arguments=['get', '/_hidden_lc_node']
+        ) as lifecycle_command:
+            assert lifecycle_command.wait_for_shutdown(timeout=20)
+        assert lifecycle_command.exit_code == 1
+        assert launch_testing.tools.expect_output(
+            expected_lines=['Node not found'],
+            text=lifecycle_command.output,
+            strict=True
+        )
+
+        with self.launch_lifecycle_command(
+            arguments=['get', '--include-hidden-nodes', '/_hidden_lc_node']
+        ) as lifecycle_command:
+            assert lifecycle_command.wait_for_shutdown(timeout=20)
+        assert lifecycle_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=['unconfigured [1]'],
+            text=lifecycle_command.output,
+            strict=True
+        )
+
+    @launch_testing.markers.retry_on_failure(times=5)
+    def test_get_lifecycle_node_state(self):
+        with self.launch_lifecycle_command(
+            arguments=['get', '/lc_node']
+        ) as lifecycle_command:
+            assert lifecycle_command.wait_for_shutdown(timeout=20)
+        assert lifecycle_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=['unconfigured [1]'],
             text=lifecycle_command.output,
             strict=True
         )
@@ -313,7 +372,7 @@ class TestROS2LifecycleCLI(unittest.TestCase):
             with self.launch_lifecycle_command(
                 arguments=['get', '--include-hidden-nodes', '/_hidden_lc_node']
             ) as lifecycle_command:
-                assert lifecycle_command.wait_for_shutdown(timeout=10)
+                assert lifecycle_command.wait_for_shutdown(timeout=20)
             assert lifecycle_command.exit_code == launch_testing.asserts.EXIT_OK
             assert launch_testing.tools.expect_output(
                 expected_lines=[current_state],
@@ -324,7 +383,7 @@ class TestROS2LifecycleCLI(unittest.TestCase):
             with self.launch_lifecycle_command(
                 arguments=['set', '--include-hidden-nodes', '/_hidden_lc_node', next_action]
             ) as lifecycle_command:
-                assert lifecycle_command.wait_for_shutdown(timeout=10)
+                assert lifecycle_command.wait_for_shutdown(timeout=20)
             assert lifecycle_command.exit_code == launch_testing.asserts.EXIT_OK
             assert launch_testing.tools.expect_output(
                 expected_lines=['Transitioning successful'],
@@ -335,7 +394,7 @@ class TestROS2LifecycleCLI(unittest.TestCase):
         with self.launch_lifecycle_command(
             arguments=['get', '--include-hidden-nodes', '/_hidden_lc_node']
         ) as lifecycle_command:
-            assert lifecycle_command.wait_for_shutdown(timeout=10)
+            assert lifecycle_command.wait_for_shutdown(timeout=20)
         assert lifecycle_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[lifecycle[0][0]], text=lifecycle_command.output, strict=True
