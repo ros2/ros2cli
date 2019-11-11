@@ -127,11 +127,11 @@ class TestROS2ComponentListCLI(unittest.TestCase):
                 yield component_command
         cls.launch_component_command = launch_component_command
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=10)
     def test_list_verb(self):
         with self.launch_component_command(
                 arguments=['list']) as list_command:
-            assert list_command.wait_for_shutdown(timeout=20)
+            assert list_command.wait_for_shutdown(timeout=30)
         assert list_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
