@@ -27,7 +27,7 @@ import rclpy
 from ros2cli.node.direct import DirectNode
 from ros2cli.node.strategy import NodeStrategy
 from ros2node.api import get_node_names
-from ros2node.api import get_service_info
+from ros2node.api import get_service_server_info
 from ros2param.api import get_parameter_value
 from ros2pkg.api import get_executable_paths
 from ros2pkg.api import PackageNotFound
@@ -191,7 +191,7 @@ def unload_component_from_container(*, node, remote_container_node_name, compone
 
 def find_container_node_names(*, node, node_names):
     """
-    Identify container nodes from a a list of node names.
+    Identify container nodes from a list of node names.
 
     :param node: a `ros2cli.node.DirectNode` instance
     :param node_names: list of `ros2node.api.NodeName` instances, as returned
@@ -202,7 +202,7 @@ def find_container_node_names(*, node, node_names):
     container_node_names = []
     for n in node_names:
         try:
-            services = get_service_info(
+            services = get_service_server_info(
                 node=node, remote_node_name=n.full_name, include_hidden=True)
         except rclpy.node.NodeNameNonExistentError:
             continue
