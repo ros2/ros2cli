@@ -20,7 +20,6 @@
   <test_depend>ament_flake8</test_depend>
   <test_depend>ament_pep257</test_depend>
   <test_depend>ament_xmllint</test_depend>
-
   <test_depend>python3-pytest</test_depend>
   <test_depend>ros_testing</test_depend>
   <test_depend>ros2lifecycle_test_fixtures</test_depend>

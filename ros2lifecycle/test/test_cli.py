@@ -212,7 +212,20 @@ class TestROS2LifecycleCLI(unittest.TestCase):
         )
 
     @launch_testing.markers.retry_on_failure(times=5)
-    def test_list_all_lifecycle_hidden_node_transitions(self):
+    def test_list_all_lifecycle_hidden_node_transitions_without_hidden_flag(self):
+        with self.launch_lifecycle_command(
+            arguments=['list', '_hidden_lc_node', '-a']
+        ) as lifecycle_command:
+            assert lifecycle_command.wait_for_shutdown(timeout=20)
+        assert lifecycle_command.exit_code == 1
+        assert launch_testing.tools.expect_output(
+            expected_lines=['Node not found'],
+            text=lifecycle_command.output,
+            strict=True
+        )
+
+    @launch_testing.markers.retry_on_failure(times=5)
+    def test_list_all_lifecycle_hidden_node_transitions_with_hidden_flag(self):
         with self.launch_lifecycle_command(
             arguments=['list', '--include-hidden-nodes', '_hidden_lc_node', '-a']
         ) as lifecycle_command:
