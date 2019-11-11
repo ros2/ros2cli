@@ -42,7 +42,7 @@ class GetVerb(VerbExtension):
         with NodeStrategy(args) as node:
             node_names = get_node_names(
                 node=node, include_hidden_nodes=args.include_hidden_nodes)
-            node_names = [n.full_name for n in node_names]
+            node_names = {n.full_name for n in node_names}
 
         node_name = get_absolute_node_name(args.node_name)
         if node_name:
