@@ -113,6 +113,19 @@ GET_VERB_PARAM_VALUES = {
     'parameter_with_no_value': 'Parameter not set.{}\n'
 }
 
+GET_VERB_PARAM_VALUES_HIDE_FLAG = {
+    'bool_param': '{}',
+    'int_param': '{}',
+    'double_param': '{}',
+    'str_param': '{}',
+    'byte_array': '{}',
+    'bool_array': '{}',
+    'int_array': "array('q', {})",
+    'double_array': "array('d', {})",
+    'str_array': '{}',
+    'parameter_with_no_value': 'None'
+}
+
 
 @pytest.mark.rostest
 @launch_testing.parametrize('rmw_implementation', get_available_rmw_implementations())
@@ -209,16 +222,18 @@ class TestROS2ParamCLI(unittest.TestCase):
         for param_key, param_value in parameters.items():
             with self.subTest(param_key=param_key, param_value=param_value):
                 with self.launch_param_command(
-                        arguments=['get', '/param_node',
-                                   param_key, '--hide-type']) as param_command:
+                        arguments=[
+                            'get', '/param_node',
+                            param_key, '--hide-type'
+                        ]
+                ) as param_command:
                     assert param_command.wait_for_shutdown(timeout=5)
                 assert param_command.exit_code == launch_testing.asserts.EXIT_OK
-                if param_value is None:
-                    param_value = ':None\n'
                 assert launch_testing.tools.expect_output(
                     expected_lines=[
-                        GET_VERB_PARAM_VALUES[param_key].format(
-                            str(param_value)).split(':')[1].strip()],
+                        GET_VERB_PARAM_VALUES_HIDE_FLAG[param_key].format(
+                            str(param_value))
+                    ],
                     text=param_command.output,
                     strict=True
                 )

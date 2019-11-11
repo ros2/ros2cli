@@ -133,7 +133,7 @@ class TestROS2ParamDeleteCLI(unittest.TestCase):
             assert param_command.wait_for_shutdown(timeout=5)
         assert param_command.exit_code == 1
         assert launch_testing.tools.expect_output(
-            expected_text='Node not found\n',
+            expected_lines=['Node not found'],
             text=param_command.output,
             strict=True
         )
@@ -170,7 +170,7 @@ class TestROS2ParamDeleteCLI(unittest.TestCase):
             assert param_command.wait_for_shutdown(timeout=5)
         assert param_command.exit_code == 1
         assert launch_testing.tools.expect_output(
-            expected_text='Node not found\n',
+            expected_lines=['Node not found'],
             text=param_command.output,
             strict=True
         )
