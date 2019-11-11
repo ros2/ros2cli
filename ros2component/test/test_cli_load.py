@@ -37,7 +37,7 @@ from rmw_implementation import get_available_rmw_implementations
 @launch_testing.parametrize('rmw_implementation', get_available_rmw_implementations())
 def generate_test_description(rmw_implementation, ready_fn):
     additional_env = {'RMW_IMPLEMENTATION': rmw_implementation}
-    component_node = Node(
+    container_node_action = Node(
         package='rclcpp_components', node_executable='component_container', output='own_log',
         output_format='{line}', additional_env=additional_env,
         name='container_' + rmw_implementation)
@@ -51,7 +51,7 @@ def generate_test_description(rmw_implementation, ready_fn):
                     cmd=['ros2', 'daemon', 'start'],
                     name='daemon-start',
                     on_exit=[
-                        component_node,
+                        container_node_action,
                         OpaqueFunction(function=lambda context: ready_fn())
                     ],
                     additional_env=additional_env
@@ -70,7 +70,7 @@ class TestROS2ComponentLoadCLI(unittest.TestCase):
         proc_info,
         proc_output,
         rmw_implementation,
-        component_node
+        container_node_action
     ):
         @contextlib.contextmanager
         def launch_component_command(self, arguments):
@@ -93,8 +93,8 @@ class TestROS2ComponentLoadCLI(unittest.TestCase):
             ) as component_command:
                 yield component_command
         cls.launch_component_command = launch_component_command
-        cls.component_node = launch_testing.tools.ProcessProxy(
-            component_node, proc_info, proc_output,
+        cls.container_node_action = launch_testing.tools.ProcessProxy(
+            container_node_action, proc_info, proc_output,
             output_filter=launch_testing_ros.tools.basic_output_filter(
                     # ignore ros2cli daemon nodes
                     filtered_patterns=['.*ros2cli.*'],
@@ -110,19 +110,19 @@ class TestROS2ComponentLoadCLI(unittest.TestCase):
                     'ros2component_test_fixtures',
                     'ros2component_test_fixtures::Talker']) as load_command:
             assert load_command.wait_for_shutdown(timeout=20)
-            assert self.component_node.wait_for_output(functools.partial(
+            assert load_command.exit_code == launch_testing.asserts.EXIT_OK
+            assert launch_testing.tools.expect_output(
+                expected_lines=[
+                    "Loaded component 1 into '/ComponentManager' "
+                    "container node as '/talker'"],
+                text=load_command.output,
+                strict=False
+            )
+            assert self.container_node_action.wait_for_output(functools.partial(
                 launch_testing.tools.expect_output, expected_lines=[
                     "[INFO] [talker]: Publishing: 'Hello World'"
                 ], strict=False
             ), timeout=10)
-        assert load_command.exit_code == launch_testing.asserts.EXIT_OK
-        assert launch_testing.tools.expect_output(
-            expected_lines=[
-                "Loaded component 1 into '/ComponentManager' "
-                "container node as '/talker'"],
-            text=load_command.output,
-            strict=False
-        )
         with self.launch_component_command(
                 arguments=[
                     'load', '/ComponentManager',
@@ -169,7 +169,7 @@ class TestROS2ComponentLoadCLI(unittest.TestCase):
                     'ros2component_test_fixtures',
                     'ros2component_test_fixtures::Talker']) as load_command:
             assert load_command.wait_for_shutdown(timeout=20)
-            assert self.component_node.wait_for_output(functools.partial(
+            assert self.container_node_action.wait_for_output(functools.partial(
                 launch_testing.tools.expect_output, expected_lines=[
                     "[INFO] [talker]: Publishing: 'Hello World'"
                 ] * 3, strict=False

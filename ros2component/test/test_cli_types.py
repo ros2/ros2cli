@@ -19,13 +19,10 @@ from launch import LaunchDescription
 from launch.actions import ExecuteProcess
 from launch.actions import OpaqueFunction
 
-from launch_ros.actions import Node
-
 import launch_testing
 import launch_testing.asserts
 import launch_testing.markers
 import launch_testing.tools
-import launch_testing_ros.tools
 
 import pytest
 
@@ -34,11 +31,8 @@ from rmw_implementation import get_available_rmw_implementations
 
 @pytest.mark.rostest
 @launch_testing.parametrize('rmw_implementation', get_available_rmw_implementations())
+@launch_testing.markers.keep_alive
 def generate_test_description(rmw_implementation, ready_fn):
-    additional_env = {'RMW_IMPLEMENTATION': rmw_implementation}
-    component_node = Node(
-        package='rclcpp_components', node_executable='component_container', output='screen',
-        additional_env=additional_env)
     return LaunchDescription([
         # Always restart daemon to isolate tests.
         ExecuteProcess(
@@ -49,14 +43,13 @@ def generate_test_description(rmw_implementation, ready_fn):
                     cmd=['ros2', 'daemon', 'start'],
                     name='daemon-start',
                     on_exit=[
-                        component_node,
                         OpaqueFunction(function=lambda context: ready_fn())
                     ],
-                    additional_env=additional_env
+                    additional_env={'RMW_IMPLEMENTATION': rmw_implementation}
                 )
             ]
-        ),
-    ]), locals()
+        )
+    ])
 
 
 class TestROS2ComponentTypesCLI(unittest.TestCase):
@@ -81,12 +74,7 @@ class TestROS2ComponentTypesCLI(unittest.TestCase):
                 output='screen'
             )
             with launch_testing.tools.launch_process(
-                launch_service, component_command_action, proc_info, proc_output,
-                output_filter=launch_testing_ros.tools.basic_output_filter(
-                    # ignore ros2cli daemon nodes
-                    filtered_patterns=['.*ros2cli.*'],
-                    filtered_rmw_implementation=rmw_implementation
-                )
+                launch_service, component_command_action, proc_info, proc_output
             ) as component_command:
                 yield component_command
         cls.launch_component_command = launch_component_command
@@ -98,13 +86,12 @@ class TestROS2ComponentTypesCLI(unittest.TestCase):
                 arguments=['types']) as component_command:
             assert component_command.wait_for_shutdown(timeout=20)
         assert component_command.exit_code == launch_testing.asserts.EXIT_OK
-        DEMO_NODES_TYPES = [
-            'ros2component_test_fixtures',
-            '  ros2component_test_fixtures::Talker',
-            '  ros2component_test_fixtures::Listener'
-        ]
         assert launch_testing.tools.expect_output(
-            expected_lines=DEMO_NODES_TYPES,
+            expected_lines=[
+                'ros2component_test_fixtures',
+                '  ros2component_test_fixtures::Talker',
+                '  ros2component_test_fixtures::Listener'
+            ],
             text=component_command.output,
             strict=True
         )

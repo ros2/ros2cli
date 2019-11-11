@@ -37,9 +37,33 @@ from rmw_implementation import get_available_rmw_implementations
 @launch_testing.parametrize('rmw_implementation', get_available_rmw_implementations())
 def generate_test_description(rmw_implementation, ready_fn):
     additional_env = {'RMW_IMPLEMENTATION': rmw_implementation}
-    component_node = Node(
+    container_node_action = Node(
         package='rclcpp_components', node_executable='component_container', output='screen',
         additional_env=additional_env)
+
+    talker_two_command_action = ExecuteProcess(
+        cmd=['ros2', 'component', 'load', '/ComponentManager',
+             'ros2component_test_fixtures', 'ros2component_test_fixtures::Talker'],
+        additional_env={
+            'RMW_IMPLEMENTATION': rmw_implementation,
+            'PYTHONUNBUFFERED': '1'
+        },
+        name='ros2component-cli',
+        output='screen'
+    )
+
+    talker_one_command_action = ExecuteProcess(
+        cmd=['ros2', 'component', 'load', '/ComponentManager',
+             'ros2component_test_fixtures', 'ros2component_test_fixtures::Talker'],
+        additional_env={
+            'RMW_IMPLEMENTATION': rmw_implementation,
+            'PYTHONUNBUFFERED': '1'
+        },
+        name='ros2component-cli',
+        output='screen',
+        on_exit=[talker_two_command_action]
+    )
+
     listener_command_action = ExecuteProcess(
         cmd=['ros2', 'component', 'load', '/ComponentManager',
              'ros2component_test_fixtures', 'ros2component_test_fixtures::Listener'],
@@ -49,31 +73,9 @@ def generate_test_description(rmw_implementation, ready_fn):
         },
         name='ros2component-cli',
         output='screen',
-        on_exit=[
-            ExecuteProcess(
-                cmd=['ros2', 'component', 'load', '/ComponentManager',
-                     'ros2component_test_fixtures', 'ros2component_test_fixtures::Talker'],
-                additional_env={
-                    'RMW_IMPLEMENTATION': rmw_implementation,
-                    'PYTHONUNBUFFERED': '1'
-                },
-                name='ros2component-cli',
-                output='screen',
-                on_exit=[
-                    ExecuteProcess(
-                        cmd=['ros2', 'component', 'load', '/ComponentManager',
-                             'ros2component_test_fixtures', 'ros2component_test_fixtures::Talker'],
-                        additional_env={
-                            'RMW_IMPLEMENTATION': rmw_implementation,
-                            'PYTHONUNBUFFERED': '1'
-                        },
-                        name='ros2component-cli',
-                        output='screen'
-                    )
-                ]
-            )
-        ]
+        on_exit=[talker_one_command_action]
     )
+
     return LaunchDescription([
         # Always restart daemon to isolate tests.
         ExecuteProcess(
@@ -84,7 +86,7 @@ def generate_test_description(rmw_implementation, ready_fn):
                     cmd=['ros2', 'daemon', 'start'],
                     name='daemon-start',
                     on_exit=[
-                        component_node,
+                        container_node_action,
                         TimerAction(period=3.0, actions=[listener_command_action]),
                         OpaqueFunction(function=lambda context: ready_fn())
                     ],
@@ -131,7 +133,7 @@ class TestROS2ComponentListCLI(unittest.TestCase):
     def test_list_verb(self):
         with self.launch_component_command(
                 arguments=['list']) as list_command:
-            assert list_command.wait_for_shutdown(timeout=30)
+            assert list_command.wait_for_shutdown(timeout=10)
         assert list_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
