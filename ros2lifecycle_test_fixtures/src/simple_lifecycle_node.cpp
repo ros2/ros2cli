@@ -84,7 +84,7 @@ int main(int argc, char * argv[])
 
   rclcpp::init(argc, argv);
 
-  auto lc_node = std::make_shared<SimpleLifecycleNode>("lc_node");
+  auto lc_node = std::make_shared<SimpleLifecycleNode>("test_lifecycle_node");
 
   rclcpp::spin(lc_node->get_node_base_interface());
 
