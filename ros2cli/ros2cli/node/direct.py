@@ -35,8 +35,13 @@ class DirectNode:
             args, 'node_name_suffix', '_%d' % os.getpid())
         start_parameter_services = getattr(
             args, 'start_parameter_services', False)
+
+        node_name = NODE_NAME_PREFIX + node_name_suffix
+        if hasattr(args, 'node_name') and args.node_name:
+            node_name = args.node_name
+
         self.node = rclpy.create_node(
-            NODE_NAME_PREFIX + node_name_suffix,
+            node_name,
             start_parameter_services=start_parameter_services)
         timeout = getattr(args, 'spin_time', DEFAULT_TIMEOUT)
         timer = self.node.create_timer(timeout, timer_callback)
