@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys
 import argparse
+import sys
 
 from ros2interface.api import type_completer
 from ros2interface.verb import VerbExtension
