@@ -36,7 +36,7 @@ class DirectNode:
         start_parameter_services = getattr(
             args, 'start_parameter_services', False)
 
-        if not node_name:
+        if node_name is None:
             node_name = NODE_NAME_PREFIX + node_name_suffix
 
         self.node = rclpy.create_node(
