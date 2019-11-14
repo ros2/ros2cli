@@ -25,12 +25,10 @@ class ReadStdinPipe(argparse.Action):
 
     def __call__(self, parser, namespace, values, option_string=None):
         if values == '-':
-            if not sys.stdin.isatty():
-                setattr(namespace, self.dest, sys.stdin.readline().strip())
-            else:
+            if sys.stdin.isatty():
                 parser.error('expected stdin pipe')
-        else:
-            setattr(namespace, self.dest, values)
+            values = sys.stdin.readline().strip()
+        setattr(namespace, self.dest, values)
 
 
 class ShowVerb(VerbExtension):
