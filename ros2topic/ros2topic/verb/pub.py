@@ -79,7 +79,7 @@ class PubVerb(VerbExtension):
 def main(args):
     qos_profile = qos_profile_from_short_keys(
         args.qos_profile, reliability=args.qos_reliability, durability=args.qos_durability)
-    with DirectNode(args) as node:
+    with DirectNode(args, node_name=args.node_name) as node:
         return publisher(
             node.node,
             args.message_type,
