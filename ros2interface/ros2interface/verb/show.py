@@ -14,7 +14,6 @@
 
 import sys
 import argparse
-import textwrap
 
 from ros2interface.api import type_completer
 from ros2interface.verb import VerbExtension
@@ -38,18 +37,12 @@ class ShowVerb(VerbExtension):
     """Output the interface definition."""
 
     def add_arguments(self, parser, cli_name):
-        parser.formatter_class = argparse.RawTextHelpFormatter
-        parser.epilog = textwrap.dedent("""\
-                additional usage:
-                    show the interface definition of a topic, service or action
-                    (e.g. ros2 topic type /chatter | ros2 interface show -)""")
-
         arg = parser.add_argument(
-                'type',
-                action=ReadStdinPipe,
-                help=textwrap.dedent("""\
-                        Show an interface definition (e.g. "std_msgs/msg/String")
-                        Set to "-" to read the interface type from the stdin pipe"""))
+            'type',
+            action=ReadStdinPipe,
+            help="Show an interface definition (e.g. 'std_msgs/msg/String'). "
+                 "Passing '-' reads the argument from stdin (e.g. "
+                 "'ros2 topic type /chatter | ros2 interface show -').")
         arg.completer = type_completer
 
     def main(self, *, args):
