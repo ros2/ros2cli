@@ -5,7 +5,7 @@ package_name = 'ros2node'
 
 setup(
     name=package_name,
-    version='0.8.4',
+    version='0.8.5',
     packages=find_packages(exclude=['test']),
     data_files=[
         ('share/' + package_name, ['package.xml']),
