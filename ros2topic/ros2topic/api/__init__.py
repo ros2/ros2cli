@@ -78,8 +78,9 @@ def import_message_type(topic_name, message_type):
 def message_type_completer(**kwargs):
     """Callable returning a list of message types."""
     message_types = []
-    for package_name, message_names in get_message_interfaces().items():
-        for message_name in message_names:
+    message_types_dict = get_message_interfaces()
+    for package_name in sorted(message_types_dict.keys()):
+        for message_name in sorted(message_types_dict[package_name]):
             message_types.append(f'{package_name}/{message_name}')
     return message_types
 

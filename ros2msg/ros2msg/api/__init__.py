@@ -38,10 +38,10 @@ def get_message_types(package_name):
     interface_names = content.splitlines()
     # TODO(dirk-thomas) this logic should come from a rosidl related package
     # Only return messages in msg folder
-    return list(sorted({
+    return {
         n[4:-4]
         for n in interface_names
-        if n.startswith('msg/') and n[-4:] in ('.idl', '.msg')}))
+        if n.startswith('msg/') and n[-4:] in ('.idl', '.msg')}
 
 
 def get_message_path(package_name, message_name):
@@ -62,8 +62,9 @@ def message_package_name_completer(**kwargs):
 def message_type_completer(**kwargs):
     """Callable returning a list of message types."""
     message_types = []
-    for package_name, message_names in get_all_message_types().items():
-        for message_name in message_names:
+    message_types_dict = get_all_message_types()
+    for package_name in sorted(message_types_dict.keys()):
+        for message_name in sorted(message_types_dict[package_name]):
             message_types.append(
                 '{package_name}/msg/{message_name}'.format_map(locals()))
     return message_types
@@ -77,4 +78,4 @@ class MessageNameCompleter:
 
     def __call__(self, prefix, parsed_args, **kwargs):
         package_name = getattr(parsed_args, self.package_name_key)
-        return get_message_types(package_name)
+        return sorted(get_message_types(package_name))

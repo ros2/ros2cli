@@ -38,10 +38,10 @@ def get_service_types(package_name):
     interface_names = content.splitlines()
     # TODO(dirk-thomas) this logic should come from a rosidl related package
     # Only return services in srv folder
-    return list(sorted({
+    return {
         n[4:-4]
         for n in interface_names
-        if n.startswith('srv/') and n[-4:] in ('.idl', '.srv')}))
+        if n.startswith('srv/') and n[-4:] in ('.idl', '.srv')}
 
 
 def get_service_path(package_name, service_name):
@@ -62,8 +62,9 @@ def service_package_name_completer(**kwargs):
 def service_type_completer(**kwargs):
     """Callable returning a list of service types."""
     service_types = []
-    for package_name, service_names in get_all_service_types().items():
-        for service_name in service_names:
+    service_types_dict = get_all_service_types()
+    for package_name in sorted(service_types_dict.keys()):
+        for service_name in sorted(service_types_dict[package_name]):
             service_types.append(
                 '{package_name}/srv/{service_name}'.format_map(locals()))
     return service_types
@@ -77,4 +78,4 @@ class ServiceNameCompleter:
 
     def __call__(self, prefix, parsed_args, **kwargs):
         package_name = getattr(parsed_args, self.package_name_key)
-        return get_service_types(package_name)
+        return sorted(get_service_types(package_name))
