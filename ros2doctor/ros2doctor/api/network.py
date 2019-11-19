@@ -67,7 +67,8 @@ class NetworkCheck(DoctorCheck):
 
         has_loopback, has_non_loopback, has_multicast = _check_network_config_helper(ifcfg_ifaces)
         if not has_loopback and not has_non_loopback:
-            result.add_warning('No flags found on `ipconfig` interface.')
+            result.add_warning('No flags found. \
+                Run `ipconfig` on cmd to check network interfaces.')
         if not has_loopback:
             result.add_error('ERROR: No loopback IP address is found.')
         if not has_non_loopback:
