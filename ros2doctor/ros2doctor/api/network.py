@@ -66,11 +66,12 @@ class NetworkCheck(DoctorCheck):
             return result
 
         has_loopback, has_non_loopback, has_multicast = _check_network_config_helper(ifcfg_ifaces)
-        if not has_loopback and not has_non_loopback:
-            # no flags found, otherwise one of them should be True.
-            result.add_warning('No flags found. \
-                Run `ipconfig` on cmd to check network interfaces.')
-            return result
+        if not _is_unix_like_platform():
+            if not has_loopback and not has_non_loopback:
+                # no flags found, otherwise one of them should be True.
+                print('No flags found. \
+                    Run `ipconfig` on cmd to check network interfaces.')
+                return result
         if not has_loopback:
             result.add_error('ERROR: No loopback IP address is found.')
         if not has_non_loopback:
