@@ -88,7 +88,15 @@ def get_publisher_info(*, node, remote_node_name, include_hidden=False):
     )
 
 
-def get_service_info(*, node, remote_node_name, include_hidden=False):
+def get_service_client_info(*, node, remote_node_name, include_hidden=False):
+    return get_topics(
+        remote_node_name,
+        node.get_client_names_and_types_by_node,
+        include_hidden_topics=include_hidden
+    )
+
+
+def get_service_server_info(*, node, remote_node_name, include_hidden=False):
     return get_topics(
         remote_node_name,
         node.get_service_names_and_types_by_node,

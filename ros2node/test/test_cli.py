@@ -167,11 +167,13 @@ class TestROS2NodeCLI(unittest.TestCase):
                 '    /arrays: test_msgs/msg/Arrays',
                 '    /parameter_events: rcl_interfaces/msg/ParameterEvent',
                 '    /rosout: rcl_interfaces/msg/Log',
-                '  Services:',
+                '  Service Servers:',
                 '    /basic: test_msgs/srv/BasicTypes',
             ], itertools.repeat(re.compile(
                 r'\s*/complex_node/.*parameter.*: rcl_interfaces/srv/.*Parameter.*'
             ), 6), [
+                '  Service Clients:',
+                '',
                 '  Action Servers:',
                 '    /fibonacci: test_msgs/action/Fibonacci',
                 '  Action Clients:',

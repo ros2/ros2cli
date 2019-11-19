@@ -78,8 +78,9 @@ def import_message_type(topic_name, message_type):
 def message_type_completer(**kwargs):
     """Callable returning a list of message types."""
     message_types = []
-    for package_name, message_names in get_message_interfaces().items():
-        for message_name in message_names:
+    message_types_dict = get_message_interfaces()
+    for package_name in sorted(message_types_dict.keys()):
+        for message_name in sorted(message_types_dict[package_name]):
             message_types.append(f'{package_name}/{message_name}')
     return message_types
 
@@ -185,14 +186,19 @@ def add_qos_arguments_to_argument_parser(
         '--qos-profile',
         choices=rclpy.qos.QoSPresetProfiles.short_keys(),
         default=default_preset,
-        help='Quality of service preset profile to {} with.'.format(verb))
+        help='Quality of service preset profile to {} with (default: {})'
+             .format(verb, default_preset))
+    default_profile = rclpy.qos.QoSPresetProfiles.get_from_short_key(
+        default_preset)
     parser.add_argument(
         '--qos-reliability',
         choices=rclpy.qos.QoSReliabilityPolicy.short_keys(),
-        help='Quality of service reliability setting to {} with. '
-             '(Will override reliability value of --qos-profile option)'.format(verb))
+        help='Quality of service reliability setting to {} with '
+             '(overrides reliability value of --qos-profile option, default: {})'
+             .format(verb, default_profile.reliability.short_key))
     parser.add_argument(
         '--qos-durability',
         choices=rclpy.qos.QoSDurabilityPolicy.short_keys(),
-        help='Quality of service durability setting to {} with. '
-             '(Will override durability value of --qos-profile option)'.format(verb))
+        help='Quality of service durability setting to {} with '
+             '(overrides durability value of --qos-profile option, default: {})'
+             .format(verb, default_profile.durability.short_key))

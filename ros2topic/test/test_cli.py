@@ -515,10 +515,10 @@ class TestROS2TopicCLI(unittest.TestCase):
                     ''
                 ], strict=True
             ), timeout=10)
-            self.listener_node.wait_for_output(functools.partial(
+            assert self.listener_node.wait_for_output(functools.partial(
                 launch_testing.tools.expect_output, expected_lines=[
                     '[INFO] [listener]: I heard: [foo]'
-                ] * 3, strict=True
+                ] * 3, strict=False
             ), timeout=10)
         assert topic_command.wait_for_shutdown(timeout=10)
 
@@ -539,10 +539,10 @@ class TestROS2TopicCLI(unittest.TestCase):
                 ], strict=True
             ), timeout=10)
             assert topic_command.wait_for_shutdown(timeout=10)
-            self.listener_node.wait_for_output(functools.partial(
+            assert self.listener_node.wait_for_output(functools.partial(
                 launch_testing.tools.expect_output, expected_lines=[
                     '[INFO] [listener]: I heard: [bar]'
-                ], strict=True
+                ], strict=False
             ), timeout=10)
         assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
 
@@ -565,10 +565,10 @@ class TestROS2TopicCLI(unittest.TestCase):
                     ''
                 ], strict=True
             ), timeout=10), 'Output does not match: ' + topic_command.output
-            self.listener_node.wait_for_output(functools.partial(
+            assert self.listener_node.wait_for_output(functools.partial(
                 launch_testing.tools.expect_output, expected_lines=[
                     '[INFO] [listener]: I heard: [fizz]'
-                ], strict=True
+                ], strict=False
             ), timeout=10)
         assert topic_command.wait_for_shutdown(timeout=10)
 

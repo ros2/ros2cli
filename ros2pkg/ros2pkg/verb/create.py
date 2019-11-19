@@ -157,7 +157,7 @@ class CreateVerb(VerbExtension):
         print('version:', package.version)
         print('description:', package.description)
         print('maintainer:', [str(maintainer) for maintainer in package.maintainers])
-        print('licenses:', [license_ for license_ in package.licenses])
+        print('licenses:', package.licenses)
         print('build type:', package.get_build_type())
         print('dependencies:', [str(dependency) for dependency in package.build_depends])
         if node_name:
