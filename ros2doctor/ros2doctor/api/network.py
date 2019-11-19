@@ -69,6 +69,7 @@ class NetworkCheck(DoctorCheck):
         if not has_loopback and not has_non_loopback:
             result.add_warning('No flags found. \
                 Run `ipconfig` on cmd to check network interfaces.')
+            return result
         if not has_loopback:
             result.add_error('ERROR: No loopback IP address is found.')
         if not has_non_loopback:
