@@ -36,7 +36,7 @@ def _is_unix_like_platform() -> bool:
 def _check_network_config_helper(ifcfg_ifaces: dict) -> Tuple[bool, bool, bool]:
     """Check if loopback and multicast IP addresses are found."""
     has_loopback, has_non_loopback, has_multicast = False, False, False
-    for _, iface in ifcfg.interfaces().items():
+    for iface in ifcfg_ifaces.values():
         flags = iface.get('flags')
         if flags:
             flags = flags.lower()
@@ -66,6 +66,12 @@ class NetworkCheck(DoctorCheck):
             return result
 
         has_loopback, has_non_loopback, has_multicast = _check_network_config_helper(ifcfg_ifaces)
+        if not _is_unix_like_platform():
+            if not has_loopback and not has_non_loopback:
+                # no flags found, otherwise one of them should be True.
+                print('No flags found. \
+                    Run `ipconfig` on cmd to check network interfaces.')
+                return result
         if not has_loopback:
             result.add_error('ERROR: No loopback IP address is found.')
         if not has_non_loopback:
@@ -91,7 +97,7 @@ class NetworkReport(DoctorReport):
             return Report('')
 
         network_report = Report('NETWORK CONFIGURATION')
-        for name, iface in ifcfg_ifaces.items():
+        for iface in ifcfg_ifaces.values():
             for k, v in iface.items():
                 if v:
                     network_report.add_to_report(k, v)
