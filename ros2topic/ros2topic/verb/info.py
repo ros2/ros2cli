@@ -29,7 +29,7 @@ def print_topic_info(topic_name, get_topic_info_func):
             print('\nNode Name: %s' % info['node_name'])
             print('Node Namespace: %s' % info['node_namespace'])
             print('Topic Type: %s' % info['topic_type'])
-            print('GID: %s' % info['gid'])
+            print('GID: %s' % '.'.join(map(str, info['gid'])))
             print('QoS Profile:')
             qos_profile = info['qos_profile']
             print('  Reliability: %s' % QoSReliabilityPolicy(qos_profile['reliability']).name)
