@@ -12,10 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-
-import pytest
-
 from ros2action.api import get_action_clients_and_servers
 from ros2action.api import get_action_names
 from ros2cli.node.strategy import DirectNode
