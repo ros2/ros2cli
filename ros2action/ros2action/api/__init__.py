@@ -22,8 +22,8 @@ import rclpy.action
 from rclpy.expand_topic_name import expand_topic_name
 from rclpy.validate_full_topic_name import validate_full_topic_name
 from ros2cli.node.direct import DirectNode
-from rosidl_runtime_py.convert import message_to_yaml
-from rosidl_runtime_py.get_interfaces import get_action_interfaces
+from rosidl_runtime_py import get_action_interfaces
+from rosidl_runtime_py import message_to_yaml
 from rosidl_runtime_py.utilities import get_action
 
 
