@@ -29,6 +29,7 @@ from ros2topic.verb import VerbExtension
 from rosidl_runtime_py import set_message_fields
 from rosidl_runtime_py.utilities import get_message
 import yaml
+from rclpy.qos_event import PublisherEventCallbacks
 
 MsgType = TypeVar('MsgType')
 
@@ -90,6 +91,13 @@ def main(args):
             args.once,
             qos_profile)
 
+def handleIncompatibleQoSEvent(event):
+    incompatible_qos_name = 'unknown'
+    if event.last_policy_id == 11:
+        incompatible_qos_name = 'RELIABILITY_QOS_POLICY'
+    elif event.last_policy_id == 2:
+        incompatible_qos_name = 'DURABILITY_QOS_POLICY'
+    print('Incompatible QoS Policy detected: {name}'.format(name=incompatible_qos_name))
 
 def publisher(
     node: Node,
@@ -107,7 +115,9 @@ def publisher(
     if not isinstance(values_dictionary, dict):
         return 'The passed value needs to be a dictionary in YAML format'
 
-    pub = node.create_publisher(msg_module, topic_name, qos_profile)
+    publisher_callbacks = PublisherEventCallbacks(
+        incompatible_qos=lambda event: handleIncompatibleQoSEvent(event))
+    pub = node.create_publisher(msg_module, topic_name, qos_profile, event_callbacks=publisher_callbacks)
 
     msg = msg_module()
     try:

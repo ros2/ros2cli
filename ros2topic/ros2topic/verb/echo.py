@@ -32,6 +32,7 @@ from ros2topic.verb import VerbExtension
 from rosidl_runtime_py import message_to_csv
 from rosidl_runtime_py import message_to_yaml
 from rosidl_runtime_py.utilities import get_message
+from rclpy.qos_event import SubscriptionEventCallbacks
 
 DEFAULT_TRUNCATE_LENGTH = 128
 MsgType = TypeVar('MsgType')
@@ -96,6 +97,13 @@ def main(args):
         subscriber(
             node.node, args.topic_name, args.message_type, callback, qos_profile)
 
+def handleIncompatibleQoSEvent(event):
+    incompatible_qos_name = 'unknown'
+    if event.last_policy_id == 11:
+        incompatible_qos_name = 'RELIABILITY_QOS_POLICY'
+    elif event.last_policy_id == 2:
+        incompatible_qos_name = 'DURABILITY_QOS_POLICY'
+    print('Incompatible QoS Policy detected: {name}'.format(name=incompatible_qos_name))
 
 def subscriber(
     node: Node,
@@ -130,8 +138,11 @@ def subscriber(
 
     msg_module = get_message(message_type)
 
+    subscription_callbacks = SubscriptionEventCallbacks(
+        incompatible_qos=lambda event: handleIncompatibleQoSEvent(event))
+
     node.create_subscription(
-        msg_module, topic_name, callback, qos_profile)
+        msg_module, topic_name, callback, qos_profile, event_callbacks=subscription_callbacks)
 
     rclpy.spin(node)
 
