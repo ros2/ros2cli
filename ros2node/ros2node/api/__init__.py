@@ -76,6 +76,10 @@ def get_service_info(*, node, remote_node_name):
     return get_topics(remote_node_name, node.get_service_names_and_types_by_node)
 
 
+def get_service_server_info(*, node, remote_node_name):
+    return get_service_info(node=node, remote_node_name=remote_node_name)
+
+
 class NodeNameCompleter:
     """Callable returning a list of node names."""
 
