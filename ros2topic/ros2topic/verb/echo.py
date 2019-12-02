@@ -26,12 +26,12 @@ from rclpy.validate_full_topic_name import validate_full_topic_name
 from ros2cli.node.direct import DirectNode
 from ros2topic.api import add_qos_arguments_to_argument_parser
 from ros2topic.api import get_topic_names_and_types
-from ros2topic.api import import_message_type
 from ros2topic.api import qos_profile_from_short_keys
 from ros2topic.api import TopicNameCompleter
 from ros2topic.verb import VerbExtension
 from rosidl_runtime_py import message_to_csv
 from rosidl_runtime_py import message_to_yaml
+from rosidl_runtime_py.utilities import get_message
 
 DEFAULT_TRUNCATE_LENGTH = 128
 MsgType = TypeVar('MsgType')
@@ -58,7 +58,7 @@ class EchoVerb(VerbExtension):
             include_hidden_topics_key='include_hidden_topics')
         parser.add_argument(
             'message_type', nargs='?',
-            help="Type of the ROS message (e.g. 'std_msgs/String')")
+            help="Type of the ROS message (e.g. 'std_msgs/msg/String')")
         add_qos_arguments_to_argument_parser(
             parser, is_publisher=False, default_preset='sensor_data')
         parser.add_argument(
@@ -128,7 +128,7 @@ def subscriber(
             raise RuntimeError(
                 'Could not determine the type for the passed topic')
 
-    msg_module = import_message_type(topic_name, message_type)
+    msg_module = get_message(message_type)
 
     node.create_subscription(
         msg_module, topic_name, callback, qos_profile)

@@ -21,13 +21,13 @@ from rclpy.node import Node
 from rclpy.qos import QoSProfile
 from ros2cli.node.direct import DirectNode
 from ros2topic.api import add_qos_arguments_to_argument_parser
-from ros2topic.api import import_message_type
 from ros2topic.api import qos_profile_from_short_keys
 from ros2topic.api import TopicMessagePrototypeCompleter
 from ros2topic.api import TopicNameCompleter
 from ros2topic.api import TopicTypeCompleter
 from ros2topic.verb import VerbExtension
 from rosidl_runtime_py import set_message_fields
+from rosidl_runtime_py.utilities import get_message
 import yaml
 
 MsgType = TypeVar('MsgType')
@@ -102,7 +102,7 @@ def publisher(
     qos_profile: QoSProfile,
 ) -> Optional[str]:
     """Initialize a node with a single publisher and run its publish loop (maybe only once)."""
-    msg_module = import_message_type(topic_name, message_type)
+    msg_module = get_message(message_type)
     values_dictionary = yaml.safe_load(values)
     if not isinstance(values_dictionary, dict):
         return 'The passed value needs to be a dictionary in YAML format'
