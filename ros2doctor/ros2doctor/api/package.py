@@ -46,7 +46,7 @@ def get_packages_versions(distro_repos_info: dict) -> dict:
     Return all package names and corresponding versions in rosdistro.
 
     :param: a dictionary of repo info
-    :return: a dictionary contains package names and versions
+    :return: a dictionary containing package names and versions
     """
     packages_versions = {}
     for _, info in distro_repos_info.items():
