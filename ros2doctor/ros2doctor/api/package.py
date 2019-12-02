@@ -31,7 +31,7 @@ def get_ros_repos_info() -> dict:
     """
     Return repos info using rosdistro API.
 
-    :return: a dictionary contains package name, release, source and status
+    :return: a dictionary containing package name, release, source and status
     """
     distro_name = os.environ.get('ROS_DISTRO')
     distro_name = distro_name.lower()
