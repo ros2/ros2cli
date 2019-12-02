@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import warnings
+
 from ros2action.api import action_type_completer
 from ros2action.api import get_action_path
 from ros2action.verb import VerbExtension
@@ -28,6 +30,10 @@ class ShowVerb(VerbExtension):
         arg.completer = action_type_completer
 
     def main(self, *, args):
+        warnings.warn(
+            "'ros2 action show' is deprecated and will be removed in ROS Foxy. "
+            "Instead use: 'ros2 interface show'"
+        )
         try:
             parts = args.action_type.split('/')
             if len(parts) == 1:
