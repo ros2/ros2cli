@@ -37,7 +37,7 @@ setup(
             'doctor = ros2doctor.command.doctor:DoctorCommand',
             'wtf = ros2doctor.command.doctor:WtfCommand',
         ],
-        'ros2doctor.checks': [
+        'ros2doctor.check': [
             'PlatformCheck = ros2doctor.api.platform:PlatformCheck',
             'NetworkCheck = ros2doctor.api.network:NetworkCheck',
             'TopicCheck = ros2doctor.api.topic:TopicCheck',

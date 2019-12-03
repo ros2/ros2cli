@@ -90,7 +90,7 @@ def run_checks(*, include_warnings=False) -> Tuple[Set[str], int, int]:
     failed_cats = set()  # remove repeating elements
     fail = 0
     total = 0
-    for check_entry_pt in iter_entry_points('ros2doctor.checks'):
+    for check_entry_pt in iter_entry_points('ros2doctor.check'):
         try:
             check_class = check_entry_pt.load()
         except (ImportError, UnknownExtra):
