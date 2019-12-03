@@ -15,7 +15,6 @@
 import os
 import platform
 from typing import Tuple
-from urllib.error import URLError
 
 from ros2doctor.api import DoctorCheck
 from ros2doctor.api import DoctorReport
@@ -33,10 +32,20 @@ def _check_platform_helper() -> Tuple[str, dict, dict]:
     :return: string of distro name, dict of distribution info, dict of release platforms info
     """
     distro_name = os.environ.get('ROS_DISTRO')
-    distro_name = distro_name.lower()
+    if not distro_name:
+        doctor_warn('ROS_DISTRO is not set.')
+        return
+    else:
+        distro_name = distro_name.lower()
     u = rosdistro.get_index_url()
+    if not u:
+        doctor_warn('Unable to access ROSDISTRO_INDEX_URL or DEFAULT_INDEX_URL.')
+        return
     i = rosdistro.get_index(u)
     distro_info = i.distributions.get(distro_name)
+    if not distro_info:
+        doctor_warn("Distribution name '%s' is not found" % distro_name)
+        return
     distro_data = rosdistro.get_distribution(i, distro_name).get_data()
     return distro_name, distro_info, distro_data
 
@@ -50,13 +59,12 @@ class PlatformCheck(DoctorCheck):
     def check(self):
         """Check system platform against ROS 2 Distro."""
         result = Result()
-        try:
-            distros = _check_platform_helper()
-        except (AttributeError, RuntimeError, URLError):
-            result.add_error('Error: Unable to fetch rosdistro information online.')
+        distros = _check_platform_helper()
+        if not distros:
+            result.add_error('ERROR: Missing rosdistro info. Unable to check platform.')
             return result
-
         distro_name, distro_info, _ = distros
+
         # check distro status
         if distro_info.get('distribution_status') == 'prerelease':
             result.add_warning('Distribution %s is not fully supported or tested. '
@@ -96,12 +104,11 @@ class RosdistroReport(DoctorReport):
         return 'platform'
 
     def report(self):
-        ros_report = Report('ROS 2 INFORMATION')
-        try:
-            distros = _check_platform_helper()
-        except (AttributeError, RuntimeError, URLError):
-            return ros_report
+        distros = _check_platform_helper()
+        if not distros:
+            return
         distro_name, distro_info, distro_data = distros
+        ros_report = Report('ROS 2 INFORMATION')
         ros_report.add_to_report('distribution name', distro_name)
         ros_report.add_to_report('distribution type', distro_info.get('distribution_type'))
         ros_report.add_to_report('distribution status', distro_info.get('distribution_status'))
