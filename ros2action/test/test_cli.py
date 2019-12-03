@@ -257,6 +257,8 @@ class TestROS2ActionCLI(unittest.TestCase):
         assert action_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
+                re.compile('.* UserWarning: .*'),
+                re.compile(".*'ros2 action show' is deprecated and will be removed in ROS Foxy.*"),
                 'int32 order',
                 '---',
                 'int32[] sequence',
@@ -274,7 +276,11 @@ class TestROS2ActionCLI(unittest.TestCase):
             assert action_command.wait_for_shutdown(timeout=2)
         assert action_command.exit_code == 1
         assert launch_testing.tools.expect_output(
-            expected_lines=['Unknown package name'],
+            expected_lines=[
+                re.compile('.* UserWarning: .*'),
+                re.compile(".*'ros2 action show' is deprecated and will be removed in ROS Foxy.*"),
+                'Unknown package name',
+            ],
             text=action_command.output, strict=True
         )
 
@@ -297,7 +303,11 @@ class TestROS2ActionCLI(unittest.TestCase):
             assert action_command.wait_for_shutdown(timeout=2)
         assert action_command.exit_code == 1
         assert launch_testing.tools.expect_output(
-            expected_lines=['Unknown action type'],
+            expected_lines=[
+                re.compile('.* UserWarning: .*'),
+                re.compile(".*'ros2 action show' is deprecated and will be removed in ROS Foxy.*"),
+                'Unknown action type',
+            ],
             text=action_command.output, strict=True
         )
 
@@ -308,6 +318,10 @@ class TestROS2ActionCLI(unittest.TestCase):
             assert action_command.wait_for_shutdown(timeout=2)
         assert action_command.exit_code == 1
         assert launch_testing.tools.expect_output(
-            expected_lines=['The passed action type is invalid'],
+            expected_lines=[
+                re.compile('.* UserWarning: .*'),
+                re.compile(".*'ros2 action show' is deprecated and will be removed in ROS Foxy.*"),
+                'The passed action type is invalid',
+            ],
             text=action_command.output, strict=True
         )
