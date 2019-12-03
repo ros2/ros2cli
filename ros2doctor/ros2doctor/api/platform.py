@@ -51,7 +51,7 @@ class PlatformCheck(DoctorCheck):
         result = Result()
         try:
             distros = _check_platform_helper()
-        except (AttributeError, RuntimeError, URLError):
+        except (AttributeError, RuntimeError, TypeError, URLError):
             result.add_error('Error: Unable to fetch rosdistro information online.')
             return result
         distro_name, distro_info, _ = distros
