@@ -181,3 +181,43 @@ class TestROS2NodeCLI(unittest.TestCase):
             ]),
             text=node_command.output, strict=False
         ), 'Output does not match:\n' + node_command.output
+
+    @launch_testing.markers.retry_on_failure(times=5)
+    def test_info_hidden_node_no_hidden_flag(self):
+        with self.launch_node_command(arguments=['info', '/_hidden_complex_node']) as node_command:
+            assert node_command.wait_for_shutdown(timeout=10)
+        assert node_command.exit_code == 1
+        assert launch_testing.tools.expect_output(
+            expected_lines=["Unable to find node '/_hidden_complex_node'"],
+            text=node_command.output, strict=True
+        )
+
+    @launch_testing.markers.retry_on_failure(times=5)
+    def test_info_hidden_node_hidden_flag(self):
+        with self.launch_node_command(
+            arguments=['info', '/_hidden_complex_node', '--include-hidden']
+        ) as node_command:
+            assert node_command.wait_for_shutdown(timeout=10)
+        assert node_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=itertools.chain([
+                '/_hidden_complex_node',
+                '  Subscribers:',
+                '    /strings: test_msgs/msg/Strings',
+                '  Publishers:',
+                '    /arrays: test_msgs/msg/Arrays',
+                '    /parameter_events: rcl_interfaces/msg/ParameterEvent',
+                '    /rosout: rcl_interfaces/msg/Log',
+                '  Service Servers:'
+            ], itertools.repeat(re.compile(
+                r'\s*/_hidden_complex_node/.*parameter.*: rcl_interfaces/srv/.*Parameter.*'
+            ), 6), [
+                '    /basic: test_msgs/srv/BasicTypes',
+                '  Service Clients:',
+                '  Action Servers:',
+                '    /fibonacci: test_msgs/action/Fibonacci',
+                '  Action Clients:',
+                ''
+            ]),
+            text=node_command.output, strict=False
+        ), 'Output does not match:\n' + node_command.output
