@@ -517,7 +517,7 @@ class TestROS2TopicCLI(unittest.TestCase):
             ), timeout=10)
             assert self.listener_node.wait_for_output(functools.partial(
                 launch_testing.tools.expect_output, expected_lines=[
-                    '[INFO] [listener]: I heard: [foo]'
+                    re.compile(r'\[INFO\] \[\d+.\d*\] \[listener\]: I heard: \[foo\]')
                 ] * 3, strict=False
             ), timeout=10)
         assert topic_command.wait_for_shutdown(timeout=10)
