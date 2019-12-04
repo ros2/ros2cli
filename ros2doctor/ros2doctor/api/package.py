@@ -14,11 +14,9 @@
 
 import os
 from typing import List
-from typing import Tuple
 from urllib.error import URLError
 
 from ament_index_python import get_packages_with_prefixes
-from catkin_pkg.package import InvalidPackage
 from catkin_pkg.package import parse_package
 from packaging import version
 
@@ -57,7 +55,7 @@ def get_distro_package_versions() -> dict:
 
 def get_local_package_versions() -> dict:
     """
-    Return local package name and versions
+    Return local package name and versions.
 
     :return: dictionary of local package name and version
     """
@@ -71,14 +69,13 @@ def get_local_package_versions() -> dict:
     return local_packages
 
 
-def compare_versions(local_packages: dict,
-    distro_packages: dict) -> List:
+def compare_versions(local_packages: dict, distro_packages: dict) -> List:
     """
-    Return warning messages for PackageCheck, and info for PackageReport
+    Return warning messages for PackageCheck, and info for PackageReport.
 
     :param: dictionary of local package name and version
     :param: dictionary of rosdistro package name and version
-    :param: boolean value determines which output to populate, msgs or report 
+    :param: boolean value determines which output to populate, msgs or report
     :return: list of warning messages
     """
     warning_msgs = []
@@ -96,8 +93,8 @@ def compare_versions(local_packages: dict,
         required_ver = version.parse(required_ver_str).base_version
         if local_ver < required_ver:
             warning_msgs.append(f'{name} has been updated to a new version.'
-                f' local: {local_ver} <'
-                f' required: {required_ver}')
+                                f' local: {local_ver} <'
+                                f' required: {required_ver}')
     if missing_req:
         warning_msgs.append('Cannot find required versions of packages:' + missing_req)
     if missing_local:
