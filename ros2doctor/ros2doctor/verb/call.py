@@ -22,11 +22,8 @@ from std_msgs.msg import String
 
 
 class CallVerb(VerbExtension):
-    """Pub msg and hostname; listen on the same topic. Print Periodically."""
+    """Pub msg and hostname; listen on the same topic; print periodically."""
 
-    def add_arguments(self, parser, cli_name):
-        return NotImplementedError
-    
     def main(self, *, args):
         rclpy.init(args=None)
         publish()
@@ -61,7 +58,7 @@ class Talker(Node):
     def timer_callback(self):
         msg = String()
         hostname = socket.gethostname()
-        msg.data = f'{self.i}. Hello Eloquent from {hostname}'
+        msg.data = f'{self.i}. Hello ROS2 from {hostname}'
         self.i += 1
         self.get_logger().info(f'Publishing: "{msg.data}"')
         self.pub.publish(msg)

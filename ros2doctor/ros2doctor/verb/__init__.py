@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from ros2cli.plugin_system import instantiate_extensions
 from ros2cli.plugin_system import PLUGIN_SYSTEM_VERSION
 from ros2cli.plugin_system import satisfies_version
 
@@ -19,6 +20,7 @@ from ros2cli.plugin_system import satisfies_version
 class VerbExtension:
     """
     The extension point for 'doctor' verb extensions.
+
     The following properties must be defined:
     * `NAME` (will be set to the entry point name)
     The following methods must be defined:
@@ -34,8 +36,9 @@ class VerbExtension:
         super(VerbExtension, self).__init__()
         satisfies_version(PLUGIN_SYSTEM_VERSION, '^0.1')
 
-    def add_arguments(self, parser, cli_name):
-        pass
 
-    def main(self, *, args):
-        raise NotImplementedError()
+def get_verb_extensions(name):
+    extensions = instantiate_extensions(name)
+    for name, extension in extensions.items():
+        extension.NAME = name
+    return extensions

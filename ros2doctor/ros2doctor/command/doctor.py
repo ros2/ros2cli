@@ -12,7 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from ros2cli.command import add_subparsers
 from ros2cli.command import CommandExtension
+from ros2cli.verb import get_verb_extensions
 from ros2doctor.api import generate_reports
 from ros2doctor.api import run_checks
 from ros2doctor.api.format import format_print
@@ -36,6 +38,10 @@ class DoctorCommand(CommandExtension):
             help='Include warnings as failed checks. Warnings are ignored by default.'
         )
 
+        verb_extensions = get_verb_extensions('ros2doctor.verb')
+        add_subparsers(
+            parser, cli_name, '_verb', verb_extensions, required=False)
+
     def main(self, *, parser, args):
         """Run checks and print report to terminal based on user input args."""
         # `ros2 doctor -r`
@@ -58,6 +64,10 @@ class DoctorCommand(CommandExtension):
             fail_reports = generate_reports(categories=failed_cats)
             for report_obj in fail_reports:
                 format_print(report_obj)
+
+        if hasattr(args, '_verb'):
+            extension = getattr(args, '_verb')
+            return extension.main(args=args)
 
 
 class WtfCommand(DoctorCommand):
