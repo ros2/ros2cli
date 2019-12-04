@@ -17,8 +17,7 @@ from ros2cli.node.strategy import add_arguments
 from ros2cli.node.strategy import NodeStrategy
 from ros2node.api import get_node_names
 from ros2node.api import get_publisher_info
-from ros2node.api import get_service_client_info
-from ros2node.api import get_service_server_info
+from ros2node.api import get_service_info
 from ros2node.api import get_subscriber_info
 from ros2node.api import NodeNameCompleter
 from ros2node.verb import VerbExtension
@@ -50,13 +49,8 @@ class InfoVerb(VerbExtension):
                 publishers = get_publisher_info(node=node, remote_node_name=args.node_name)
                 print('  Publishers:')
                 print_names_and_types(publishers)
-                service_servers = get_service_server_info(
-                    node=node, remote_node_name=args.node_name, include_hidden=args.include_hidden)
-                print('  Service Servers:')
-                print_names_and_types(service_servers)
-                service_clients = get_service_client_info(
-                    node=node, remote_node_name=args.node_name, include_hidden=args.include_hidden)
-                print('  Service Clients:')
-                print_names_and_types(service_clients)
+                services = get_service_info(node=node, remote_node_name=args.node_name)
+                print('  Services:')
+                print_names_and_types(services)
         else:
             return "Unable to find node '" + args.node_name + "'"
