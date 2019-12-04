@@ -27,6 +27,7 @@ class CallVerb(VerbExtension):
     def main(self, *, args):
         rclpy.init(args=None)
         publish()
+        subscribe()
 
         rclpy.shutdown()
 
@@ -43,7 +44,13 @@ def publish():
 
 
 def subscribe():
-    return NotImplementedError
+    receiver_node = Listener()
+    try:
+        rclpy.spin(receiver_node)
+    except KeyboardInterrupt:
+        pass
+
+    receiver_node.destroy_node()
 
 
 class Talker(Node):
@@ -62,3 +69,14 @@ class Talker(Node):
         self.i += 1
         self.get_logger().info(f'Publishing: "{msg.data}"')
         self.pub.publish(msg)
+
+
+class Listener(Node):
+    
+    def __init__(self):
+        super().__init__('listener')
+        self.sub = self.create_subscription(String, 'knock', self.knock_callback, 10)
+
+    def knock_callback(self, msg):
+        caller_hostname = msg.split()[-1]
+        self.get_logger().info(f'I heard from {caller_hostname}')

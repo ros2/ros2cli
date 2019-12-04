@@ -44,6 +44,10 @@ class DoctorCommand(CommandExtension):
 
     def main(self, *, parser, args):
         """Run checks and print report to terminal based on user input args."""
+        if hasattr(args, '_verb'):
+            extension = getattr(args, '_verb')
+            return extension.main(args=args)
+        
         # `ros2 doctor -r`
         if args.report:
             all_reports = generate_reports()
@@ -51,7 +55,7 @@ class DoctorCommand(CommandExtension):
                 format_print(report_obj)
             return
 
-        # `ros2 doctor
+        # `ros2 doctor`
         failed_cats, fail, total = run_checks(include_warnings=args.include_warnings)
         if fail:
             print('\n%d/%d checks failed\n' % (fail, total))
@@ -64,10 +68,6 @@ class DoctorCommand(CommandExtension):
             fail_reports = generate_reports(categories=failed_cats)
             for report_obj in fail_reports:
                 format_print(report_obj)
-
-        if hasattr(args, '_verb'):
-            extension = getattr(args, '_verb')
-            return extension.main(args=args)
 
 
 class WtfCommand(DoctorCommand):
