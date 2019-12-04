@@ -16,6 +16,7 @@ import socket
 
 import rclpy
 from rclpy.node import Node
+from rclpy.executors import SingleThreadedExecutor
 from ros2doctor.verb import VerbExtension
 
 from std_msgs.msg import String
@@ -25,32 +26,19 @@ class CallVerb(VerbExtension):
     """Pub msg and hostname; listen on the same topic; print periodically."""
 
     def main(self, *, args):
-        rclpy.init(args=None)
-        publish()
-        subscribe()
-
-        rclpy.shutdown()
-
-
-def publish():
-    caller_node = Talker()
-
-    try:
-        rclpy.spin(caller_node)
-    except KeyboardInterrupt:
-        pass
-
-    caller_node.destroy_node()
-
-
-def subscribe():
-    receiver_node = Listener()
-    try:
-        rclpy.spin(receiver_node)
-    except KeyboardInterrupt:
-        pass
-
-    receiver_node.destroy_node()
+        rclpy.init()
+        caller_node = Talker()
+        receiver_node = Listener()
+        executor = SingleThreadedExecutor()
+        executor.add_node(caller_node)
+        executor.add_node(receiver_node)
+        try:
+            executor.spin()
+        except KeyboardInterrupt:
+            pass
+        caller_node.destroy_node()
+        receiver_node.destroy_node()
+        executor.shutdown()
 
 
 class Talker(Node):
@@ -78,5 +66,8 @@ class Listener(Node):
         self.sub = self.create_subscription(String, 'knock', self.knock_callback, 10)
 
     def knock_callback(self, msg):
-        caller_hostname = msg.split()[-1]
-        self.get_logger().info(f'I heard from {caller_hostname}')
+        caller_hostname = msg.data.split()[-1]
+        if caller_hostname != socket.gethostname():
+            self.get_logger().info(f'I heard from {caller_hostname}')
+        else:
+            self.get_logger().info('I heard myself')
