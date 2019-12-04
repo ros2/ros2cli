@@ -34,7 +34,7 @@ def get_distro_package_versions() -> dict:
     """
     Return repos info using rosdistro API.
 
-    :return: a dictionary contains package name, release, source and status
+    :return: dictionary of rosdistro package name and version
     """
     distro_name = os.environ.get('ROS_DISTRO')
     distro_name = distro_name.lower()
@@ -43,52 +43,66 @@ def get_distro_package_versions() -> dict:
     distro_data = rosdistro.get_distribution(i, distro_name).get_data()
     repos_info = distro_data.get('repositories')
     distro_package_vers = {}
-    if repos_info:
-        for _, info in repos_info.items():
-            release = info.get('release')
-            if release:
-                version = release.get('version')
-                packages = release.get('packages')
-                if packages:
-                    for p in packages:
-                        distro_package_vers[p] = version
+    for _, info in repos_info.items():
+        try:
+            release = info['release']
+            packages = release['packages']
+            ver = release.get('version')
+            for p in packages:
+                distro_package_vers[p] = ver
+        except KeyError:
+            pass
     return distro_package_vers
 
 
-def compare_versions(local_prefixes: dict,
-                     distro_packages: dict,
-                     isCheck=True) -> Tuple[List, dict]:
+def get_local_package_versions() -> dict:
+    """
+    Return local package name and versions
+
+    :return: dictionary of local package name and version
+    """
+    local_packages = {}
+    package_name_prefixes = get_packages_with_prefixes()
+    if package_name_prefixes:
+        for name, prefix in package_name_prefixes.items():
+            file_path = os.path.join(prefix, 'share', name)
+            package_obj = parse_package(file_path)
+            local_packages[name] = package_obj.version if package_obj.version else ''
+    return local_packages
+
+
+def compare_versions(local_packages: dict,
+    distro_packages: dict) -> List:
+    """
+    Return warning messages for PackageCheck, and info for PackageReport
+
+    :param: dictionary of local package name and version
+    :param: dictionary of rosdistro package name and version
+    :param: boolean value determines which output to populate, msgs or report 
+    :return: list of warning messages
+    """
     warning_msgs = []
-    report_dict = {}
     missing_req = ''
     missing_local = ''
-    for name, prefix in local_prefixes.items():
-        try:
-            required_ver_str = distro_packages.get(name)
-            required_ver = version.parse(required_ver_str).base_version
-        except TypeError:
-            missing_req += ' ' + name
-            required_ver = version.parse('').base_version
-        file_path = os.path.join(prefix, 'share', name)
-        try:
-            package_obj = parse_package(file_path)
-            local_ver_str = package_obj.version
-            local_ver = version.parse(local_ver_str).base_version
-        except (AttributeError, IOError, InvalidPackage):
+    for name, local_ver_str in local_packages.items():
+        if not local_ver_str:
             missing_local += ' ' + name
-            local_ver = version.parse('').base_version
-        if isCheck:
-            if local_ver < required_ver:
-                warning_msgs.append(f'{name} is deprecated.'
-                                    f' local: {local_ver} <'
-                                    f' required: {required_ver}')
-        else:
-            report_dict[name] = f'required={required_ver}, local={local_ver}'
+            local_ver_str = ''
+        required_ver_str = distro_packages.get(name)
+        if not required_ver_str:
+            missing_req += ' ' + name
+            required_ver_str = ''
+        local_ver = version.parse(local_ver_str).base_version
+        required_ver = version.parse(required_ver_str).base_version
+        if local_ver < required_ver:
+            warning_msgs.append(f'{name} has been updated to a new version.'
+                f' local: {local_ver} <'
+                f' required: {required_ver}')
     if missing_req:
         warning_msgs.append('Cannot find required versions of packages:' + missing_req)
     if missing_local:
         warning_msgs.append('Cannot find local versions of packages:' + missing_local)
-    return warning_msgs, report_dict
+    return warning_msgs
 
 
 class PackageCheck(DoctorCheck):
@@ -100,21 +114,19 @@ class PackageCheck(DoctorCheck):
     def check(self):
         """Check packages within the directory where command is called."""
         result = Result()
-        local_prefixes = get_packages_with_prefixes()
-        if not local_prefixes:
-            result.add_error('ERROR: local package info is not found.')
         try:
             distro_package_vers = get_distro_package_versions()
             if not distro_package_vers:
                 result.add_error('ERROR: distro packages info is not found.')
         except (AttributeError, RuntimeError, URLError):
             result.add_error('ERROR: Unable to fetch package information from rosdistro.')
+        local_package_vers = get_local_package_versions()
+        if not local_package_vers:
+            result.add_error('ERROR: local package info is not found.')
         if result.error != 0:
             return result
 
-        warning_msgs, _ = compare_versions(local_prefixes,
-                                           distro_package_vers,
-                                           isCheck=True)
+        warning_msgs = compare_versions(local_package_vers, distro_package_vers)
         for msg in warning_msgs:
             result.add_warning(msg)
         return result
@@ -129,16 +141,19 @@ class PackageReport(DoctorReport):
     def report(self):
         """Report packages within the directory where command is called."""
         report = Report('PACKAGE VERSIONS')
-        local_prefixes = get_packages_with_prefixes()
         try:
             distro_package_vers = get_distro_package_versions()
         except (AttributeError, RuntimeError, URLError):
             return report
+        local_package_vers = get_local_package_versions()
 
-        if local_prefixes and distro_package_vers:
-            _, report_dict = compare_versions(local_prefixes,
-                                              distro_package_vers,
-                                              isCheck=False)
-            for name, item in report_dict.items():
-                report.add_to_report(name, item)
+        if local_package_vers and distro_package_vers:
+            for name, local_ver_str in local_package_vers.items():
+                if name in distro_package_vers:
+                    required_ver_str = distro_package_vers.get(name)
+                else:
+                    required_ver_str = ''
+                local_ver = version.parse(local_ver_str).base_version
+                required_ver = version.parse(required_ver_str).base_version
+                report.add_to_report(name, f'required={required_ver}, local={local_ver}')
         return report
