@@ -85,10 +85,9 @@ def compare_versions(local_packages: dict, distro_packages: dict) -> List:
         if not local_ver_str:
             missing_local += ' ' + name
             local_ver_str = ''
-        required_ver_str = distro_packages.get(name)
+        required_ver_str = distro_packages.get(name, '')
         if not required_ver_str:
             missing_req += ' ' + name
-            required_ver_str = ''
         local_ver = version.parse(local_ver_str).base_version
         required_ver = version.parse(required_ver_str).base_version
         if local_ver < required_ver:
@@ -143,14 +142,11 @@ class PackageReport(DoctorReport):
         except (AttributeError, RuntimeError, URLError):
             return report
         local_package_vers = get_local_package_versions()
-
-        if local_package_vers and distro_package_vers:
-            for name, local_ver_str in local_package_vers.items():
-                if name in distro_package_vers:
-                    required_ver_str = distro_package_vers.get(name)
-                else:
-                    required_ver_str = ''
-                local_ver = version.parse(local_ver_str).base_version
-                required_ver = version.parse(required_ver_str).base_version
-                report.add_to_report(name, f'required={required_ver}, local={local_ver}')
+        if not local_package_vers or not distro_package_vers:
+            return report
+        for name, local_ver_str in local_package_vers.items():
+            required_ver_str = distro_package_vers.get(name, '')
+            local_ver = version.parse(local_ver_str).base_version
+            required_ver = version.parse(required_ver_str).base_version
+            report.add_to_report(name, f'required={required_ver}, local={local_ver}')
         return report
