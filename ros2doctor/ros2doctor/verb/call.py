@@ -12,14 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from multiprocessing import Process
+import time
 import socket
+import struct
 
 import rclpy
 from rclpy.node import Node
 from rclpy.executors import SingleThreadedExecutor
 from ros2doctor.verb import VerbExtension
+from ros2multicast.api import send
+from ros2multicast.api import receive
 
 from std_msgs.msg import String
+
+DEFAULT_GROUP = '225.0.0.1'
+DEFAULT_PORT = 49150
 
 
 class CallVerb(VerbExtension):
@@ -28,26 +36,38 @@ class CallVerb(VerbExtension):
     def main(self, *, args):
         rclpy.init()
         caller_node = Talker()
+        # caller_node2 = Talker()
         receiver_node = Listener()
         executor = SingleThreadedExecutor()
+        
         executor.add_node(caller_node)
         executor.add_node(receiver_node)
+        p_exec = Process(target=executor.spin)
+        # p_receive = Process(target=udp_receive)
+        # p_send = Process(target=udp_send)
         try:
-            executor.spin()
+            p_exec.start()
+            # p_receive.start()
+            # p_send.start()
+            # p_send.join()
+            # p_receive.join()
         except KeyboardInterrupt:
             pass
         caller_node.destroy_node()
         receiver_node.destroy_node()
-        executor.shutdown()
-
+        # executor1.shutdown()
+        # executor2.shutdown()
+        # p_send.terminate()
+        # p_receive.terminate()
+        
 
 class Talker(Node):
 
     def __init__(self):
         super().__init__('talker')
         self.i = 0
-        self.pub = self.create_publisher(String, 'knock', 10)
-        time_period = 1.0
+        self.pub = self.create_publisher(String, 'ring', 10)
+        time_period = 5
         self.timer = self.create_timer(time_period, self.timer_callback)
 
     def timer_callback(self):
@@ -63,11 +83,52 @@ class Listener(Node):
     
     def __init__(self):
         super().__init__('listener')
-        self.sub = self.create_subscription(String, 'knock', self.knock_callback, 10)
+        self.sub = self.create_subscription(String,
+            'ring',
+            self.knock_callback,
+            10)
 
     def knock_callback(self, msg):
         caller_hostname = msg.data.split()[-1]
-        if caller_hostname != socket.gethostname():
-            self.get_logger().info(f'I heard from {caller_hostname}')
-        else:
-            self.get_logger().info('I heard myself')
+        # if caller_hostname != socket.gethostname():
+        self.get_logger().info(f'I heard from {caller_hostname} on ring')
+
+
+def udp_send(*, group=DEFAULT_GROUP, port=DEFAULT_PORT):
+    local_hostname = socket.gethostname()
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+    try:
+        while True:
+            print('Sending one udp packet')
+            s.sendto(f'Hello from {local_hostname}'.encode('utf-8'), (group, port))
+            time.sleep(1)
+    except KeyboardInterrupt:
+        s.close()
+
+
+def udp_receive(*, group=DEFAULT_GROUP, port=DEFAULT_PORT, timeout=None):
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+    try:
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        try:
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+        except AttributeError:
+            # not available on Windows
+            pass
+        s.bind(('', port))
+
+        s.settimeout(timeout)
+
+        mreq = struct.pack('4sl', socket.inet_aton(group), socket.INADDR_ANY)
+        s.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
+        try:
+            while True:
+                data, sender_addr = s.recvfrom(4096)
+                data = data.decode('utf-8')
+                sender_hostname = data.split()[-1]
+                print(f'received one packet from {sender_hostname} on {sender_addr}')
+        except KeyboardInterrupt:
+            s.setsockopt(socket.IPPROTO_IP, socket.IP_DROP_MEMBERSHIP, mreq)
+    finally:
+        s.close()
+
