@@ -5,7 +5,7 @@ package_name = 'ros2msg'
 
 setup(
     name=package_name,
-    version='0.7.8',
+    version='0.7.9',
     packages=find_packages(exclude=['test']),
     data_files=[
         ('share/' + package_name, ['package.xml']),
