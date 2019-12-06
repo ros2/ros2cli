@@ -41,6 +41,7 @@ setup(
             'PlatformCheck = ros2doctor.api.platform:PlatformCheck',
             'NetworkCheck = ros2doctor.api.network:NetworkCheck',
             'TopicCheck = ros2doctor.api.topic:TopicCheck',
+            'PackageCheck = ros2doctor.api.package:PackageCheck',
         ],
         'ros2doctor.report': [
             'PlatformReport = ros2doctor.api.platform:PlatformReport',
@@ -48,6 +49,7 @@ setup(
             'NetworkReport = ros2doctor.api.network:NetworkReport',
             'RMWReport = ros2doctor.api.rmw:RMWReport',
             'TopicReport = ros2doctor.api.topic:TopicReport',
+            'PackageReport = ros2doctor.api.package:PackageReport',
         ],
     }
 )
