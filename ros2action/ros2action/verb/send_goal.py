@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import importlib
-
 from action_msgs.msg import GoalStatus
 import rclpy
 from rclpy.action import ActionClient
