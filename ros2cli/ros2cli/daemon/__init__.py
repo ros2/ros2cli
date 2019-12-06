@@ -69,6 +69,14 @@ def main(*, script_name='_ros2_daemon', argv=None):
                 _print_invoked_function_name(node.get_topic_names_and_types))
             server.register_function(
                 _print_invoked_function_name(node.get_service_names_and_types))
+            server.register_function(
+                _print_invoked_function_name(node.get_publisher_names_and_types_by_node))
+            server.register_function(
+                _print_invoked_function_name(node.get_subscriber_names_and_types_by_node))
+            server.register_function(
+                _print_invoked_function_name(node.get_service_names_and_types_by_node))
+            server.register_function(
+                _print_invoked_function_name(node.get_client_names_and_types_by_node))
 
             shutdown = False
 
@@ -173,11 +181,16 @@ class RequestHandler(SimpleXMLRPCRequestHandler):
 
 
 def _print_invoked_function_name(func):
-    def wrapper():
-        nonlocal func
-        print('{func.__name__}()'.format_map(locals()))
-        return func()
-    wrapper.__name__ = func.__name__
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        name = func.__name__
+        arguments = ', '.join(
+            [f'{v!r}' for v in args] +
+            [f'{k}={v!r}' for k, v in kwargs.items()]
+        )
+        print(f'{name}({arguments})')
+        return func(*args, **kwargs)
+    wrapper.__signature__ = inspect.signature(func)
     return wrapper
 
 
