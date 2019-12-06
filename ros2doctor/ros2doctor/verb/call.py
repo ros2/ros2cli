@@ -36,30 +36,29 @@ class CallVerb(VerbExtension):
     def main(self, *, args):
         rclpy.init()
         caller_node = Talker()
-        # caller_node2 = Talker()
         receiver_node = Listener()
         executor = SingleThreadedExecutor()
-        
         executor.add_node(caller_node)
         executor.add_node(receiver_node)
-        p_exec = Process(target=executor.spin)
-        # p_receive = Process(target=udp_receive)
-        # p_send = Process(target=udp_send)
         try:
-            p_exec.start()
-            # p_receive.start()
-            # p_send.start()
-            # p_send.join()
-            # p_receive.join()
+            
+            while True:
+                p_receive = Process(target=udp_receive)
+                p_send = Process(target=udp_send)
+                executor.spin_once()
+                p_receive.start()
+                p_send.start()
+                p_send.join()
+                p_receive.join()
+                p_send.terminate()
+                p_receive.terminate()
+                time.sleep(1)
         except KeyboardInterrupt:
             pass
+        executor.shutdown()
         caller_node.destroy_node()
         receiver_node.destroy_node()
-        # executor1.shutdown()
-        # executor2.shutdown()
-        # p_send.terminate()
-        # p_receive.terminate()
-        
+
 
 class Talker(Node):
 
@@ -98,11 +97,9 @@ def udp_send(*, group=DEFAULT_GROUP, port=DEFAULT_PORT):
     local_hostname = socket.gethostname()
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
     try:
-        while True:
-            print('Sending one udp packet')
-            s.sendto(f'Hello from {local_hostname}'.encode('utf-8'), (group, port))
-            time.sleep(1)
-    except KeyboardInterrupt:
+        print('Sending one udp packet')
+        s.sendto(f'Hello from {local_hostname}'.encode('utf-8'), (group, port))
+    finally:
         s.close()
 
 
@@ -122,12 +119,11 @@ def udp_receive(*, group=DEFAULT_GROUP, port=DEFAULT_PORT, timeout=None):
         mreq = struct.pack('4sl', socket.inet_aton(group), socket.INADDR_ANY)
         s.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
         try:
-            while True:
-                data, sender_addr = s.recvfrom(4096)
-                data = data.decode('utf-8')
-                sender_hostname = data.split()[-1]
-                print(f'received one packet from {sender_hostname} on {sender_addr}')
-        except KeyboardInterrupt:
+            data, sender_addr = s.recvfrom(4096)
+            data = data.decode('utf-8')
+            sender_hostname = data.split()[-1]
+            print(f'received one packet from {sender_hostname} on {sender_addr}')
+        finally:
             s.setsockopt(socket.IPPROTO_IP, socket.IP_DROP_MEMBERSHIP, mreq)
     finally:
         s.close()
