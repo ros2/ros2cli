@@ -46,6 +46,6 @@ def add_arguments(parser):
     add_daemon_node_arguments(parser)
     add_direct_node_arguments(parser)
     parser.add_argument(
-        '--no-daemon', action='store_true', default=False,
+        '--no-daemon', action='store_true',
         help='Do not spawn nor use an already running daemon'
     )
