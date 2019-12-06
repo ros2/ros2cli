@@ -31,11 +31,10 @@ def _check_platform_helper() -> Tuple[str, dict, dict]:
 
     :return: string of distro name, dict of distribution info, dict of release platforms info
     """
-    distro_name = os.environ.get('ROS_DISTRO')
-    distro_name = distro_name.lower()
+    distro_name = os.environ['ROS_DISTRO'].lower()
     u = rosdistro.get_index_url()
     i = rosdistro.get_index(u)
-    distro_info = i.distributions.get(distro_name)
+    distro_info = i.distributions[distro_name]
     distro_data = rosdistro.get_distribution(i, distro_name).get_data()
     return distro_name, distro_info, distro_data
 
@@ -51,7 +50,7 @@ class PlatformCheck(DoctorCheck):
         result = Result()
         try:
             distros = _check_platform_helper()
-        except (AttributeError, RuntimeError, TypeError, URLError):
+        except (AttributeError, URLError, KeyError):
             result.add_error('Error: Unable to fetch rosdistro information online.')
             return result
         distro_name, distro_info, _ = distros
@@ -96,10 +95,9 @@ class RosdistroReport(DoctorReport):
     def report(self):
         ros_report = Report('ROS 2 INFORMATION')
         try:
-            distros = _check_platform_helper()
-        except (AttributeError, RuntimeError, URLError):
+            distro_name, distro_info, distro_data = _check_platform_helper()
+        except (AttributeError, URLError, KeyError):
             return ros_report
-        distro_name, distro_info, distro_data = distros
         ros_report.add_to_report('distribution name', distro_name)
         ros_report.add_to_report('distribution type', distro_info.get('distribution_type'))
         ros_report.add_to_report('distribution status', distro_info.get('distribution_status'))
