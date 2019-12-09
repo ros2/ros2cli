@@ -23,6 +23,7 @@ from xmlrpc.server import SimpleXMLRPCServer
 import netifaces
 
 import rclpy
+import rclpy.action
 
 from ros2cli.node.direct import DirectNode
 
@@ -63,12 +64,18 @@ def main(*, script_name='_ros2_daemon', argv=None):
 
             # expose getter functions of node
             server.register_function(
-                _print_invoked_function_name(
-                    node.get_node_names_and_namespaces))
+                _print_invoked_function_name(node.get_name))
+            server.register_function(
+                _print_invoked_function_name(node.get_namespace))
+            server.register_function(
+                _print_invoked_function_name(node.get_node_names_and_namespaces))
             server.register_function(
                 _print_invoked_function_name(node.get_topic_names_and_types))
             server.register_function(
                 _print_invoked_function_name(node.get_service_names_and_types))
+            server.register_function(
+                _print_invoked_function_name(_bind_function(
+                    rclpy.action.get_action_names_and_types, node)))
             server.register_function(
                 _print_invoked_function_name(node.get_publisher_names_and_types_by_node))
             server.register_function(
@@ -77,6 +84,12 @@ def main(*, script_name='_ros2_daemon', argv=None):
                 _print_invoked_function_name(node.get_service_names_and_types_by_node))
             server.register_function(
                 _print_invoked_function_name(node.get_client_names_and_types_by_node))
+            server.register_function(
+                _print_invoked_function_name(_bind_function(
+                    rclpy.action.get_action_server_names_and_types_by_node, node)))
+            server.register_function(
+                _print_invoked_function_name(_bind_function(
+                    rclpy.action.get_action_client_names_and_types_by_node, node)))
             server.register_function(
                 _print_invoked_function_name(node.count_publishers))
             server.register_function(
@@ -182,6 +195,20 @@ def get_daemon_port():
 
 class RequestHandler(SimpleXMLRPCRequestHandler):
     rpc_paths = ('/ros2cli/',)
+
+
+def _bind_function(func, *args, **kwargs):
+    """
+    Bind a function with a set of arguments.
+
+    A functools.partial equivalent that is actually a function.
+    """
+    partial = functools.partial(func, *args, **kwargs)
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        return partial(*args, **kwargs)
+    wrapper.__signature__ = inspect.signature(func)
+    return wrapper
 
 
 def _print_invoked_function_name(func):
