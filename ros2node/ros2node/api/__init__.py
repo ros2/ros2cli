@@ -16,8 +16,6 @@ from collections import namedtuple
 from typing import Any
 from typing import List
 
-from rclpy.action.graph import get_action_client_names_and_types_by_node
-from rclpy.action.graph import get_action_server_names_and_types_by_node
 from rclpy.node import HIDDEN_NODE_PREFIX
 from ros2cli.node.strategy import NodeStrategy
 
@@ -117,8 +115,8 @@ def get_service_server_info(*, node, remote_node_name, include_hidden=False):
 
 def get_action_server_info(*, node, remote_node_name, include_hidden=False):
     remote_node = parse_node_name(remote_node_name)
-    names_and_types = get_action_server_names_and_types_by_node(
-        node, remote_node.name, remote_node.namespace)
+    names_and_types = node.get_action_server_names_and_types_by_node(
+        remote_node.name, remote_node.namespace)
     return [
         TopicInfo(
             name=n,
@@ -128,8 +126,8 @@ def get_action_server_info(*, node, remote_node_name, include_hidden=False):
 
 def get_action_client_info(*, node, remote_node_name, include_hidden=False):
     remote_node = parse_node_name(remote_node_name)
-    names_and_types = get_action_client_names_and_types_by_node(
-        node, remote_node.name, remote_node.namespace)
+    names_and_types = node.get_action_client_names_and_types_by_node(
+        remote_node.name, remote_node.namespace)
     return [
         TopicInfo(
             name=n,
