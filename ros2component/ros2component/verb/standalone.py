@@ -16,8 +16,8 @@ import platform
 import signal
 import uuid
 
+from ros2cli.node.direct import add_arguments
 from ros2cli.node.direct import DirectNode
-from ros2cli.node.strategy import add_arguments
 
 from ros2component.api import add_component_arguments
 from ros2component.api import load_component_into_container
