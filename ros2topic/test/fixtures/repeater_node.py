@@ -26,7 +26,7 @@ class RepeaterNode(Node):
 
     def __init__(self, message_type):
         super().__init__('repeater_node')
-        self.message_type = get_message(message_type)
+        self.message_type = message_type
         self.pub = self.create_publisher(
             self.message_type, '~/output', qos_profile_system_default
         )
@@ -39,7 +39,7 @@ class RepeaterNode(Node):
 def parse_arguments(args=None):
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        'message_type',
+        'message_type', type=get_message,
         help='Message type for the repeater to publish.'
     )
     return parser.parse_args(args=remove_ros_args(args))
