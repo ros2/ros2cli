@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import importlib
-
 from action_msgs.msg import GoalStatus
 import rclpy
 from rclpy.action import ActionClient
@@ -24,6 +22,7 @@ from ros2action.verb import VerbExtension
 from ros2cli.node import NODE_NAME_PREFIX
 from rosidl_runtime_py import message_to_yaml
 from rosidl_runtime_py import set_message_fields
+from rosidl_runtime_py.utilities import get_action
 
 import yaml
 
@@ -82,26 +81,15 @@ def send_goal(action_name, action_type, goal_values, feedback_callback):
     action_client = None
     try:
         try:
-            # TODO(jacobperron): This logic should come from a rosidl related package
-            parts = action_type.split('/')
-            if len(parts) == 1:
-                raise ValueError()
-            if len(parts) == 2:
-                parts = [parts[0], 'action', parts[1]]
-            package_name = parts[0]
-            action_type = parts[-1]
-            if not all(parts):
-                raise ValueError()
-        except ValueError:
+            action_module = get_action(action_type)
+        except (AttributeError, ModuleNotFoundError, ValueError):
             raise RuntimeError('The passed action type is invalid')
 
-        module = importlib.import_module('.'.join(parts[:-1]))
-        action_module = getattr(module, action_type)
         goal_dict = yaml.safe_load(goal_values)
 
         rclpy.init()
 
-        node_name = NODE_NAME_PREFIX + '_send_goal_{}_{}'.format(package_name, action_type)
+        node_name = f"{NODE_NAME_PREFIX}_send_goal_{action_type.replace('/', '_')}"
         node = rclpy.create_node(node_name)
 
         action_client = ActionClient(node, action_module, action_name)
