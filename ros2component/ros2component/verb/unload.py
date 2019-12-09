@@ -43,11 +43,12 @@ class UnloadVerb(VerbExtension):
 
     def main(self, *, args):
         with NodeStrategy(args) as node:
-            node_names = get_node_names(node=node)
-        with DirectNode(args) as node:
-            container_node_names = find_container_node_names(node=node, node_names=node_names)
+            container_node_names = find_container_node_names(
+                node=node, node_names=get_node_names(node=node)
+            )
             if args.container_node_name not in [n.full_name for n in container_node_names]:
                 return "Unable to find container node '" + args.container_node_name + "'"
+        with DirectNode(args) as node:
             for uid, error, reason in unload_component_from_container(
                 node=node, remote_container_node_name=args.container_node_name,
                 component_uids=args.component_uid
