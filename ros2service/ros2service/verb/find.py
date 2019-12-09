@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from ros2cli.node.strategy import add_arguments as add_strategy_node_arguments
 from ros2cli.node.strategy import NodeStrategy
 from ros2service.api import get_service_names_and_types
 from ros2service.api import service_type_completer
@@ -34,6 +35,7 @@ class FindVerb(VerbExtension):
         parser.add_argument(
             '--include-hidden-services', action='store_true',
             help='Consider hidden services as well')
+        add_strategy_node_arguments(parser)
 
     def main(self, *, args):
         with NodeStrategy(args) as node:
