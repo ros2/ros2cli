@@ -645,7 +645,7 @@ class TestROS2TopicCLI(unittest.TestCase):
 
         head_line = topic_command.output.splitlines()[0]
         average_rate = float(average_rate_line_pattern.match(head_line).group(1))
-        assert math.isclose(average_rate, 1., rel_tol=1e-3)
+        assert math.isclose(average_rate, 1., rel_tol=1e-2)
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_filtered_topic_hz(self):
@@ -670,7 +670,7 @@ class TestROS2TopicCLI(unittest.TestCase):
 
         head_line = topic_command.output.splitlines()[0]
         average_rate = float(average_rate_line_pattern.match(head_line).group(1))
-        assert math.isclose(average_rate, 0.5, rel_tol=1e-3)
+        assert math.isclose(average_rate, 0.5, rel_tol=1e-2)
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_bw(self):
