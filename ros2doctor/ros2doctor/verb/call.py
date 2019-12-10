@@ -41,17 +41,9 @@ class CallVerb(VerbExtension):
         executor.add_node(caller_node)
         executor.add_node(receiver_node)
         try:
-            
             while True:
-                p_receive = Process(target=udp_receive)
-                p_send = Process(target=udp_send)
                 executor.spin_once()
-                p_receive.start()
-                p_send.start()
-                p_send.join()
-                p_receive.join()
-                p_send.terminate()
-                p_receive.terminate()
+                multicast()
                 time.sleep(1)
         except KeyboardInterrupt:
             pass
@@ -66,7 +58,7 @@ class Talker(Node):
         super().__init__('talker')
         self.i = 0
         self.pub = self.create_publisher(String, 'ring', 10)
-        time_period = 5
+        time_period = 0.0
         self.timer = self.create_timer(time_period, self.timer_callback)
 
     def timer_callback(self):
@@ -91,6 +83,17 @@ class Listener(Node):
         caller_hostname = msg.data.split()[-1]
         # if caller_hostname != socket.gethostname():
         self.get_logger().info(f'I heard from {caller_hostname} on ring')
+
+
+def multicast():
+    p_send = Process(target=udp_send)
+    p_receive = Process(target=udp_receive)
+    p_receive.start()
+    p_send.start()
+    p_send.join()
+    p_receive.join()
+    p_send.terminate()
+    p_receive.terminate()
 
 
 def udp_send(*, group=DEFAULT_GROUP, port=DEFAULT_PORT):
@@ -127,4 +130,3 @@ def udp_receive(*, group=DEFAULT_GROUP, port=DEFAULT_PORT, timeout=None):
             s.setsockopt(socket.IPPROTO_IP, socket.IP_DROP_MEMBERSHIP, mreq)
     finally:
         s.close()
-
