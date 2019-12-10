@@ -45,7 +45,7 @@ class InfoVerb(VerbExtension):
 
     def main(self, *, args):
         with NodeStrategy(args) as node:
-            node_names = get_node_names(node=node, include_hidden_nodes=True)
+            node_names = get_node_names(node=node, include_hidden_nodes=args.include_hidden)
         if args.node_name in (n.full_name for n in node_names):
             with DirectNode(args) as node:
                 print(args.node_name)

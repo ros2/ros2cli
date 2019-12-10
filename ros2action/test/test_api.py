@@ -12,14 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-
-import pytest
-
 from ros2action.api import get_action_clients_and_servers
 from ros2action.api import get_action_names
-from ros2action.api import get_action_path
-from ros2action.api import get_action_types
 from ros2cli.node.strategy import DirectNode
 
 
@@ -36,25 +30,3 @@ def test_get_action_clients_and_servers():
 def test_get_action_names():
     with DirectNode(None) as node:
         get_action_names(node=node)
-
-
-def test_get_action_path():
-    action_path = get_action_path('test_msgs', 'Fibonacci')
-    assert os.path.isfile(action_path)
-
-    with pytest.raises(LookupError):
-        get_action_path('_not_a_real_package_name', 'Fibonacci')
-
-
-def test_get_action_types():
-    action_types = get_action_types('test_msgs')
-    # Expect only strings
-    for t in action_types:
-        assert isinstance(t, str)
-    # Explicit dependencies of this package should be available
-    assert 'Fibonacci' in action_types
-    assert 'NestedMessage' in action_types
-    # Some things that should not be in the list
-    assert '' not in action_types
-    assert 'test_msgs' not in action_types
-    assert 'NotAnActionMessage' not in action_types
