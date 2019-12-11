@@ -12,22 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from multiprocessing import Process
-import time
+from multiprocessing import Process, Queue
 import socket
+import time
 import struct
 
 import rclpy
+from rclpy.executors import MultiThreadedExecutor
 from rclpy.node import Node
-from rclpy.executors import SingleThreadedExecutor
 from ros2doctor.verb import VerbExtension
-from ros2multicast.api import send
-from ros2multicast.api import receive
 
 from std_msgs.msg import String
 
 DEFAULT_GROUP = '225.0.0.1'
 DEFAULT_PORT = 49150
+subs = {}
 
 
 class CallVerb(VerbExtension):
@@ -37,14 +36,22 @@ class CallVerb(VerbExtension):
         rclpy.init()
         caller_node = Talker()
         receiver_node = Listener()
-        executor = SingleThreadedExecutor()
+        executor = MultiThreadedExecutor()
         executor.add_node(caller_node)
         executor.add_node(receiver_node)
+        timeout = time.time() + 1.0
         try:
             while True:
+                if time.time() > timeout:
+                    break
                 executor.spin_once()
-                multicast()
-                time.sleep(1)
+            print('executor finished')
+            print(subs)
+            multicast()
+                # counter += 1
+                # if counter % 5 == 0:
+                #     # print(topic_targets)
+                # time.sleep(1)
         except KeyboardInterrupt:
             pass
         executor.shutdown()
@@ -58,38 +65,49 @@ class Talker(Node):
         super().__init__('talker')
         self.i = 0
         self.pub = self.create_publisher(String, 'ring', 10)
-        time_period = 0.0
+        time_period = 0.1
         self.timer = self.create_timer(time_period, self.timer_callback)
 
     def timer_callback(self):
         msg = String()
         hostname = socket.gethostname()
-        msg.data = f'{self.i}. Hello ROS2 from {hostname}'
-        self.i += 1
-        self.get_logger().info(f'Publishing: "{msg.data}"')
-        self.pub.publish(msg)
+        while (self.i!=10):
+            msg.data = f'{self.i} Hello ROS2 from {hostname}'
+            self.i += 1
+            self.get_logger().info(f'Publishing: "{msg.data}"')
+            self.pub.publish(msg)
 
 
 class Listener(Node):
-    
+
     def __init__(self):
         super().__init__('listener')
         self.sub = self.create_subscription(String,
-            'ring',
-            self.knock_callback,
-            10)
+                                            'ring',
+                                            self.knock_callback,
+                                            10)
 
     def knock_callback(self, msg):
-        caller_hostname = msg.data.split()[-1]
+        msg_data = msg.data.split()
+        # msg_num = msg_data[0]
+        caller_hostname = msg_data[-1]
         # if caller_hostname != socket.gethostname():
-        self.get_logger().info(f'I heard from {caller_hostname} on ring')
+        print(msg.data)
+        # print(f'Topic received from: {caller_hostname}')
+        if caller_hostname not in subs:
+            subs[caller_hostname] = 1
+        else:
+            subs[caller_hostname] += 1
 
 
 def multicast():
-    p_send = Process(target=udp_send)
+    
     p_receive = Process(target=udp_receive)
+    p_send = Process(target=udp_send)
+    
     p_receive.start()
     p_send.start()
+    
     p_send.join()
     p_receive.join()
     p_send.terminate()
@@ -99,9 +117,13 @@ def multicast():
 def udp_send(*, group=DEFAULT_GROUP, port=DEFAULT_PORT):
     local_hostname = socket.gethostname()
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+    counter = 0
     try:
-        print('Sending one udp packet')
-        s.sendto(f'Hello from {local_hostname}'.encode('utf-8'), (group, port))
+        while counter < 10:
+            print('Sending one udp packet')
+            s.sendto(f'{counter} Hello from {local_hostname}'.encode('utf-8'), (group, port))
+            counter += 1
+            time.sleep(0.1)
     finally:
         s.close()
 
@@ -121,11 +143,24 @@ def udp_receive(*, group=DEFAULT_GROUP, port=DEFAULT_PORT, timeout=None):
 
         mreq = struct.pack('4sl', socket.inet_aton(group), socket.INADDR_ANY)
         s.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
+        udps = {}
+        timeout = time.time() + 1.0
         try:
-            data, sender_addr = s.recvfrom(4096)
-            data = data.decode('utf-8')
-            sender_hostname = data.split()[-1]
-            print(f'received one packet from {sender_hostname} on {sender_addr}')
+            while True:
+                if time.time() > timeout:
+                    break
+                data, sender_addr = s.recvfrom(4096)
+                data = data.decode('utf-8')
+                sender_hostname = data.split()[-1]
+                print(data)
+                if sender_hostname not in udps:
+                    udps[sender_hostname] = 1
+                else:
+                    udps[sender_hostname] += 1
+                time.sleep(0.1)
+            # print(f'UDP received from: {sender_hostname}, {sender_addr}')
+            print('Multiprocessing finished')
+            print(udps)
         finally:
             s.setsockopt(socket.IPPROTO_IP, socket.IP_DROP_MEMBERSHIP, mreq)
     finally:

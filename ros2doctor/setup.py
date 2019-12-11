@@ -49,7 +49,7 @@ setup(
             'RMWReport = ros2doctor.api.rmw:RMWReport',
             'TopicReport = ros2doctor.api.topic:TopicReport',
         ],
-        'ros2doctor.verb':[
+        'ros2doctor.verb': [
             'call = ros2doctor.verb.call:CallVerb',
         ]
     }

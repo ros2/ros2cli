@@ -47,7 +47,7 @@ class DoctorCommand(CommandExtension):
         if hasattr(args, '_verb'):
             extension = getattr(args, '_verb')
             return extension.main(args=args)
-        
+
         # `ros2 doctor -r`
         if args.report:
             all_reports = generate_reports()
