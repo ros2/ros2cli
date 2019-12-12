@@ -36,7 +36,7 @@ class NodeStrategy:
         return self
 
     def __getattr__(self, name):
-        return self.node.__getattr__(name)
+        return getattr(self.node, name)
 
     def __exit__(self, exc_type, exc_value, traceback):
         self.node.__exit__(exc_type, exc_value, traceback)
