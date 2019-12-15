@@ -30,7 +30,8 @@ class InfoVerb(VerbExtension):
 
     def main(self, *, args):
         with DirectNode(args) as node:
-            topic_names_and_types = get_topic_names_and_types(node=node)
+            topic_names_and_types = get_topic_names_and_types(
+                node=node, include_hidden_topics=True)
             topic_name = args.topic_name
             for (t_name, t_types) in topic_names_and_types:
                 if t_name == topic_name:
