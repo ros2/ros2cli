@@ -264,7 +264,7 @@ class TestROS2TopicCLI(unittest.TestCase):
             expected_lines=[
                 'Type: std_msgs/msg/String',
                 'Publisher count: 1',
-                'Subscriber count: 0'
+                'Subscription count: 0'
             ],
             text=topic_command.output,
             strict=True
