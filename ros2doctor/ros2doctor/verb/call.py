@@ -27,6 +27,7 @@ from std_msgs.msg import String
 DEFAULT_GROUP = '225.0.0.1'
 DEFAULT_PORT = 49150
 subs = {}
+udps = {}
 
 
 class CallVerb(VerbExtension):
@@ -39,19 +40,18 @@ class CallVerb(VerbExtension):
         executor = MultiThreadedExecutor()
         executor.add_node(caller_node)
         executor.add_node(receiver_node)
-        timeout = time.time() + 1.0
         try:
             while True:
-                if time.time() > timeout:
-                    break
-                executor.spin_once()
-            print('executor finished')
-            print(subs)
-            multicast()
-                # counter += 1
-                # if counter % 5 == 0:
-                #     # print(topic_targets)
-                # time.sleep(1)
+                timeout = time.time() + 1.0
+                while True:
+                    if time.time() > timeout:
+                        break
+                    executor.spin_once()
+                print('executor finished')
+                print(subs)
+                multicast()
+                #print summary table
+                time.sleep(1)
         except KeyboardInterrupt:
             pass
         executor.shutdown()
@@ -143,7 +143,6 @@ def udp_receive(*, group=DEFAULT_GROUP, port=DEFAULT_PORT, timeout=None):
 
         mreq = struct.pack('4sl', socket.inet_aton(group), socket.INADDR_ANY)
         s.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
-        udps = {}
         timeout = time.time() + 1.0
         try:
             while True:
