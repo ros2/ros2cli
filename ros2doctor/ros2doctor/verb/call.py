@@ -48,7 +48,7 @@ class CallVerb(VerbExtension):
                     executor.spin_once()
                 # print('executor finished')
                 # print(subs)
-                multicast()
+                    multicast()
                 time.sleep(1)
         except KeyboardInterrupt:
             pass
