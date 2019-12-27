@@ -41,14 +41,13 @@ class CallVerb(VerbExtension):
         executor.add_node(receiver_node)
         try:
             while True:
-                subs = {}
                 timeout = time.time() + 1.0
                 while True:
                     if time.time() > timeout:
                         break
                     executor.spin_once()
                 # print('executor finished')
-                print(subs)
+                # print(subs)
                 multicast()
                 time.sleep(1)
         except KeyboardInterrupt:
@@ -94,6 +93,7 @@ class Listener(Node):
             subs[caller_hostname] = 1
         else:
             subs[caller_hostname] += 1
+        print(msg.data)
 
 
 def multicast():
@@ -148,7 +148,7 @@ def udp_receive(*, group=DEFAULT_GROUP, port=DEFAULT_PORT, timeout=None):
                 data, sender_addr = s.recvfrom(4096)
                 data = data.decode('utf-8')
                 sender_hostname = data.split()[-1]
-                # print(data)
+                print(data)
                 if sender_hostname not in udps:
                     udps[sender_hostname] = 1
                 else:
@@ -156,7 +156,7 @@ def udp_receive(*, group=DEFAULT_GROUP, port=DEFAULT_PORT, timeout=None):
                 time.sleep(0.1)
             # print(f'UDP received from: {sender_hostname}, {sender_addr}')
             # print('Multiprocessing finished')
-            print(udps)
+            # print(udps)
         finally:
             s.setsockopt(socket.IPPROTO_IP, socket.IP_DROP_MEMBERSHIP, mreq)
     finally:
