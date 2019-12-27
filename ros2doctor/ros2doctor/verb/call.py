@@ -27,7 +27,6 @@ from std_msgs.msg import String
 DEFAULT_GROUP = '225.0.0.1'
 DEFAULT_PORT = 49150
 subs = {}
-udps = {}
 
 
 class CallVerb(VerbExtension):
@@ -42,15 +41,15 @@ class CallVerb(VerbExtension):
         executor.add_node(receiver_node)
         try:
             while True:
+                subs = {}
                 timeout = time.time() + 1.0
                 while True:
                     if time.time() > timeout:
                         break
                     executor.spin_once()
-                print('executor finished')
+                # print('executor finished')
                 print(subs)
                 multicast()
-                #print summary table
                 time.sleep(1)
         except KeyboardInterrupt:
             pass
@@ -74,7 +73,7 @@ class Talker(Node):
         while (self.i!=10):
             msg.data = f'{self.i} Hello ROS2 from {hostname}'
             self.i += 1
-            self.get_logger().info(f'Publishing: "{msg.data}"')
+            # self.get_logger().info(f'Publishing: "{msg.data}"')
             self.pub.publish(msg)
 
 
@@ -89,11 +88,8 @@ class Listener(Node):
 
     def knock_callback(self, msg):
         msg_data = msg.data.split()
-        # msg_num = msg_data[0]
         caller_hostname = msg_data[-1]
         # if caller_hostname != socket.gethostname():
-        print(msg.data)
-        # print(f'Topic received from: {caller_hostname}')
         if caller_hostname not in subs:
             subs[caller_hostname] = 1
         else:
@@ -120,7 +116,7 @@ def udp_send(*, group=DEFAULT_GROUP, port=DEFAULT_PORT):
     counter = 0
     try:
         while counter < 10:
-            print('Sending one udp packet')
+            # print('Sending one udp packet')
             s.sendto(f'{counter} Hello from {local_hostname}'.encode('utf-8'), (group, port))
             counter += 1
             time.sleep(0.1)
@@ -144,6 +140,7 @@ def udp_receive(*, group=DEFAULT_GROUP, port=DEFAULT_PORT, timeout=None):
         mreq = struct.pack('4sl', socket.inet_aton(group), socket.INADDR_ANY)
         s.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
         timeout = time.time() + 1.0
+        udps = {}
         try:
             while True:
                 if time.time() > timeout:
@@ -151,14 +148,14 @@ def udp_receive(*, group=DEFAULT_GROUP, port=DEFAULT_PORT, timeout=None):
                 data, sender_addr = s.recvfrom(4096)
                 data = data.decode('utf-8')
                 sender_hostname = data.split()[-1]
-                print(data)
+                # print(data)
                 if sender_hostname not in udps:
                     udps[sender_hostname] = 1
                 else:
                     udps[sender_hostname] += 1
                 time.sleep(0.1)
             # print(f'UDP received from: {sender_hostname}, {sender_addr}')
-            print('Multiprocessing finished')
+            # print('Multiprocessing finished')
             print(udps)
         finally:
             s.setsockopt(socket.IPPROTO_IP, socket.IP_DROP_MEMBERSHIP, mreq)
