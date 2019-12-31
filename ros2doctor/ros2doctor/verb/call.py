@@ -101,7 +101,7 @@ def receive():
         mreq = struct.pack('4sl', socket.inet_aton(DEFAULT_GROUP), socket.INADDR_ANY)
         s.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
         try:
-            data, sender_addr = s.recvfrom(4096)
+            data, _ = s.recvfrom(4096)
             data = data.decode('utf-8')
             sender_hostname = data.split()[-1]
             if sender_hostname not in summary_table['multicast_receive']:
