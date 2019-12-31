@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from multiprocessing import Process, Queue
 import socket
 import time
+import threading
 import struct
 
 import rclpy
@@ -26,35 +26,10 @@ from std_msgs.msg import String
 
 DEFAULT_GROUP = '225.0.0.1'
 DEFAULT_PORT = 49150
-subs = {}
-
-
-class CallVerb(VerbExtension):
-    """Pub msg and hostname; listen on the same topic; print periodically."""
-
-    def main(self, *, args):
-        rclpy.init()
-        caller_node = Talker()
-        receiver_node = Listener()
-        executor = MultiThreadedExecutor()
-        executor.add_node(caller_node)
-        executor.add_node(receiver_node)
-        try:
-            while True:
-                timeout = time.time() + 1.0
-                while True:
-                    if time.time() > timeout:
-                        break
-                    executor.spin_once()
-                # print('executor finished')
-                # print(subs)
-                    multicast()
-                time.sleep(1)
-        except KeyboardInterrupt:
-            pass
-        executor.shutdown()
-        caller_node.destroy_node()
-        receiver_node.destroy_node()
+summary_table = {'topic_pub': 0,
+                 'topic_sub': {},
+                 'multicast_send': 0,
+                 'multicast_receive': {}}
 
 
 class Talker(Node):
@@ -69,11 +44,12 @@ class Talker(Node):
     def timer_callback(self):
         msg = String()
         hostname = socket.gethostname()
-        while (self.i!=10):
-            msg.data = f'{self.i} Hello ROS2 from {hostname}'
-            self.i += 1
-            # self.get_logger().info(f'Publishing: "{msg.data}"')
-            self.pub.publish(msg)
+        # publish
+        msg.data = f'publishing hello ROS2 from {hostname}'
+        summary_table['topic_pub'] += 1
+        # self.get_logger().info(f'Publishing: "{msg.data}"')
+        self.pub.publish(msg)
+        self.i += 1
 
 
 class Listener(Node):
@@ -82,49 +58,34 @@ class Listener(Node):
         super().__init__('listener')
         self.sub = self.create_subscription(String,
                                             'ring',
-                                            self.knock_callback,
+                                            self.sub_callback,
                                             10)
 
-    def knock_callback(self, msg):
+    def sub_callback(self, msg):
+        # subscribe
         msg_data = msg.data.split()
         caller_hostname = msg_data[-1]
         # if caller_hostname != socket.gethostname():
-        if caller_hostname not in subs:
-            subs[caller_hostname] = 1
+        if caller_hostname not in summary_table['topic_sub']:
+            summary_table['topic_sub'][caller_hostname] = 1
         else:
-            subs[caller_hostname] += 1
-        print(msg.data)
+            summary_table['topic_sub'][caller_hostname] += 1
+        # print(msg.data)
 
 
-def multicast():
-    
-    p_receive = Process(target=udp_receive)
-    p_send = Process(target=udp_send)
-    
-    p_receive.start()
-    p_send.start()
-    
-    p_send.join()
-    p_receive.join()
-    p_send.terminate()
-    p_receive.terminate()
-
-
-def udp_send(*, group=DEFAULT_GROUP, port=DEFAULT_PORT):
-    local_hostname = socket.gethostname()
+def send():
+    hostname = socket.gethostname()
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-    counter = 0
     try:
-        while counter < 10:
-            # print('Sending one udp packet')
-            s.sendto(f'{counter} Hello from {local_hostname}'.encode('utf-8'), (group, port))
-            counter += 1
-            time.sleep(0.1)
+        # print('Sending one udp packet')
+        summary_table['multicast_send'] += 1
+        s.sendto(f'Multicast hello from {hostname}'.encode('utf-8'), (DEFAULT_GROUP, DEFAULT_PORT))
     finally:
         s.close()
 
 
-def udp_receive(*, group=DEFAULT_GROUP, port=DEFAULT_PORT, timeout=None):
+def receive():
+    # multicast receive
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
     try:
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -133,31 +94,56 @@ def udp_receive(*, group=DEFAULT_GROUP, port=DEFAULT_PORT, timeout=None):
         except AttributeError:
             # not available on Windows
             pass
-        s.bind(('', port))
+        s.bind(('', DEFAULT_PORT))
+    
+        s.settimeout(None)
 
-        s.settimeout(timeout)
-
-        mreq = struct.pack('4sl', socket.inet_aton(group), socket.INADDR_ANY)
+        mreq = struct.pack('4sl', socket.inet_aton(DEFAULT_GROUP), socket.INADDR_ANY)
         s.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
-        timeout = time.time() + 1.0
-        udps = {}
         try:
-            while True:
-                if time.time() > timeout:
-                    break
-                data, sender_addr = s.recvfrom(4096)
-                data = data.decode('utf-8')
-                sender_hostname = data.split()[-1]
-                print(data)
-                if sender_hostname not in udps:
-                    udps[sender_hostname] = 1
-                else:
-                    udps[sender_hostname] += 1
-                time.sleep(0.1)
-            # print(f'UDP received from: {sender_hostname}, {sender_addr}')
-            # print('Multiprocessing finished')
-            # print(udps)
+            data, sender_addr = s.recvfrom(4096)
+            data = data.decode('utf-8')
+            sender_hostname = data.split()[-1]
+            if sender_hostname not in summary_table['multicast_receive']:
+                summary_table['multicast_receive'][sender_hostname] = 1
+            else:
+                summary_table['multicast_receive'][sender_hostname] += 1
+            # print(data)
         finally:
             s.setsockopt(socket.IPPROTO_IP, socket.IP_DROP_MEMBERSHIP, mreq)
     finally:
         s.close()
+
+
+class CallVerb(VerbExtension):
+    """Pub msg and hostname; listen on the same topic; print periodically."""
+
+    def main(self, *, args):
+        rclpy.init()
+        pub_node = Talker()
+        sub_node = Listener()
+       
+        executor = MultiThreadedExecutor()
+        executor.add_node(pub_node)
+        executor.add_node(sub_node)
+        try:
+            count = 0
+            while True:
+                if (count % 20 == 0 and count != 0):
+                    print(summary_table)
+                    summary_table['topic_pub'] = 0
+                    summary_table['topic_sub'] = {}
+                    summary_table['multicast_send'] = 0
+                    summary_table['multicast_receive'] = {}
+                    time.sleep(1)
+                executor.spin_once()
+                executor.spin_once()
+                threading.Thread(target=send, args=()).start()
+                threading.Thread(target=receive, args=()).start()
+                count += 1
+                time.sleep(0.1)
+        except (KeyboardInterrupt, SystemExit):
+            executor.shutdown()
+            pub_node.destroy_node()
+            sub_node.destroy_node()
+
