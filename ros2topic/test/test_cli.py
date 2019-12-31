@@ -517,7 +517,7 @@ class TestROS2TopicCLI(unittest.TestCase):
             ), timeout=10)
             assert self.listener_node.wait_for_output(functools.partial(
                 launch_testing.tools.expect_output, expected_lines=[
-                    re.compile(r'\[INFO\] \[\d+.\d*\] \[listener\]: I heard: \[foo\]')
+                    re.compile(r'\[INFO\] \[\d+\.\d*\] \[listener\]: I heard: \[foo\]')
                 ] * 3, strict=False
             ), timeout=10)
         assert topic_command.wait_for_shutdown(timeout=10)
@@ -541,7 +541,7 @@ class TestROS2TopicCLI(unittest.TestCase):
             assert topic_command.wait_for_shutdown(timeout=10)
             assert self.listener_node.wait_for_output(functools.partial(
                 launch_testing.tools.expect_output, expected_lines=[
-                    re.compile(r'\[INFO\] \[\d+.\d*\] \[listener\]: I heard: \[bar\]')
+                    re.compile(r'\[INFO\] \[\d+\.\d*\] \[listener\]: I heard: \[bar\]')
                 ], strict=False
             ), timeout=10)
         assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
@@ -567,7 +567,7 @@ class TestROS2TopicCLI(unittest.TestCase):
             ), timeout=10), 'Output does not match: ' + topic_command.output
             assert self.listener_node.wait_for_output(functools.partial(
                 launch_testing.tools.expect_output, expected_lines=[
-                    re.compile(r'\[INFO\] \[\d+.\d*\] \[listener\]: I heard: \[fizz\]')
+                    re.compile(r'\[INFO\] \[\d+\.\d*\] \[listener\]: I heard: \[fizz\]')
                 ], strict=False
             ), timeout=10)
         assert topic_command.wait_for_shutdown(timeout=10)

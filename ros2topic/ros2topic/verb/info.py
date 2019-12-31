@@ -64,17 +64,21 @@ class InfoVerb(VerbExtension):
             else:
                 return "Unknown topic '%s'" % topic_name
 
-            type_str = topic_types[0] if len(topic_types) == 1 else topic_types
-            print('Type: %s' % type_str)
+            lineend = '\n'
+            if args.verbose:
+                lineend = '\n\n'
 
-            print('\nPublisher count: %d' % node.count_publishers(topic_name))
+            type_str = topic_types[0] if len(topic_types) == 1 else topic_types
+            print('Type: %s' % type_str, end=lineend)
+
+            print('Publisher count: %d' % node.count_publishers(topic_name), end=lineend)
             if args.verbose:
                 try:
                     print_topic_info(topic_name, node.get_publishers_info_by_topic)
                 except NotImplementedError as e:
                     return str(e)
 
-            print('\nSubscription count: %d' % node.count_subscribers(topic_name))
+            print('Subscription count: %d' % node.count_subscribers(topic_name))
             if args.verbose:
                 try:
                     print_topic_info(topic_name, node.get_subscriptions_info_by_topic)
