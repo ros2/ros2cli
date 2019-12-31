@@ -270,6 +270,35 @@ class TestROS2TopicCLI(unittest.TestCase):
             strict=True
         )
 
+    @launch_testing.markers.retry_on_failure(times=5)
+    def test_topic_info_verbose(self):
+        with self.launch_topic_command(arguments=['info', '--verbose', '/chatter']) as topic_command:
+            assert topic_command.wait_for_shutdown(timeout=10)
+        assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=[
+                'Type: std_msgs/msg/String',
+                '',
+                'Publisher count: 1',
+                '',
+                re.compile(r'Node name: \w+'),
+                'Node namespace: /',
+                'Topic type: std_msgs/msg/String',
+                re.compile(r'GID: [\w\.]+'),
+                'QoS profile:',
+                re.compile(r'  Reliability: RMW_QOS_POLICY_RELIABILITY_\w+'),
+                re.compile(r'  Durability: RMW_QOS_POLICY_DURABILITY_\w+'),
+                re.compile(r'  Lifespan: \d+ nanoseconds'),
+                re.compile(r'  Deadline: \d+ nanoseconds'),
+                re.compile(r'  Liveliness: RMW_QOS_POLICY_LIVELINESS_\w+'),
+                re.compile(r'  Liveliness lease duration: \d+ nanoseconds'),
+                '',
+                'Subscription count: 0'
+            ],
+            text=topic_command.output,
+            strict=True
+        )
+
     def test_info_on_unknown_topic(self):
         with self.launch_topic_command(arguments=['info', '/unknown_topic']) as topic_command:
             assert topic_command.wait_for_shutdown(timeout=10)

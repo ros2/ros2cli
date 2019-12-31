@@ -24,18 +24,18 @@ from ros2topic.verb import VerbExtension
 
 def print_topic_info(topic_name, get_topic_info_func):
     for info in get_topic_info_func(topic_name):
-        print('\nNode Name: %s' % info['node_name'])
-        print('Node Namespace: %s' % info['node_namespace'])
-        print('Topic Type: %s' % info['topic_type'])
+        print('Node name: %s' % info['node_name'])
+        print('Node namespace: %s' % info['node_namespace'])
+        print('Topic type: %s' % info['topic_type'])
         print('GID: %s' % '.'.join(format(x, '02x') for x in info['gid']))
-        print('QoS Profile:')
+        print('QoS profile:')
         qos_profile = info['qos_profile']
         print('  Reliability: %s' % QoSReliabilityPolicy(qos_profile['reliability']).name)
         print('  Durability: %s' % QoSDurabilityPolicy(qos_profile['durability']).name)
         print('  Lifespan: %d nanoseconds' % qos_profile['lifespan'].nanoseconds)
         print('  Deadline: %d nanoseconds' % qos_profile['deadline'].nanoseconds)
         print('  Liveliness: %s' % QoSLivelinessPolicy(qos_profile['liveliness']).name)
-        print('  Liveliness Lease Duration: %d nanoseconds' %
+        print('  Liveliness lease duration: %d nanoseconds\n' %
               qos_profile['liveliness_lease_duration'].nanoseconds)
 
 class InfoVerb(VerbExtension):
