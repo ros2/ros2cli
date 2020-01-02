@@ -136,13 +136,19 @@ class CallVerb(VerbExtension):
                     summary_table['multicast_send'] = 0
                     summary_table['multicast_receive'] = {}
                     time.sleep(1)
+                # pub/sub threads
                 executor.spin_once()
                 executor.spin_once()
-                threading.Thread(target=send, args=()).start()
-                threading.Thread(target=receive, args=()).start()
+                # multicast threads
+                send_thread = threading.Thread(target=send, args=())
+                send_thread.daemon = True
+                receive_thread = threading.Thread(target=receive, args=())
+                receive_thread.daemon = True
+                receive_thread.start()
+                send_thread.start()
                 count += 1
                 time.sleep(0.1)
-        except (KeyboardInterrupt, SystemExit):
+        except KeyboardInterrupt:
             executor.shutdown()
             pub_node.destroy_node()
             sub_node.destroy_node()
