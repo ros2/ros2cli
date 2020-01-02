@@ -1,0 +1,299 @@
+[1.041s] DEBUG:colcon:Command line arguments: ['/home/claire/.local/bin/colcon', 'build', '--packages-select', 'ros2doctor']
+[1.041s] DEBUG:colcon:Parsed command line arguments: Namespace(ament_cmake_args=None, base_paths='.', bazel_args=None, bazel_task=None, build_base='build', catkin_cmake_args=None, catkin_skip_building_tests=False, cmake_args=None, cmake_clean_cache=False, cmake_clean_first=False, cmake_force_configure=False, cmake_target=None, cmake_target_skip_unavailable=False, continue_on_error=False, event_handlers=None, executor='parallel', ignore_user_meta=False, install_base='install', log_base='log', log_level=None, main=<bound method BuildVerb.main of <colcon_core.verb.build.BuildVerb object at 0x7fccfcbb2dd8>>, merge_install=False, metas='./colcon.meta', mixin=None, mixin_files=None, mixin_verb=('build',), packages_above=None, packages_above_depth=None, packages_end=None, packages_ignore=None, packages_ignore_regex=None, packages_select=['ros2doctor'], packages_select_build_failed=False, packages_select_by_dep=None, packages_select_regex=None, packages_select_test_failures=False, packages_skip=None, packages_skip_build_finished=False, packages_skip_by_dep=None, packages_skip_regex=None, packages_skip_test_passed=False, packages_skip_up_to=None, packages_start=None, packages_up_to=None, parallel_workers=12, paths=None, symlink_install=False, test_result_base=None, verb_extension=<colcon_core.verb.build.BuildVerb object at 0x7fccfcbb2dd8>, verb_name='build', verb_parser=<colcon_mixin.mixin.mixin_argument.MixinArgumentDecorator object at 0x7fccfcbbe4e0>)
+[1.133s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) check parameters
+[1.133s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) check parameters
+[1.133s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) check parameters
+[1.133s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) check parameters
+[1.133s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) discover
+[1.134s] INFO:colcon.colcon_core.package_discovery:Crawling recursively for packages in '/home/claire/ros2_eloquent/src/ros2/ros2cli'
+[1.134s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli) by extensions ['ignore', 'ignore_ament_install']
+[1.134s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli) by extension 'ignore'
+[1.134s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli) by extension 'ignore_ament_install'
+[1.134s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli) by extensions ['colcon_pkg']
+[1.134s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli) by extension 'colcon_pkg'
+[1.134s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli) by extensions ['colcon_meta']
+[1.134s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli) by extension 'colcon_meta'
+[1.134s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli) by extensions ['ros']
+[1.134s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli) by extension 'ros'
+[1.137s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli) by extensions ['bazel', 'cmake', 'python']
+[1.137s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli) by extension 'bazel'
+[1.137s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli) by extension 'cmake'
+[1.137s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli) by extension 'python'
+[1.137s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli) by extensions ['python_setup_py']
+[1.137s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli) by extension 'python_setup_py'
+[1.138s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/build) by extensions ['ignore', 'ignore_ament_install']
+[1.138s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/build) by extension 'ignore'
+[1.138s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/build) ignored
+[1.138s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/install) by extensions ['ignore', 'ignore_ament_install']
+[1.138s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/install) by extension 'ignore'
+[1.138s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/install) ignored
+[1.138s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/log) by extensions ['ignore', 'ignore_ament_install']
+[1.138s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/log) by extension 'ignore'
+[1.138s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/log) ignored
+[1.139s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2action) by extensions ['ignore', 'ignore_ament_install']
+[1.139s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2action) by extension 'ignore'
+[1.139s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2action) by extension 'ignore_ament_install'
+[1.139s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2action) by extensions ['colcon_pkg']
+[1.139s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2action) by extension 'colcon_pkg'
+[1.139s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2action) by extensions ['colcon_meta']
+[1.139s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2action) by extension 'colcon_meta'
+[1.139s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2action) by extensions ['ros']
+[1.139s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2action) by extension 'ros'
+[1.141s] DEBUG:colcon.colcon_core.package_identification:Package '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2action' with type 'ros.ament_python' and name 'ros2action'
+[1.142s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2cli) by extensions ['ignore', 'ignore_ament_install']
+[1.142s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2cli) by extension 'ignore'
+[1.142s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2cli) by extension 'ignore_ament_install'
+[1.142s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2cli) by extensions ['colcon_pkg']
+[1.142s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2cli) by extension 'colcon_pkg'
+[1.143s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2cli) by extensions ['colcon_meta']
+[1.143s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2cli) by extension 'colcon_meta'
+[1.143s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2cli) by extensions ['ros']
+[1.143s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2cli) by extension 'ros'
+[1.143s] DEBUG:colcon.colcon_core.package_identification:Package '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2cli' with type 'ros.ament_python' and name 'ros2cli'
+[1.143s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2component) by extensions ['ignore', 'ignore_ament_install']
+[1.144s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2component) by extension 'ignore'
+[1.144s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2component) by extension 'ignore_ament_install'
+[1.144s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2component) by extensions ['colcon_pkg']
+[1.144s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2component) by extension 'colcon_pkg'
+[1.144s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2component) by extensions ['colcon_meta']
+[1.144s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2component) by extension 'colcon_meta'
+[1.144s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2component) by extensions ['ros']
+[1.144s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2component) by extension 'ros'
+[1.145s] DEBUG:colcon.colcon_core.package_identification:Package '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2component' with type 'ros.ament_python' and name 'ros2component'
+[1.145s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2doctor) by extensions ['ignore', 'ignore_ament_install']
+[1.145s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2doctor) by extension 'ignore'
+[1.145s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2doctor) by extension 'ignore_ament_install'
+[1.145s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2doctor) by extensions ['colcon_pkg']
+[1.145s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2doctor) by extension 'colcon_pkg'
+[1.145s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2doctor) by extensions ['colcon_meta']
+[1.145s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2doctor) by extension 'colcon_meta'
+[1.145s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2doctor) by extensions ['ros']
+[1.146s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2doctor) by extension 'ros'
+[1.146s] DEBUG:colcon.colcon_core.package_identification:Package '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2doctor' with type 'ros.ament_python' and name 'ros2doctor'
+[1.146s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2interface) by extensions ['ignore', 'ignore_ament_install']
+[1.146s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2interface) by extension 'ignore'
+[1.146s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2interface) by extension 'ignore_ament_install'
+[1.147s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2interface) by extensions ['colcon_pkg']
+[1.147s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2interface) by extension 'colcon_pkg'
+[1.147s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2interface) by extensions ['colcon_meta']
+[1.147s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2interface) by extension 'colcon_meta'
+[1.147s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2interface) by extensions ['ros']
+[1.147s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2interface) by extension 'ros'
+[1.148s] DEBUG:colcon.colcon_core.package_identification:Package '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2interface' with type 'ros.ament_python' and name 'ros2interface'
+[1.148s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2lifecycle) by extensions ['ignore', 'ignore_ament_install']
+[1.148s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2lifecycle) by extension 'ignore'
+[1.148s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2lifecycle) by extension 'ignore_ament_install'
+[1.148s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2lifecycle) by extensions ['colcon_pkg']
+[1.148s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2lifecycle) by extension 'colcon_pkg'
+[1.148s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2lifecycle) by extensions ['colcon_meta']
+[1.148s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2lifecycle) by extension 'colcon_meta'
+[1.148s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2lifecycle) by extensions ['ros']
+[1.148s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2lifecycle) by extension 'ros'
+[1.149s] DEBUG:colcon.colcon_core.package_identification:Package '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2lifecycle' with type 'ros.ament_python' and name 'ros2lifecycle'
+[1.149s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2lifecycle_test_fixtures) by extensions ['ignore', 'ignore_ament_install']
+[1.149s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2lifecycle_test_fixtures) by extension 'ignore'
+[1.149s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2lifecycle_test_fixtures) by extension 'ignore_ament_install'
+[1.150s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2lifecycle_test_fixtures) by extensions ['colcon_pkg']
+[1.150s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2lifecycle_test_fixtures) by extension 'colcon_pkg'
+[1.150s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2lifecycle_test_fixtures) by extensions ['colcon_meta']
+[1.150s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2lifecycle_test_fixtures) by extension 'colcon_meta'
+[1.150s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2lifecycle_test_fixtures) by extensions ['ros']
+[1.150s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2lifecycle_test_fixtures) by extension 'ros'
+[1.150s] DEBUG:colcon.colcon_core.package_identification:Package '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2lifecycle_test_fixtures' with type 'ros.ament_cmake' and name 'ros2lifecycle_test_fixtures'
+[1.151s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2msg) by extensions ['ignore', 'ignore_ament_install']
+[1.151s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2msg) by extension 'ignore'
+[1.151s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2msg) by extension 'ignore_ament_install'
+[1.151s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2msg) by extensions ['colcon_pkg']
+[1.151s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2msg) by extension 'colcon_pkg'
+[1.151s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2msg) by extensions ['colcon_meta']
+[1.151s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2msg) by extension 'colcon_meta'
+[1.151s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2msg) by extensions ['ros']
+[1.151s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2msg) by extension 'ros'
+[1.152s] DEBUG:colcon.colcon_core.package_identification:Package '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2msg' with type 'ros.ament_python' and name 'ros2msg'
+[1.152s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2multicast) by extensions ['ignore', 'ignore_ament_install']
+[1.152s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2multicast) by extension 'ignore'
+[1.152s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2multicast) by extension 'ignore_ament_install'
+[1.152s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2multicast) by extensions ['colcon_pkg']
+[1.152s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2multicast) by extension 'colcon_pkg'
+[1.152s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2multicast) by extensions ['colcon_meta']
+[1.152s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2multicast) by extension 'colcon_meta'
+[1.153s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2multicast) by extensions ['ros']
+[1.153s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2multicast) by extension 'ros'
+[1.153s] DEBUG:colcon.colcon_core.package_identification:Package '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2multicast' with type 'ros.ament_python' and name 'ros2multicast'
+[1.153s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2node) by extensions ['ignore', 'ignore_ament_install']
+[1.153s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2node) by extension 'ignore'
+[1.153s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2node) by extension 'ignore_ament_install'
+[1.154s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2node) by extensions ['colcon_pkg']
+[1.154s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2node) by extension 'colcon_pkg'
+[1.154s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2node) by extensions ['colcon_meta']
+[1.154s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2node) by extension 'colcon_meta'
+[1.154s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2node) by extensions ['ros']
+[1.154s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2node) by extension 'ros'
+[1.155s] DEBUG:colcon.colcon_core.package_identification:Package '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2node' with type 'ros.ament_python' and name 'ros2node'
+[1.155s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2param) by extensions ['ignore', 'ignore_ament_install']
+[1.155s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2param) by extension 'ignore'
+[1.155s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2param) by extension 'ignore_ament_install'
+[1.155s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2param) by extensions ['colcon_pkg']
+[1.155s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2param) by extension 'colcon_pkg'
+[1.155s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2param) by extensions ['colcon_meta']
+[1.155s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2param) by extension 'colcon_meta'
+[1.155s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2param) by extensions ['ros']
+[1.155s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2param) by extension 'ros'
+[1.156s] DEBUG:colcon.colcon_core.package_identification:Package '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2param' with type 'ros.ament_python' and name 'ros2param'
+[1.156s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2pkg) by extensions ['ignore', 'ignore_ament_install']
+[1.156s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2pkg) by extension 'ignore'
+[1.156s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2pkg) by extension 'ignore_ament_install'
+[1.157s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2pkg) by extensions ['colcon_pkg']
+[1.157s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2pkg) by extension 'colcon_pkg'
+[1.157s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2pkg) by extensions ['colcon_meta']
+[1.157s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2pkg) by extension 'colcon_meta'
+[1.157s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2pkg) by extensions ['ros']
+[1.157s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2pkg) by extension 'ros'
+[1.158s] DEBUG:colcon.colcon_core.package_identification:Package '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2pkg' with type 'ros.ament_python' and name 'ros2pkg'
+[1.158s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2run) by extensions ['ignore', 'ignore_ament_install']
+[1.158s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2run) by extension 'ignore'
+[1.158s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2run) by extension 'ignore_ament_install'
+[1.158s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2run) by extensions ['colcon_pkg']
+[1.158s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2run) by extension 'colcon_pkg'
+[1.158s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2run) by extensions ['colcon_meta']
+[1.158s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2run) by extension 'colcon_meta'
+[1.158s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2run) by extensions ['ros']
+[1.158s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2run) by extension 'ros'
+[1.159s] DEBUG:colcon.colcon_core.package_identification:Package '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2run' with type 'ros.ament_python' and name 'ros2run'
+[1.159s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2service) by extensions ['ignore', 'ignore_ament_install']
+[1.159s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2service) by extension 'ignore'
+[1.159s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2service) by extension 'ignore_ament_install'
+[1.159s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2service) by extensions ['colcon_pkg']
+[1.159s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2service) by extension 'colcon_pkg'
+[1.159s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2service) by extensions ['colcon_meta']
+[1.159s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2service) by extension 'colcon_meta'
+[1.160s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2service) by extensions ['ros']
+[1.160s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2service) by extension 'ros'
+[1.160s] DEBUG:colcon.colcon_core.package_identification:Package '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2service' with type 'ros.ament_python' and name 'ros2service'
+[1.160s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2srv) by extensions ['ignore', 'ignore_ament_install']
+[1.161s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2srv) by extension 'ignore'
+[1.161s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2srv) by extension 'ignore_ament_install'
+[1.161s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2srv) by extensions ['colcon_pkg']
+[1.161s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2srv) by extension 'colcon_pkg'
+[1.161s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2srv) by extensions ['colcon_meta']
+[1.161s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2srv) by extension 'colcon_meta'
+[1.161s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2srv) by extensions ['ros']
+[1.161s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2srv) by extension 'ros'
+[1.162s] DEBUG:colcon.colcon_core.package_identification:Package '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2srv' with type 'ros.ament_python' and name 'ros2srv'
+[1.162s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2topic) by extensions ['ignore', 'ignore_ament_install']
+[1.162s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2topic) by extension 'ignore'
+[1.162s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2topic) by extension 'ignore_ament_install'
+[1.162s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2topic) by extensions ['colcon_pkg']
+[1.162s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2topic) by extension 'colcon_pkg'
+[1.162s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2topic) by extensions ['colcon_meta']
+[1.162s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2topic) by extension 'colcon_meta'
+[1.162s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2topic) by extensions ['ros']
+[1.163s] Level 1:colcon.colcon_core.package_identification:_identify(/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2topic) by extension 'ros'
+[1.163s] DEBUG:colcon.colcon_core.package_identification:Package '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2topic' with type 'ros.ament_python' and name 'ros2topic'
+[1.163s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) using defaults
+[1.182s] INFO:colcon.colcon_metadata.metadata.colcon_pkg:Updating descriptor of package '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2cli' from colcon.pkg: {'hooks': ['share/ros2cli/environment/ros2-argcomplete.bash', 'share/ros2cli/environment/ros2-argcomplete.zsh']}
+[1.182s] Level 1:colcon.colcon_core.package_augmentation.check_dependency_constraint:ros2node depends on ros2cli which has version 0.8.6: constraints {}
+[1.182s] Level 1:colcon.colcon_core.package_augmentation.check_dependency_constraint:ros2lifecycle depends on ros2service which has version 0.8.6: constraints {}
+[1.182s] Level 1:colcon.colcon_core.package_augmentation.check_dependency_constraint:ros2lifecycle depends on ros2node which has version 0.8.6: constraints {}
+[1.182s] Level 1:colcon.colcon_core.package_augmentation.check_dependency_constraint:ros2lifecycle depends on ros2cli which has version 0.8.6: constraints {}
+[1.182s] Level 1:colcon.colcon_core.package_augmentation.check_dependency_constraint:ros2lifecycle depends on ros2lifecycle_test_fixtures which has version 0.8.6: constraints {}
+[1.182s] Level 1:colcon.colcon_core.package_augmentation.check_dependency_constraint:ros2service depends on ros2cli which has version 0.8.6: constraints {}
+[1.182s] Level 1:colcon.colcon_core.package_augmentation.check_dependency_constraint:ros2component depends on ros2pkg which has version 0.8.6: constraints {}
+[1.182s] Level 1:colcon.colcon_core.package_augmentation.check_dependency_constraint:ros2component depends on ros2param which has version 0.8.6: constraints {}
+[1.183s] Level 1:colcon.colcon_core.package_augmentation.check_dependency_constraint:ros2component depends on ros2node which has version 0.8.6: constraints {}
+[1.183s] Level 1:colcon.colcon_core.package_augmentation.check_dependency_constraint:ros2component depends on ros2cli which has version 0.8.6: constraints {}
+[1.183s] Level 1:colcon.colcon_core.package_augmentation.check_dependency_constraint:ros2param depends on ros2service which has version 0.8.6: constraints {}
+[1.183s] Level 1:colcon.colcon_core.package_augmentation.check_dependency_constraint:ros2param depends on ros2node which has version 0.8.6: constraints {}
+[1.183s] Level 1:colcon.colcon_core.package_augmentation.check_dependency_constraint:ros2param depends on ros2cli which has version 0.8.6: constraints {}
+[1.183s] Level 1:colcon.colcon_core.package_augmentation.check_dependency_constraint:ros2interface depends on ros2cli which has version 0.8.6: constraints {}
+[1.183s] Level 1:colcon.colcon_core.package_augmentation.check_dependency_constraint:ros2doctor depends on ros2cli which has version 0.8.6: constraints {}
+[1.183s] Level 1:colcon.colcon_core.package_augmentation.check_dependency_constraint:ros2multicast depends on ros2cli which has version 0.8.6: constraints {}
+[1.183s] Level 1:colcon.colcon_core.package_augmentation.check_dependency_constraint:ros2topic depends on ros2cli which has version 0.8.6: constraints {}
+[1.183s] Level 1:colcon.colcon_core.package_augmentation.check_dependency_constraint:ros2action depends on ros2cli which has version 0.8.6: constraints {}
+[1.183s] Level 1:colcon.colcon_core.package_augmentation.check_dependency_constraint:ros2pkg depends on ros2cli which has version 0.8.6: constraints {}
+[1.183s] Level 1:colcon.colcon_core.package_augmentation.check_dependency_constraint:ros2srv depends on ros2cli which has version 0.8.6: constraints {}
+[1.183s] Level 1:colcon.colcon_core.package_augmentation.check_dependency_constraint:ros2msg depends on ros2cli which has version 0.8.6: constraints {}
+[1.183s] Level 1:colcon.colcon_core.package_augmentation.check_dependency_constraint:ros2run depends on ros2pkg which has version 0.8.6: constraints {}
+[1.183s] Level 1:colcon.colcon_core.package_augmentation.check_dependency_constraint:ros2run depends on ros2cli which has version 0.8.6: constraints {}
+[1.192s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'ros2cli' in '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2cli'
+[1.192s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'ros2lifecycle_test_fixtures' in '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2lifecycle_test_fixtures'
+[1.192s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'ros2action' in '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2action'
+[1.192s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'ros2interface' in '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2interface'
+[1.192s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'ros2msg' in '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2msg'
+[1.192s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'ros2multicast' in '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2multicast'
+[1.192s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'ros2node' in '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2node'
+[1.192s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'ros2pkg' in '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2pkg'
+[1.192s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'ros2service' in '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2service'
+[1.192s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'ros2srv' in '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2srv'
+[1.192s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'ros2topic' in '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2topic'
+[1.192s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'ros2lifecycle' in '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2lifecycle'
+[1.192s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'ros2param' in '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2param'
+[1.192s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'ros2run' in '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2run'
+[1.192s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'ros2component' in '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2component'
+[1.209s] Level 5:colcon.colcon_core.verb:set package 'ros2doctor' build argument 'bazel_args' from command line to 'None'
+[1.209s] Level 5:colcon.colcon_core.verb:set package 'ros2doctor' build argument 'bazel_task' from command line to 'None'
+[1.209s] Level 5:colcon.colcon_core.verb:set package 'ros2doctor' build argument 'cmake_args' from command line to 'None'
+[1.209s] Level 5:colcon.colcon_core.verb:set package 'ros2doctor' build argument 'cmake_target' from command line to 'None'
+[1.209s] Level 5:colcon.colcon_core.verb:set package 'ros2doctor' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[1.209s] Level 5:colcon.colcon_core.verb:set package 'ros2doctor' build argument 'cmake_clean_cache' from command line to 'False'
+[1.209s] Level 5:colcon.colcon_core.verb:set package 'ros2doctor' build argument 'cmake_clean_first' from command line to 'False'
+[1.209s] Level 5:colcon.colcon_core.verb:set package 'ros2doctor' build argument 'cmake_force_configure' from command line to 'False'
+[1.209s] Level 5:colcon.colcon_core.verb:set package 'ros2doctor' build argument 'ament_cmake_args' from command line to 'None'
+[1.209s] Level 5:colcon.colcon_core.verb:set package 'ros2doctor' build argument 'catkin_cmake_args' from command line to 'None'
+[1.209s] Level 5:colcon.colcon_core.verb:set package 'ros2doctor' build argument 'catkin_skip_building_tests' from command line to 'False'
+[1.209s] DEBUG:colcon.colcon_core.verb:Building package 'ros2doctor' with the following arguments: {'ament_cmake_args': None, 'bazel_args': None, 'bazel_task': None, 'build_base': '/home/claire/ros2_eloquent/src/ros2/ros2cli/build/ros2doctor', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/claire/ros2_eloquent/src/ros2/ros2cli/install/ros2doctor', 'merge_install': False, 'path': '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2doctor', 'symlink_install': False, 'test_result_base': None}
+[1.236s] INFO:colcon.colcon_core.executor:Executing jobs using 'parallel' executor
+[1.236s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete
+[1.237s] INFO:colcon.colcon_ros.task.ament_python.build:Building ROS package in '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2doctor' with build type 'ament_python'
+[1.237s] Level 1:colcon.colcon_core.shell:create_environment_hook('ros2doctor', 'ament_prefix_path')
+[1.255s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_core.shell.bat': Not used on non-Windows systems
+[1.255s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/claire/ros2_eloquent/src/ros2/ros2cli/install/ros2doctor/share/ros2doctor/hook/ament_prefix_path.ps1'
+[1.255s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/claire/ros2_eloquent/src/ros2/ros2cli/install/ros2doctor/share/ros2doctor/hook/ament_prefix_path.dsv'
+[1.256s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/claire/ros2_eloquent/src/ros2/ros2cli/install/ros2doctor/share/ros2doctor/hook/ament_prefix_path.sh'
+[1.267s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[1.267s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[1.294s] DEBUG:colcon.colcon_core.shell:Ignoring prefix path '/opt/ros/melodic'
+[1.294s] WARNING:colcon.colcon_core.shell:The following packages are in the workspace but haven't been built:
+- ros2cli
+They are being used from the following locations instead:
+- /home/claire/ros2_eloquent/install/ros2cli
+To suppress this warning ignore these packages in the workspace:
+--packages-ignore ros2cli
+[2.096s] INFO:colcon.colcon_core.task.python.build:Building Python package in '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2doctor'
+[2.117s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[2.117s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[2.145s] DEBUG:colcon.colcon_core.shell:Ignoring prefix path '/opt/ros/melodic'
+[2.926s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2doctor': PYTHONPATH=/home/claire/ros2_eloquent/src/ros2/ros2cli/install/ros2doctor/lib/python3.6/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base /home/claire/ros2_eloquent/src/ros2/ros2cli/build/ros2doctor build --build-base /home/claire/ros2_eloquent/src/ros2/ros2cli/build/ros2doctor/build install --prefix /home/claire/ros2_eloquent/src/ros2/ros2cli/install/ros2doctor --record /home/claire/ros2_eloquent/src/ros2/ros2cli/build/ros2doctor/install.log --single-version-externally-managed
+[3.807s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/claire/ros2_eloquent/src/ros2/ros2cli/ros2doctor' returned '0': PYTHONPATH=/home/claire/ros2_eloquent/src/ros2/ros2cli/install/ros2doctor/lib/python3.6/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base /home/claire/ros2_eloquent/src/ros2/ros2cli/build/ros2doctor build --build-base /home/claire/ros2_eloquent/src/ros2/ros2cli/build/ros2doctor/build install --prefix /home/claire/ros2_eloquent/src/ros2/ros2cli/install/ros2doctor --record /home/claire/ros2_eloquent/src/ros2/ros2cli/build/ros2doctor/install.log --single-version-externally-managed
+[3.823s] Level 1:colcon.colcon_core.environment:checking '/home/claire/ros2_eloquent/src/ros2/ros2cli/install/ros2doctor' for CMake module files
+[3.824s] Level 1:colcon.colcon_core.environment:checking '/home/claire/ros2_eloquent/src/ros2/ros2cli/install/ros2doctor' for CMake config files
+[3.825s] Level 1:colcon.colcon_core.environment:checking '/home/claire/ros2_eloquent/src/ros2/ros2cli/install/ros2doctor/lib'
+[3.825s] Level 1:colcon.colcon_core.environment:checking '/home/claire/ros2_eloquent/src/ros2/ros2cli/install/ros2doctor/bin'
+[3.825s] Level 1:colcon.colcon_core.environment:checking '/home/claire/ros2_eloquent/src/ros2/ros2cli/install/ros2doctor/lib/pkgconfig/ros2doctor.pc'
+[3.825s] Level 1:colcon.colcon_core.environment:checking '/home/claire/ros2_eloquent/src/ros2/ros2cli/install/ros2doctor/lib/python3.6/site-packages'
+[3.825s] Level 1:colcon.colcon_core.shell:create_environment_hook('ros2doctor', 'pythonpath')
+[3.837s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/claire/ros2_eloquent/src/ros2/ros2cli/install/ros2doctor/share/ros2doctor/hook/pythonpath.ps1'
+[3.838s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/claire/ros2_eloquent/src/ros2/ros2cli/install/ros2doctor/share/ros2doctor/hook/pythonpath.dsv'
+[3.838s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/claire/ros2_eloquent/src/ros2/ros2cli/install/ros2doctor/share/ros2doctor/hook/pythonpath.sh'
+[3.838s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(ros2doctor)
+[3.850s] INFO:colcon.colcon_core.shell:Creating package script '/home/claire/ros2_eloquent/src/ros2/ros2cli/install/ros2doctor/share/ros2doctor/package.ps1'
+[3.852s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/claire/ros2_eloquent/src/ros2/ros2cli/install/ros2doctor/share/ros2doctor/package.dsv'
+[3.852s] INFO:colcon.colcon_core.shell:Creating package script '/home/claire/ros2_eloquent/src/ros2/ros2cli/install/ros2doctor/share/ros2doctor/package.sh'
+[3.853s] INFO:colcon.colcon_core.shell:Creating package script '/home/claire/ros2_eloquent/src/ros2/ros2cli/install/ros2doctor/share/ros2doctor/package.bash'
+[3.854s] INFO:colcon.colcon_core.shell:Creating package script '/home/claire/ros2_eloquent/src/ros2/ros2cli/install/ros2doctor/share/ros2doctor/package.zsh'
+[3.854s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/claire/ros2_eloquent/src/ros2/ros2cli/install/ros2doctor/share/colcon-core/packages/ros2doctor)
+[3.855s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:closing loop
+[3.855s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:loop closed
+[3.855s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete finished with '0'
+[3.856s] DEBUG:colcon.colcon_core.event_reactor:joining thread
+[3.883s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.terminal_notifier': Not used on non-Darwin systems
+[3.883s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.win32': Not used on non-Windows systems
+[3.883s] INFO:colcon.colcon_notification.desktop_notification:Sending desktop notification using 'notify2'
+[3.887s] DEBUG:colcon.colcon_core.event_reactor:joined thread
+[3.912s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/claire/ros2_eloquent/src/ros2/ros2cli/install/local_setup.ps1'
+[3.913s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/claire/ros2_eloquent/src/ros2/ros2cli/install/setup.ps1'
+[3.935s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/claire/ros2_eloquent/src/ros2/ros2cli/install/local_setup.sh'
+[3.935s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/claire/ros2_eloquent/src/ros2/ros2cli/install/_local_setup_util_sh.py'
+[3.936s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/claire/ros2_eloquent/src/ros2/ros2cli/install/setup.sh'
+[3.957s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/claire/ros2_eloquent/src/ros2/ros2cli/install/local_setup.bash'
+[3.957s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/claire/ros2_eloquent/src/ros2/ros2cli/install/setup.bash'

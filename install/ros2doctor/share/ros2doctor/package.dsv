@@ -1,0 +1,6 @@
+source;share/ros2doctor/hook/pythonpath.ps1
+source;share/ros2doctor/hook/pythonpath.dsv
+source;share/ros2doctor/hook/pythonpath.sh
+source;share/ros2doctor/hook/ament_prefix_path.ps1
+source;share/ros2doctor/hook/ament_prefix_path.dsv
+source;share/ros2doctor/hook/ament_prefix_path.sh

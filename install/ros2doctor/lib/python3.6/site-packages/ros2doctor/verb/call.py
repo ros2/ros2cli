@@ -13,12 +13,13 @@
 # limitations under the License.
 
 import socket
+import signal
 import time
 import threading
 import struct
 
 import rclpy
-from rclpy.executors import SingleThreadedExecutor
+from rclpy.executors import MultiThreadedExecutor
 from rclpy.node import Node
 from ros2doctor.verb import VerbExtension
 
@@ -123,7 +124,7 @@ class CallVerb(VerbExtension):
         pub_node = Talker()
         sub_node = Listener()
        
-        executor = SingleThreadedExecutor()
+        executor = MultiThreadedExecutor()
         executor.add_node(pub_node)
         executor.add_node(sub_node)
         try:
@@ -138,14 +139,15 @@ class CallVerb(VerbExtension):
                     time.sleep(1)
                 executor.spin_once()
                 executor.spin_once()
-                send_thread = threading.Thread(target=send, args=())
-                receive_thread = threading.Thread(target=receive, args=())
-                receive_thread.daemon = True
+                # send_thread = threading.Thread(target=send, args=())
+                # receive_thread = threading.Thread(target=receive, args=())
                 receive_thread.start()
-                send_thread.daemon = True
                 send_thread.start()
+                receive_thread.join(1)
+                send_thread.join(1)
                 count += 1
-        except KeyboardInterrupt:
+        except (KeyboardInterrupt, SystemExit):
             executor.shutdown()
             pub_node.destroy_node()
             sub_node.destroy_node()
+
