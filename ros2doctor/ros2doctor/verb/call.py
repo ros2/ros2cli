@@ -18,7 +18,7 @@ import threading
 import struct
 
 import rclpy
-from rclpy.executors import SingleThreadedExecutor
+from rclpy.executors import MultiThreadedExecutor
 from rclpy.node import Node
 from ros2doctor.verb import VerbExtension
 
@@ -123,7 +123,7 @@ class CallVerb(VerbExtension):
         pub_node = Talker()
         sub_node = Listener()
        
-        executor = SingleThreadedExecutor()
+        executor = MultiThreadedExecutor()
         executor.add_node(pub_node)
         executor.add_node(sub_node)
         try:
@@ -138,14 +138,12 @@ class CallVerb(VerbExtension):
                     time.sleep(1)
                 executor.spin_once()
                 executor.spin_once()
-                send_thread = threading.Thread(target=send, args=())
-                receive_thread = threading.Thread(target=receive, args=())
-                receive_thread.daemon = True
-                receive_thread.start()
-                send_thread.daemon = True
-                send_thread.start()
+                threading.Thread(target=send, args=()).start()
+                threading.Thread(target=receive, args=()).start()
                 count += 1
-        except KeyboardInterrupt:
+                time.sleep(0.1)
+        except (KeyboardInterrupt, SystemExit):
             executor.shutdown()
             pub_node.destroy_node()
             sub_node.destroy_node()
+
