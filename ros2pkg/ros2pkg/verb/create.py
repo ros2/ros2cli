@@ -32,6 +32,10 @@ from ros2pkg.api.create import populate_cpp_node
 from ros2pkg.api.create import populate_python_libary
 from ros2pkg.api.create import populate_python_node
 
+from ros2pkg.build_type import get_build_types
+from ros2pkg.build_type import get_build_type_extension
+from ros2pkg.build_type import is_extended_build_type
+
 from ros2pkg.verb import VerbExtension
 
 
@@ -64,7 +68,7 @@ class CreateVerb(VerbExtension):
         parser.add_argument(
             '--build-type',
             default='ament_cmake',
-            choices=['cmake', 'ament_cmake', 'ament_python'],
+            choices=get_build_types(),
             help='The build type to process the package with')
         parser.add_argument(
             '--dependencies',
@@ -169,6 +173,12 @@ class CreateVerb(VerbExtension):
             create_package_environment(package, args.destination_directory)
         if not package_directory:
             return 'unable to create folder: ' + args.destination_directory
+
+        # delegate to build_type extension
+        if is_extended_build_type(package.get_build_type()):
+            extension = get_build_type_extension(package.get_build_type())
+            extension.populate(package, package_directory, source_directory, node_name)
+            return
 
         if args.build_type == 'cmake':
             populate_cmake(package, package_directory, node_name, library_name)
