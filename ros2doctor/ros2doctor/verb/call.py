@@ -29,10 +29,7 @@ from std_msgs.msg import String
 DEFAULT_GROUP = '225.0.0.1'
 DEFAULT_PORT = 49150
 DEFAULT_TOPIC = 'knockknock'
-summary_table = {'pub': 0,
-                 'sub': {},
-                 'send': 0,
-                 'receive': {}}
+summary_table = {}
 
 
 class CallVerb(VerbExtension):
@@ -48,13 +45,11 @@ class CallVerb(VerbExtension):
         executor.add_node(sub_node)
         try:
             count = 0
+            _spawn_summary_table()
             while True:
                 if (count % 20 == 0 and count != 0):
                     format_print(summary_table)
-                    summary_table['pub'] = 0
-                    summary_table['sub'] = {}
-                    summary_table['send'] = 0
-                    summary_table['receive'] = {}
+                    _spawn_summary_table()
                     time.sleep(1)
                 # pub/sub threads
                 executor.spin_once()
@@ -157,7 +152,14 @@ def receive():
         s.close()
 
 
-def format_print_helper(table):
+def _spawn_summary_table():
+    summary_table['pub'] = 0
+    summary_table['sub'] = {}
+    summary_table['send'] = 0
+    summary_table['receive'] = {}
+
+
+def _format_print_helper(table):
     print('{:<15} {:<20} {:<10}'.format('', 'Hostname', 'Msg Count /2s'))
     for name, count in table.items():
         print('{:<15} {:<20} {:<10}'.format('', name, count))
@@ -169,8 +171,8 @@ def format_print(summary_table):
     print('MULTIMACHINE COMMUNICATION SUMMARY')
     print(f'Topic: {DEFAULT_TOPIC}, Published Msg Count: {pub_count}')
     print('Subscribed from:')
-    format_print_helper(summary_table['sub'])
+    _format_print_helper(summary_table['sub'])
     print(f'Multicast Group/Port: {DEFAULT_GROUP}/{DEFAULT_PORT}, Sent Msg Count: {send_count}')
     print('Received from:')
-    format_print_helper(summary_table['receive'])
+    _format_print_helper(summary_table['receive'])
     print('-'*60)
