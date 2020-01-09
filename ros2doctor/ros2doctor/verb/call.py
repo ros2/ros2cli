@@ -50,7 +50,6 @@ class CallVerb(VerbExtension):
                 if (count % 20 == 0 and count != 0):
                     format_print(summary_table)
                     _spawn_summary_table()
-                    time.sleep(1)
                 # pub/sub threads
                 executor.spin_once()
                 executor.spin_once()
