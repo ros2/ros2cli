@@ -13,15 +13,13 @@
 # limitations under the License.
 
 import socket
-import time
-import threading
 import struct
+import threading
+import time
 
 import rclpy
 from rclpy.executors import MultiThreadedExecutor
 from rclpy.node import Node
-# from ros2doctor.api import Report
-# from ros2doctor.api.format import format_print
 from ros2doctor.verb import VerbExtension
 
 from std_msgs.msg import String
@@ -33,13 +31,13 @@ summary_table = {}
 
 
 class CallVerb(VerbExtension):
-    """Pub msg and hostname; listen on the same topic; print periodically."""
+    """Publish and subscribe, multicast send and receive, print table."""
 
     def main(self, *, args):
         rclpy.init()
         pub_node = Talker()
         sub_node = Listener()
-       
+
         executor = MultiThreadedExecutor()
         executor.add_node(pub_node)
         executor.add_node(sub_node)
@@ -69,6 +67,7 @@ class CallVerb(VerbExtension):
 
 
 class Talker(Node):
+    """Initialize talker node."""
 
     def __init__(self):
         super().__init__('talker')
@@ -83,12 +82,12 @@ class Talker(Node):
         # publish
         msg.data = f'Publish hello from {hostname}'
         summary_table['pub'] += 1
-        # self.get_logger().info(f'Publishing: "{msg.data}"')
         self.pub.publish(msg)
         self.i += 1
 
 
 class Listener(Node):
+    """Initialize listener node."""
 
     def __init__(self):
         super().__init__('listener')
@@ -101,19 +100,18 @@ class Listener(Node):
         # subscribe
         msg_data = msg.data.split()
         caller_hostname = msg_data[-1]
-        # if caller_hostname != socket.gethostname():
-        if caller_hostname not in summary_table['sub']:
-            summary_table['sub'][caller_hostname] = 1
-        else:
-            summary_table['sub'][caller_hostname] += 1
-        # print(msg.data)
+        if caller_hostname != socket.gethostname():
+            if caller_hostname not in summary_table['sub']:
+                summary_table['sub'][caller_hostname] = 1
+            else:
+                summary_table['sub'][caller_hostname] += 1
 
 
 def send():
+    """Multicast send."""
     hostname = socket.gethostname()
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
     try:
-        # print('Sending one udp packet')
         summary_table['send'] += 1
         s.sendto(f'Multicast hello from {hostname}'.encode('utf-8'), (DEFAULT_GROUP, DEFAULT_PORT))
     finally:
@@ -121,7 +119,7 @@ def send():
 
 
 def receive():
-    # multicast receive
+    """Multicast receive."""
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
     try:
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -131,7 +129,7 @@ def receive():
             # not available on Windows
             pass
         s.bind(('', DEFAULT_PORT))
-    
+
         s.settimeout(None)
 
         mreq = struct.pack('4sl', socket.inet_aton(DEFAULT_GROUP), socket.INADDR_ANY)
@@ -140,11 +138,11 @@ def receive():
             data, _ = s.recvfrom(4096)
             data = data.decode('utf-8')
             sender_hostname = data.split()[-1]
-            if sender_hostname not in summary_table['receive']:
-                summary_table['receive'][sender_hostname] = 1
-            else:
-                summary_table['receive'][sender_hostname] += 1
-            # print(data)
+            if sender_hostname != socket.gethostname():
+                if sender_hostname not in summary_table['receive']:
+                    summary_table['receive'][sender_hostname] = 1
+                else:
+                    summary_table['receive'][sender_hostname] += 1
         finally:
             s.setsockopt(socket.IPPROTO_IP, socket.IP_DROP_MEMBERSHIP, mreq)
     finally:
@@ -152,6 +150,7 @@ def receive():
 
 
 def _spawn_summary_table():
+    """Spawn summary table with new content after each print."""
     summary_table['pub'] = 0
     summary_table['sub'] = {}
     summary_table['send'] = 0
@@ -159,12 +158,14 @@ def _spawn_summary_table():
 
 
 def _format_print_helper(table):
+    """Format summary table."""
     print('{:<15} {:<20} {:<10}'.format('', 'Hostname', 'Msg Count /2s'))
     for name, count in table.items():
         print('{:<15} {:<20} {:<10}'.format('', name, count))
 
 
 def format_print(summary_table):
+    """Print content in summary table."""
     pub_count = summary_table['pub']
     send_count = summary_table['send']
     print('MULTIMACHINE COMMUNICATION SUMMARY')
