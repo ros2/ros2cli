@@ -256,7 +256,7 @@ class TestROS2TopicCLI(unittest.TestCase):
         assert int(output_lines[0]) == 9
 
     @launch_testing.markers.retry_on_failure(times=5)
-    def test_topic_info(self):
+    def test_topic_endpoint_info(self):
         with self.launch_topic_command(arguments=['info', '/chatter']) as topic_command:
             assert topic_command.wait_for_shutdown(timeout=10)
         assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
@@ -271,7 +271,7 @@ class TestROS2TopicCLI(unittest.TestCase):
         )
 
     @launch_testing.markers.retry_on_failure(times=5)
-    def test_topic_info_verbose(self):
+    def test_topic_endpoint_info_verbose(self):
         with self.launch_topic_command(arguments=['info', '--verbose', '/chatter']) as topic_command:
             assert topic_command.wait_for_shutdown(timeout=10)
         assert topic_command.exit_code == launch_testing.asserts.EXIT_OK

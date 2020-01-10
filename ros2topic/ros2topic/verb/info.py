@@ -22,8 +22,8 @@ from ros2topic.api import TopicNameCompleter
 from ros2topic.verb import VerbExtension
 
 
-def print_topic_info(topic_name, get_topic_info_func):
-    for info in get_topic_info_func(topic_name):
+def print_topic_endpoint_info(topic_name, get_topic_endpoint_info_func):
+    for info in get_topic_endpoint_info_func(topic_name):
         print('Node name: %s' % info['node_name'])
         print('Node namespace: %s' % info['node_namespace'])
         print('Topic type: %s' % info['topic_type'])
@@ -74,13 +74,13 @@ class InfoVerb(VerbExtension):
             print('Publisher count: %d' % node.count_publishers(topic_name), end=lineend)
             if args.verbose:
                 try:
-                    print_topic_info(topic_name, node.get_publishers_info_by_topic)
+                    print_topic_endpoint_info(topic_name, node.get_publishers_info_by_topic)
                 except NotImplementedError as e:
                     return str(e)
 
             print('Subscription count: %d' % node.count_subscribers(topic_name))
             if args.verbose:
                 try:
-                    print_topic_info(topic_name, node.get_subscriptions_info_by_topic)
+                    print_topic_endpoint_info(topic_name, node.get_subscriptions_info_by_topic)
                 except NotImplementedError as e:
                     return str(e)
