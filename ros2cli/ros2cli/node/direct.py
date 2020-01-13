@@ -29,7 +29,9 @@ class DirectNode:
             nonlocal timeout_reached
             timeout_reached = True
 
-        rclpy.init()
+        argv = getattr(args, 'argv', [])
+
+        rclpy.init(args=argv)
 
         node_name_suffix = getattr(
             args, 'node_name_suffix', '_%d' % os.getpid())
