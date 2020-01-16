@@ -27,6 +27,7 @@ def _expand_template(template_file, data, output_file):
         options={
             em.BUFFERED_OPT: True,
             em.RAW_OPT: True,
+            em.BANGPATH_OPT: True,
         },
         globals=data,
     )

@@ -38,6 +38,7 @@ The package provides the pkg command for the ROS 2 command line tools.""",
         ],
         'ros2cli.extension_point': [
             'ros2pkg.verb = ros2pkg.verb:VerbExtension',
+            'ros2pkg.build_type = ros2pkg.build_type:BuildTypeExtension',
         ],
         'ros2pkg.verb': [
             'create = ros2pkg.verb.create:CreateVerb',
@@ -45,9 +46,6 @@ The package provides the pkg command for the ROS 2 command line tools.""",
             'list = ros2pkg.verb.list:ListVerb',
             'prefix = ros2pkg.verb.prefix:PrefixVerb',
             'xml = ros2pkg.verb.xml:XmlVerb',
-        ],
-        'ros2cli.extension_point': [
-            'ros2pkg.build_type = ros2pkg.build_type:BuildTypeExtension',
         ],
     },
     package_data={

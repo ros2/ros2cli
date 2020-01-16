@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ros2cli.entry_points import load_entry_points
+from ros2cli.entry_points import get_entry_points
 from ros2cli.plugin_system import instantiate_extensions
 from ros2cli.plugin_system import PLUGIN_SYSTEM_VERSION
 from ros2cli.plugin_system import satisfies_version
@@ -20,7 +20,7 @@ from ros2cli.plugin_system import satisfies_version
 
 class BuildTypeExtension:
     """
-    The interface for verb extensions.
+    The interface for build-type extensions.
 
     The following properties must be defined:
     * `NAME` (will be set to the entry point name)
@@ -30,8 +30,8 @@ class BuildTypeExtension:
     """
 
     NAME = None
-    EXTENSION_POINT_VERSION = '0.1'
     EXTENSION_POINT_NAME = 'ros2pkg.build_type'
+    EXTENSION_POINT_VERSION = '0.1'
     NATIVE_BUILD_TYPES = ['cmake', 'ament_cmake', 'ament_python']
 
     def __init__(self):
@@ -41,18 +41,27 @@ class BuildTypeExtension:
     def populate(self, package, package_directory, node_name, library_name):
         pass
 
+    def main(self, *, args):
+        raise NotImplementedError()
 
-def get_build_types():
-    build_types = BuildTypeExtension.NATIVE_BUILD_TYPES.copy()
-    extension_pts = load_entry_points(BuildTypeExtension.EXTENSION_POINT_NAME)
-    for name, extension_pt in extension_pts.items():
-      build_types.append(name)
-    #build_types.sort()
-    return build_types
 
-def is_extended_build_type(name):
-    extension_pts = load_entry_points(BuildTypeExtension.EXTENSION_POINT_NAME)
-    return extension_pts.get(name) != None
+def get_build_type_extension_names():
+    names = []
+    names.extend(
+      get_entry_points(BuildTypeExtension.EXTENSION_POINT_NAME).keys())
+    names.sort()
+    return names
+
+
+def get_build_type_names():
+    build_type_names = BuildTypeExtension.NATIVE_BUILD_TYPES.copy()
+    build_type_names.extend(get_build_type_extension_names())
+    return build_type_names
+
+
+def has_build_type_extension(name):
+    return name in get_build_type_extension_names()
+
 
 def get_build_type_extensions():
     extensions = instantiate_extensions(BuildTypeExtension.EXTENSION_POINT_NAME)
@@ -60,7 +69,7 @@ def get_build_type_extensions():
         extension.NAME = name
     return extensions
 
+
 def get_build_type_extension(name):
     extensions = get_build_type_extensions()
     return extensions.get(name)
-
