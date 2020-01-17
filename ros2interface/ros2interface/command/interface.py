@@ -18,6 +18,7 @@ from ros2cli.verb import get_verb_extensions
 
 
 class InterfaceCommand(CommandExtension):
+    """Query information about ROS interfaces."""
 
     def add_arguments(self, parser, cli_name):
         self._subparser = parser
