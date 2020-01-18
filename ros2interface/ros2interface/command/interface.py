@@ -12,9 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ros2cli.command import add_subparsers
+from ros2cli.command import add_subparsers_on_demand
 from ros2cli.command import CommandExtension
-from ros2cli.verb import get_verb_extensions
 
 
 class InterfaceCommand(CommandExtension):
@@ -22,9 +21,9 @@ class InterfaceCommand(CommandExtension):
 
     def add_arguments(self, parser, cli_name):
         self._subparser = parser
-        verb_extension = get_verb_extensions('ros2interface.verb')
-        add_subparsers(
-            parser, cli_name, '_verb', verb_extension, required=False)
+        # add arguments and sub-commands of verbs
+        add_subparsers_on_demand(
+            parser, cli_name, '_verb', 'ros2interface.verb', required=False)
 
     def main(self, *, parser, args):
         if not hasattr(args, '_verb'):
