@@ -49,8 +49,9 @@ class CommandExtension:
         raise NotImplementedError()
 
 
-def get_command_extensions(group_name):
-    extensions = instantiate_extensions(group_name)
+def get_command_extensions(group_name, *, exclude_names=None):
+    extensions = instantiate_extensions(
+        group_name, exclude_names=exclude_names)
     for name, extension in extensions.items():
         extension.NAME = name
     return extensions
