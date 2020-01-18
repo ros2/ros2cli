@@ -72,6 +72,12 @@ def add_subparsers(
     For each extension a subparser is created.
     If the extension has an ``add_arguments`` method it is being called.
 
+    This method is deprecated.
+    Use the function ``add_subparsers_on_demand`` instead.
+    Their signatures are almost identical.
+    Instead of passing the extensions the new function expects the group name
+    of these extensions.
+
     :param parser: the parent argument parser
     :type parser: :py:class:`argparse.ArgumentParser`
     :param str cli_name: name of the command line command to which the
@@ -81,6 +87,10 @@ def add_subparsers(
     :param dict command_extensions: dict of command extensions by their name
       where each contributes a command with specific arguments
     """
+    import warnings
+    warnings.warn(
+        "'ros2cli.command.add_subparsers' is deprecated, use "
+        "`ros2cli.command.add_subparsers_on_demand` instead", stacklevel=2)
     # add subparser with description of available subparsers
     description = ''
     if command_extensions:
