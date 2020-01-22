@@ -71,16 +71,19 @@ def get_entry_points(group_name):
     return entry_points
 
 
-def load_entry_points(group_name):
+def load_entry_points(group_name, *, exclude_names=None):
     """
     Load the entry points for a specific group.
 
     :param str group_name: the name of the ``entry_point`` group
+    :param iterable exclude_names: the names of the entry points to exclude
     :returns: mapping of entry point name to loaded entry point
     :rtype: dict
     """
     extension_types = {}
     for entry_point in get_entry_points(group_name).values():
+        if exclude_names and entry_point.name in exclude_names:
+            continue
         try:
             extension_type = entry_point.load()
         except Exception as e:  # noqa: F841

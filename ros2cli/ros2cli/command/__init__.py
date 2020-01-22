@@ -14,7 +14,9 @@
 # limitations under the License.
 
 import argparse
+import types
 
+from ros2cli.entry_points import get_entry_points
 from ros2cli.entry_points import get_first_line_doc
 from ros2cli.plugin_system import instantiate_extensions
 from ros2cli.plugin_system import PLUGIN_SYSTEM_VERSION
@@ -49,8 +51,9 @@ class CommandExtension:
         raise NotImplementedError()
 
 
-def get_command_extensions(group_name):
-    extensions = instantiate_extensions(group_name)
+def get_command_extensions(group_name, *, exclude_names=None):
+    extensions = instantiate_extensions(
+        group_name, exclude_names=exclude_names)
     for name, extension in extensions.items():
         extension.NAME = name
     return extensions
@@ -69,6 +72,12 @@ def add_subparsers(
     For each extension a subparser is created.
     If the extension has an ``add_arguments`` method it is being called.
 
+    This method is deprecated.
+    Use the function ``add_subparsers_on_demand`` instead.
+    Their signatures are almost identical.
+    Instead of passing the extensions the new function expects the group name
+    of these extensions.
+
     :param parser: the parent argument parser
     :type parser: :py:class:`argparse.ArgumentParser`
     :param str cli_name: name of the command line command to which the
@@ -78,6 +87,10 @@ def add_subparsers(
     :param dict command_extensions: dict of command extensions by their name
       where each contributes a command with specific arguments
     """
+    import warnings
+    warnings.warn(
+        "'ros2cli.command.add_subparsers' is deprecated, use "
+        "`ros2cli.command.add_subparsers_on_demand` instead", stacklevel=2)
     # add subparser with description of available subparsers
     description = ''
     if command_extensions:
@@ -112,3 +125,153 @@ def add_subparsers(
                 command_parser, '{cli_name} {name}'.format_map(locals()))
 
     return subparser
+
+
+class MutableString:
+    """Behave like str with the ability to change the value of an instance."""
+
+    def __init__(self):
+        self.value = ''
+
+    def __getattr__(self, name):
+        return getattr(self.value, name)
+
+    def __iter__(self):
+        return self.value.__iter__()
+
+
+def add_subparsers_on_demand(
+    parser, cli_name, dest, group_name, hide_extensions=None,
+    required=True, argv=None
+):
+    """
+    Create argparse subparser for each extension on demand.
+
+    The ``cli_name`` is used for the title and description of the
+    ``add_subparsers`` function call.
+
+    For each extension a subparser is created is necessary.
+    If no extension has been selected by command line arguments all first level
+    extension must be loaded and instantiated.
+    If a specific extension has been selected by command line arguments the
+    sibling extension can be skipped and only that one extension (as well as
+    potentially its recursive extensions) are loaded and instantiated.
+    If the extension has an ``add_arguments`` method it is being called.
+
+    :param parser: the parent argument parser
+    :type parser: :py:class:`argparse.ArgumentParser`
+    :param str cli_name: name of the command line command to which the
+      subparsers are being added
+    :param str dest: name of the attribute under which the selected extension
+      will be stored
+    :param str group_name: the name of the ``entry_point`` group identifying
+      the extensions to be added
+    :param list hide_extensions: an optional list of extension names which
+      should be skipped
+    :param bool required: a flag if the command is a required argument
+    :param list argv: the list of command line arguments (default:
+      ``sys.argv``)
+    """
+    # add subparser without a description for now
+    mutable_description = MutableString()
+    metavar = 'Call `{cli_name} <command> -h` for more detailed ' \
+        'usage.'.format_map(locals())
+    subparser = parser.add_subparsers(
+        title='Commands', description=mutable_description, metavar=metavar)
+    # use a name which doesn't collide with any argument
+    # but is readable when shown as part of the the usage information
+    subparser.dest = ' ' + dest.lstrip('_')
+    subparser.required = required
+
+    # add entry point specific sub-parsers but without a description and
+    # arguments for now
+    entry_points = get_entry_points(group_name)
+    command_parsers = {}
+    for name in sorted(entry_points.keys()):
+        entry_point = entry_points[name]
+        command_parser = subparser.add_parser(
+            name,
+            formatter_class=argparse.RawDescriptionHelpFormatter)
+        command_parsers[name] = command_parser
+
+    # temporarily attach root parser to each command parser
+    # in order to parse known args
+    root_parser = getattr(parser, '_root_parser', parser)
+    with SuppressUsageOutput({parser} | set(command_parsers.values())):
+        known_args, _ = root_parser.parse_known_args(args=argv)
+
+    # check if a specific subparser is selected
+    name = getattr(known_args, subparser.dest)
+    if name is None:
+        # add description for all command extensions to the root parser
+        command_extensions = get_command_extensions(group_name)
+        if command_extensions:
+            description = ''
+            max_length = max(
+                len(name) for name in command_extensions.keys()
+                if hide_extensions is None or name not in hide_extensions)
+            for name in sorted(command_extensions.keys()):
+                if hide_extensions is not None and name in hide_extensions:
+                    continue
+                extension = command_extensions[name]
+                description += '%s  %s\n' % (
+                    name.ljust(max_length), get_first_line_doc(extension))
+                command_parser = command_parsers[name]
+                command_parser.set_defaults(**{dest: extension})
+            mutable_description.value = description
+    else:
+        # add description for the selected command extension to the subparser
+        command_extensions = get_command_extensions(
+            group_name, exclude_names=set(entry_points.keys() - {name}))
+        extension = command_extensions[name]
+        command_parser = command_parsers[name]
+        command_parser.set_defaults(**{dest: extension})
+        command_parser.description = get_first_line_doc(extension)
+
+        # add the arguments for the requested extension
+        if hasattr(extension, 'add_arguments'):
+            command_parser = command_parsers[name]
+            command_parser._root_parser = root_parser
+            extension.add_arguments(
+                command_parser, '{cli_name} {name}'.format_map(locals()))
+            del command_parser._root_parser
+
+    return subparser
+
+
+class SuppressUsageOutput:
+    """Context manager to suppress help action during `parse_known_args`."""
+
+    def __init__(self, parsers):
+        """
+        Construct a SuppressUsageOutput.
+
+        :param parsers: The parsers
+        """
+        self._parsers = parsers
+        self._callbacks = {}
+
+    def __enter__(self):  # noqa: D105
+        for p in self._parsers:
+            self._callbacks[p] = p.print_help, p.exit
+            # temporary prevent printing usage early if help is requested
+            p.print_help = lambda: None
+            # temporary prevent help action to exit early,
+            # but keep exiting on invalid arguments
+            p.exit = types.MethodType(_ignore_zero_exit(p.exit), p)
+
+        return self
+
+    def __exit__(self, *args):  # noqa: D105
+        for p, callbacks in self._callbacks.items():
+            p.print_help, p.exit = callbacks
+
+
+def _ignore_zero_exit(original_exit_handler):
+    def exit_(self, status=0, message=None):
+        nonlocal original_exit_handler
+        if status == 0:
+            return
+        return original_exit_handler(status=status, message=message)
+
+    return exit_

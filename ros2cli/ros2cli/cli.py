@@ -16,8 +16,7 @@
 import argparse
 import signal
 
-from ros2cli.command import add_subparsers
-from ros2cli.command import get_command_extensions
+from ros2cli.command import add_subparsers_on_demand
 
 
 def main(*, script_name='ros2', argv=None, description=None, extension=None):
@@ -35,14 +34,13 @@ def main(*, script_name='ros2', argv=None, description=None, extension=None):
     if extension:
         extension.add_arguments(parser, script_name)
     else:
-        # get command extensions
-        extensions = get_command_extensions('ros2cli.command')
+        # get command entry points as needed
         selected_extension_key = '_command'
-        add_subparsers(
-            parser, script_name, selected_extension_key, extensions,
+        add_subparsers_on_demand(
+            parser, script_name, selected_extension_key, 'ros2cli.command',
             # hide the special commands in the help
             hide_extensions=['extension_points', 'extensions'],
-            required=False)
+            required=False, argv=argv)
 
     # register argcomplete hook if available
     try:

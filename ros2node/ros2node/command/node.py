@@ -12,9 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ros2cli.command import add_subparsers
+from ros2cli.command import add_subparsers_on_demand
 from ros2cli.command import CommandExtension
-from ros2cli.verb import get_verb_extensions
 
 
 class NodeCommand(CommandExtension):
@@ -22,10 +21,9 @@ class NodeCommand(CommandExtension):
 
     def add_arguments(self, parser, cli_name):
         self._subparser = parser
-        # get verb extensions and let them add their arguments
-        verb_extensions = get_verb_extensions('ros2node.verb')
-        add_subparsers(
-            parser, cli_name, '_verb', verb_extensions, required=False)
+        # add arguments and sub-commands of verbs
+        add_subparsers_on_demand(
+            parser, cli_name, '_verb', 'ros2node.verb', required=False)
 
     def main(self, *, parser, args):
         if not hasattr(args, '_verb'):
