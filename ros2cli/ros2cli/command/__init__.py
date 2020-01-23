@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import argparse
+import inspect
 import types
 
 from ros2cli.entry_points import get_entry_points
@@ -44,7 +45,7 @@ class CommandExtension:
         super(CommandExtension, self).__init__()
         satisfies_version(PLUGIN_SYSTEM_VERSION, '^0.1')
 
-    def add_arguments(self, parser, cli_name):
+    def add_arguments(self, parser, cli_name, *, argv=None):
         pass
 
     def main(self, *, parser, args):
@@ -232,8 +233,13 @@ def add_subparsers_on_demand(
         if hasattr(extension, 'add_arguments'):
             command_parser = command_parsers[name]
             command_parser._root_parser = root_parser
+            signature = inspect.signature(extension.add_arguments)
+            kwargs = {}
+            if 'argv' in signature.parameters:
+                kwargs['argv'] = argv
             extension.add_arguments(
-                command_parser, '{cli_name} {name}'.format_map(locals()))
+                command_parser, '{cli_name} {name}'.format_map(locals()),
+                **kwargs)
             del command_parser._root_parser
 
     return subparser
