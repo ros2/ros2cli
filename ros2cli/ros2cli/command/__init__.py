@@ -90,7 +90,7 @@ def add_subparsers(
     import warnings
     warnings.warn(
         "'ros2cli.command.add_subparsers' is deprecated, use "
-        "`ros2cli.command.add_subparsers_on_demand` instead", stacklevel=2)
+        "'ros2cli.command.add_subparsers_on_demand' instead", stacklevel=2)
     # add subparser with description of available subparsers
     description = ''
     if command_extensions:
