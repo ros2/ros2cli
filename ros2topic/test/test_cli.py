@@ -272,7 +272,7 @@ class TestROS2TopicCLI(unittest.TestCase):
 
     @launch_testing.markers.retry_on_failure(times=5)
     def test_topic_endpoint_info_verbose(self):
-        with self.launch_topic_command(arguments=['info', '--verbose', '/chatter']) as topic_command:
+        with self.launch_topic_command(arguments=['info', '-v', '/chatter']) as topic_command:
             assert topic_command.wait_for_shutdown(timeout=10)
         assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
@@ -284,6 +284,7 @@ class TestROS2TopicCLI(unittest.TestCase):
                 re.compile(r'Node name: \w+'),
                 'Node namespace: /',
                 'Topic type: std_msgs/msg/String',
+                re.compile(r'Endpoint type: (INVALID|PUBLISHER|SUBSCRIPTION)'),
                 re.compile(r'GID: [\w\.]+'),
                 'QoS profile:',
                 re.compile(r'  Reliability: RMW_QOS_POLICY_RELIABILITY_\w+'),
