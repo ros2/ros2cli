@@ -19,12 +19,13 @@ from ros2cli.command import CommandExtension
 class ParamCommand(CommandExtension):
     """Various param related sub-commands."""
 
-    def add_arguments(self, parser, cli_name):
+    def add_arguments(self, parser, cli_name, *, argv=None):
         self._subparser = parser
 
         # add arguments and sub-commands of verbs
         add_subparsers_on_demand(
-            parser, cli_name, '_verb', 'ros2param.verb', required=False)
+            parser, cli_name, '_verb', 'ros2param.verb', required=False,
+            argv=argv)
 
     def main(self, *, parser, args):
         if not hasattr(args, '_verb'):
