@@ -44,7 +44,7 @@ def _check_platform_helper() -> Tuple[str, dict, dict]:
     i = rosdistro.get_index(u)
     distro_info = i.distributions.get(distro_name)
     if not distro_info:
-        doctor_warn("Distribution name '%s' is not found" % distro_name)
+        doctor_warn(f"Distribution name {distro_name} is not found")
         return
     distro_data = rosdistro.get_distribution(i, distro_name).get_data()
     return distro_name, distro_info, distro_data
@@ -67,13 +67,13 @@ class PlatformCheck(DoctorCheck):
 
         # check distro status
         if distro_info.get('distribution_status') == 'prerelease':
-            result.add_warning('Distribution %s is not fully supported or tested. '
+            result.add_warning(f'Distribution {distro_name} is not fully supported or tested. '
                                'To get more consistent features, download a stable version at '
-                               'https://index.ros.org/doc/ros2/Installation/' % distro_name)
+                               'https://index.ros.org/doc/ros2/Installation/')
         elif distro_info.get('distribution_status') == 'end-of-life':
-            result.add_warning('Distribution %s is no longer supported or deprecated. '
+            result.add_warning(f'Distribution {distro_name} is no longer supported or deprecated. '
                                'To get the latest features, download the new versions at '
-                               'https://index.ros.org/doc/ros2/Installation/' % distro_name)
+                               'https://index.ros.org/doc/ros2/Installation/')
         return result
 
 

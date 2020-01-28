@@ -49,9 +49,9 @@ class TopicCheck(DoctorCheck):
                 pub_count = node.count_publishers(topic)
                 sub_count = node.count_subscribers(topic)
                 if pub_count > sub_count:
-                    result.add_warning('Publisher without subscriber detected on %s.' % topic)
+                    result.add_warning(f'Publisher without subscriber detected on {topic}.')
                 elif pub_count < sub_count:
-                    result.add_warning('Subscriber without publisher detected on %s.' % topic)
+                    result.add_warning(f'Subscriber without publisher detected on {topic}.')
         return result
 
 
