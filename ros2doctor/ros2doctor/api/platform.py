@@ -46,7 +46,10 @@ def _check_platform_helper() -> Tuple[str, dict, dict]:
     if not distro_info:
         doctor_warn()(f'Distribution name {distro_name} is not found')
         return
-    distro_data = rosdistro.get_distribution(i, distro_name).get_data()
+    try:
+        distro_data = rosdistro.get_distribution(i, distro_name).get_data()
+    except AttributeError:
+        distro_data = ''
     return distro_name, distro_info, distro_data
 
 

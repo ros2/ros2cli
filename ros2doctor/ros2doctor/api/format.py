@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from typing import Callable
 from typing import List
 from typing import Tuple
 import warnings
@@ -45,7 +46,7 @@ def compute_padding(report_items: List[Tuple[str, str]]) -> int:
     return padding
 
 
-def doctor_warn() -> None:
+def doctor_warn() -> Callable:
     """
     Print customized warning message with package and line info.
 

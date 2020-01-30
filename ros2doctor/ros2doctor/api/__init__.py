@@ -56,7 +56,7 @@ class Report:
         self.name = name
         self.items = []
 
-    def add_to_report(self, item_name: str, item_info: str) -> None:
+    def add_to_report(self, item_name: str, item_info: str):
         """Add report content to items list (list of string tuples)."""
         self.items.append((item_name, item_info))
 
@@ -71,10 +71,10 @@ class Result:
         self.error = 0
         self.warning = 0
 
-    def add_error(self) -> None:
+    def add_error(self):
         self.error += 1
 
-    def add_warning(self) -> None:
+    def add_warning(self):
         self.warning += 1
 
 
