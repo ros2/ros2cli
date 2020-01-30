@@ -14,6 +14,7 @@
 
 import os
 from typing import Tuple
+import warnings
 
 from ros2doctor.api import DoctorCheck
 from ros2doctor.api import DoctorReport
@@ -24,8 +25,8 @@ from ros2doctor.api.format import doctor_warn
 try:
     import ifcfg
 except ImportError:  # check import error for windows and osx
-    doctor_warn('Failed to import ifcfg. '
-                'Use `python -m pip install ifcfg` to install needed package.')
+    doctor_warn()('Unable to import ifcfg. '
+        'Use `python -m pip install ifcfg` to install needed package.')
 
 
 def _is_unix_like_platform() -> bool:
@@ -62,22 +63,29 @@ class NetworkCheck(DoctorCheck):
         try:
             ifcfg_ifaces = ifcfg.interfaces()
         except NameError:
-            result.add_error('ERROR: ifcfg is not imported. Unable to run network check.')
+            doctor_warn()('ERROR: `ifcfg` module is not imported. '
+                'Unable to run network check.')
+            result.add_error()
             return result
 
         has_loopback, has_non_loopback, has_multicast = _check_network_config_helper(ifcfg_ifaces)
         if not _is_unix_like_platform():
             if not has_loopback and not has_non_loopback:
                 # no flags found, otherwise one of them should be True.
-                print('No flags found. \
-                    Run `ipconfig` on cmd to check network interfaces.')
+                doctor_warn()('ERROR: No flags found. '
+                    'Run `ipconfig` on Windows or '
+                    'install `ifconfig` on Unix to check network interfaces.')
+                result.add_error()
                 return result
         if not has_loopback:
-            result.add_error('ERROR: No loopback IP address is found.')
+            doctor_warn()('ERROR: No loopback IP address is found.')
+            result.add_error()
         if not has_non_loopback:
-            result.add_warning('Only loopback IP address is found.')
+            doctor_warn()('Only loopback IP address is found.')
+            result.add_warning()
         if not has_multicast:
-            result.add_warning('No multicast IP address is found.')
+            doctor_warn()('No multicast IP address is found.')
+            result.add_warning()
         return result
 
 
@@ -93,7 +101,7 @@ class NetworkReport(DoctorReport):
         try:
             ifcfg_ifaces = ifcfg.interfaces()
         except NameError:
-            doctor_warn('ifcfg is not imported. Unable to generate network report.')
+            doctor_warn()('ERROR: ifcfg is not imported. Unable to generate network report.')
             return Report('')
 
         network_report = Report('NETWORK CONFIGURATION')

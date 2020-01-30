@@ -14,6 +14,7 @@
 
 import os
 from typing import List
+import textwrap
 from urllib.error import URLError
 
 from ament_index_python import get_packages_with_prefixes
@@ -24,6 +25,7 @@ from ros2doctor.api import DoctorCheck
 from ros2doctor.api import DoctorReport
 from ros2doctor.api import Report
 from ros2doctor.api import Result
+from ros2doctor.api.format import doctor_warn
 
 import rosdistro
 
@@ -35,11 +37,25 @@ def get_distro_package_versions() -> dict:
     :return: dictionary of rosdistro package name and version
     """
     distro_name = os.environ.get('ROS_DISTRO')
+    if not distro_name:
+        doctor_warn()('ERROR: ROS_DISTRO is not set.')
+        return
     distro_name = distro_name.lower()
     url = rosdistro.get_index_url()
+    if not url:
+        doctor_warn()('ERROR: Unable to access ROSDISTRO_INDEX_URL or DEFAULT_INDEX_URL. '
+            'Check network setting to make sure machine is connected to internet.')
+        return
     i = rosdistro.get_index(url)
-    distro_data = rosdistro.get_distribution(i, distro_name).get_data()
+    distro_info = rosdistro.get_distribution(i, distro_name)
+    if not distro_info:
+        doctor_warn()(f'Distribution name {distro_name} is not found')
+        return
+    distro_data = distro_info.get_data()
     repos_info = distro_data.get('repositories')
+    if not repos_info:
+        doctor_warn()('No repository information found.')
+        return
     distro_package_vers = {}
     for _, info in repos_info.items():
         try:
@@ -69,7 +85,7 @@ def get_local_package_versions() -> dict:
     return local_packages
 
 
-def compare_versions(local_packages: dict, distro_packages: dict) -> List:
+def compare_versions(result: Result, local_packages: dict, distro_packages: dict):
     """
     Return warning messages for PackageCheck, and info for PackageReport.
 
@@ -78,7 +94,6 @@ def compare_versions(local_packages: dict, distro_packages: dict) -> List:
     :param: boolean value determines which output to populate, msgs or report
     :return: list of warning messages
     """
-    warning_msgs = []
     missing_req = ''
     missing_local = ''
     for name, local_ver_str in local_packages.items():
@@ -91,14 +106,26 @@ def compare_versions(local_packages: dict, distro_packages: dict) -> List:
         local_ver = version.parse(local_ver_str).base_version
         required_ver = version.parse(required_ver_str).base_version
         if local_ver < required_ver:
-            warning_msgs.append(f'{name} has been updated to a new version.'
-                                f' local: {local_ver} <'
-                                f' required: {required_ver}')
+            doctor_warn()(f'{name} has been updated to a new version.'
+                f' local: {local_ver} <'
+                f' required: {required_ver}')
+            result.add_warning()
     if missing_req:
-        warning_msgs.append('Cannot find required versions of packages:' + missing_req)
+        if len(missing_req) > 100:
+            doctor_warn()('Cannot find required versions of packages: ' +
+                textwrap.shorten(missing_req, width=100) +
+                ' Use `ros2 doctor --report` to see full list.')
+        else:
+            doctor_warn()('Cannot find required versions of packages: ' +
+                missing_req)
     if missing_local:
-        warning_msgs.append('Cannot find local versions of packages:' + missing_local)
-    return warning_msgs
+        if len(missing_local) > 100:
+            doctor_warn()('Cannot find local versions of packages: ' +
+                textwrap.shorten(missing_local, width=100) +
+                ' Use `ros2 doctor --report` to see full list.')
+        else:
+            doctor_warn()('Cannot find local versions of packages: ' +
+                missing_local)
 
 
 class PackageCheck(DoctorCheck):
@@ -110,21 +137,18 @@ class PackageCheck(DoctorCheck):
     def check(self):
         """Check packages within the directory where command is called."""
         result = Result()
-        try:
-            distro_package_vers = get_distro_package_versions()
-            if not distro_package_vers:
-                result.add_error('ERROR: distro packages info is not found.')
-        except (AttributeError, RuntimeError, URLError):
-            result.add_error('ERROR: Unable to fetch package information from rosdistro.')
+        distro_package_vers = get_distro_package_versions()
+        if not distro_package_vers:
+            doctor_warn()('ERROR: distro packages info is not found.')
+            result.add_error()
         local_package_vers = get_local_package_versions()
         if not local_package_vers:
-            result.add_error('ERROR: local package info is not found.')
+            doctor_warn()('ERROR: local package info is not found.')
+            result.add_error()
         if result.error != 0:
             return result
 
-        warning_msgs = compare_versions(local_package_vers, distro_package_vers)
-        for msg in warning_msgs:
-            result.add_warning(msg)
+        compare_versions(result, local_package_vers, distro_package_vers)
         return result
 
 

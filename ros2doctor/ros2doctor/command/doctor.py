@@ -46,16 +46,16 @@ class DoctorCommand(CommandExtension):
             return
 
         # `ros2 doctor
-        failed_cats, fail, total = run_checks(include_warnings=args.include_warnings)
+        fail_category, fail, total = run_checks(include_warnings=args.include_warnings)
         if fail:
-            print('\n%d/%d checks failed\n' % (fail, total))
-            print('Failed modules:', *failed_cats)
+            print(f'\n{fail}/{total} check(s) failed\n')
+            print('Failed modules:', *fail_category)
         else:
-            print('\nAll %d checks passed\n' % total)
+            print(f'\nAll {total} checks passed\n')
 
         # `ros2 doctor -rf`
         if args.report_failed and fail != 0:
-            fail_reports = generate_reports(categories=failed_cats)
+            fail_reports = generate_reports(categories=fail_category)
             for report_obj in fail_reports:
                 format_print(report_obj)
 

@@ -20,7 +20,7 @@ from ros2doctor.api import DoctorCheck
 from ros2doctor.api import DoctorReport
 from ros2doctor.api import Report
 from ros2doctor.api import Result
-
+from ros2doctor.api.format import doctor_warn
 
 def _get_topic_names() -> List:
     """Get all topic names using rclpy API."""
@@ -49,9 +49,11 @@ class TopicCheck(DoctorCheck):
                 pub_count = node.count_publishers(topic)
                 sub_count = node.count_subscribers(topic)
                 if pub_count > sub_count:
-                    result.add_warning(f'Publisher without subscriber detected on {topic}.')
+                    doctor_warn()(f'Publisher without subscriber detected on {topic}.')
+                    result.add_warning()
                 elif pub_count < sub_count:
-                    result.add_warning(f'Subscriber without publisher detected on {topic}.')
+                    doctor_warn()(f'Subscriber without publisher detected on {topic}.')
+                    result.add_warning()
         return result
 
 
