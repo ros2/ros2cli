@@ -22,6 +22,7 @@ from ros2doctor.api import Report
 from ros2doctor.api import Result
 from ros2doctor.api.format import doctor_warn
 
+
 def _get_topic_names() -> List:
     """Get all topic names using rclpy API."""
     white_list = ['/parameter_events', '/rosout']

@@ -38,7 +38,8 @@ def _check_platform_helper() -> Tuple[str, dict, dict]:
     distro_name = distro_name.lower()
     u = rosdistro.get_index_url()
     if not u:
-        doctor_warn()('ERROR: Unable to access ROSDISTRO_INDEX_URL or DEFAULT_INDEX_URL. '
+        doctor_warn()(
+            'ERROR: Unable to access ROSDISTRO_INDEX_URL or DEFAULT_INDEX_URL. '
             'Check network setting to make sure machine is connected to internet.')
         return
     i = rosdistro.get_index(u)
@@ -71,12 +72,14 @@ class PlatformCheck(DoctorCheck):
 
         # check distro status
         if distro_info.get('distribution_status') == 'prerelease':
-            doctor_warn()(f'Distribution {distro_name} is not fully supported or tested. '
+            doctor_warn()(
+                f'Distribution {distro_name} is not fully supported or tested. '
                 'To get more consistent features, download a stable version at '
                 'https://index.ros.org/doc/ros2/Installation/')
             result.add_warning()
         elif distro_info.get('distribution_status') == 'end-of-life':
-            doctor_warn()(f'Distribution {distro_name} is no longer supported or deprecated. '
+            doctor_warn()(
+                f'Distribution {distro_name} is no longer supported or deprecated. '
                 'To get the latest features, download the new versions at '
                 'https://index.ros.org/doc/ros2/Installation/')
             result.add_warning()

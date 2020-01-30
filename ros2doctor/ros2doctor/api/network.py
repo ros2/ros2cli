@@ -24,7 +24,8 @@ from ros2doctor.api.format import doctor_warn
 try:
     import ifcfg
 except ImportError:  # check import error for windows and osx
-    doctor_warn()('Unable to import ifcfg. '
+    doctor_warn()(
+        'Unable to import ifcfg. '
         'Use `python3 -m pip install ifcfg` to install needed package.')
 
 
@@ -62,7 +63,8 @@ class NetworkCheck(DoctorCheck):
         try:
             ifcfg_ifaces = ifcfg.interfaces()
         except NameError:
-            doctor_warn()('ERROR: `ifcfg` module is not imported. '
+            doctor_warn()(
+                'ERROR: `ifcfg` module is not imported. '
                 'Unable to run network check.')
             result.add_error()
             return result
@@ -71,7 +73,8 @@ class NetworkCheck(DoctorCheck):
         if not _is_unix_like_platform():
             if not has_loopback and not has_non_loopback:
                 # no flags found, otherwise one of them should be True.
-                doctor_warn()('ERROR: No flags found. '
+                doctor_warn()(
+                    'ERROR: No flags found. '
                     'Run `ipconfig` on Windows or '
                     'install `ifconfig` on Unix to check network interfaces.')
                 result.add_error()

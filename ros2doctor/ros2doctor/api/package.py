@@ -13,9 +13,7 @@
 # limitations under the License.
 
 import os
-from typing import List
 import textwrap
-from urllib.error import URLError
 
 from ament_index_python import get_packages_with_prefixes
 from catkin_pkg.package import parse_package
@@ -43,7 +41,8 @@ def get_distro_package_versions() -> dict:
     distro_name = distro_name.lower()
     url = rosdistro.get_index_url()
     if not url:
-        doctor_warn()('ERROR: Unable to access ROSDISTRO_INDEX_URL or DEFAULT_INDEX_URL. '
+        doctor_warn()(
+            'ERROR: Unable to access ROSDISTRO_INDEX_URL or DEFAULT_INDEX_URL. '
             'Check network setting to make sure machine is connected to internet.')
         return
     i = rosdistro.get_index(url)
@@ -106,25 +105,30 @@ def compare_versions(result: Result, local_packages: dict, distro_packages: dict
         local_ver = version.parse(local_ver_str).base_version
         required_ver = version.parse(required_ver_str).base_version
         if local_ver < required_ver:
-            doctor_warn()(f'{name} has been updated to a new version.'
+            doctor_warn()(
+                f'{name} has been updated to a new version.'
                 f' local: {local_ver} <'
                 f' required: {required_ver}')
             result.add_warning()
     if missing_req:
         if len(missing_req) > 100:
-            doctor_warn()('Cannot find required versions of packages: ' +
+            doctor_warn()(
+                'Cannot find required versions of packages: ' +
                 textwrap.shorten(missing_req, width=100) +
                 ' Use `ros2 doctor --report` to see full list.')
         else:
-            doctor_warn()('Cannot find required versions of packages: ' +
+            doctor_warn()(
+                'Cannot find required versions of packages: ' +
                 missing_req)
     if missing_local:
         if len(missing_local) > 100:
-            doctor_warn()('Cannot find local versions of packages: ' +
+            doctor_warn()(
+                'Cannot find local versions of packages: ' +
                 textwrap.shorten(missing_local, width=100) +
                 ' Use `ros2 doctor --report` to see full list.')
         else:
-            doctor_warn()('Cannot find local versions of packages: ' +
+            doctor_warn()(
+                'Cannot find local versions of packages: ' +
                 missing_local)
 
 
