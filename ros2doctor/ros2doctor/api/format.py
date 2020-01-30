@@ -23,7 +23,7 @@ def format_print(report):
 
     :param report: Report object with name and items list
     """
-    print('\n ', report.name)
+    print('\n  ', report.name)
     if report.items:
         padding_num = compute_padding(report.items)
     for item_name, item_content in report.items:
@@ -52,6 +52,6 @@ def doctor_warn() -> None:
     :param msg: warning message to be printed
     """
     def custom_warning_format(message, category, filename, lineno, file=None, line=None):
-        return '%s:%s: %s: %s\n' % (filename, lineno, category.__name__, message)
+        return f'{filename}:{lineno}: {category.__name__}: {message}\n'
     warnings.formatwarning = custom_warning_format
     return warnings.warn

@@ -14,7 +14,6 @@
 
 import os
 from typing import Tuple
-import warnings
 
 from ros2doctor.api import DoctorCheck
 from ros2doctor.api import DoctorReport
@@ -26,7 +25,7 @@ try:
     import ifcfg
 except ImportError:  # check import error for windows and osx
     doctor_warn()('Unable to import ifcfg. '
-        'Use `python -m pip install ifcfg` to install needed package.')
+        'Use `python3 -m pip install ifcfg` to install needed package.')
 
 
 def _is_unix_like_platform() -> bool:

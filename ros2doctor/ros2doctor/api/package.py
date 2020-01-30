@@ -51,9 +51,9 @@ def get_distro_package_versions() -> dict:
     if not distro_info:
         doctor_warn()(f'Distribution name {distro_name} is not found')
         return
-    distro_data = distro_info.get_data()
-    repos_info = distro_data.get('repositories')
-    if not repos_info:
+    try:
+        repos_info = distro_info.get_data().get('repositories')
+    except AttributeError:
         doctor_warn()('No repository information found.')
         return
     distro_package_vers = {}
@@ -161,11 +161,8 @@ class PackageReport(DoctorReport):
     def report(self):
         """Report packages within the directory where command is called."""
         report = Report('PACKAGE VERSIONS')
-        try:
-            distro_package_vers = get_distro_package_versions()
-        except (AttributeError, RuntimeError, URLError):
-            return report
         local_package_vers = get_local_package_versions()
+        distro_package_vers = get_distro_package_versions()
         if not local_package_vers or not distro_package_vers:
             return report
         for name, local_ver_str in local_package_vers.items():
