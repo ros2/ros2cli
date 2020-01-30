@@ -211,7 +211,7 @@ def add_subparsers_on_demand(
             if not _is_completion_requested():
                 raise
             # if the partial arguments can't be parsed use no known args
-            known_args = argparse.Namespace(verb_name=None)
+            known_args = argparse.Namespace(**{subparser.dest: None})
 
     # check if a specific subparser is selected
     name = getattr(known_args, subparser.dest)
