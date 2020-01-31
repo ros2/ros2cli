@@ -61,7 +61,7 @@ class GetVerb(VerbExtension):
                 if isinstance(state, Exception):
                     print(
                         'Exception while calling service of node '
-                        "'{node_name}': {state}".format_map(locals()),
+                        f"'{node_name}': {state}",
                         file=sys.stderr)
                     del states[node_name]
                     if args.node_name:
@@ -72,6 +72,5 @@ class GetVerb(VerbExtension):
                 state = states[node_name]
                 prefix = ''
                 if not args.node_name:
-                    prefix = '{node_name}: '.format_map(locals())
-                print(
-                    prefix + '{state.label} [{state.id}]'.format_map(locals()))
+                    prefix = f'{node_name}: '
+                print(prefix + f'{state.label} [{state.id}]')

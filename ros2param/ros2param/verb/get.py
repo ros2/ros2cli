@@ -96,8 +96,7 @@ class GetVerb(VerbExtension):
                 label = 'Parameter not set.'
                 value = None
             else:
-                return "Unknown parameter type '{pvalue.type}'" \
-                    .format_map(locals())
+                return f"Unknown parameter type '{pvalue.type}'"
 
             # output response
             if not args.hide_type:

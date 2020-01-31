@@ -40,8 +40,8 @@ class ListVerb(VerbExtension):
             print(len(service_names_and_types))
         elif service_names_and_types:
             for (service_name, service_types) in service_names_and_types:
-                msg = '{service_name}'
+                msg = f'{service_name}'
                 service_types_formatted = ', '.join(service_types)
                 if args.show_types:
-                    msg += ' [{service_types_formatted}]'
-                print(msg.format_map(locals()))
+                    msg += f' [{service_types_formatted}]'
+                print(msg)

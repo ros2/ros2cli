@@ -95,8 +95,7 @@ def get_parameter_value(*, string_value):
 def call_describe_parameters(*, node, node_name, parameter_names=None):
     # create client
     client = node.create_client(
-        DescribeParameters,
-        '{node_name}/describe_parameters'.format_map(locals()))
+        DescribeParameters, f'{node_name}/describe_parameters')
 
     # call as soon as ready
     ready = client.wait_for_service(timeout_sec=5.0)
@@ -114,16 +113,13 @@ def call_describe_parameters(*, node, node_name, parameter_names=None):
     if response is None:
         e = future.exception()
         raise RuntimeError(
-            "Exception while calling service of node '{node_name}': {e}"
-            .format_map(locals()))
+            f"Exception while calling service of node '{node_name}': {e}")
     return response
 
 
 def call_get_parameters(*, node, node_name, parameter_names):
     # create client
-    client = node.create_client(
-        GetParameters,
-        '{node_name}/get_parameters'.format_map(locals()))
+    client = node.create_client(GetParameters, f'{node_name}/get_parameters')
 
     # call as soon as ready
     ready = client.wait_for_service(timeout_sec=5.0)
@@ -140,16 +136,13 @@ def call_get_parameters(*, node, node_name, parameter_names):
     if response is None:
         e = future.exception()
         raise RuntimeError(
-            'Exception while calling service of node '
-            "'{args.node_name}': {e}".format_map(locals()))
+            f"Exception while calling service of node '{node_name}': {e}")
     return response
 
 
 def call_set_parameters(*, node, node_name, parameters):
     # create client
-    client = node.create_client(
-        SetParameters,
-        '{node_name}/set_parameters'.format_map(locals()))
+    client = node.create_client(SetParameters, f'{node_name}/set_parameters')
 
     # call as soon as ready
     ready = client.wait_for_service(timeout_sec=5.0)
@@ -166,16 +159,13 @@ def call_set_parameters(*, node, node_name, parameters):
     if response is None:
         e = future.exception()
         raise RuntimeError(
-            'Exception while calling service of node '
-            "'{args.node_name}': {e}".format_map(locals()))
+            f"Exception while calling service of node '{node_name}': {e}")
     return response
 
 
 def call_list_parameters(*, node, node_name, prefix=None):
     # create client
-    client = node.create_client(
-        ListParameters,
-        '{node_name}/list_parameters'.format_map(locals()))
+    client = node.create_client(ListParameters, f'{node_name}/list_parameters')
 
     # call as soon as ready
     ready = client.wait_for_service(timeout_sec=5.0)
@@ -191,8 +181,7 @@ def call_list_parameters(*, node, node_name, prefix=None):
     if response is None:
         e = future.exception()
         raise RuntimeError(
-            "Exception while calling service of node '{node_name}': {e}"
-            .format_map(locals()))
+            f"Exception while calling service of node '{node_name}': {e}")
     return response.result.names
 
 

@@ -90,17 +90,17 @@ class DumpVerb(VerbExtension):
 
         if not os.path.isdir(args.output_dir):
             raise RuntimeError(
-                "'{args.output_dir}' is not a valid directory.".format_map(locals()))
+                f"'{args.output_dir}' is not a valid directory.")
 
         with DirectNode(args) as node:
             # create client
-            service_name = '{absolute_node_name}/list_parameters'.format_map(locals())
+            service_name = f'{absolute_node_name}/list_parameters'
             client = node.create_client(ListParameters, service_name)
 
             client.wait_for_service()
 
             if not client.service_is_ready():
-                raise RuntimeError("Could not reach service '{service_name}'".format_map(locals()))
+                raise RuntimeError(f"Could not reach service '{service_name}'")
 
             request = ListParameters.Request()
             future = client.call_async(request)
@@ -119,8 +119,9 @@ class DumpVerb(VerbExtension):
                         yaml_output[node_name.name]['ros__parameters'], param_name, pval)
             else:
                 e = future.exception()
-                raise RuntimeError('Exception while calling service of node '
-                                   "'{node_name.full_name}': {e}".format_map(locals()))
+                raise RuntimeError(
+                    'Exception while calling service of node '
+                    f"'{node_name.full_name}': {e}")
 
             if args.print:
                 print(yaml.dump(yaml_output, default_flow_style=False))

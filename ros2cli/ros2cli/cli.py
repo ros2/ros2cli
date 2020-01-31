@@ -21,8 +21,8 @@ from ros2cli.command import add_subparsers_on_demand
 
 def main(*, script_name='ros2', argv=None, description=None, extension=None):
     if description is None:
-        description = '{script_name} is an extensible command-line tool for ' \
-            'ROS 2.'.format_map(locals())
+        description = f'{script_name} is an extensible command-line tool ' \
+            'for ROS 2.'
 
     # top level parser
     parser = argparse.ArgumentParser(
