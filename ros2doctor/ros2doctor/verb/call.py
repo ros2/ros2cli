@@ -49,13 +49,15 @@ class CallVerb(VerbExtension):
                     format_print(summary_table)
                     _spawn_summary_table()
                 # pub/sub threads
-                executor.spin_once()
-                executor.spin_once()
+                exec_thread = threading.Thread(target=executor.spin)
+                exec_thread.daemon=True
                 # multicast threads
                 send_thread = threading.Thread(target=send, args=())
                 send_thread.daemon = True
                 receive_thread = threading.Thread(target=receive, args=())
                 receive_thread.daemon = True
+
+                exec_thread.start()
                 receive_thread.start()
                 send_thread.start()
                 count += 1
