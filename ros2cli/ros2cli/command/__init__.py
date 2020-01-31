@@ -202,7 +202,7 @@ def add_subparsers_on_demand(
     root_parser = getattr(parser, '_root_parser', parser)
     with SuppressUsageOutput({parser} | set(command_parsers.values())):
         args = argv
-        # for completion use the arguments provided by the arcomplete env var
+        # for completion use the arguments provided by the argcomplete env var
         if _is_completion_requested():
             args = shlex.split(os.environ['COMP_LINE'])[1:]
         try:
