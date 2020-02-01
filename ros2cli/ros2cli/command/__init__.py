@@ -189,7 +189,6 @@ def add_subparsers_on_demand(
     entry_points = get_entry_points(group_name)
     command_parsers = {}
     for name in sorted(entry_points.keys()):
-        entry_point = entry_points[name]
         command_parser = subparser.add_parser(
             name,
             formatter_class=argparse.RawDescriptionHelpFormatter)
