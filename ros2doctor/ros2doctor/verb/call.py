@@ -26,8 +26,16 @@ from std_msgs.msg import String
 
 DEFAULT_GROUP = '225.0.0.1'
 DEFAULT_PORT = 49150
-DEFAULT_TOPIC = 'knockknock'
-summary_table = {}
+
+
+def positive_int(string: str) -> int:
+    try:
+        value = int(string)
+    except ValueError:
+        value = -1
+    if value <= 0:
+        raise ArgumentTypeError('value must be a positive integer')
+    return value
 
 
 class CallVerb(VerbExtension):
@@ -133,8 +141,13 @@ class Listener(Node):
                 summary_table['sub'][caller_hostname] += 1
 
 
+<<<<<<< HEAD
 def send():
     """Multicast send."""
+=======
+def _send(*, group=DEFAULT_GROUP, port=DEFAULT_PORT, ttl=None):
+    """Multicast send one message."""
+>>>>>>> d283d3a... add summary table doc string
     hostname = socket.gethostname()
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
     try:
@@ -175,6 +188,7 @@ def receive():
         s.close()
 
 
+<<<<<<< HEAD
 def _spawn_summary_table():
     """Spawn summary table with new content after each print."""
     summary_table['pub'] = 0
@@ -202,3 +216,79 @@ def format_print(summary_table):
     print('Received from:')
     _format_print_helper(summary_table['receive'])
     print('-'*60)
+=======
+class SummaryTable():
+    """Summarize number of msgs published/sent and subscribed/received."""
+
+    def __init__(self):
+        """Initialize empty summary table."""
+        self.lock = threading.Lock()
+        self.pub = 0
+        self.send = 0
+        self.sub = {}
+        self.receive = {}
+
+    def reset(self):
+        """Reset summary table to empty each time after printing."""
+        self.pub = 0
+        self.send = 0
+        self.sub = {}
+        self.receive = {}
+
+    def increment_pub(self):
+        """Increment published msg count."""
+        self.lock.acquire()
+        try:
+            self.pub += 1
+        finally:
+            self.lock.release()
+
+    def increment_sub(self, hostname):
+        """Increment subscribed msg count from different host(s)."""
+        self.lock.acquire()
+        try:
+            if hostname not in self.receive:
+                self.receive[hostname] = 1
+            else:
+                self.receive[hostname] += 1
+        finally:
+            self.lock.release()
+
+    def increment_send(self):
+        """Increment multicast-sent msg count."""
+        self.lock.acquire()
+        try:
+            self.send += 1
+        finally:
+            self.lock.release()
+
+    def increment_receive(self, hostname):
+        """Increment multicast-received msg count from different host(s)."""
+        self.lock.acquire()
+        try:
+            if hostname not in self.sub:
+                self.sub[hostname] = 1
+            else:
+                self.sub[hostname] += 1
+        finally:
+            self.lock.release()
+
+    def format_print_summary(self, topic, rate, *, group=DEFAULT_GROUP, port=DEFAULT_PORT):
+        """Print content in a table format."""
+        def _format_print_summary_helper(table):
+            msg_freq = 1/rate
+            print('{:<15} {:<20} {:<10}'.format('', 'Hostname', f'Msg Count /{msg_freq}s'))
+            for name, count in table.items():
+                print('{:<15} {:<20} {:<10}'.format('', name, count))
+
+        print('MULTIMACHINE COMMUNICATION SUMMARY')
+        print(f'Topic: {topic}, Published Msg Count: {self.pub}')
+        print('Subscribed from:')
+        _format_print_summary_helper(self.sub)
+        print(
+            f'Multicast Group/Port: {DEFAULT_GROUP}/{DEFAULT_PORT}, '
+            f'Sent Msg Count: {self.send}')
+        print('Received from:')
+        _format_print_summary_helper(self.receive)
+        print('-'*60)
+>>>>>>> d283d3a... add summary table doc string
