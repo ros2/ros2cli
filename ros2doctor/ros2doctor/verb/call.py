@@ -18,7 +18,7 @@ import threading
 import time
 
 import rclpy
-from rclpy.executors import MultiThreadedExecutor
+from rclpy.executors import SingleThreadedExecutor
 from rclpy.node import Node
 from ros2doctor.verb import VerbExtension
 
@@ -35,35 +35,35 @@ class CallVerb(VerbExtension):
 
     def main(self, *, args):
         rclpy.init()
-        pub_node = Talker()
-        sub_node = Listener()
-
-        executor = MultiThreadedExecutor()
+        executor = SingleThreadedExecutor()
+        pub_node = Talker(args.topic_name, args.time_period)
+        sub_node = Listener(args.topic_name)
         executor.add_node(pub_node)
         executor.add_node(sub_node)
         try:
-            count = 0
-            _spawn_summary_table()
-            while True:
-                if (count % 20 == 0 and count != 0):
-                    format_print(summary_table)
-                    _spawn_summary_table()
-                # pub/sub threads
-                exec_thread = threading.Thread(target=executor.spin)
-                exec_thread.daemon=True
+            prev_time = time.time()
+            timeout = time.time() + args.duration
+            # pub/sub thread
+            exec_thread = threading.Thread(target=executor.spin)
+            exec_thread.start()
+            while time.time() < timeout:
+                # print table at user determined rate
+                if (time.time() - prev_time > float(1/args.rate)):
+                    summary_table.format_print_summary(args.topic_name, args.rate)
+                    summary_table.reset()
+                    prev_time = time.time()
                 # multicast threads
                 send_thread = threading.Thread(target=send, args=())
                 send_thread.daemon = True
                 receive_thread = threading.Thread(target=receive, args=())
                 receive_thread.daemon = True
-
-                exec_thread.start()
                 receive_thread.start()
                 send_thread.start()
                 count += 1
                 time.sleep(0.1)
         except KeyboardInterrupt:
             executor.shutdown()
+            rclpy.shutdown()
             pub_node.destroy_node()
             sub_node.destroy_node()
 
