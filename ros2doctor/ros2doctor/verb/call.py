@@ -31,7 +31,31 @@ summary_table = {}
 
 
 class CallVerb(VerbExtension):
-    """Publish and subscribe, multicast send and receive, print table."""
+    """
+    Check network connectivity between multiple hosts.
+
+    This command can be invoked on multiple hosts to confirm that they can talk to each other
+    by using talker/listener, multicast send/receive to check topic discovering and
+    UDP communication.
+    This command outputs a summary table of msgs statistics at a custom rate(Hz).
+    """
+
+    def add_arguments(self, parser, cli_name):
+        parser.add_argument(
+            'topic_name', nargs='?', default='/canyouhearme',
+            help="Name of ROS topic to publish to (default: '/canyouhearme')")
+        parser.add_argument(
+            'time_period', nargs='?', default=0.1,
+            help='Time period to publish/send one message (default: 0.1s)')
+        parser.add_argument(
+            'duration', nargs='?', default=20, type=positive_int,
+            help='How long this process runs (default: 20s)')
+        parser.add_argument(
+            '-r', '--rate', metavar='N', type=float, default=1.0,
+            help='Rate in Hz to print summary table (default: 1.0)')
+        parser.add_argument(
+            '--ttl', type=positive_int,
+            help='TTL for multicast send (default: None)')
 
     def main(self, *, args):
         rclpy.init()
