@@ -249,10 +249,10 @@ class SummaryTable():
         """Increment subscribed msg count from different host(s)."""
         self.lock.acquire()
         try:
-            if hostname not in self.receive:
-                self.receive[hostname] = 1
+            if hostname not in self.sub:
+                self.sub[hostname] = 1
             else:
-                self.receive[hostname] += 1
+                self.sub[hostname] += 1
         finally:
             self.lock.release()
 
@@ -268,10 +268,10 @@ class SummaryTable():
         """Increment multicast-received msg count from different host(s)."""
         self.lock.acquire()
         try:
-            if hostname not in self.sub:
-                self.sub[hostname] = 1
+            if hostname not in self.receive:
+                self.receive[hostname] = 1
             else:
-                self.sub[hostname] += 1
+                self.receive[hostname] += 1
         finally:
             self.lock.release()
 
