@@ -44,8 +44,8 @@ class ListVerb(VerbExtension):
             print(len(topic_names_and_types))
         elif topic_names_and_types:
             for (topic_name, topic_types) in topic_names_and_types:
-                msg = '{topic_name}'
+                msg = f'{topic_name}'
                 topic_types_formatted = ', '.join(topic_types)
                 if args.show_types:
-                    msg += ' [{topic_types_formatted}]'
-                print(msg.format_map(locals()))
+                    msg += f' [{topic_types_formatted}]'
+                print(msg)

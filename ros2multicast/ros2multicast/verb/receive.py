@@ -27,4 +27,4 @@ class ReceiveVerb(VerbExtension):
             pass
         else:
             data = data.decode('utf-8')
-            print("Received from {host}:{port}: '{data}'".format_map(locals()))
+            print(f"Received from {host}:{port}: '{data}'")

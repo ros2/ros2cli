@@ -106,10 +106,9 @@ def add_subparsers(
             extension = command_extensions[name]
             description += '%s  %s\n' % (
                 name.ljust(max_length), get_first_line_doc(extension))
-    metavar = 'Call `{cli_name} <command> -h` for more detailed ' \
-        'usage.'.format_map(locals())
     subparser = parser.add_subparsers(
-        title='Commands', description=description, metavar=metavar)
+        title='Commands', description=description,
+        metavar=f'Call `{cli_name} <command> -h` for more detailed usage.')
     # use a name which doesn't collide with any argument
     # but is readable when shown as part of the the usage information
     subparser.dest = ' ' + dest.lstrip('_')
@@ -125,7 +124,7 @@ def add_subparsers(
         command_parser.set_defaults(**{dest: extension})
         if hasattr(extension, 'add_arguments'):
             extension.add_arguments(
-                command_parser, '{cli_name} {name}'.format_map(locals()))
+                command_parser, f'{cli_name} {name}')
 
     return subparser
 
@@ -177,10 +176,9 @@ def add_subparsers_on_demand(
     """
     # add subparser without a description for now
     mutable_description = MutableString()
-    metavar = 'Call `{cli_name} <command> -h` for more detailed ' \
-        'usage.'.format_map(locals())
     subparser = parser.add_subparsers(
-        title='Commands', description=mutable_description, metavar=metavar)
+        title='Commands', description=mutable_description,
+        metavar=f'Call `{cli_name} <command> -h` for more detailed usage.')
     # use a name which doesn't collide with any argument
     # but is readable when shown as part of the the usage information
     subparser.dest = ' ' + dest.lstrip('_')
@@ -191,7 +189,6 @@ def add_subparsers_on_demand(
     entry_points = get_entry_points(group_name)
     command_parsers = {}
     for name in sorted(entry_points.keys()):
-        entry_point = entry_points[name]
         command_parser = subparser.add_parser(
             name,
             formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -250,8 +247,7 @@ def add_subparsers_on_demand(
             if 'argv' in signature.parameters:
                 kwargs['argv'] = argv
             extension.add_arguments(
-                command_parser, '{cli_name} {name}'.format_map(locals()),
-                **kwargs)
+                command_parser, f'{cli_name} {name}', **kwargs)
             del command_parser._root_parser
 
     return subparser

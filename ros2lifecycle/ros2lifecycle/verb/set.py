@@ -57,8 +57,7 @@ class SetVerb(VerbExtension):
             transitions = transitions[node_name]
             if isinstance(transitions, Exception):
                 return 'Exception while calling service of node ' \
-                    "'{args.node_name}': {transitions}" \
-                    .format_map(locals())
+                    f"'{args.node_name}': {transitions}"
 
             # identify requested transition
             for transition in [t.transition for t in transitions]:
@@ -72,8 +71,7 @@ class SetVerb(VerbExtension):
                     return \
                         'Unknown transition requested, available ones are:' + \
                         ''.join(
-                            '\n- {t.transition.label} [{t.transition.id}]'
-                            .format_map(locals())
+                            f'\n- {t.transition.label} [{t.transition.id}]'
                             for t in transitions)
 
             results = call_change_states(
@@ -84,8 +82,7 @@ class SetVerb(VerbExtension):
             if isinstance(result, Exception):
                 print(
                     'Exception while calling service of node '
-                    "'{args.node_name}': {result}"
-                    .format_map(locals()), file=sys.stderr)
+                    f"'{args.node_name}': {result}", file=sys.stderr)
             elif result:
                 print('Transitioning successful')
             else:

@@ -39,6 +39,6 @@ class ListVerb(VerbExtension):
         for name, types in action_names_and_types:
             if args.show_types:
                 types_formatted = ', '.join(types)
-                print('{name} [{types_formatted}]'.format_map(locals()))
+                print(f'{name} [{types_formatted}]')
             else:
-                print('{name}'.format_map(locals()))
+                print(f'{name}')

@@ -50,14 +50,14 @@ class InfoVerb(VerbExtension):
             for client_name, client_types in action_clients:
                 if args.show_types:
                     types_formatted = ', '.join(client_types)
-                    print('    {client_name} [{types_formatted}]'.format_map(locals()))
+                    print(f'    {client_name} [{types_formatted}]')
                 else:
-                    print('    {client_name}'.format_map(locals()))
+                    print(f'    {client_name}')
         print('Action servers: {}'.format(len(action_servers)))
         if not args.count:
             for server_name, server_types in action_servers:
                 if args.show_types:
                     types_formatted = ', '.join(server_types)
-                    print('    {server_name} [{types_formatted}]'.format_map(locals()))
+                    print(f'    {server_name} [{types_formatted}]')
                 else:
-                    print('    {server_name}'.format_map(locals()))
+                    print(f'    {server_name}')

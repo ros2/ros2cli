@@ -47,9 +47,7 @@ class ExecutablesVerb(VerbExtension):
             except PackageNotFound:
                 if args.package_name is None:
                     assert False, 'This should never happen'
-                raise RuntimeError(
-                    "Package '{args.package_name}' not found"
-                    .format_map(locals()))
+                raise RuntimeError(f"Package '{args.package_name}' not found")
             for path in sorted(paths):
                 if args.full_path:
                     print(path)
