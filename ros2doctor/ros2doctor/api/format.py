@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Callable
 from typing import List
 from typing import Tuple
 import warnings
@@ -46,7 +45,6 @@ def compute_padding(report_items: List[Tuple[str, str]]) -> int:
     return padding
 
 
-
 def custom_warning_format(msg, cat, filename, linenum, file=None, line=None):
     return '%s: %s: %s: %s\n' % (filename, linenum, cat.__name__, msg)
 
@@ -61,6 +59,7 @@ class CustomWarningFormat:
     def __exit__(self, t, v, trb):
         """
         Define exit action for context manager.
+
         :param t: type
         :param v: value
         :param trb: traceback

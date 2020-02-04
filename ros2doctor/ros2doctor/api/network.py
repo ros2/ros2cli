@@ -19,8 +19,8 @@ from ros2doctor.api import DoctorCheck
 from ros2doctor.api import DoctorReport
 from ros2doctor.api import Report
 from ros2doctor.api import Result
-from ros2doctor.api.format import doctor_warn
 from ros2doctor.api.format import doctor_error
+from ros2doctor.api.format import doctor_warn
 
 try:
     import ifcfg
