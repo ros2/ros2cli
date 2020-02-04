@@ -20,11 +20,12 @@ from ros2doctor.api import DoctorReport
 from ros2doctor.api import Report
 from ros2doctor.api import Result
 from ros2doctor.api.format import doctor_warn
+from ros2doctor.api.format import doctor_error
 
 try:
     import ifcfg
 except ImportError:  # check import error for windows and osx
-    doctor_warn()(
+    doctor_warn(
         'Unable to import ifcfg. '
         'Use `python3 -m pip install ifcfg` to install needed package.')
 
@@ -63,8 +64,8 @@ class NetworkCheck(DoctorCheck):
         try:
             ifcfg_ifaces = ifcfg.interfaces()
         except NameError:
-            doctor_warn()(
-                'ERROR: `ifcfg` module is not imported. '
+            doctor_error(
+                '`ifcfg` module is not imported. '
                 'Unable to run network check.')
             result.add_error()
             return result
@@ -73,20 +74,20 @@ class NetworkCheck(DoctorCheck):
         if not _is_unix_like_platform():
             if not has_loopback and not has_non_loopback:
                 # no flags found, otherwise one of them should be True.
-                doctor_warn()(
-                    'ERROR: No flags found. '
+                doctor_error(
+                    'No flags found. '
                     'Run `ipconfig` on Windows or '
                     'install `ifconfig` on Unix to check network interfaces.')
                 result.add_error()
                 return result
         if not has_loopback:
-            doctor_warn()('ERROR: No loopback IP address is found.')
+            doctor_error('No loopback IP address is found.')
             result.add_error()
         if not has_non_loopback:
-            doctor_warn()('Only loopback IP address is found.')
+            doctor_warn('Only loopback IP address is found.')
             result.add_warning()
         if not has_multicast:
-            doctor_warn()('No multicast IP address is found.')
+            doctor_warn('No multicast IP address is found.')
             result.add_warning()
         return result
 
@@ -103,7 +104,7 @@ class NetworkReport(DoctorReport):
         try:
             ifcfg_ifaces = ifcfg.interfaces()
         except NameError:
-            doctor_warn()('ERROR: ifcfg is not imported. Unable to generate network report.')
+            doctor_error('ifcfg is not imported. Unable to generate network report.')
             return Report('')
 
         network_report = Report('NETWORK CONFIGURATION')

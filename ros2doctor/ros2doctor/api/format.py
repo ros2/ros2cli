@@ -46,13 +46,43 @@ def compute_padding(report_items: List[Tuple[str, str]]) -> int:
     return padding
 
 
-def doctor_warn() -> Callable:
+
+def custom_warning_format(msg, cat, filename, linenum, file=None, line=None):
+    return '%s: %s: %s: %s\n' % (filename, linenum, cat.__name__, msg)
+
+
+class CustomWarningFormat:
+    """Support custom warning format without modifying default format."""
+
+    def __enter__(self):
+        self._default_format = warnings.formatwarning
+        warnings.formatwarning = custom_warning_format
+
+    def __exit__(self, t, v, trb):
+        """
+        Define exit action for context manager.
+        :param t: type
+        :param v: value
+        :param trb: traceback
+        """
+        warnings.formatwarning = self._default_format
+
+
+def doctor_warn(msg: str) -> None:
     """
     Print customized warning message with package and line info.
 
     :param msg: warning message to be printed
     """
-    def custom_warning_format(message, category, filename, lineno, file=None, line=None):
-        return f'{filename}:{lineno}: {category.__name__}: {message}\n'
-    warnings.formatwarning = custom_warning_format
-    return warnings.warn
+    with CustomWarningFormat():
+        warnings.warn(msg, stacklevel=2)
+
+
+def doctor_error(msg: str) -> None:
+    """
+    Print customized error message with package and line info.
+
+    :param msg: error message to be printed
+    """
+    with CustomWarningFormat():
+        warnings.warn(f'ERROR: {msg}', stacklevel=2)

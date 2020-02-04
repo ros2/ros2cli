@@ -24,6 +24,7 @@ from ros2doctor.api import DoctorReport
 from ros2doctor.api import Report
 from ros2doctor.api import Result
 from ros2doctor.api.format import doctor_warn
+from ros2doctor.api.format import doctor_error
 
 import rosdistro
 
@@ -36,24 +37,24 @@ def get_distro_package_versions() -> dict:
     """
     distro_name = os.environ.get('ROS_DISTRO')
     if not distro_name:
-        doctor_warn()('ERROR: ROS_DISTRO is not set.')
+        doctor_error('ROS_DISTRO is not set.')
         return
     distro_name = distro_name.lower()
     url = rosdistro.get_index_url()
     if not url:
-        doctor_warn()(
-            'ERROR: Unable to access ROSDISTRO_INDEX_URL or DEFAULT_INDEX_URL. '
+        doctor_error(
+            'Unable to access ROSDISTRO_INDEX_URL or DEFAULT_INDEX_URL. '
             'Check network setting to make sure machine is connected to internet.')
         return
     i = rosdistro.get_index(url)
     distro_info = rosdistro.get_distribution(i, distro_name)
     if not distro_info:
-        doctor_warn()(f'Distribution name {distro_name} is not found')
+        doctor_warn(f'Distribution name {distro_name} is not found')
         return
     try:
         repos_info = distro_info.get_data().get('repositories')
     except AttributeError:
-        doctor_warn()('No repository information found.')
+        doctor_warn('No repository information found.')
         return
     distro_package_vers = {}
     for _, info in repos_info.items():
@@ -105,29 +106,29 @@ def compare_versions(result: Result, local_packages: dict, distro_packages: dict
         local_ver = version.parse(local_ver_str).base_version
         required_ver = version.parse(required_ver_str).base_version
         if local_ver < required_ver:
-            doctor_warn()(
+            doctor_warn(
                 f'{name} has been updated to a new version.'
                 f' local: {local_ver} <'
                 f' required: {required_ver}')
             result.add_warning()
     if missing_req:
         if len(missing_req) > 100:
-            doctor_warn()(
+            doctor_warn(
                 'Cannot find required versions of packages: ' +
                 textwrap.shorten(missing_req, width=100) +
                 ' Use `ros2 doctor --report` to see full list.')
         else:
-            doctor_warn()(
+            doctor_warn(
                 'Cannot find required versions of packages: ' +
                 missing_req)
     if missing_local:
         if len(missing_local) > 100:
-            doctor_warn()(
+            doctor_warn(
                 'Cannot find local versions of packages: ' +
                 textwrap.shorten(missing_local, width=100) +
                 ' Use `ros2 doctor --report` to see full list.')
         else:
-            doctor_warn()(
+            doctor_warn(
                 'Cannot find local versions of packages: ' +
                 missing_local)
 
@@ -143,11 +144,11 @@ class PackageCheck(DoctorCheck):
         result = Result()
         distro_package_vers = get_distro_package_versions()
         if not distro_package_vers:
-            doctor_warn()('ERROR: distro packages info is not found.')
+            doctor_error('distro packages info is not found.')
             result.add_error()
         local_package_vers = get_local_package_versions()
         if not local_package_vers:
-            doctor_warn()('ERROR: local package info is not found.')
+            doctor_error('local package info is not found.')
             result.add_error()
         if result.error != 0:
             return result

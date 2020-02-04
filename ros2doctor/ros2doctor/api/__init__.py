@@ -56,7 +56,7 @@ class Report:
         self.name = name
         self.items = []
 
-    def add_to_report(self, item_name: str, item_info: str):
+    def add_to_report(self, item_name: str, item_info: str) -> None:
         """Add report content to items list (list of string tuples)."""
         self.items.append((item_name, item_info))
 
@@ -92,11 +92,11 @@ def run_checks(*, include_warnings=False) -> Tuple[Set[str], int, int]:
         try:
             check_class = check_entry_pt.load()
         except (ImportError, UnknownExtra):
-            doctor_warn()(f'Check entry point {check_entry_pt.name} fails to load.')
+            doctor_warn(f'Check entry point {check_entry_pt.name} fails to load.')
         try:
             check_instance = check_class()
         except Exception:
-            doctor_warn()(f'Unable to instantiate check object from {check_entry_pt.name}.')
+            doctor_warn(f'Unable to instantiate check object from {check_entry_pt.name}.')
         try:
             check_category = check_instance.category()
             result = check_instance.check()
@@ -105,7 +105,7 @@ def run_checks(*, include_warnings=False) -> Tuple[Set[str], int, int]:
                 fail_categories.add(check_category)
             total += 1
         except Exception:
-            doctor_warn()(f'Fail to call {check_entry_pt.name} class functions.')
+            doctor_warn(f'Fail to call {check_entry_pt.name} class functions.')
     return fail_categories, fail, total
 
 
@@ -120,11 +120,11 @@ def generate_reports(*, categories=None) -> List[Report]:
         try:
             report_class = report_entry_pt.load()
         except (ImportError, UnknownExtra):
-            doctor_warn()(f'Report entry point {report_entry_pt.name} fails to load.')
+            doctor_warn(f'Report entry point {report_entry_pt.name} fails to load.')
         try:
             report_instance = report_class()
         except Exception:
-            doctor_warn()(f'Unable to instantiate report object from {report_entry_pt.name}.')
+            doctor_warn(f'Unable to instantiate report object from {report_entry_pt.name}.')
         try:
             report_category = report_instance.category()
             report = report_instance.report()
@@ -134,5 +134,5 @@ def generate_reports(*, categories=None) -> List[Report]:
             else:
                 reports.append(report)
         except Exception:
-            doctor_warn()(f'Fail to call {report_entry_pt.name} class functions.')
+            doctor_warn(f'Fail to call {report_entry_pt.name} class functions.')
     return reports
