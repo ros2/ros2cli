@@ -94,6 +94,8 @@ class CallVerb(VerbExtension):
                 count += 1
                 time.sleep(0.1)
         except KeyboardInterrupt:
+            pass
+        finally:
             executor.shutdown()
             rclpy.shutdown()
             pub_node.destroy_node()
