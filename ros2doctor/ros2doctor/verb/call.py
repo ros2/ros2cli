@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from argparse import ArgumentTypeError
 import socket
 import struct
 import threading
@@ -66,6 +67,8 @@ class CallVerb(VerbExtension):
             help='TTL for multicast send (default: None)')
 
     def main(self, *, args):
+        global summary_table
+        summary_table = SummaryTable()
         rclpy.init()
         executor = SingleThreadedExecutor()
         pub_node = Talker(args.topic_name, args.time_period)
@@ -85,14 +88,13 @@ class CallVerb(VerbExtension):
                     summary_table.reset()
                     prev_time = time.time()
                 # multicast threads
-                send_thread = threading.Thread(target=send, args=())
+                send_thread = threading.Thread(target=_send, kwargs={'ttl': args.ttl})
                 send_thread.daemon = True
-                receive_thread = threading.Thread(target=receive, args=())
+                receive_thread = threading.Thread(target=_receive)
                 receive_thread.daemon = True
                 receive_thread.start()
                 send_thread.start()
-                count += 1
-                time.sleep(0.1)
+                time.sleep(args.time_period)
         except KeyboardInterrupt:
             pass
         finally:
@@ -105,19 +107,18 @@ class CallVerb(VerbExtension):
 class Talker(Node):
     """Initialize talker node."""
 
-    def __init__(self):
-        super().__init__('talker')
+    def __init__(self, topic, time_period, *, qos=10):
+        super().__init__('ros2doctor_talker')
         self.i = 0
-        self.pub = self.create_publisher(String, DEFAULT_TOPIC, 10)
-        time_period = 0.1
+        self.pub = self.create_publisher(String, topic, qos)
         self.timer = self.create_timer(time_period, self.timer_callback)
 
     def timer_callback(self):
         msg = String()
         hostname = socket.gethostname()
         # publish
-        msg.data = f'Publish hello from {hostname}'
-        summary_table['pub'] += 1
+        msg.data = f"hello, it's me {hostname}"
+        summary_table.increment_pub()
         self.pub.publish(msg)
         self.i += 1
 
@@ -125,41 +126,37 @@ class Talker(Node):
 class Listener(Node):
     """Initialize listener node."""
 
-    def __init__(self):
-        super().__init__('listener')
-        self.sub = self.create_subscription(String,
-                                            DEFAULT_TOPIC,
-                                            self.sub_callback,
-                                            10)
+    def __init__(self, topic, *, qos=10):
+        super().__init__('ros2doctor_listener')
+        self.sub = self.create_subscription(
+            String,
+            topic,
+            self.sub_callback,
+            qos)
 
     def sub_callback(self, msg):
         # subscribe
         msg_data = msg.data.split()
-        caller_hostname = msg_data[-1]
-        if caller_hostname != socket.gethostname():
-            if caller_hostname not in summary_table['sub']:
-                summary_table['sub'][caller_hostname] = 1
-            else:
-                summary_table['sub'][caller_hostname] += 1
+        pub_hostname = msg_data[-1]
+        if pub_hostname != socket.gethostname():
+            summary_table.increment_sub(pub_hostname)
 
 
-<<<<<<< HEAD
-def send():
-    """Multicast send."""
-=======
 def _send(*, group=DEFAULT_GROUP, port=DEFAULT_PORT, ttl=None):
     """Multicast send one message."""
->>>>>>> d283d3a... add summary table doc string
     hostname = socket.gethostname()
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+    if ttl is not None:
+        packed_ttl = struct.pack('b', ttl)
+        s.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, packed_ttl)
     try:
-        summary_table['send'] += 1
-        s.sendto(f'Multicast hello from {hostname}'.encode('utf-8'), (DEFAULT_GROUP, DEFAULT_PORT))
+        s.sendto(f"hello, it's me {hostname}".encode('utf-8'), (group, port))
+        summary_table.increment_send()
     finally:
         s.close()
 
 
-def receive():
+def _receive(*, group=DEFAULT_GROUP, port=DEFAULT_PORT, timeout=None):
     """Multicast receive."""
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
     try:
@@ -169,56 +166,24 @@ def receive():
         except AttributeError:
             # not available on Windows
             pass
-        s.bind(('', DEFAULT_PORT))
+        s.bind(('', port))
 
-        s.settimeout(None)
+        s.settimeout(timeout)
 
-        mreq = struct.pack('4sl', socket.inet_aton(DEFAULT_GROUP), socket.INADDR_ANY)
+        mreq = struct.pack('4sl', socket.inet_aton(group), socket.INADDR_ANY)
         s.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
         try:
             data, _ = s.recvfrom(4096)
             data = data.decode('utf-8')
             sender_hostname = data.split()[-1]
             if sender_hostname != socket.gethostname():
-                if sender_hostname not in summary_table['receive']:
-                    summary_table['receive'][sender_hostname] = 1
-                else:
-                    summary_table['receive'][sender_hostname] += 1
+                summary_table.increment_receive(sender_hostname)
         finally:
             s.setsockopt(socket.IPPROTO_IP, socket.IP_DROP_MEMBERSHIP, mreq)
     finally:
         s.close()
 
 
-<<<<<<< HEAD
-def _spawn_summary_table():
-    """Spawn summary table with new content after each print."""
-    summary_table['pub'] = 0
-    summary_table['sub'] = {}
-    summary_table['send'] = 0
-    summary_table['receive'] = {}
-
-
-def _format_print_helper(table):
-    """Format summary table."""
-    print('{:<15} {:<20} {:<10}'.format('', 'Hostname', 'Msg Count /2s'))
-    for name, count in table.items():
-        print('{:<15} {:<20} {:<10}'.format('', name, count))
-
-
-def format_print(summary_table):
-    """Print content in summary table."""
-    pub_count = summary_table['pub']
-    send_count = summary_table['send']
-    print('MULTIMACHINE COMMUNICATION SUMMARY')
-    print(f'Topic: {DEFAULT_TOPIC}, Published Msg Count: {pub_count}')
-    print('Subscribed from:')
-    _format_print_helper(summary_table['sub'])
-    print(f'Multicast Group/Port: {DEFAULT_GROUP}/{DEFAULT_PORT}, Sent Msg Count: {send_count}')
-    print('Received from:')
-    _format_print_helper(summary_table['receive'])
-    print('-'*60)
-=======
 class SummaryTable():
     """Summarize number of msgs published/sent and subscribed/received."""
 
@@ -293,4 +258,3 @@ class SummaryTable():
         print('Received from:')
         _format_print_summary_helper(self.receive)
         print('-'*60)
->>>>>>> d283d3a... add summary table doc string
