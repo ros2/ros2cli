@@ -52,7 +52,7 @@ setup(
             'PackageReport = ros2doctor.api.package:PackageReport',
         ],
         'ros2doctor.verb': [
-            'call = ros2doctor.verb.call:CallVerb'
+            'hello = ros2doctor.verb.hello:HelloVerb'
         ]
     }
 )

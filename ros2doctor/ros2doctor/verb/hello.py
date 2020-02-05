@@ -40,7 +40,7 @@ def positive_int(string: str) -> int:
     return value
 
 
-class CallVerb(VerbExtension):
+class HelloVerb(VerbExtension):
     """
     Check network connectivity between multiple hosts.
 
