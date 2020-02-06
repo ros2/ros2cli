@@ -52,17 +52,20 @@ class HelloVerb(VerbExtension):
 
     def add_arguments(self, parser, cli_name):
         parser.add_argument(
-            '--topic', nargs='?', default='/canyouhearme',
+            '-t', '--topic', nargs='?', default='/canyouhearme',
             help="Name of ROS topic to publish to (default: '/canyouhearme')")
         parser.add_argument(
-            '--emit-period', metavar='N', type=float, default=0.1,
+            '-rp', '--emit-period', metavar='N', type=float, default=0.1,
             help='Time period to publish/send one message (default: 0.1s)')
         parser.add_argument(
-            '--print-period', metavar='N', type=float, default=1.0,
+            '-pp', '--print-period', metavar='N', type=float, default=1.0,
             help='Time period to print summary table (default: 1.0s)')
         parser.add_argument(
             '--ttl', type=positive_int,
             help='TTL for multicast send (default: None)')
+        parser.add_argument(
+            '-1', '--once', action='store_true', default=False,
+            help='Publish and multicast send for one emit period then exit; used in test case.')
 
     def main(self, *, args):
         global summary_table
@@ -91,6 +94,8 @@ class HelloVerb(VerbExtension):
                 receive_thread.start()
                 send_thread.start()
                 time.sleep(args.emit_period)
+                if args.once:
+                    return summary_table
         except KeyboardInterrupt:
             pass
         finally:
