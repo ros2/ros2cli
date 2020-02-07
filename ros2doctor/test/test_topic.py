@@ -12,9 +12,38 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from launch import LaunchDescription
+from launch.actions import ExecuteProcess
+from launch.actions import OpaqueFunction
+
+import launch_testing.markers
+
+import pytest
+
 from ros2doctor.api import Report
 from ros2doctor.api.topic import TopicCheck
 from ros2doctor.api.topic import TopicReport
+
+
+@pytest.mark.rostest
+@launch_testing.markers.keep_alive
+def generate_test_description(ready_fn):
+    return LaunchDescription([
+        # Always restart daemon to isolate tests.
+        ExecuteProcess(
+            cmd=['ros2', 'daemon', 'stop'],
+            name='daemon-stop',
+            on_exit=[
+                ExecuteProcess(
+                    cmd=['ros2', 'daemon', 'start'],
+                    name='daemon-start',
+                    on_exit=[
+                        OpaqueFunction(function=lambda context: ready_fn())
+                    ]
+                )
+            ]
+        )
+    ])
 
 
 def test_topic_check():
