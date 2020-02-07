@@ -13,8 +13,6 @@
 # limitations under the License.
 
 from argparse import Namespace
-from contextlib import redirect_stderr
-from io import StringIO
 
 from ros2doctor.verb.hello import HelloVerb
 from ros2doctor.verb.hello import SummaryTable
@@ -37,12 +35,10 @@ def test_hello_single_host():
     args.print_period = 1.0
     args.ttl = None
     args.once = True
-    s = StringIO()
-    with redirect_stderr(s):
-        hello_verb = HelloVerb()
-        summary = hello_verb.main(args=args)
-        expected_summary = _generate_expected_summary_table()
-        assert summary._pub == expected_summary._pub
-        assert summary._sub == expected_summary._sub
-        assert summary._send == expected_summary._send
-        assert summary._receive == expected_summary._receive
+    hello_verb = HelloVerb()
+    summary = hello_verb.main(args=args)
+    expected_summary = _generate_expected_summary_table()
+    assert summary._pub == expected_summary._pub
+    assert summary._sub == expected_summary._sub
+    assert summary._send == expected_summary._send
+    assert summary._receive == expected_summary._receive

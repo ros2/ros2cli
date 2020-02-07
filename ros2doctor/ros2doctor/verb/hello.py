@@ -47,7 +47,7 @@ class HelloVerb(VerbExtension):
     This command can be invoked on multiple hosts to confirm that they can talk to each other
     by using talker/listener, multicast send/receive to check topic discovering and
     UDP communication.
-    This command outputs a summary table of msgs statistics at a custom rate(Hz).
+    This command outputs a summary table of msgs statistics at a custom period(s).
     """
 
     def add_arguments(self, parser, cli_name):
@@ -55,7 +55,7 @@ class HelloVerb(VerbExtension):
             '-t', '--topic', nargs='?', default='/canyouhearme',
             help="Name of ROS topic to publish to (default: '/canyouhearme')")
         parser.add_argument(
-            '-rp', '--emit-period', metavar='N', type=float, default=0.1,
+            '-ep', '--emit-period', metavar='N', type=float, default=0.1,
             help='Time period to publish/send one message (default: 0.1s)')
         parser.add_argument(
             '-pp', '--print-period', metavar='N', type=float, default=1.0,
