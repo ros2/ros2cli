@@ -13,12 +13,15 @@
   <exec_depend>python3-catkin-pkg-modules</exec_depend>
   <exec_depend>python3-ifcfg</exec_depend>
   <exec_depend>python3-rosdistro-modules</exec_depend>
+  <exec_depend>rclpy</exec_depend>
   
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
   <test_depend>ament_pep257</test_depend>
   <test_depend>ament_xmllint</test_depend>
   <test_depend>python3-pytest</test_depend>
+  <test_depend>ros_testing</test_depend>
+  <test_depend>std_msgs</test_depend>
 
   <export>
     <build_type>ament_python</build_type>
