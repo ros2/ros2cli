@@ -58,6 +58,18 @@ def positive_int(string):
     return value
 
 
+def str_bytes(num_bytes):
+    return f'{num_bytes:.0f} B'
+
+
+def str_kilobytes(num_bytes):
+    return f'{num_bytes/1000:.2f} KB'
+
+
+def str_megabytes(num_bytes):
+    return f'{num_bytes/1000/1000:.2f} MB'
+
+
 class BwVerb(VerbExtension):
     """Display bandwidth used by topic."""
 
@@ -123,13 +135,14 @@ class ROSTopicBandwidth(object):
         # min/max and even mean are likely to be much smaller,
         # but for now I prefer unit consistency
         if bytes_per_s < 1000:
-            bw, mean, min_s, max_s = ['%.2fB/s' % v for v in [bytes_per_s, mean, min_s, max_s]]
+            bw, mean, min_s, max_s = map(str_bytes, (bytes_per_s, mean, min_s, max_s))
         elif bytes_per_s < 1000000:
-            bw, mean, min_s, max_s = \
-                ['%.2fKB/s' % (v / 1000) for v in [bytes_per_s, mean, min_s, max_s]]
+            bw, mean, min_s, max_s = map(str_kilobytes, (bytes_per_s, mean, min_s, max_s))
         else:
-            bw, mean, min_s, max_s = \
-                ['%.2fMB/s' % (v / 1000000) for v in [bytes_per_s, mean, min_s, max_s]]
+            bw, mean, min_s, max_s = map(str_megabytes, (bytes_per_s, mean, min_s, max_s))
+
+        # Bandwidth is per second
+        bw += '/s'
 
         print('average: %s\n\tmean: %s min: %s max: %s window: %s' % (bw, mean, min_s, max_s, n))
 
