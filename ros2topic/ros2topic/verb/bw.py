@@ -81,8 +81,8 @@ class BwVerb(VerbExtension):
             include_hidden_topics_key='include_hidden_topics')
         parser.add_argument(
             '--window', '-w', type=positive_int, default=DEFAULT_WINDOW_SIZE,
-            help='window size, in # of messages, for calculating rate '
-                 '(default: %d)' % DEFAULT_WINDOW_SIZE, metavar='WINDOW')
+            help='maximum window size, in # of messages, for calculating rate '
+                 f'(default: {DEFAULT_WINDOW_SIZE})', metavar='WINDOW')
 
     def main(self, *, args):
         with DirectNode(args) as node:
@@ -164,7 +164,7 @@ def _rostopic_bw(node, topic, window_size=DEFAULT_WINDOW_SIZE):
         raw=True
     )
 
-    print('Subscribed to [%s]' % topic)
+    print(f'Subscribed to {topic}')
     timer = node.create_timer(1, rt.print_bw)
     while rclpy.ok():
         rclpy.spin_once(node)
