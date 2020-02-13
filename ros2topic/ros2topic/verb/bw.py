@@ -144,7 +144,7 @@ class ROSTopicBandwidth(object):
         # Bandwidth is per second
         bw += '/s'
 
-        print('average: %s\n\tmean: %s min: %s max: %s window: %s' % (bw, mean, min_s, max_s, n))
+        print(f'{bw} from {n} messages\n\tMessage size mean: {mean} min: {min_s} max: {max_s}')
 
 
 def _rostopic_bw(node, topic, window_size=DEFAULT_WINDOW_SIZE):
