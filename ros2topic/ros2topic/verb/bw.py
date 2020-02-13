@@ -90,7 +90,7 @@ class ROSTopicBandwidth(object):
         """Execute ros sub callback."""
         with self.lock:
             try:
-                t = time.time()
+                t = time.monotonic()
                 self.times.append(t)
                 # TODO(yechun1): Subscribing to the msgs and calculate the length may be
                 # inefficiency. To optimize here if found better solution.
@@ -109,7 +109,7 @@ class ROSTopicBandwidth(object):
             return
         with self.lock:
             n = len(self.times)
-            tn = time.time()
+            tn = time.monotonic()
             t0 = self.times[0]
 
             total = sum(self.sizes)
