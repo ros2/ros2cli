@@ -21,9 +21,11 @@ import unittest
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess
 from launch.actions import OpaqueFunction
+from launch.actions import RegisterEventHandler
 
 import launch_testing
 import launch_testing.asserts
+import launch_testing.event_handlers
 import launch_testing.markers
 import launch_testing.tools
 import launch_testing_ros.tools
@@ -41,6 +43,16 @@ def generate_test_description(rmw_implementation, ready_fn):
     path_to_action_server_executable = os.path.join(
         os.path.dirname(__file__), 'fixtures', 'fibonacci_action_server.py'
     )
+
+    fibonacci_action_server = ExecuteProcess(
+        cmd=[sys.executable, path_to_action_server_executable],
+        additional_env={
+            'RMW_IMPLEMENTATION': rmw_implementation,
+            'PYTHONUNBUFFERED': '1'
+        },
+        log_cmd=True
+    )
+
     return LaunchDescription([
         # Always restart daemon to isolate tests.
         ExecuteProcess(
@@ -51,15 +63,23 @@ def generate_test_description(rmw_implementation, ready_fn):
                     cmd=['ros2', 'daemon', 'start'],
                     name='daemon-start',
                     on_exit=[
-                        ExecuteProcess(
-                            cmd=[sys.executable, path_to_action_server_executable],
-                            additional_env={'RMW_IMPLEMENTATION': rmw_implementation}
-                        ),
-                        OpaqueFunction(function=lambda context: ready_fn())
+                        fibonacci_action_server,
                     ],
                     additional_env={'RMW_IMPLEMENTATION': rmw_implementation}
                 )
             ]
+        ),
+
+        # Wait until the fibonacci action server process has created its action server
+        # before starting the tests, otherwise they will race with the process start-up
+        RegisterEventHandler(
+            launch_testing.event_handlers.StdoutReadyListener(
+                target_action=fibonacci_action_server,
+                ready_txt='fibonacci_action_server has started',
+                actions=[
+                    OpaqueFunction(function=lambda context: ready_fn())
+                ]
+            )
         ),
     ])
 
@@ -135,7 +155,6 @@ class TestROS2ActionCLI(unittest.TestCase):
             strict=False
         )
 
-    @launch_testing.markers.retry_on_failure(times=5)
     def test_fibonacci_info(self):
         with self.launch_action_command(arguments=['info', '/fibonacci']) as action_command:
             assert action_command.wait_for_shutdown(timeout=10)

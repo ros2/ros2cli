@@ -56,6 +56,12 @@ def main(args=None):
 
     node = FibonacciActionServer()
     try:
+        # Spend up to 2 seconds doing all the work we need to have the fibonacci
+        # action server actually talking over DDS before signaling to the test it's
+        # OK to start
+        for _ in range(20):
+            rclpy.spin_once(node, timeout_sec=0.1)
+        print('fibonacci_action_server has started')
         rclpy.spin(node)
     except KeyboardInterrupt:
         print('server stopped cleanly')
