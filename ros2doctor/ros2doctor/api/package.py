@@ -51,7 +51,7 @@ def get_distro_package_versions() -> dict:
                     distro_package_vers[package] = ver
             else:
                 distro_package_vers[package_name] = ver
-        except KeyError as e:
+        except KeyError:
             pass
     return distro_package_vers
 
