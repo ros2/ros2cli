@@ -20,6 +20,7 @@ from ros2doctor.api import DoctorCheck
 from ros2doctor.api import DoctorReport
 from ros2doctor.api import Report
 from ros2doctor.api import Result
+from ros2doctor.api.format import doctor_error
 from ros2doctor.api.format import doctor_warn
 
 import rosdistro
@@ -33,20 +34,24 @@ def _check_platform_helper() -> Tuple[str, dict, dict]:
     """
     distro_name = os.environ.get('ROS_DISTRO')
     if not distro_name:
-        doctor_warn('ROS_DISTRO is not set.')
+        doctor_error('ROS_DISTRO is not set.')
         return
-    else:
-        distro_name = distro_name.lower()
+    distro_name = distro_name.lower()
     u = rosdistro.get_index_url()
     if not u:
-        doctor_warn('Unable to access ROSDISTRO_INDEX_URL or DEFAULT_INDEX_URL.')
+        doctor_error(
+            'Unable to access ROSDISTRO_INDEX_URL or DEFAULT_INDEX_URL. '
+            'Check network setting to make sure machine is connected to internet.')
         return
     i = rosdistro.get_index(u)
     distro_info = i.distributions.get(distro_name)
     if not distro_info:
-        doctor_warn("Distribution name '%s' is not found" % distro_name)
+        doctor_warn(f'Distribution name {distro_name} is not found')
         return
-    distro_data = rosdistro.get_distribution(i, distro_name).get_data()
+    try:
+        distro_data = rosdistro.get_distribution(i, distro_name).get_data()
+    except AttributeError:
+        distro_data = ''
     return distro_name, distro_info, distro_data
 
 
@@ -61,19 +66,24 @@ class PlatformCheck(DoctorCheck):
         result = Result()
         distros = _check_platform_helper()
         if not distros:
-            result.add_error('ERROR: Missing rosdistro info. Unable to check platform.')
+            doctor_error('Missing rosdistro info. Unable to check platform.')
+            result.add_error()
             return result
         distro_name, distro_info, _ = distros
 
         # check distro status
         if distro_info.get('distribution_status') == 'prerelease':
-            result.add_warning('Distribution %s is not fully supported or tested. '
-                               'To get more consistent features, download a stable version at '
-                               'https://index.ros.org/doc/ros2/Installation/' % distro_name)
+            doctor_warn(
+                f'Distribution {distro_name} is not fully supported or tested. '
+                'To get more consistent features, download a stable version at '
+                'https://index.ros.org/doc/ros2/Installation/')
+            result.add_warning()
         elif distro_info.get('distribution_status') == 'end-of-life':
-            result.add_warning('Distribution %s is no longer supported or deprecated. '
-                               'To get the latest features, download the new versions at '
-                               'https://index.ros.org/doc/ros2/Installation/' % distro_name)
+            doctor_warn(
+                f'Distribution {distro_name} is no longer supported or deprecated. '
+                'To get the latest features, download the new versions at '
+                'https://index.ros.org/doc/ros2/Installation/')
+            result.add_warning()
         return result
 
 
