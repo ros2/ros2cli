@@ -57,13 +57,16 @@ def get_distro_package_versions() -> dict:
         doctor_warn('No repository information found.')
         return
     distro_package_vers = {}
-    for _, info in repos_info.items():
+    for package_name, info in repos_info.items():
         try:
             release = info['release']
-            packages = release['packages']
             ver = release.get('version')
-            for p in packages:
-                distro_package_vers[p] = ver
+            if 'packages' in release:
+                # Metapackage
+                for package in release['packages']:
+                    distro_package_vers[package] = ver
+            else:
+                distro_package_vers[package_name] = ver
         except KeyError:
             pass
     return distro_package_vers
