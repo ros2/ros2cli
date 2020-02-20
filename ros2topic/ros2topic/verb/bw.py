@@ -164,7 +164,7 @@ def _rostopic_bw(node, topic, window_size=DEFAULT_WINDOW_SIZE):
         raw=True
     )
 
-    print(f'Subscribed to {topic}')
+    print(f'Subscribed to [{topic}]')
     timer = node.create_timer(1, rt.print_bw)
     while rclpy.ok():
         rclpy.spin_once(node)
