@@ -33,7 +33,7 @@ import launch_testing_ros.tools
 
 import pytest
 
-from rmw_implementation import get_available_rmw_implementations
+from rmw_implementation_python import get_available_rmw_implementations
 
 from test_msgs.srv import BasicTypes
 
