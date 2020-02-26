@@ -28,7 +28,7 @@ import launch_testing_ros.tools
 
 import pytest
 
-from rmw_implementation import get_available_rmw_implementations
+import ament_index_python
 
 
 ALL_LIFECYCLE_NODE_TRANSITIONS = [
@@ -111,7 +111,9 @@ ALL_LIFECYCLE_NODE_TRANSITIONS = [
 
 
 @pytest.mark.rostest
-@launch_testing.parametrize('rmw_implementation', get_available_rmw_implementations())
+@launch_testing.parametrize('rmw_implementation',
+                            {name for name in ament_index_python.get_resources('rmw_typesupport')
+                             if name != 'rmw_implementation'})
 def generate_test_description(rmw_implementation):
     additional_env = {'RMW_IMPLEMENTATION': rmw_implementation}
     return LaunchDescription([

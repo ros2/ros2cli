@@ -30,13 +30,15 @@ import launch_testing_ros.tools
 
 import pytest
 
-from rmw_implementation import get_available_rmw_implementations
+import ament_index_python
 
 import yaml
 
 
 @pytest.mark.rostest
-@launch_testing.parametrize('rmw_implementation', get_available_rmw_implementations())
+@launch_testing.parametrize('rmw_implementation',
+                            {name for name in ament_index_python.get_resources('rmw_typesupport')
+                             if name != 'rmw_implementation'})
 def generate_test_description(rmw_implementation, ready_fn):
     path_to_action_server_executable = os.path.join(
         os.path.dirname(__file__), 'fixtures', 'fibonacci_action_server.py'
