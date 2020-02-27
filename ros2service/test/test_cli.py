@@ -130,7 +130,7 @@ class TestROS2ServiceCLI(unittest.TestCase):
                 yield service_command
         cls.launch_service_command = launch_service_command
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_list_services(self):
         with self.launch_service_command(arguments=['list']) as service_command:
             assert service_command.wait_for_shutdown(timeout=10)
@@ -146,7 +146,7 @@ class TestROS2ServiceCLI(unittest.TestCase):
             strict=True
         )
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_list_hidden(self):
         with self.launch_service_command(
             arguments=['--include-hidden-services', 'list']
@@ -168,7 +168,7 @@ class TestROS2ServiceCLI(unittest.TestCase):
             strict=True
         )
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_list_with_types(self):
         with self.launch_service_command(arguments=['list', '-t']) as service_command:
             assert service_command.wait_for_shutdown(timeout=10)
@@ -185,7 +185,7 @@ class TestROS2ServiceCLI(unittest.TestCase):
             strict=True
         )
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_list_count(self):
         with self.launch_service_command(arguments=['list', '-c']) as service_command:
             assert service_command.wait_for_shutdown(timeout=10)
@@ -194,7 +194,7 @@ class TestROS2ServiceCLI(unittest.TestCase):
         assert len(output_lines) == 1
         assert int(output_lines[0]) == 7 + 6  # cope with launch_ros internal node.
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_find(self):
         with self.launch_service_command(
             arguments=['find', 'test_msgs/srv/BasicTypes']
@@ -207,7 +207,7 @@ class TestROS2ServiceCLI(unittest.TestCase):
             strict=True
         )
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_find_hidden(self):
         with self.launch_service_command(
             arguments=['find', '--include-hidden-services', 'test_msgs/srv/BasicTypes']
@@ -220,7 +220,7 @@ class TestROS2ServiceCLI(unittest.TestCase):
             strict=True
         )
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_find_count(self):
         with self.launch_service_command(
             arguments=['find', '-c', 'test_msgs/srv/BasicTypes']
@@ -259,7 +259,7 @@ class TestROS2ServiceCLI(unittest.TestCase):
         assert service_command.exit_code == 1
         assert service_command.output == ''
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_call_no_args(self):
         with self.launch_service_command(
             arguments=['call', '/my_ns/echo', 'test_msgs/srv/BasicTypes']
@@ -272,7 +272,7 @@ class TestROS2ServiceCLI(unittest.TestCase):
             strict=True
         )
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_call(self):
         with self.launch_service_command(
             arguments=[
@@ -295,7 +295,7 @@ class TestROS2ServiceCLI(unittest.TestCase):
             strict=True
         )
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_repeated_call(self):
         with self.launch_service_command(
             arguments=[

@@ -107,7 +107,7 @@ class TestROS2NodeCLI(unittest.TestCase):
                 yield node_command
         cls.launch_node_command = launch_node_command
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_list_nodes(self):
         with self.launch_node_command(arguments=['list']) as node_command:
             assert node_command.wait_for_shutdown(timeout=10)
@@ -118,7 +118,7 @@ class TestROS2NodeCLI(unittest.TestCase):
             strict=True
         )
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_list_all_nodes(self):
         with self.launch_node_command(arguments=['list', '-a']) as node_command:
             assert node_command.wait_for_shutdown(timeout=10)
@@ -132,7 +132,7 @@ class TestROS2NodeCLI(unittest.TestCase):
             strict=True
         )
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_list_node_count(self):
         with self.launch_node_command(arguments=['list', '-c']) as node_command:
             assert node_command.wait_for_shutdown(timeout=10)
@@ -142,7 +142,7 @@ class TestROS2NodeCLI(unittest.TestCase):
         # Fixture nodes that are not hidden plus launch_ros node.
         assert int(output_lines[0]) == 2
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_list_all_nodes_count(self):
         with self.launch_node_command(arguments=['list', '-c', '-a']) as node_command:
             assert node_command.wait_for_shutdown(timeout=10)
@@ -152,7 +152,7 @@ class TestROS2NodeCLI(unittest.TestCase):
         # All fixture nodes plus launch_ros and ros2cli daemon nodes.
         assert int(output_lines[0]) == 4
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_info_node(self):
         with self.launch_node_command(arguments=['info', '/complex_node']) as node_command:
             assert node_command.wait_for_shutdown(timeout=10)
@@ -182,7 +182,7 @@ class TestROS2NodeCLI(unittest.TestCase):
             text=node_command.output, strict=False
         ), 'Output does not match:\n' + node_command.output
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_info_hidden_node_no_hidden_flag(self):
         with self.launch_node_command(arguments=['info', '/_hidden_complex_node']) as node_command:
             assert node_command.wait_for_shutdown(timeout=10)
@@ -192,7 +192,7 @@ class TestROS2NodeCLI(unittest.TestCase):
             text=node_command.output, strict=True
         )
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_info_hidden_node_hidden_flag(self):
         with self.launch_node_command(
             arguments=['info', '/_hidden_complex_node', '--include-hidden']

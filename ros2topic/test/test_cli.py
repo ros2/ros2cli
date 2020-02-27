@@ -180,7 +180,7 @@ class TestROS2TopicCLI(unittest.TestCase):
             output_filter=rmw_implementation_filter
         )
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_list_topics(self):
         with self.launch_topic_command(arguments=['list']) as topic_command:
             assert topic_command.wait_for_shutdown(timeout=10)
@@ -201,7 +201,7 @@ class TestROS2TopicCLI(unittest.TestCase):
             strict=True
         )
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_list_all_topics(self):
         with self.launch_topic_command(
             arguments=['list', '--include-hidden-topics']
@@ -225,7 +225,7 @@ class TestROS2TopicCLI(unittest.TestCase):
             strict=True
         )
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_list_with_types(self):
         with self.launch_topic_command(arguments=['list', '-t']) as topic_command:
             assert topic_command.wait_for_shutdown(timeout=10)
@@ -246,7 +246,7 @@ class TestROS2TopicCLI(unittest.TestCase):
             strict=True
         )
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_list_count(self):
         with self.launch_topic_command(arguments=['list', '-c']) as topic_command:
             assert topic_command.wait_for_shutdown(timeout=10)
@@ -255,7 +255,7 @@ class TestROS2TopicCLI(unittest.TestCase):
         assert len(output_lines) == 1
         assert int(output_lines[0]) == 9
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_endpoint_info(self):
         with self.launch_topic_command(arguments=['info', '/chatter']) as topic_command:
             assert topic_command.wait_for_shutdown(timeout=10)
@@ -311,7 +311,7 @@ class TestROS2TopicCLI(unittest.TestCase):
             strict=True
         )
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_type(self):
         with self.launch_topic_command(arguments=['type', '/chatter']) as topic_command:
             assert topic_command.wait_for_shutdown(timeout=10)
@@ -322,7 +322,7 @@ class TestROS2TopicCLI(unittest.TestCase):
             strict=True
         )
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_hidden_topic_type(self):
         with self.launch_topic_command(
             arguments=['type', '/_hidden_chatter']
@@ -331,7 +331,7 @@ class TestROS2TopicCLI(unittest.TestCase):
         assert topic_command.exit_code == 1
         assert topic_command.output == ''
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_find_topic_type(self):
         with self.launch_topic_command(
             arguments=['find', 'rcl_interfaces/msg/Log']
@@ -350,7 +350,7 @@ class TestROS2TopicCLI(unittest.TestCase):
         assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
         assert not topic_command.output
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_echo(self):
         with self.launch_topic_command(
             arguments=['echo', '/chatter']
@@ -363,7 +363,7 @@ class TestROS2TopicCLI(unittest.TestCase):
             ), timeout=10)
         assert topic_command.wait_for_shutdown(timeout=10)
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_no_str_topic_echo(self):
         with self.launch_topic_command(
             arguments=['echo', '--no-str', '/chatter']
@@ -376,7 +376,7 @@ class TestROS2TopicCLI(unittest.TestCase):
             ), timeout=10)
         assert topic_command.wait_for_shutdown(timeout=10)
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_csv_topic_echo(self):
         with self.launch_topic_command(
             arguments=['echo', '--csv', '/defaults']
@@ -388,7 +388,7 @@ class TestROS2TopicCLI(unittest.TestCase):
             ), timeout=10)
         assert topic_command.wait_for_shutdown(timeout=10)
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_no_arr_topic_echo_on_array_message(self):
         with self.launch_topic_command(
             arguments=['echo', '--no-arr', '/arrays'],
@@ -432,7 +432,7 @@ class TestROS2TopicCLI(unittest.TestCase):
             ), timeout=10), 'Output does not match: ' + topic_command.output
         assert topic_command.wait_for_shutdown(timeout=10)
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_no_arr_topic_echo_on_seq_message(self):
         with self.launch_topic_command(
             arguments=['echo', '--no-arr', '/unbounded_sequences'],
@@ -476,7 +476,7 @@ class TestROS2TopicCLI(unittest.TestCase):
             ), timeout=10)
         assert topic_command.wait_for_shutdown(timeout=10)
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_no_arr_topic_echo_on_bounded_seq_message(self):
         with self.launch_topic_command(
             arguments=['echo', '--no-arr', '/bounded_sequences'],
@@ -521,7 +521,7 @@ class TestROS2TopicCLI(unittest.TestCase):
             ), timeout=10)
         assert topic_command.wait_for_shutdown(timeout=10)
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_truncate_length_topic_echo(self):
         with self.launch_topic_command(
             arguments=['echo', '--truncate-length', '5', '/chatter'],
@@ -602,7 +602,7 @@ class TestROS2TopicCLI(unittest.TestCase):
             ), timeout=10)
         assert topic_command.wait_for_shutdown(timeout=10)
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_delay(self):
         average_delay_line_pattern = re.compile(r'average delay: (\d+.\d{3})')
         stats_line_pattern = re.compile(
@@ -620,7 +620,7 @@ class TestROS2TopicCLI(unittest.TestCase):
         average_delay = float(average_delay_line_pattern.match(head_line).group(1))
         assert math.isclose(average_delay, 0.0, abs_tol=10e-3)
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_hz(self):
         average_rate_line_pattern = re.compile(r'average rate: (\d+.\d{3})')
         stats_line_pattern = re.compile(
@@ -638,7 +638,7 @@ class TestROS2TopicCLI(unittest.TestCase):
         average_rate = float(average_rate_line_pattern.match(head_line).group(1))
         assert math.isclose(average_rate, 1., rel_tol=1e-3)
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_filtered_topic_hz(self):
         average_rate_line_pattern = re.compile(r'average rate: (\d+.\d{3})')
         stats_line_pattern = re.compile(
@@ -663,7 +663,7 @@ class TestROS2TopicCLI(unittest.TestCase):
         average_rate = float(average_rate_line_pattern.match(head_line).group(1))
         assert math.isclose(average_rate, 0.5, rel_tol=1e-3)
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_bw(self):
         with self.launch_topic_command(arguments=['bw', '/defaults']) as topic_command:
             assert topic_command.wait_for_output(functools.partial(
