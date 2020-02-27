@@ -25,6 +25,12 @@ class InfoVerb(VerbExtension):
         arg = parser.add_argument(
             'topic_name',
             help="Name of the ROS topic to get info (e.g. '/chatter')")
+        parser.add_argument(
+            '--verbose',
+            '-v',
+            action='store_true',
+            help='Prints detailed information like the node name, node namespace, topic type, '
+                 'GUID and QoS Profile of the publishers and subscribers to this topic')
         arg.completer = TopicNameCompleter(
             include_hidden_topics_key='include_hidden_topics')
 
@@ -39,7 +45,26 @@ class InfoVerb(VerbExtension):
                     break
             else:
                 return "Unknown topic '%s'" % topic_name
+
+            line_end = '\n'
+            if args.verbose:
+                line_end = '\n\n'
+
             type_str = topic_types[0] if len(topic_types) == 1 else topic_types
-            print('Type: %s' % type_str)
-            print('Publisher count: %d' % node.count_publishers(topic_name))
-            print('Subscriber count: %d' % node.count_subscribers(topic_name))
+            print('Type: %s' % type_str, end=line_end)
+
+            print('Publisher count: %d' % node.count_publishers(topic_name), end=line_end)
+            if args.verbose:
+                try:
+                    for info in node.get_publishers_info_by_topic(topic_name):
+                        print(info, end=line_end)
+                except NotImplementedError as e:
+                    return str(e)
+
+            print('Subscription count: %d' % node.count_subscribers(topic_name))
+            if args.verbose:
+                try:
+                    for info in node.get_subscriptions_info_by_topic(topic_name):
+                        print(info, end=line_end)
+                except NotImplementedError as e:
+                    return str(e)

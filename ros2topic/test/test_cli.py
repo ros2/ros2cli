@@ -256,7 +256,7 @@ class TestROS2TopicCLI(unittest.TestCase):
         assert int(output_lines[0]) == 9
 
     @launch_testing.markers.retry_on_failure(times=5)
-    def test_topic_info(self):
+    def test_topic_endpoint_info(self):
         with self.launch_topic_command(arguments=['info', '/chatter']) as topic_command:
             assert topic_command.wait_for_shutdown(timeout=10)
         assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
@@ -264,7 +264,37 @@ class TestROS2TopicCLI(unittest.TestCase):
             expected_lines=[
                 'Type: std_msgs/msg/String',
                 'Publisher count: 1',
-                'Subscriber count: 0'
+                'Subscription count: 0'
+            ],
+            text=topic_command.output,
+            strict=True
+        )
+
+    @launch_testing.markers.retry_on_failure(times=5)
+    def test_topic_endpoint_info_verbose(self):
+        with self.launch_topic_command(arguments=['info', '-v', '/chatter']) as topic_command:
+            assert topic_command.wait_for_shutdown(timeout=10)
+        assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=[
+                'Type: std_msgs/msg/String',
+                '',
+                'Publisher count: 1',
+                '',
+                re.compile(r'Node name: \w+'),
+                'Node namespace: /',
+                'Topic type: std_msgs/msg/String',
+                re.compile(r'Endpoint type: (INVALID|PUBLISHER|SUBSCRIPTION)'),
+                re.compile(r'GID: [\w\.]+'),
+                'QoS profile:',
+                re.compile(r'  Reliability: RMW_QOS_POLICY_RELIABILITY_\w+'),
+                re.compile(r'  Durability: RMW_QOS_POLICY_DURABILITY_\w+'),
+                re.compile(r'  Lifespan: \d+ nanoseconds'),
+                re.compile(r'  Deadline: \d+ nanoseconds'),
+                re.compile(r'  Liveliness: RMW_QOS_POLICY_LIVELINESS_\w+'),
+                re.compile(r'  Liveliness lease duration: \d+ nanoseconds'),
+                '',
+                'Subscription count: 0'
             ],
             text=topic_command.output,
             strict=True
@@ -517,7 +547,7 @@ class TestROS2TopicCLI(unittest.TestCase):
             ), timeout=10)
             assert self.listener_node.wait_for_output(functools.partial(
                 launch_testing.tools.expect_output, expected_lines=[
-                    re.compile(r'\[INFO\] \[\d+.\d*\] \[listener\]: I heard: \[foo\]')
+                    re.compile(r'\[INFO\] \[\d+\.\d*\] \[listener\]: I heard: \[foo\]')
                 ] * 3, strict=False
             ), timeout=10)
         assert topic_command.wait_for_shutdown(timeout=10)
@@ -541,7 +571,7 @@ class TestROS2TopicCLI(unittest.TestCase):
             assert topic_command.wait_for_shutdown(timeout=10)
             assert self.listener_node.wait_for_output(functools.partial(
                 launch_testing.tools.expect_output, expected_lines=[
-                    re.compile(r'\[INFO\] \[\d+.\d*\] \[listener\]: I heard: \[bar\]')
+                    re.compile(r'\[INFO\] \[\d+\.\d*\] \[listener\]: I heard: \[bar\]')
                 ], strict=False
             ), timeout=10)
         assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
@@ -567,7 +597,7 @@ class TestROS2TopicCLI(unittest.TestCase):
             ), timeout=10), 'Output does not match: ' + topic_command.output
             assert self.listener_node.wait_for_output(functools.partial(
                 launch_testing.tools.expect_output, expected_lines=[
-                    re.compile(r'\[INFO\] \[\d+.\d*\] \[listener\]: I heard: \[fizz\]')
+                    re.compile(r'\[INFO\] \[\d+\.\d*\] \[listener\]: I heard: \[fizz\]')
                 ], strict=False
             ), timeout=10)
         assert topic_command.wait_for_shutdown(timeout=10)
