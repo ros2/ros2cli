@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import sys
 
 from ros2cli.node.direct import DirectNode
 from ros2cli.node.strategy import add_arguments
@@ -22,6 +23,7 @@ from ros2node.api import get_publisher_info
 from ros2node.api import get_service_client_info
 from ros2node.api import get_service_server_info
 from ros2node.api import get_subscriber_info
+from ros2node.api import INFO_NONUNIQUE_WARNING_TEMPLATE
 from ros2node.api import NodeNameCompleter
 from ros2node.verb import VerbExtension
 
@@ -48,9 +50,9 @@ class InfoVerb(VerbExtension):
             node_names = get_node_names(node=node, include_hidden_nodes=args.include_hidden)
         count = [n.full_name for n in node_names].count(args.node_name)
         if count > 1:
-            print('# WARNING: There are {} nodes in the graph with this exact name "{}". '
-                  'You are seeing information about only one of them.'.format(
-                    count, args.node_name))
+            print(
+                INFO_NONUNIQUE_WARNING_TEMPLATE.format(num_nodes=count, node_name=args.node_name),
+                file=sys.stderr)
         if count > 0:
             with DirectNode(args) as node:
                 print(args.node_name)

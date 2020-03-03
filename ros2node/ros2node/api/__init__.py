@@ -19,6 +19,10 @@ from rclpy.action.graph import get_action_server_names_and_types_by_node
 from rclpy.node import HIDDEN_NODE_PREFIX
 from ros2cli.node.strategy import NodeStrategy
 
+INFO_NONUNIQUE_WARNING_TEMPLATE = (
+    'There are {num_nodes} nodes in the graph with the exact name "{node_name}". '
+    'You are seeing information about only one of them.'
+)
 
 NodeName = namedtuple('NodeName', ('name', 'namespace', 'full_name'))
 TopicInfo = namedtuple('Topic', ('name', 'types'))
