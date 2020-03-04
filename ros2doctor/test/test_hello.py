@@ -26,7 +26,7 @@ from ros2doctor.verb.hello import HelloVerb
 from ros2doctor.verb.hello import SummaryTable
 
 
-@pytest.mark.rostest
+@pytest.mark.launch_test
 @launch_testing.markers.keep_alive
 def generate_test_description():
     return LaunchDescription([
