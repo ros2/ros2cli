@@ -36,7 +36,7 @@ some_cli_packages = [
 ]
 
 
-@pytest.mark.rostest
+@pytest.mark.launch_test
 @launch_testing.markers.keep_alive
 def generate_test_description(ready_fn):
     return LaunchDescription([OpaqueFunction(function=lambda context: ready_fn())])

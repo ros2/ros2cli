@@ -54,7 +54,7 @@ def get_echo_call_output(**kwargs):
     ]
 
 
-@pytest.mark.rostest
+@pytest.mark.launch_test
 @launch_testing.parametrize('rmw_implementation', get_available_rmw_implementations())
 def generate_test_description(rmw_implementation, ready_fn):
     path_to_echo_server_script = os.path.join(

@@ -35,7 +35,7 @@ from rclpy.utilities import get_available_rmw_implementations
 import yaml
 
 
-@pytest.mark.rostest
+@pytest.mark.launch_test
 @launch_testing.parametrize('rmw_implementation', get_available_rmw_implementations())
 def generate_test_description(rmw_implementation, ready_fn):
     path_to_action_server_executable = os.path.join(

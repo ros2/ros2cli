@@ -110,7 +110,7 @@ ALL_LIFECYCLE_NODE_TRANSITIONS = [
 ]
 
 
-@pytest.mark.rostest
+@pytest.mark.launch_test
 @launch_testing.parametrize('rmw_implementation', get_available_rmw_implementations())
 def generate_test_description(rmw_implementation):
     additional_env = {'RMW_IMPLEMENTATION': rmw_implementation}
