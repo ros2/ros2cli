@@ -31,7 +31,7 @@ import launch_testing_ros.tools
 
 import pytest
 
-from rmw_implementation import get_available_rmw_implementations
+from rclpy.utilities import get_available_rmw_implementations
 from ros2node.api import INFO_NONUNIQUE_WARNING_TEMPLATE
 
 
