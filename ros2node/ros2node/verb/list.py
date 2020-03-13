@@ -12,9 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import sys
+
 from ros2cli.node.strategy import add_arguments
 from ros2cli.node.strategy import NodeStrategy
 from ros2node.api import get_node_names
+from ros2node.api import has_duplicates
 from ros2node.verb import VerbExtension
 
 
@@ -37,4 +40,8 @@ class ListVerb(VerbExtension):
         if args.count_nodes:
             print(len(node_names))
         elif node_names:
-            print(*sorted(n.full_name for n in node_names), sep='\n')
+            sorted_names = sorted(n.full_name for n in node_names)
+            if has_duplicates(sorted_names):
+                print('WARNING: Be aware that are nodes in the graph that share an exact name, '
+                      'this can have unintended side effects.', file=sys.stderr)
+            print(*sorted_names, sep='\n')
