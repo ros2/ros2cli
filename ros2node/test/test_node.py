@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from ros2node.api import has_duplicates
 from ros2node.api import parse_node_name
 
 
@@ -34,3 +35,11 @@ def test_parse_node_name():
     assert name.full_name == '/ns/talker'
     assert name.namespace == '/ns'
     assert name.name == 'talker'
+
+
+def test_has_duplicates():
+    assert not has_duplicates([])
+    assert not has_duplicates(['ns_foo/foo', 'ns_foo/bar'])
+    assert has_duplicates(['ns_foo/foo'] * 2)
+    assert has_duplicates(['ns_foo/foo'] * 3)
+    assert has_duplicates(['ns_foo/foo', 'ns_foo/foo', 'ns_foo/bar'])
