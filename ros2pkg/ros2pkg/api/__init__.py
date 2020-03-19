@@ -41,17 +41,22 @@ def get_executable_paths(*, package_name):
     prefix_path = get_prefix_path(package_name)
     if prefix_path is None:
         raise PackageNotFound(package_name)
-    base_path = os.path.join(prefix_path, 'lib', package_name)
+    base_paths = [
+        os.path.join(prefix_path, 'lib', package_name),
+        os.path.join(prefix_path, 'usr', 'lib', package_name),
+        os.path.join(prefix_path, 'usr', 'libexec', package_name),
+    ]
     executable_paths = []
-    for dirpath, dirnames, filenames in os.walk(base_path):
-        # ignore folder starting with .
-        dirnames[:] = [d for d in dirnames if d[0] not in ['.']]
-        dirnames.sort()
-        # select executable files
-        for filename in sorted(filenames):
-            path = os.path.join(dirpath, filename)
-            if os.access(path, os.X_OK):
-                executable_paths.append(path)
+    for base_path in base_paths:
+        for dirpath, dirnames, filenames in os.walk(base_path):
+            # ignore folder starting with .
+            dirnames[:] = [d for d in dirnames if d[0] not in ['.']]
+            dirnames.sort()
+            # select executable files
+            for filename in sorted(filenames):
+                path = os.path.join(dirpath, filename)
+                if os.access(path, os.X_OK):
+                    executable_paths.append(path)
     return executable_paths
 
 
