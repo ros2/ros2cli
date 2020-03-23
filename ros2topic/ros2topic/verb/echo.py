@@ -75,7 +75,7 @@ class EchoVerb(VerbExtension):
         parser.add_argument(
             '--lost-messages', action='store_true', help='Report when a message is lost')
         parser.add_argument(
-            '--raw', action='store_true', help="Echo the raw binary representation")
+            '--raw', action='store_true', help='Echo the raw binary representation')
 
     def main(self, *, args):
         return main(args)
