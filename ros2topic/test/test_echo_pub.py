@@ -342,7 +342,7 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                 command.wait_for_shutdown(timeout=10)
                 # Check results
                 assert command.output, 'Echo CLI printed no output'
-                assert 'data: hello' in command.output.splitlines(), (
+                assert 'AAEAAAYAAABoZWxsbwAAAA==' in command.output.splitlines(), (
                     'Echo CLI did not print expected message'
                 )
         finally:
