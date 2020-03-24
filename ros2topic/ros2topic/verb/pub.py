@@ -18,6 +18,7 @@ from typing import TypeVar
 
 import rclpy
 from rclpy.node import Node
+from rclpy.qos import qos_policy_name_from_kind
 from rclpy.qos import QoSProfile
 from ros2cli.node.direct import DirectNode
 from ros2topic.api import add_qos_arguments_to_argument_parser
@@ -91,12 +92,8 @@ def main(args):
             args.once,
             qos_profile)
 
-def handleIncompatibleQoSEvent(event):
-    incompatible_qos_name = 'unknown'
-    if event.last_policy_id == 11:
-        incompatible_qos_name = 'RELIABILITY_QOS_POLICY'
-    elif event.last_policy_id == 2:
-        incompatible_qos_name = 'DURABILITY_QOS_POLICY'
+def handle_incompatible_qos_event(event):
+    incompatible_qos_name = qos_policy_name_from_kind(event.last_policy_kind)
     print('Incompatible QoS Policy detected: {name}'.format(name=incompatible_qos_name))
 
 def publisher(
@@ -116,8 +113,12 @@ def publisher(
         return 'The passed value needs to be a dictionary in YAML format'
 
     publisher_callbacks = PublisherEventCallbacks(
-        incompatible_qos=lambda event: handleIncompatibleQoSEvent(event))
-    pub = node.create_publisher(msg_module, topic_name, qos_profile, event_callbacks=publisher_callbacks)
+        incompatible_qos=lambda event: handle_incompatible_qos_event(event))
+    try:
+        pub = node.create_publisher(
+            msg_module, topic_name, qos_profile, event_callbacks=publisher_callbacks)
+    except UnsupportedEventTypeException:
+        pub = node.create_publisher(msg_module, topic_name, qos_profile)
 
     msg = msg_module()
     try:
