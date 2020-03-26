@@ -61,7 +61,7 @@ class InfoVerb(VerbExtension):
                 except NotImplementedError as e:
                     return str(e)
 
-            print('Subscription count: %d' % node.count_subscribers(topic_name), end=line_end)
+            print('Subscription count: %d' % node.count_subscribers(topic_name))
             if args.verbose:
                 try:
                     for info in node.get_subscriptions_info_by_topic(topic_name):
