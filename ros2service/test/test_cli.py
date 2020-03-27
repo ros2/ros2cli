@@ -192,7 +192,7 @@ class TestROS2ServiceCLI(unittest.TestCase):
         assert service_command.exit_code == launch_testing.asserts.EXIT_OK
         output_lines = service_command.output.splitlines()
         assert len(output_lines) == 1
-        assert int(output_lines[0]) == 7 + 6  # cope with launch_ros internal node.
+        assert int(output_lines[0]) == 7
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_find(self):

@@ -139,8 +139,8 @@ class TestROS2NodeCLI(unittest.TestCase):
         assert node_command.exit_code == launch_testing.asserts.EXIT_OK
         output_lines = node_command.output.splitlines()
         assert len(output_lines) == 1
-        # Fixture nodes that are not hidden plus launch_ros node.
-        assert int(output_lines[0]) == 2
+        # Fixture nodes that are not hidden.
+        assert int(output_lines[0]) == 1
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_list_all_nodes_count(self):
@@ -149,8 +149,8 @@ class TestROS2NodeCLI(unittest.TestCase):
         assert node_command.exit_code == launch_testing.asserts.EXIT_OK
         output_lines = node_command.output.splitlines()
         assert len(output_lines) == 1
-        # All fixture nodes plus launch_ros and ros2cli daemon nodes.
-        assert int(output_lines[0]) == 4
+        # All fixture nodes plus ros2cli daemon node.
+        assert int(output_lines[0]) == 3
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_info_node(self):
