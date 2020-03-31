@@ -99,9 +99,11 @@ def main(args):
         subscriber(
             node.node, args.topic_name, args.message_type, callback, qos_profile)
 
+
 def handle_incompatible_qos_event(event):
     incompatible_qos_name = qos_policy_name_from_kind(event.last_policy_kind)
     print(f'Incompatible QoS Policy detected: {incompatible_qos_name}')
+
 
 def subscriber(
     node: Node,
