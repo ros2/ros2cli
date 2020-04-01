@@ -18,6 +18,9 @@ from typing import Callable
 from typing import Optional
 from typing import TypeVar
 
+import posix_ipc
+import time
+
 import rclpy
 from rclpy.expand_topic_name import expand_topic_name
 from rclpy.node import Node
@@ -152,6 +155,12 @@ def subscriber(
 def subscriber_cb(truncate_length, noarr, nostr):
     def cb(msg):
         nonlocal truncate_length, noarr, nostr
+        now_ms = int(time.time() * 1000)
+        sem = posix_ipc.Semaphore('/pc_pipe_sem', flags=posix_ipc.O_CREAT, initial_value=1)
+        with open('/tmp/pc_pipe_times.csv', 'a') as outfp:
+            outfp.write('"ROS2TOPIC ECHO", %d\n' % (now_ms))
+        sem.release()
+        sem.close()
         print(
             message_to_yaml(
                 msg, truncate_length=truncate_length, no_arr=noarr, no_str=nostr),

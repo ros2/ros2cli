@@ -16,6 +16,8 @@ import time
 from typing import Optional
 from typing import TypeVar
 
+import posix_ipc
+
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import qos_policy_name_from_kind
@@ -137,6 +139,13 @@ def publisher(
         count += 1
         if print_nth and count % print_nth == 0:
             print('publishing #%d: %r\n' % (count, msg))
+        now_ms = int(time.time() * 1000)
+        print("Publishing message at {} ms".format(now_ms))
+        sem = posix_ipc.Semaphore('/pc_pipe_sem', flags=posix_ipc.O_CREAT, initial_value=1)
+        with open('/tmp/pc_pipe_times.csv', 'a') as outfp:
+            outfp.write('"ROS2TOPIC PUB", %d\n' % (now_ms))
+        sem.release()
+        sem.close()
         pub.publish(msg)
 
     timer = node.create_timer(period, timer_callback)
