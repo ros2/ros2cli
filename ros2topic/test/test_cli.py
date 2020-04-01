@@ -294,7 +294,8 @@ class TestROS2TopicCLI(unittest.TestCase):
                 re.compile(r'  Liveliness: RMW_QOS_POLICY_LIVELINESS_\w+'),
                 re.compile(r'  Liveliness lease duration: \d+ nanoseconds'),
                 '',
-                'Subscription count: 0'
+                'Subscription count: 0',
+                ''
             ],
             text=topic_command.output,
             strict=True
