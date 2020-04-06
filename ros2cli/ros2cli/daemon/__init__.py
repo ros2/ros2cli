@@ -17,8 +17,6 @@ from collections import namedtuple
 import functools
 import inspect
 import os
-from xmlrpc.server import SimpleXMLRPCRequestHandler
-from xmlrpc.server import SimpleXMLRPCServer
 
 import netifaces
 
@@ -26,6 +24,8 @@ import rclpy
 import rclpy.action
 
 from ros2cli.node.direct import DirectNode
+
+import ros2cli.xmlrpc
 
 
 def main(*, script_name='_ros2_daemon', argv=None):
@@ -55,8 +55,9 @@ def main(*, script_name='_ros2_daemon', argv=None):
         node_name_suffix='_daemon_%d' % args.ros_domain_id,
         start_parameter_services=False)
     with NetworkAwareNode(node_args) as node:
-        server = LocalXMLRPCServer(
-            addr, logRequests=False, requestHandler=RequestHandler,
+        server = ros2cli.xmlrpc.local_server.LocalXMLRPCServer(
+            addr, logRequests=False,
+            requestHandler=ros2cli.xmlrpc.local_server.RequestHandler,
             allow_none=True)
 
         try:
@@ -79,7 +80,11 @@ def main(*, script_name='_ros2_daemon', argv=None):
             server.register_function(
                 _print_invoked_function_name(node.get_publisher_names_and_types_by_node))
             server.register_function(
+                _print_invoked_function_name(node.get_publishers_info_by_topic))
+            server.register_function(
                 _print_invoked_function_name(node.get_subscriber_names_and_types_by_node))
+            server.register_function(
+                _print_invoked_function_name(node.get_subscriptions_info_by_topic))
             server.register_function(
                 _print_invoked_function_name(node.get_service_names_and_types_by_node))
             server.register_function(
@@ -179,22 +184,10 @@ class NetworkAwareNode:
             print('Daemon node was reset')
 
 
-class LocalXMLRPCServer(SimpleXMLRPCServer):
-
-    def verify_request(self, request, client_address):
-        if client_address[0] != '127.0.0.1':
-            return False
-        return super(LocalXMLRPCServer, self).verify_request(request, client_address)
-
-
 def get_daemon_port():
     base_port = 11511
     base_port += int(os.environ.get('ROS_DOMAIN_ID', 0))
     return base_port
-
-
-class RequestHandler(SimpleXMLRPCRequestHandler):
-    rpc_paths = ('/ros2cli/',)
 
 
 def _bind_function(func, *args, **kwargs):
