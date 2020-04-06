@@ -64,7 +64,7 @@ def generate_test_description(rmw_implementation):
     ])
 
 
-def get_fibonacci_send_goal_output(*, order=1, with_feedback=False):
+def get_fibonacci_send_goal_output(*, order=1, with_feedback=0):
     assert order > 0
     output = [
         'Waiting for an action server to become available...',
@@ -77,12 +77,13 @@ def get_fibonacci_send_goal_output(*, order=1, with_feedback=False):
     sequence = [0, 1]
     for _ in range(order - 1):
         sequence.append(sequence[-1] + sequence[-2])
-        if with_feedback:
+        if with_feedback > 0:
             output.append('Feedback:')
             output.extend(('    ' + yaml.dump({
                 'sequence': sequence
             })).splitlines())
             output.append('')
+            with_feedback -= 1
     output.append('Result:'),
     output.extend(('    ' + yaml.dump({
         'sequence': sequence
@@ -243,8 +244,6 @@ class TestROS2ActionCLI(unittest.TestCase):
             assert action_command.wait_for_shutdown(timeout=10)
         assert action_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
-            expected_lines=get_fibonacci_send_goal_output(
-                order=5, with_feedback=True
-            ),
-            text=action_command.output, strict=True
+            expected_lines=get_fibonacci_send_goal_output(order=5, with_feedback=1),
+            text=action_command.output, strict=False
         )
