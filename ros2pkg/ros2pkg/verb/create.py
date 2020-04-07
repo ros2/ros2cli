@@ -32,6 +32,9 @@ from ros2pkg.api.create import populate_cpp_node
 from ros2pkg.api.create import populate_python_libary
 from ros2pkg.api.create import populate_python_node
 
+from ros2pkg.package_type import get_package_type_extension
+from ros2pkg.package_type import get_package_type_names
+
 from ros2pkg.verb import VerbExtension
 
 
@@ -64,7 +67,7 @@ class CreateVerb(VerbExtension):
         parser.add_argument(
             '--build-type',
             default='ament_cmake',
-            choices=['cmake', 'ament_cmake', 'ament_python'],
+            choices=get_package_type_names(),
             help='The build type to process the package with')
         parser.add_argument(
             '--dependencies',
@@ -85,8 +88,12 @@ class CreateVerb(VerbExtension):
             help='name of the empty library')
 
     def main(self, *, args):
-        maintainer = Person(args.maintainer_name)
+        # when a package-type extension exists, delegate package creation to it.
+        extension = get_package_type_extension(args.build_type)
+        if extension:
+            return extension.create_package(args)
 
+        maintainer = Person(args.maintainer_name)
         if args.maintainer_email:
             maintainer.email = args.maintainer_email
         else:
