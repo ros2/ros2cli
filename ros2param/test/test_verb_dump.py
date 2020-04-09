@@ -85,6 +85,7 @@ class TestVerbDump(unittest.TestCase):
     def setUp(self):
         # Ensure the daemon node is running and discovers the test node
         start_time = time.time()
+        timed_out = True
         with NodeStrategy(None) as node:
             while (time.time() - start_time) < TEST_TIMEOUT:
                 # TODO(jacobperron): Create a generic 'CliNodeError' so we can treat errors
@@ -103,10 +104,9 @@ class TestVerbDump(unittest.TestCase):
                     len(service_names) > 0
                     and f'{TEST_NAMESPACE}/{TEST_NODE}/get_parameters' in service_names
                 ):
-                    break
-        delta = time.time() - start_time
-        if delta >= TEST_TIMEOUT:
-            self.fail(f'CLI daemon failed to find test node after {delta} seconds')
+                    timed_out = False
+        if timed_out:
+            self.fail(f'CLI daemon failed to find test node after {TEST_TIMEOUT} seconds')
 
     def _output_file(self):
 
