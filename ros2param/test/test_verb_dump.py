@@ -16,17 +16,22 @@ from io import StringIO
 import os
 import tempfile
 import threading
+import time
 import unittest
 from unittest.mock import patch
+import xmlrpc
 
 import rclpy
 from rclpy.executors import MultiThreadedExecutor
 from rclpy.parameter import PARAMETER_SEPARATOR_STRING
 
 from ros2cli import cli
+from ros2cli.node.strategy import NodeStrategy
 
 TEST_NODE = 'test_node'
-TEST_NAMESPACE = 'foo'
+TEST_NAMESPACE = '/foo'
+
+TEST_TIMEOUT = 5.0
 
 EXPECTED_PARAMETER_FILE = """\
 test_node:
@@ -76,6 +81,32 @@ class TestVerbDump(unittest.TestCase):
         cls.node.destroy_node()
         rclpy.shutdown(context=cls.context)
         cls.exec_thread.join()
+
+    def setUp(self):
+        # Ensure the daemon node is running and discovers the test node
+        start_time = time.time()
+        with NodeStrategy(None) as node:
+            while (time.time() - start_time) < TEST_TIMEOUT:
+                # TODO(jacobperron): Create a generic 'CliNodeError' so we can treat errors
+                #                    from DirectNode and DaemonNode the same
+                try:
+                    services = node.get_service_names_and_types_by_node(TEST_NODE, TEST_NAMESPACE)
+                except rclpy.node.NodeNameNonExistentError:
+                    continue
+                except xmlrpc.client.Fault as e:
+                    if 'NodeNameNonExistentError' in e.faultString:
+                        continue
+                    raise
+
+                service_names = [name_type_tuple[0] for name_type_tuple in services]
+                if (
+                    len(service_names) > 0
+                    and f'{TEST_NAMESPACE}/{TEST_NODE}/get_parameters' in service_names
+                ):
+                    break
+        delta = time.time() - start_time
+        if delta >= TEST_TIMEOUT:
+            self.fail(f'CLI daemon failed to find test node after {delta} seconds')
 
     def _output_file(self):
 
