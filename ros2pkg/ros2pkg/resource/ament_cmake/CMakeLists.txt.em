@@ -99,11 +99,11 @@ endif()
 ament_export_include_directories(
   include
 )
-ament_export_interfaces(
-  export_${PROJECT_NAME}
-)
 ament_export_libraries(
   @(cpp_library_name)
+)
+ament_export_targets(
+  export_${PROJECT_NAME}
 )
 @[end if]@
 
