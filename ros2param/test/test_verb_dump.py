@@ -28,6 +28,7 @@ import launch_testing.actions
 import launch_testing.asserts
 import launch_testing.markers
 import launch_testing.tools
+import launch_testing_ros.tools
 
 import pytest
 
@@ -102,6 +103,9 @@ class TestVerbDump(unittest.TestCase):
         proc_output,
         rmw_implementation
     ):
+        rmw_implementation_filter = launch_testing_ros.tools.basic_output_filter(
+            filtered_rmw_implementation=rmw_implementation
+        )
 
         @contextlib.contextmanager
         def launch_param_dump_command(self, arguments):
@@ -114,7 +118,8 @@ class TestVerbDump(unittest.TestCase):
                 output='screen'
             )
             with launch_testing.tools.launch_process(
-                launch_service, param_dump_command_action, proc_info, proc_output
+                launch_service, param_dump_command_action, proc_info, proc_output,
+                output_filter=rmw_implementation_filter
             ) as param_dump_command:
                 yield param_dump_command
         cls.launch_param_dump_command = launch_param_dump_command
