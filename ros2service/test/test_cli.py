@@ -38,6 +38,14 @@ from rclpy.utilities import get_available_rmw_implementations
 from test_msgs.srv import BasicTypes
 
 
+# Skip cli tests on Windows while they exhibit pathological behavior
+# https://github.com/ros2/build_farmer/issues/248
+if sys.platform.startswith('win'):
+    pytest.skip(
+            'CLI tests can block for a pathological amount of time on Windows.',
+            allow_module_level=True)
+
+
 def get_echo_call_output(**kwargs):
     request = BasicTypes.Request()
     for field_name, field_value in kwargs.items():

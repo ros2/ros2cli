@@ -15,6 +15,7 @@
 import contextlib
 import itertools
 import re
+import sys
 import unittest
 
 from launch import LaunchDescription
@@ -27,6 +28,14 @@ import launch_testing.markers
 import launch_testing.tools
 
 import pytest
+
+
+# Skip cli tests on Windows while they exhibit pathological behavior
+# https://github.com/ros2/build_farmer/issues/248
+if sys.platform.startswith('win'):
+    pytest.skip(
+            'CLI tests can block for a pathological amount of time on Windows.',
+            allow_module_level=True)
 
 
 some_messages_from_std_msgs = [
