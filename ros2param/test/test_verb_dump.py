@@ -38,7 +38,7 @@ from ros2cli.node.strategy import NodeStrategy
 TEST_NODE = 'test_node'
 TEST_NAMESPACE = '/foo'
 
-TEST_TIMEOUT = 5.0
+TEST_TIMEOUT = 20.0
 
 EXPECTED_PARAMETER_FILE = (
     f'{TEST_NODE}:\n'
