@@ -32,6 +32,7 @@ import launch_testing.tools
 import pytest
 
 import rclpy
+from rclpy.utilities import get_available_rmw_implementations
 
 from ros2cli.node.strategy import NodeStrategy
 
@@ -54,10 +55,9 @@ EXPECTED_PARAMETER_FILE = (
     '    use_sim_time: false\n'
 )
 
-# TODO(jacobperron): Enable testing with all RMW implementations when they pass
-# @launch_testing.parametrize('rmw_implementation', get_available_rmw_implementations())
+
 @pytest.mark.rostest
-@launch_testing.parametrize('rmw_implementation', ['rmw_fastrtps_cpp'])
+@launch_testing.parametrize('rmw_implementation', get_available_rmw_implementations())
 def generate_test_description(rmw_implementation):
     path_to_fixtures = os.path.join(os.path.dirname(__file__), 'fixtures')
     additional_env = {'RMW_IMPLEMENTATION': rmw_implementation}
