@@ -105,6 +105,7 @@ class TestVerbDump(unittest.TestCase):
                     and f'{TEST_NAMESPACE}/{TEST_NODE}/get_parameters' in service_names
                 ):
                     timed_out = False
+                    break
         if timed_out:
             self.fail(f'CLI daemon failed to find test node after {TEST_TIMEOUT} seconds')
 
