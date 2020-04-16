@@ -55,13 +55,13 @@ def generate_test_description(rmw_implementation):
                     on_exit=[
                         # Add test fixture actions.
                         Node(
-                            node_executable=sys.executable,
+                            executable=sys.executable,
                             arguments=[path_to_complex_node_script],
                             node_name='complex_node',
                             additional_env=additional_env
                         ),
                         Node(
-                            node_executable=sys.executable,
+                            executable=sys.executable,
                             arguments=[path_to_complex_node_script],
                             node_name='_hidden_complex_node',
                             additional_env=additional_env

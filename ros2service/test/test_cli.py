@@ -73,14 +73,14 @@ def generate_test_description(rmw_implementation):
                     on_exit=[
                         # Add test fixture actions.
                         Node(
-                            node_executable=sys.executable,
+                            executable=sys.executable,
                             arguments=[path_to_echo_server_script],
                             node_name='echo_server',
                             node_namespace='my_ns',
                             additional_env=additional_env,
                         ),
                         Node(
-                            node_executable=sys.executable,
+                            executable=sys.executable,
                             arguments=[path_to_echo_server_script],
                             node_name='_hidden_echo_server',
                             node_namespace='my_ns',
