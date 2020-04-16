@@ -56,6 +56,13 @@ EXPECTED_PARAMETER_FILE = (
     '    use_sim_time: false\n'
 )
 
+# Skip cli tests on Windows while they exhibit pathological behavior
+# https://github.com/ros2/build_farmer/issues/248
+if sys.platform.startswith('win'):
+    pytest.skip(
+            'CLI tests can block for a pathological amount of time on Windows.',
+            allow_module_level=True)
+
 
 @pytest.mark.rostest
 @launch_testing.parametrize('rmw_implementation', get_available_rmw_implementations())
