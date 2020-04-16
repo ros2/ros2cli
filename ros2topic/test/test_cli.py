@@ -57,18 +57,18 @@ def generate_test_description(rmw_implementation):
     path_to_listener_node_script = os.path.join(path_to_fixtures, 'listener_node.py')
 
     hidden_talker_node_action = Node(
-        node_executable=sys.executable,
+        executable=sys.executable,
         arguments=[path_to_talker_node_script],
         remappings=[('chatter', '_hidden_chatter')],
         additional_env=additional_env
     )
     talker_node_action = Node(
-        node_executable=sys.executable,
+        executable=sys.executable,
         arguments=[path_to_talker_node_script],
         additional_env=additional_env
     )
     listener_node_action = Node(
-        node_executable=sys.executable,
+        executable=sys.executable,
         arguments=[path_to_listener_node_script],
         remappings=[('chatter', 'chit_chatter')],
         additional_env=additional_env
@@ -77,7 +77,7 @@ def generate_test_description(rmw_implementation):
     path_to_repeater_node_script = os.path.join(path_to_fixtures, 'repeater_node.py')
 
     array_repeater_node_action = Node(
-        node_executable=sys.executable,
+        executable=sys.executable,
         arguments=[path_to_repeater_node_script, 'test_msgs/msg/Arrays'],
         node_name='array_repeater',
         remappings=[('/array_repeater/output', '/arrays')],
@@ -85,14 +85,14 @@ def generate_test_description(rmw_implementation):
         additional_env=additional_env
     )
     defaults_repeater_node_action = Node(
-        node_executable=sys.executable,
+        executable=sys.executable,
         arguments=[path_to_repeater_node_script, 'test_msgs/msg/Defaults'],
         node_name='defaults_repeater',
         remappings=[('/defaults_repeater/output', '/defaults')],
         additional_env=additional_env,
     )
     bounded_sequences_repeater_node_action = Node(
-        node_executable=sys.executable,
+        executable=sys.executable,
         arguments=[
             path_to_repeater_node_script, 'test_msgs/msg/BoundedSequences'
         ],
@@ -101,7 +101,7 @@ def generate_test_description(rmw_implementation):
         additional_env=additional_env
     )
     unbounded_sequences_repeater_node_action = Node(
-        node_executable=sys.executable,
+        executable=sys.executable,
         arguments=[
             path_to_repeater_node_script, 'test_msgs/msg/UnboundedSequences'
         ],
@@ -113,7 +113,7 @@ def generate_test_description(rmw_implementation):
     path_to_controller_node_script = os.path.join(path_to_fixtures, 'controller_node.py')
 
     cmd_vel_controller_node_action = Node(
-        node_executable=sys.executable,
+        executable=sys.executable,
         arguments=[path_to_controller_node_script],
         additional_env=additional_env
     )
