@@ -159,7 +159,7 @@ class TestVerbDump(unittest.TestCase):
             self.fail(f'CLI daemon failed to find test node after {TEST_TIMEOUT} seconds')
 
     def _output_file(self):
-        return f'{TEST_NAMESPACE}/{TEST_NODE}'[1:].replace('/', '__') + '.yaml'
+        return f'{TEST_NAMESPACE}/{TEST_NODE}'.lstrip('/').replace('/', '__') + '.yaml'
 
     def test_verb_dump_invalid_node(self):
         with self.launch_param_dump_command(arguments=['invalid_node']) as param_dump_command:
