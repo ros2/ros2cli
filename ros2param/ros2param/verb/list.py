@@ -87,7 +87,7 @@ class ListVerb(VerbExtension):
 
             # wait for all responses
             for future in futures.values():
-                rclpy.spin_until_future_complete(node, future)
+                rclpy.spin_until_future_complete(node, future, timeout_sec=1.0)
 
             # print responses
             for node_name in sorted(futures.keys()):

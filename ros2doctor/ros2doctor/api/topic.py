@@ -20,6 +20,7 @@ from ros2doctor.api import DoctorCheck
 from ros2doctor.api import DoctorReport
 from ros2doctor.api import Report
 from ros2doctor.api import Result
+from ros2doctor.api.format import doctor_warn
 
 
 def _get_topic_names() -> List:
@@ -48,10 +49,12 @@ class TopicCheck(DoctorCheck):
             for topic in to_be_checked:
                 pub_count = node.count_publishers(topic)
                 sub_count = node.count_subscribers(topic)
-                if pub_count > sub_count:
-                    result.add_warning('Publisher without subscriber detected on %s.' % topic)
-                elif pub_count < sub_count:
-                    result.add_warning('Subscriber without publisher detected on %s.' % topic)
+                if pub_count > 0 and sub_count == 0:
+                    doctor_warn(f'Publisher without subscriber detected on {topic}.')
+                    result.add_warning()
+                elif sub_count > 0 and pub_count == 0:
+                    doctor_warn(f'Subscriber without publisher detected on {topic}.')
+                    result.add_warning()
         return result
 
 

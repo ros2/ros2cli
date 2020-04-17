@@ -14,20 +14,29 @@
 
 import contextlib
 import os
+import sys
 import tempfile
 import unittest
 import xml.etree.ElementTree as ET
 
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess
-from launch.actions import OpaqueFunction
 
 import launch_testing
+import launch_testing.actions
 import launch_testing.asserts
 import launch_testing.markers
 import launch_testing.tools
 
 import pytest
+
+
+# Skip cli tests on Windows while they exhibit pathological behavior
+# https://github.com/ros2/build_farmer/issues/248
+if sys.platform.startswith('win'):
+    pytest.skip(
+            'CLI tests can block for a pathological amount of time on Windows.',
+            allow_module_level=True)
 
 
 some_cli_packages = [
@@ -38,8 +47,8 @@ some_cli_packages = [
 
 @pytest.mark.rostest
 @launch_testing.markers.keep_alive
-def generate_test_description(ready_fn):
-    return LaunchDescription([OpaqueFunction(function=lambda context: ready_fn())])
+def generate_test_description():
+    return LaunchDescription([launch_testing.actions.ReadyToTest()])
 
 
 class TestROS2PkgCLI(unittest.TestCase):

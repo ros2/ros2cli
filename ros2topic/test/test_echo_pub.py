@@ -12,13 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import sys
 import unittest
 
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess
-from launch.actions import OpaqueFunction
 
 import launch_testing
+import launch_testing.actions
 import launch_testing.asserts
 import launch_testing.markers
 import launch_testing.tools
@@ -36,13 +37,21 @@ from rclpy.utilities import get_rmw_implementation_identifier
 from std_msgs.msg import String
 
 
+# Skip cli tests on Windows while they exhibit pathological behavior
+# https://github.com/ros2/build_farmer/issues/248
+if sys.platform.startswith('win'):
+    pytest.skip(
+            'CLI tests can block for a pathological amount of time on Windows.',
+            allow_module_level=True)
+
+
 TEST_NODE = 'cli_echo_pub_test_node'
 TEST_NAMESPACE = 'cli_echo_pub'
 
 
 @pytest.mark.rostest
 @launch_testing.markers.keep_alive
-def generate_test_description(ready_fn):
+def generate_test_description():
     return LaunchDescription([
         # Always restart daemon to isolate tests.
         ExecuteProcess(
@@ -53,7 +62,7 @@ def generate_test_description(ready_fn):
                     cmd=['ros2', 'daemon', 'start'],
                     name='daemon-start',
                     on_exit=[
-                        OpaqueFunction(function=lambda context: ready_fn())
+                        launch_testing.actions.ReadyToTest()
                     ],
                 )
             ]

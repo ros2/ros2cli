@@ -21,11 +21,11 @@ import unittest
 
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess
-from launch.actions import OpaqueFunction
 
 from launch_ros.actions import Node
 
 import launch_testing
+import launch_testing.actions
 import launch_testing.asserts
 import launch_testing.markers
 import launch_testing.tools
@@ -33,12 +33,20 @@ import launch_testing_ros.tools
 
 import pytest
 
-from rmw_implementation import get_available_rmw_implementations
+from rclpy.utilities import get_available_rmw_implementations
+
+
+# Skip cli tests on Windows while they exhibit pathological behavior
+# https://github.com/ros2/build_farmer/issues/248
+if sys.platform.startswith('win'):
+    pytest.skip(
+            'CLI tests can block for a pathological amount of time on Windows.',
+            allow_module_level=True)
 
 
 @pytest.mark.rostest
 @launch_testing.parametrize('rmw_implementation', get_available_rmw_implementations())
-def generate_test_description(rmw_implementation, ready_fn):
+def generate_test_description(rmw_implementation):
     path_to_complex_node_script = os.path.join(
         os.path.dirname(__file__), 'fixtures', 'complex_node.py'
     )
@@ -55,18 +63,18 @@ def generate_test_description(rmw_implementation, ready_fn):
                     on_exit=[
                         # Add test fixture actions.
                         Node(
-                            node_executable=sys.executable,
+                            executable=sys.executable,
                             arguments=[path_to_complex_node_script],
                             node_name='complex_node',
                             additional_env=additional_env
                         ),
                         Node(
-                            node_executable=sys.executable,
+                            executable=sys.executable,
                             arguments=[path_to_complex_node_script],
                             node_name='_hidden_complex_node',
                             additional_env=additional_env
                         ),
-                        OpaqueFunction(function=lambda context: ready_fn())
+                        launch_testing.actions.ReadyToTest()
                     ],
                     additional_env=additional_env
                 )
@@ -107,7 +115,7 @@ class TestROS2NodeCLI(unittest.TestCase):
                 yield node_command
         cls.launch_node_command = launch_node_command
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_list_nodes(self):
         with self.launch_node_command(arguments=['list']) as node_command:
             assert node_command.wait_for_shutdown(timeout=10)
@@ -118,7 +126,7 @@ class TestROS2NodeCLI(unittest.TestCase):
             strict=True
         )
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_list_all_nodes(self):
         with self.launch_node_command(arguments=['list', '-a']) as node_command:
             assert node_command.wait_for_shutdown(timeout=10)
@@ -132,27 +140,27 @@ class TestROS2NodeCLI(unittest.TestCase):
             strict=True
         )
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_list_node_count(self):
         with self.launch_node_command(arguments=['list', '-c']) as node_command:
             assert node_command.wait_for_shutdown(timeout=10)
         assert node_command.exit_code == launch_testing.asserts.EXIT_OK
         output_lines = node_command.output.splitlines()
         assert len(output_lines) == 1
-        # Fixture nodes that are not hidden plus launch_ros node.
-        assert int(output_lines[0]) == 2
+        # Fixture nodes that are not hidden.
+        assert int(output_lines[0]) == 1
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_list_all_nodes_count(self):
         with self.launch_node_command(arguments=['list', '-c', '-a']) as node_command:
             assert node_command.wait_for_shutdown(timeout=10)
         assert node_command.exit_code == launch_testing.asserts.EXIT_OK
         output_lines = node_command.output.splitlines()
         assert len(output_lines) == 1
-        # All fixture nodes plus launch_ros and ros2cli daemon nodes.
-        assert int(output_lines[0]) == 4
+        # All fixture nodes plus ros2cli daemon node.
+        assert int(output_lines[0]) == 3
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_info_node(self):
         with self.launch_node_command(arguments=['info', '/complex_node']) as node_command:
             assert node_command.wait_for_shutdown(timeout=10)
@@ -182,7 +190,7 @@ class TestROS2NodeCLI(unittest.TestCase):
             text=node_command.output, strict=False
         ), 'Output does not match:\n' + node_command.output
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_info_hidden_node_no_hidden_flag(self):
         with self.launch_node_command(arguments=['info', '/_hidden_complex_node']) as node_command:
             assert node_command.wait_for_shutdown(timeout=10)
@@ -192,7 +200,7 @@ class TestROS2NodeCLI(unittest.TestCase):
             text=node_command.output, strict=True
         )
 
-    @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_info_hidden_node_hidden_flag(self):
         with self.launch_node_command(
             arguments=['info', '/_hidden_complex_node', '--include-hidden']

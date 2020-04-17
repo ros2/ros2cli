@@ -109,7 +109,7 @@ class Talker(Node):
     """Initialize talker node."""
 
     def __init__(self, topic, time_period, *, qos=10):
-        node_name = socket.gethostname() + str(os.getpid()) + '_talker'
+        node_name = 'ros2doctor_' + socket.gethostname() + str(os.getpid()) + '_talker'
         super().__init__(node_name)
         self._i = 0
         self._pub = self.create_publisher(String, topic, qos)
@@ -128,7 +128,7 @@ class Listener(Node):
     """Initialize listener node."""
 
     def __init__(self, topic, *, qos=10):
-        node_name = socket.gethostname() + str(os.getpid()) + '_listener'
+        node_name = 'ros2doctor_' + socket.gethostname() + str(os.getpid()) + '_listener'
         super().__init__(node_name)
         self._sub = self.create_subscription(
             String,

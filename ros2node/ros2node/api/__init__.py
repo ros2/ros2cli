@@ -13,12 +13,18 @@
 # limitations under the License.
 
 from collections import namedtuple
+from typing import Any
+from typing import List
 
 from rclpy.action.graph import get_action_client_names_and_types_by_node
 from rclpy.action.graph import get_action_server_names_and_types_by_node
 from rclpy.node import HIDDEN_NODE_PREFIX
 from ros2cli.node.strategy import NodeStrategy
 
+INFO_NONUNIQUE_WARNING_TEMPLATE = (
+    'There are {num_nodes} nodes in the graph with the exact name "{node_name}". '
+    'You are seeing information about only one of them.'
+)
 
 NodeName = namedtuple('NodeName', ('name', 'namespace', 'full_name'))
 TopicInfo = namedtuple('Topic', ('name', 'types'))
@@ -45,6 +51,11 @@ def parse_node_name(node_name):
     if namespace == '':
         namespace = '/'
     return NodeName(node_basename, namespace, full_node_name)
+
+
+def has_duplicates(values: List[Any]) -> bool:
+    """Find out if there are any exact duplicates in a list of strings."""
+    return len(set(values)) < len(values)
 
 
 def get_node_names(*, node, include_hidden_nodes=False):
