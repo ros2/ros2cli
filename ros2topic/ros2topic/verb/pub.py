@@ -69,6 +69,9 @@ class PubVerb(VerbExtension):
         parser.add_argument(
             '-n', '--node-name',
             help='Name of the created publishing node')
+        parser.add_argument(
+            '-t', '--times', type=int, default=0,
+            help='Publish this number of times and then exit')
         add_qos_arguments_to_argument_parser(
             parser, is_publisher=True, default_preset='system_default')
 
@@ -91,6 +94,7 @@ def main(args):
             1. / args.rate,
             args.print,
             args.once,
+            args.times,
             qos_profile)
 
 
@@ -107,6 +111,7 @@ def publisher(
     period: float,
     print_nth: int,
     once: bool,
+    times: int,
     qos_profile: QoSProfile,
 ) -> Optional[str]:
     """Initialize a node with a single publisher and run its publish loop (maybe only once)."""
@@ -114,6 +119,11 @@ def publisher(
     values_dictionary = yaml.safe_load(values)
     if not isinstance(values_dictionary, dict):
         return 'The passed value needs to be a dictionary in YAML format'
+
+    if once:
+        if times > 0:
+            return 'Cannot pass both -1 and -t <times>'
+        times = 1
 
     publisher_callbacks = PublisherEventCallbacks(
         incompatible_qos=handle_incompatible_qos_event)
@@ -140,10 +150,10 @@ def publisher(
         pub.publish(msg)
 
     timer = node.create_timer(period, timer_callback)
-    if once:
+    while times == 0 or count < times:
         rclpy.spin_once(node)
+
+    if times == 1:
         time.sleep(0.1)  # make sure the message reaches the wire before exiting
-    else:
-        rclpy.spin(node)
 
     node.destroy_timer(timer)

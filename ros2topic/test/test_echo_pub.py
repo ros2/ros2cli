@@ -177,6 +177,53 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                     self.node.destroy_subscription(subscription)
 
     @launch_testing.markers.retry_on_failure(times=5)
+    def test_pub_times(self, launch_service, proc_info, proc_output):
+        topic = '/clitest/topic/pubtimes'
+
+        received_message_count = 0
+
+        future = rclpy.task.Future()
+
+        def message_callback(msg):
+            """If we receive one message, the test has succeeded."""
+            nonlocal received_message_count
+            received_message_count += 1
+            if received_message_count == 5:
+                future.set_result(True)
+
+        subscription = self.node.create_subscription(
+            String, topic, message_callback, 10)
+        assert subscription
+
+        try:
+            command_action = ExecuteProcess(
+                cmd=(['ros2', 'topic', 'pub', '-t', '5', topic,
+                      'std_msgs/String', 'data: hello']),
+                additional_env={
+                    'PYTHONUNBUFFERED': '1'
+                },
+                output='screen'
+            )
+            with launch_testing.tools.launch_process(
+                launch_service, command_action, proc_info, proc_output,
+                output_filter=launch_testing_ros.tools.basic_output_filter(
+                    filtered_rmw_implementation=get_rmw_implementation_identifier()
+                )
+            ) as command:
+                self.executor.spin_until_future_complete(future, timeout_sec=10)
+            command.wait_for_shutdown(timeout=10)
+
+            # Check results
+            assert received_message_count == 5, \
+                ('Received {} messages from pub on {},'
+                 'which is not expected number {}').format(
+                    received_message_count, topic, 10
+                )
+        finally:
+            # Cleanup
+            self.node.destroy_subscription(subscription)
+
+    @launch_testing.markers.retry_on_failure(times=5)
     def test_echo_basic(self, launch_service, proc_info, proc_output):
         params = [
             ('/clitest/topic/echo_basic', False, True),
