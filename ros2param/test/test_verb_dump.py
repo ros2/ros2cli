@@ -233,9 +233,6 @@ class TestVerbDump(unittest.TestCase):
                 text=param_dump_command.output,
                 strict=True
             )
-
-            not_generated_param_file = os.path.join(tmpdir, self._output_file())
-            with self.assertRaises(OSError) as context:
-                open(not_generated_param_file, 'r')
             # Make sure the file was not create, thus '--print' did preempt
-            assert '[Errno 2] No such file or directory' in str(context.exception)
+            not_generated_param_file = os.path.join(tmpdir, self._output_file())
+            assert not os.path.exists(not_generated_param_file)
