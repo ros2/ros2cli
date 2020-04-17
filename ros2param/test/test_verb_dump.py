@@ -73,7 +73,7 @@ def generate_test_description(rmw_implementation):
     # Parameter node test fixture
     path_to_parameter_node_script = os.path.join(path_to_fixtures, 'parameter_node.py')
     parameter_node = Node(
-        node_executable=sys.executable,
+        executable=sys.executable,
         name=TEST_NODE,
         namespace=TEST_NAMESPACE,
         arguments=[path_to_parameter_node_script],
