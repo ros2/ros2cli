@@ -58,6 +58,18 @@ def positive_int(string):
     return value
 
 
+def str_bytes(num_bytes):
+    return f'{num_bytes:.0f} B'
+
+
+def str_kilobytes(num_bytes):
+    return f'{num_bytes/1000:.2f} KB'
+
+
+def str_megabytes(num_bytes):
+    return f'{num_bytes/1000/1000:.2f} MB'
+
+
 class BwVerb(VerbExtension):
     """Display bandwidth used by topic."""
 
@@ -69,8 +81,8 @@ class BwVerb(VerbExtension):
             include_hidden_topics_key='include_hidden_topics')
         parser.add_argument(
             '--window', '-w', type=positive_int, default=DEFAULT_WINDOW_SIZE,
-            help='window size, in # of messages, for calculating rate '
-                 '(default: %d)' % DEFAULT_WINDOW_SIZE, metavar='WINDOW')
+            help='maximum window size, in # of messages, for calculating rate '
+                 f'(default: {DEFAULT_WINDOW_SIZE})', metavar='WINDOW')
 
     def main(self, *, args):
         with DirectNode(args) as node:
@@ -90,7 +102,7 @@ class ROSTopicBandwidth(object):
         """Execute ros sub callback."""
         with self.lock:
             try:
-                t = time.time()
+                t = time.monotonic()
                 self.times.append(t)
                 # TODO(yechun1): Subscribing to the msgs and calculate the length may be
                 # inefficiency. To optimize here if found better solution.
@@ -109,7 +121,7 @@ class ROSTopicBandwidth(object):
             return
         with self.lock:
             n = len(self.times)
-            tn = time.time()
+            tn = time.monotonic()
             t0 = self.times[0]
 
             total = sum(self.sizes)
@@ -123,15 +135,16 @@ class ROSTopicBandwidth(object):
         # min/max and even mean are likely to be much smaller,
         # but for now I prefer unit consistency
         if bytes_per_s < 1000:
-            bw, mean, min_s, max_s = ['%.2fB/s' % v for v in [bytes_per_s, mean, min_s, max_s]]
+            bw, mean, min_s, max_s = map(str_bytes, (bytes_per_s, mean, min_s, max_s))
         elif bytes_per_s < 1000000:
-            bw, mean, min_s, max_s = \
-                ['%.2fKB/s' % (v / 1000) for v in [bytes_per_s, mean, min_s, max_s]]
+            bw, mean, min_s, max_s = map(str_kilobytes, (bytes_per_s, mean, min_s, max_s))
         else:
-            bw, mean, min_s, max_s = \
-                ['%.2fMB/s' % (v / 1000000) for v in [bytes_per_s, mean, min_s, max_s]]
+            bw, mean, min_s, max_s = map(str_megabytes, (bytes_per_s, mean, min_s, max_s))
 
-        print('average: %s\n\tmean: %s min: %s max: %s window: %s' % (bw, mean, min_s, max_s, n))
+        # Bandwidth is per second
+        bw += '/s'
+
+        print(f'{bw} from {n} messages\n\tMessage size mean: {mean} min: {min_s} max: {max_s}')
 
 
 def _rostopic_bw(node, topic, window_size=DEFAULT_WINDOW_SIZE):
@@ -151,7 +164,7 @@ def _rostopic_bw(node, topic, window_size=DEFAULT_WINDOW_SIZE):
         raw=True
     )
 
-    print('Subscribed to [%s]' % topic)
+    print(f'Subscribed to [{topic}]')
     timer = node.create_timer(1, rt.print_bw)
     while rclpy.ok():
         rclpy.spin_once(node)
