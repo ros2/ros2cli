@@ -178,50 +178,39 @@ class TestROS2TopicEchoPub(unittest.TestCase):
 
     @launch_testing.markers.retry_on_failure(times=5)
     def test_pub_times(self, launch_service, proc_info, proc_output):
-        topic = '/clitest/topic/pubtimes'
-
-        received_message_count = 0
-
-        future = rclpy.task.Future()
-
-        def message_callback(msg):
-            """If we receive one message, the test has succeeded."""
-            nonlocal received_message_count
-            received_message_count += 1
-            if received_message_count == 5:
-                future.set_result(True)
-
-        subscription = self.node.create_subscription(
-            String, topic, message_callback, 10)
-        assert subscription
-
-        try:
-            command_action = ExecuteProcess(
-                cmd=(['ros2', 'topic', 'pub', '-t', '5', topic,
-                      'std_msgs/String', 'data: hello']),
-                additional_env={
-                    'PYTHONUNBUFFERED': '1'
-                },
-                output='screen'
+        command_action = ExecuteProcess(
+            cmd=(['ros2', 'topic', 'pub', '-t', '5', '/clitest/topic/pub_times',
+                  'std_msgs/String', 'data: hello']),
+            additional_env={
+                'PYTHONUNBUFFERED': '1'
+            },
+            output='screen'
+        )
+        with launch_testing.tools.launch_process(
+            launch_service, command_action, proc_info, proc_output,
+            output_filter=launch_testing_ros.tools.basic_output_filter(
+                filtered_rmw_implementation=get_rmw_implementation_identifier()
             )
-            with launch_testing.tools.launch_process(
-                launch_service, command_action, proc_info, proc_output,
-                output_filter=launch_testing_ros.tools.basic_output_filter(
-                    filtered_rmw_implementation=get_rmw_implementation_identifier()
-                )
-            ) as command:
-                self.executor.spin_until_future_complete(future, timeout_sec=10)
-            command.wait_for_shutdown(timeout=10)
-
-            # Check results
-            assert received_message_count == 5, \
-                ('Received {} messages from pub on {},'
-                 'which is not expected number {}').format(
-                    received_message_count, topic, 10
-                )
-        finally:
-            # Cleanup
-            self.node.destroy_subscription(subscription)
+        ) as command:
+            assert command.wait_for_shutdown(timeout=10)
+        assert command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=[
+                'publisher: beginning loop',
+                "publishing #1: std_msgs.msg.String(data='hello')",
+                '',
+                "publishing #2: std_msgs.msg.String(data='hello')",
+                '',
+                "publishing #3: std_msgs.msg.String(data='hello')",
+                '',
+                "publishing #4: std_msgs.msg.String(data='hello')",
+                '',
+                "publishing #5: std_msgs.msg.String(data='hello')",
+                '',
+            ],
+            text=command.output,
+            strict=True
+        )
 
     @launch_testing.markers.retry_on_failure(times=5)
     def test_echo_basic(self, launch_service, proc_info, proc_output):
