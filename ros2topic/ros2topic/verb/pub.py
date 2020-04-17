@@ -79,12 +79,18 @@ class PubVerb(VerbExtension):
         if args.rate <= 0:
             raise RuntimeError('rate must be greater than zero')
 
+        if args.once and args.times > 0:
+            raise RuntimeError('Cannot pass both -1 and -t <times>')
+
         return main(args)
 
 
 def main(args):
     qos_profile = qos_profile_from_short_keys(
         args.qos_profile, reliability=args.qos_reliability, durability=args.qos_durability)
+    times = args.times
+    if args.once:
+        times = 1
     with DirectNode(args, node_name=args.node_name) as node:
         return publisher(
             node.node,
@@ -93,8 +99,7 @@ def main(args):
             args.values,
             1. / args.rate,
             args.print,
-            args.once,
-            args.times,
+            times,
             qos_profile)
 
 
@@ -110,7 +115,6 @@ def publisher(
     values: dict,
     period: float,
     print_nth: int,
-    once: bool,
     times: int,
     qos_profile: QoSProfile,
 ) -> Optional[str]:
@@ -119,11 +123,6 @@ def publisher(
     values_dictionary = yaml.safe_load(values)
     if not isinstance(values_dictionary, dict):
         return 'The passed value needs to be a dictionary in YAML format'
-
-    if once:
-        if times > 0:
-            return 'Cannot pass both -1 and -t <times>'
-        times = 1
 
     publisher_callbacks = PublisherEventCallbacks(
         incompatible_qos=handle_incompatible_qos_event)
