@@ -36,6 +36,22 @@ import yaml
 MsgType = TypeVar('MsgType')
 
 
+def positive_int(inval):
+    ret = int(inval)
+    if ret < 0:
+        # The error message here gets completely swallowed by argparse
+        raise ValueError('Value must be positive')
+    return ret
+
+
+def positive_float(inval):
+    ret = float(inval)
+    if ret <= 0.0:
+        # The error message here gets completely swallowed by argparse
+        raise ValueError('Value must be positive')
+    return ret
+
+
 class PubVerb(VerbExtension):
     """Publish a message to a topic."""
 
@@ -58,7 +74,7 @@ class PubVerb(VerbExtension):
         arg.completer = TopicMessagePrototypeCompleter(
             topic_type_key='message_type')
         parser.add_argument(
-            '-r', '--rate', metavar='N', type=float, default=1.0,
+            '-r', '--rate', metavar='N', type=positive_float, default=1.0,
             help='Publishing rate in Hz (default: 1)')
         parser.add_argument(
             '-p', '--print', metavar='N', type=int, default=1,
@@ -70,15 +86,12 @@ class PubVerb(VerbExtension):
             '-n', '--node-name',
             help='Name of the created publishing node')
         parser.add_argument(
-            '-t', '--times', type=int, default=0,
+            '-t', '--times', type=positive_int, default=0,
             help='Publish this number of times and then exit')
         add_qos_arguments_to_argument_parser(
             parser, is_publisher=True, default_preset='system_default')
 
     def main(self, *, args):
-        if args.rate <= 0:
-            raise RuntimeError('rate must be greater than zero')
-
         if args.once and args.times > 0:
             raise RuntimeError('Cannot pass both -1 and -t <times>')
 
