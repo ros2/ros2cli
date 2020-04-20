@@ -16,7 +16,7 @@
 from collections import OrderedDict
 import logging
 
-from pkg_resources import parse_version
+from packaging.version import Version
 
 from ros2cli.entry_points import load_entry_points
 
@@ -85,8 +85,8 @@ def order_extensions_by_name(extensions):
 
 def satisfies_version(version, caret_range):
     assert caret_range.startswith('^'), 'Only supports caret ranges'
-    extension_point_version = parse_version(version)
-    extension_version = parse_version(caret_range[1:])
+    extension_point_version = Version(version)
+    extension_version = Version(caret_range[1:])
     next_extension_version = get_upper_bound_caret_version(
         extension_version)
 
@@ -111,4 +111,4 @@ def get_upper_bound_caret_version(version):
         minor = 0
     else:
         minor += 1
-    return parse_version('%d.%d.0' % (major, minor))
+    return Version('%d.%d.0' % (major, minor))
