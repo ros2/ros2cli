@@ -17,7 +17,10 @@ import os
 import sys
 
 import em
-import pkg_resources
+try:
+    import importlib.resources as importlib_resources
+except ModuleNotFoundError:
+    import importlib_resources
 
 
 def _expand_template(template_file, data, output_file):
@@ -63,8 +66,12 @@ def _create_folder(folder_name, base_directory, exist_ok=True):
     return folder_path
 
 
-def _create_template_file(template_file_name, output_directory, output_file_name, template_config):
-    template_path = pkg_resources.resource_filename('ros2pkg', 'resource/' + template_file_name)
+def _create_template_file(
+    template_subdir, template_file_name, output_directory, output_file_name, template_config
+):
+    full_package = 'ros2pkg.resource.' + template_subdir
+    with importlib_resources.path(full_package, template_file_name) as path:
+        template_path = str(path)
     if not os.path.exists(template_path):
         raise FileNotFoundError('template not found:', template_path)
 
@@ -90,7 +97,8 @@ def create_package_environment(package, destination_directory):
         'build_type': package.get_build_type(),
     }
     _create_template_file(
-        'package_environment/package.xml.em',
+        'package_environment',
+        'package.xml.em',
         package_directory,
         'package.xml',
         package_xml_config)
@@ -119,38 +127,45 @@ def populate_ament_python(package, package_directory, source_directory, python_n
         'package_description': package.description
     }
 
-    _create_template_file('ament_python/setup.py.em',
+    _create_template_file('ament_python',
+                          'setup.py.em',
                           package_directory,
                           'setup.py',
                           setup_py_config)
 
     setup_cfg_config = {'project_name': package.name}
-    _create_template_file('ament_python/setup.cfg.em',
+    _create_template_file('ament_python',
+                          'setup.cfg.em',
                           package_directory,
                           'setup.cfg',
                           setup_cfg_config)
 
     resource_directory = _create_folder('resource', package_directory)
-    _create_template_file('ament_python/resource_file.em',
+    _create_template_file('ament_python',
+                          'resource_file.em',
                           resource_directory,
                           package.name,
                           {})
 
-    _create_template_file('ament_python/init.py.em',
+    _create_template_file('ament_python',
+                          'init.py.em',
                           source_directory,
                           '__init__.py',
                           {})
 
     test_directory = _create_folder('test', package_directory)
-    _create_template_file('ament_python/test_copyright.py.em',
+    _create_template_file('ament_python',
+                          'test_copyright.py.em',
                           test_directory,
                           'test_copyright.py',
                           {})
-    _create_template_file('ament_python/test_flake8.py.em',
+    _create_template_file('ament_python',
+                          'test_flake8.py.em',
                           test_directory,
                           'test_flake8.py',
                           {})
-    _create_template_file('ament_python/test_pep257.py.em',
+    _create_template_file('ament_python',
+                          'test_pep257.py.em',
                           test_directory,
                           'test_pep257.py',
                           {})
@@ -160,7 +175,8 @@ def populate_python_node(package, source_directory, python_node_name):
     main_py_config = {
         'project_name': package.name
     }
-    _create_template_file('ament_python/main.py.em',
+    _create_template_file('ament_python',
+                          'main.py.em',
                           source_directory,
                           python_node_name + '.py',
                           main_py_config)
@@ -168,7 +184,8 @@ def populate_python_node(package, source_directory, python_node_name):
 
 def populate_python_libary(package, source_directory, python_library_name):
     library_directory = _create_folder(python_library_name, source_directory)
-    _create_template_file('ament_python/init.py.em',
+    _create_template_file('ament_python',
+                          'init.py.em',
                           library_directory,
                           '__init__.py',
                           {})
@@ -182,7 +199,8 @@ def populate_cmake(package, package_directory, cpp_node_name, cpp_library_name):
         'cpp_library_name': cpp_library_name,
     }
     _create_template_file(
-        'cmake/CMakeLists.txt.em',
+        'cmake',
+        'CMakeLists.txt.em',
         package_directory,
         'CMakeLists.txt',
         cmakelists_config)
@@ -193,7 +211,8 @@ def populate_cmake(package, package_directory, cpp_node_name, cpp_library_name):
         'cpp_node_name': cpp_node_name,
     }
     _create_template_file(
-        'cmake/Config.cmake.in.em',
+        'cmake',
+        'Config.cmake.in.em',
         package_directory,
         package.name + 'Config.cmake.in',
         cmake_config)
@@ -202,7 +221,8 @@ def populate_cmake(package, package_directory, cpp_node_name, cpp_library_name):
         'project_name': package.name,
     }
     _create_template_file(
-        'cmake/ConfigVersion.cmake.in.em',
+        'cmake',
+        'ConfigVersion.cmake.in.em',
         package_directory,
         package.name + 'ConfigVersion.cmake.in',
         version_config)
@@ -216,7 +236,8 @@ def populate_ament_cmake(package, package_directory, cpp_node_name, cpp_library_
         'cpp_library_name': cpp_library_name,
     }
     _create_template_file(
-        'ament_cmake/CMakeLists.txt.em',
+        'ament_cmake',
+        'CMakeLists.txt.em',
         package_directory,
         'CMakeLists.txt',
         cmakelists_config)
@@ -227,7 +248,8 @@ def populate_cpp_node(package, source_directory, cpp_node_name):
         'package_name': package.name,
     }
     _create_template_file(
-        'cpp/main.cpp.em',
+        'cpp',
+        'main.cpp.em',
         source_directory,
         cpp_node_name + '.cpp',
         cpp_node_config)
@@ -242,7 +264,8 @@ def populate_cpp_library(package, source_directory, include_directory, cpp_libra
         'class_name': class_name,
     }
     _create_template_file(
-        'cpp/header.hpp.em',
+        'cpp',
+        'header.hpp.em',
         include_directory,
         cpp_library_name + '.hpp',
         cpp_header_config)
@@ -253,7 +276,8 @@ def populate_cpp_library(package, source_directory, include_directory, cpp_libra
         'class_name': class_name
     }
     _create_template_file(
-        'cpp/library.cpp.em',
+        'cpp',
+        'library.cpp.em',
         source_directory,
         cpp_library_name + '.cpp',
         cpp_library_config)
@@ -262,7 +286,8 @@ def populate_cpp_library(package, source_directory, include_directory, cpp_libra
         'package_name': package.name.upper(),
     }
     _create_template_file(
-        'cpp/visibility_control.h.em',
+        'cpp',
+        'visibility_control.h.em',
         include_directory,
         'visibility_control.h',
         visibility_config)
