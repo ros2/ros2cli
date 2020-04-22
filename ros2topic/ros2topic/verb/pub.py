@@ -40,7 +40,7 @@ def nonnegative_int(inval):
     ret = int(inval)
     if ret < 0:
         # The error message here gets completely swallowed by argparse
-        raise ValueError('Value must be positive')
+        raise ValueError('Value must be positive or zero')
     return ret
 
 
