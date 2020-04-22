@@ -12,16 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Ensure client code uses ros2cli.xmlrpc only
-from . import client
-from . import local_server
-
 # Force custom xmlrpc (un)marshalling logic importation.
-from . import marshal
-
-
-__all__ = [
-    'client',
-    'local_server',
-    'marshal'
-]
+from . import marshal  # noqa: F401
