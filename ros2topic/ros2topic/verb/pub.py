@@ -93,9 +93,6 @@ class PubVerb(VerbExtension):
             parser, is_publisher=True, default_preset='system_default')
 
     def main(self, *, args):
-        if args.once and args.times > 0:
-            raise RuntimeError('Cannot pass both -1 and -t <times>')
-
         return main(args)
 
 
