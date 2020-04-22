@@ -25,7 +25,8 @@ import rclpy.action
 
 from ros2cli.node.direct import DirectNode
 
-import ros2cli.xmlrpc
+from ros2cli.xmlrpc.local_server import LocalXMLRPCServer
+from ros2cli.xmlrpc.local_server import RequestHandler
 
 
 def main(*, script_name='_ros2_daemon', argv=None):
@@ -55,9 +56,9 @@ def main(*, script_name='_ros2_daemon', argv=None):
         node_name_suffix='_daemon_%d' % args.ros_domain_id,
         start_parameter_services=False)
     with NetworkAwareNode(node_args) as node:
-        server = ros2cli.xmlrpc.local_server.LocalXMLRPCServer(
+        server = LocalXMLRPCServer(
             addr, logRequests=False,
-            requestHandler=ros2cli.xmlrpc.local_server.RequestHandler,
+            requestHandler=RequestHandler,
             allow_none=True)
 
         try:

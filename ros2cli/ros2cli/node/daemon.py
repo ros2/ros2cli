@@ -24,7 +24,8 @@ import rclpy
 from ros2cli.daemon import get_daemon_port
 from ros2cli.node.direct import DirectNode
 
-import ros2cli.xmlrpc
+from ros2cli.xmlrpc.client import ProtocolError
+from ros2cli.xmlrpc.client import ServerProxy
 
 
 def is_daemon_running(args):
@@ -100,7 +101,7 @@ class DaemonNode:
 
     def __init__(self, args):
         self._args = args
-        self._proxy = ros2cli.xmlrpc.client.ServerProxy(
+        self._proxy = ServerProxy(
             'http://localhost:%d/ros2cli/' % get_daemon_port(),
             allow_none=True)
         self._methods = []
@@ -110,7 +111,7 @@ class DaemonNode:
 
         try:
             methods = self._proxy.system.listMethods()
-        except ros2cli.xmlrpc.client.ProtocolError as e:
+        except ProtocolError as e:
             if e.errcode != 404:
                 raise
             # remote daemon returned 404, likely using different rmw impl.

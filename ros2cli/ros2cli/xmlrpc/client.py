@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Force custom xmlrpc (un)marshalling logic importation.
-from . import generic
-from . import rclpy
+# Alias xmlrpc.client module objects to ensure client code uses ros2cli.xmlrpc
+from xmlrpc.client import ProtocolError
+from xmlrpc.client import ServerProxy
 
 
 __all__ = [
-    'generic',
-    'rclpy'
+    'ProtocolError',
+    'ServerProxy'
 ]
