@@ -36,7 +36,7 @@ import yaml
 MsgType = TypeVar('MsgType')
 
 
-def positive_int(inval):
+def nonnegative_int(inval):
     ret = int(inval)
     if ret < 0:
         # The error message here gets completely swallowed by argparse
@@ -79,15 +79,16 @@ class PubVerb(VerbExtension):
         parser.add_argument(
             '-p', '--print', metavar='N', type=int, default=1,
             help='Only print every N-th published message (default: 1)')
-        parser.add_argument(
+        group = parser.add_mutually_exclusive_group()
+        group.add_argument(
             '-1', '--once', action='store_true',
             help='Publish one message and exit')
+        group.add_argument(
+            '-t', '--times', type=nonnegative_int, default=0,
+            help='Publish this number of times and then exit')
         parser.add_argument(
             '-n', '--node-name',
             help='Name of the created publishing node')
-        parser.add_argument(
-            '-t', '--times', type=positive_int, default=0,
-            help='Publish this number of times and then exit')
         add_qos_arguments_to_argument_parser(
             parser, is_publisher=True, default_preset='system_default')
 
