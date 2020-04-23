@@ -268,6 +268,7 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                     with launch_testing.tools.launch_process(
                         launch_service, command_action, proc_info, proc_output,
                         output_filter=launch_testing_ros.tools.basic_output_filter(
+                            filtered_patterns=['WARNING: Incompatible QoS Policy detected:.*'],
                             filtered_rmw_implementation=get_rmw_implementation_identifier()
                         )
                     ) as command:

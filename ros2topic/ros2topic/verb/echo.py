@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from argparse import ArgumentTypeError
+import sys
 from typing import Any
 from typing import Callable
 from typing import Optional
@@ -102,7 +103,7 @@ def main(args):
 
 def handle_incompatible_qos_event(event):
     incompatible_qos_name = qos_policy_name_from_kind(event.last_policy_kind)
-    print(f'Incompatible QoS Policy detected: {incompatible_qos_name}')
+    print(f'WARNING: Incompatible QoS Policy detected: {incompatible_qos_name}', file=sys.stderr)
 
 
 def subscriber(

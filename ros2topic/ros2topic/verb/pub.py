@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import sys
 import time
 from typing import Optional
 from typing import TypeVar
@@ -116,7 +117,7 @@ def main(args):
 
 def handle_incompatible_qos_event(event):
     incompatible_qos_name = qos_policy_name_from_kind(event.last_policy_kind)
-    print(f'Incompatible QoS Policy detected: {incompatible_qos_name}')
+    print(f'WARNING: Incompatible QoS Policy detected: {incompatible_qos_name}', file=sys.stderr)
 
 
 def publisher(
