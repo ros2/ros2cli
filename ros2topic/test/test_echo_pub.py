@@ -283,6 +283,8 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                             'Echo CLI did not print expected message'
                         )
                     else:
+                        # TODO(mm318): remove special case for FastRTPS when
+                        # https://github.com/ros2/rmw_fastrtps/issues/356 is resolved
                         if 'rmw_fastrtps' in get_rmw_implementation_identifier():
                             assert not command.output, (
                                 'Echo CLI should not have received anything with incompatible QoS'
