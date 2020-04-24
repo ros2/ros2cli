@@ -268,7 +268,6 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                     with launch_testing.tools.launch_process(
                         launch_service, command_action, proc_info, proc_output,
                         output_filter=launch_testing_ros.tools.basic_output_filter(
-                            filtered_patterns=['WARNING: Incompatible QoS Policy detected:.*'],
                             filtered_rmw_implementation=get_rmw_implementation_identifier()
                         )
                     ) as command:
@@ -284,9 +283,15 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                             'Echo CLI did not print expected message'
                         )
                     else:
-                        assert not command.output, (
-                            'Echo CLI should not have received anything with incompatible QoS'
-                        )
+                        if 'rmw_fastrtps' in get_rmw_implementation_identifier():
+                            assert not command.output, (
+                                'Echo CLI should not have received anything with incompatible QoS'
+                            )
+                        else:
+                            assert command.output, 'Echo CLI did not print incompatible QoS warning'
+                            assert 'WARNING: Incompatible QoS Policy detected:' in command.output, (
+                                'Echo CLI did not print expected incompatible QoS warning'
+                            )
                 finally:
                     # Cleanup
                     self.node.destroy_timer(publish_timer)
