@@ -65,13 +65,13 @@ def generate_test_description(rmw_implementation):
                         Node(
                             executable=sys.executable,
                             arguments=[path_to_complex_node_script],
-                            node_name='complex_node',
+                            name='complex_node',
                             additional_env=additional_env
                         ),
                         Node(
                             executable=sys.executable,
                             arguments=[path_to_complex_node_script],
-                            node_name='_hidden_complex_node',
+                            name='_hidden_complex_node',
                             additional_env=additional_env
                         ),
                         launch_testing.actions.ReadyToTest()

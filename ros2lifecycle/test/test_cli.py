@@ -137,14 +137,14 @@ def generate_test_description(rmw_implementation):
                         Node(
                             package='ros2lifecycle_test_fixtures',
                             executable='simple_lifecycle_node',
-                            node_name='test_lifecycle_node',
+                            name='test_lifecycle_node',
                             output='screen',
                             additional_env=additional_env
                         ),
                         Node(
                             package='ros2lifecycle_test_fixtures',
                             executable='simple_lifecycle_node',
-                            node_name='_hidden_test_lifecycle_node',
+                            name='_hidden_test_lifecycle_node',
                             output='screen',
                             additional_env=additional_env
                         ),

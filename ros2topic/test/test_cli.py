@@ -79,7 +79,7 @@ def generate_test_description(rmw_implementation):
     array_repeater_node_action = Node(
         executable=sys.executable,
         arguments=[path_to_repeater_node_script, 'test_msgs/msg/Arrays'],
-        node_name='array_repeater',
+        name='array_repeater',
         remappings=[('/array_repeater/output', '/arrays')],
         output='screen',
         additional_env=additional_env
@@ -87,7 +87,7 @@ def generate_test_description(rmw_implementation):
     defaults_repeater_node_action = Node(
         executable=sys.executable,
         arguments=[path_to_repeater_node_script, 'test_msgs/msg/Defaults'],
-        node_name='defaults_repeater',
+        name='defaults_repeater',
         remappings=[('/defaults_repeater/output', '/defaults')],
         additional_env=additional_env,
     )
@@ -96,7 +96,7 @@ def generate_test_description(rmw_implementation):
         arguments=[
             path_to_repeater_node_script, 'test_msgs/msg/BoundedSequences'
         ],
-        node_name='bounded_sequences_repeater',
+        name='bounded_sequences_repeater',
         remappings=[('/bounded_sequences_repeater/output', '/bounded_sequences')],
         additional_env=additional_env
     )
@@ -105,7 +105,7 @@ def generate_test_description(rmw_implementation):
         arguments=[
             path_to_repeater_node_script, 'test_msgs/msg/UnboundedSequences'
         ],
-        node_name='unbounded_sequences_repeater',
+        name='unbounded_sequences_repeater',
         remappings=[('/unbounded_sequences_repeater/output', '/unbounded_sequences')],
         additional_env=additional_env
     )

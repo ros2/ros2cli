@@ -64,19 +64,19 @@ def generate_test_description(rmw_implementation, ready_fn):
                         Node(
                             executable=sys.executable,
                             arguments=[path_to_complex_node_script],
-                            node_name='complex_node',
+                            name='complex_node',
                             additional_env=additional_env,
                         ),
                         Node(
                             executable=sys.executable,
                             arguments=[path_to_complex_node_script],
-                            node_name='complex_node',
+                            name='complex_node',
                             additional_env=additional_env,
                         ),
                         Node(
                             executable=sys.executable,
                             arguments=[path_to_complex_node_script],
-                            node_name='complex_node_2',
+                            name='complex_node_2',
                             additional_env=additional_env,
                         ),
                         OpaqueFunction(function=lambda context: ready_fn()),
