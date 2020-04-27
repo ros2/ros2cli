@@ -290,10 +290,13 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                                 'Echo CLI should not have received anything with incompatible QoS'
                             )
                         else:
-                            assert command.output, 'Echo CLI did not print incompatible QoS warning'
-                            assert 'WARNING: Incompatible QoS Policy detected:' in command.output, (
-                                'Echo CLI did not print expected incompatible QoS warning'
+                            assert command.output, (
+                                'Echo CLI did not print incompatible QoS warning'
                             )
+                            assert ('WARNING: Incompatible QoS Policy detected:' in
+                                    command.output), (
+                                    'Echo CLI did not print expected incompatible QoS warning'
+                                )
                 finally:
                     # Cleanup
                     self.node.destroy_timer(publish_timer)
