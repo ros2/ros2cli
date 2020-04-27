@@ -17,14 +17,16 @@ from collections import namedtuple
 import functools
 import inspect
 import os
-from xmlrpc.server import SimpleXMLRPCRequestHandler
-from xmlrpc.server import SimpleXMLRPCServer
 
 import netifaces
 
 import rclpy
+import rclpy.action
 
 from ros2cli.node.direct import DirectNode
+
+from ros2cli.xmlrpc.local_server import LocalXMLRPCServer
+from ros2cli.xmlrpc.local_server import RequestHandler
 
 
 def main(*, script_name='_ros2_daemon', argv=None):
@@ -55,7 +57,8 @@ def main(*, script_name='_ros2_daemon', argv=None):
         start_parameter_services=False)
     with NetworkAwareNode(node_args) as node:
         server = LocalXMLRPCServer(
-            addr, logRequests=False, requestHandler=RequestHandler,
+            addr, logRequests=False,
+            requestHandler=RequestHandler,
             allow_none=True)
 
         try:
@@ -63,20 +66,36 @@ def main(*, script_name='_ros2_daemon', argv=None):
 
             # expose getter functions of node
             server.register_function(
-                _print_invoked_function_name(
-                    node.get_node_names_and_namespaces))
+                _print_invoked_function_name(node.get_name))
+            server.register_function(
+                _print_invoked_function_name(node.get_namespace))
+            server.register_function(
+                _print_invoked_function_name(node.get_node_names_and_namespaces))
             server.register_function(
                 _print_invoked_function_name(node.get_topic_names_and_types))
             server.register_function(
                 _print_invoked_function_name(node.get_service_names_and_types))
             server.register_function(
+                _print_invoked_function_name(_bind_function(
+                    rclpy.action.get_action_names_and_types, node)))
+            server.register_function(
                 _print_invoked_function_name(node.get_publisher_names_and_types_by_node))
             server.register_function(
+                _print_invoked_function_name(node.get_publishers_info_by_topic))
+            server.register_function(
                 _print_invoked_function_name(node.get_subscriber_names_and_types_by_node))
+            server.register_function(
+                _print_invoked_function_name(node.get_subscriptions_info_by_topic))
             server.register_function(
                 _print_invoked_function_name(node.get_service_names_and_types_by_node))
             server.register_function(
                 _print_invoked_function_name(node.get_client_names_and_types_by_node))
+            server.register_function(
+                _print_invoked_function_name(_bind_function(
+                    rclpy.action.get_action_server_names_and_types_by_node, node)))
+            server.register_function(
+                _print_invoked_function_name(_bind_function(
+                    rclpy.action.get_action_client_names_and_types_by_node, node)))
             server.register_function(
                 _print_invoked_function_name(node.count_publishers))
             server.register_function(
@@ -166,22 +185,24 @@ class NetworkAwareNode:
             print('Daemon node was reset')
 
 
-class LocalXMLRPCServer(SimpleXMLRPCServer):
-
-    def verify_request(self, request, client_address):
-        if client_address[0] != '127.0.0.1':
-            return False
-        return super(LocalXMLRPCServer, self).verify_request(request, client_address)
-
-
 def get_daemon_port():
     base_port = 11511
     base_port += int(os.environ.get('ROS_DOMAIN_ID', 0))
     return base_port
 
 
-class RequestHandler(SimpleXMLRPCRequestHandler):
-    rpc_paths = ('/ros2cli/',)
+def _bind_function(func, *args, **kwargs):
+    """
+    Bind a function with a set of arguments.
+
+    A functools.partial equivalent that is actually a function.
+    """
+    partial = functools.partial(func, *args, **kwargs)
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        return partial(*args, **kwargs)
+    wrapper.__signature__ = inspect.signature(func)
+    return wrapper
 
 
 def _print_invoked_function_name(func):
