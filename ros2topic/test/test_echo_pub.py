@@ -177,6 +177,42 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                     self.node.destroy_subscription(subscription)
 
     @launch_testing.markers.retry_on_failure(times=5)
+    def test_pub_times(self, launch_service, proc_info, proc_output):
+        command_action = ExecuteProcess(
+            cmd=(['ros2', 'topic', 'pub', '-t', '5', '/clitest/topic/pub_times',
+                  'std_msgs/String', 'data: hello']),
+            additional_env={
+                'PYTHONUNBUFFERED': '1'
+            },
+            output='screen'
+        )
+        with launch_testing.tools.launch_process(
+            launch_service, command_action, proc_info, proc_output,
+            output_filter=launch_testing_ros.tools.basic_output_filter(
+                filtered_rmw_implementation=get_rmw_implementation_identifier()
+            )
+        ) as command:
+            assert command.wait_for_shutdown(timeout=10)
+        assert command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=[
+                'publisher: beginning loop',
+                "publishing #1: std_msgs.msg.String(data='hello')",
+                '',
+                "publishing #2: std_msgs.msg.String(data='hello')",
+                '',
+                "publishing #3: std_msgs.msg.String(data='hello')",
+                '',
+                "publishing #4: std_msgs.msg.String(data='hello')",
+                '',
+                "publishing #5: std_msgs.msg.String(data='hello')",
+                '',
+            ],
+            text=command.output,
+            strict=True
+        )
+
+    @launch_testing.markers.retry_on_failure(times=5)
     def test_echo_basic(self, launch_service, proc_info, proc_output):
         params = [
             ('/clitest/topic/echo_basic', False, True),

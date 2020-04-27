@@ -36,6 +36,22 @@ import yaml
 MsgType = TypeVar('MsgType')
 
 
+def nonnegative_int(inval):
+    ret = int(inval)
+    if ret < 0:
+        # The error message here gets completely swallowed by argparse
+        raise ValueError('Value must be positive or zero')
+    return ret
+
+
+def positive_float(inval):
+    ret = float(inval)
+    if ret <= 0.0:
+        # The error message here gets completely swallowed by argparse
+        raise ValueError('Value must be positive')
+    return ret
+
+
 class PubVerb(VerbExtension):
     """Publish a message to a topic."""
 
@@ -58,14 +74,18 @@ class PubVerb(VerbExtension):
         arg.completer = TopicMessagePrototypeCompleter(
             topic_type_key='message_type')
         parser.add_argument(
-            '-r', '--rate', metavar='N', type=float, default=1.0,
+            '-r', '--rate', metavar='N', type=positive_float, default=1.0,
             help='Publishing rate in Hz (default: 1)')
         parser.add_argument(
             '-p', '--print', metavar='N', type=int, default=1,
             help='Only print every N-th published message (default: 1)')
-        parser.add_argument(
+        group = parser.add_mutually_exclusive_group()
+        group.add_argument(
             '-1', '--once', action='store_true',
             help='Publish one message and exit')
+        group.add_argument(
+            '-t', '--times', type=nonnegative_int, default=0,
+            help='Publish this number of times and then exit')
         parser.add_argument(
             '-n', '--node-name',
             help='Name of the created publishing node')
@@ -73,15 +93,15 @@ class PubVerb(VerbExtension):
             parser, is_publisher=True, default_preset='system_default')
 
     def main(self, *, args):
-        if args.rate <= 0:
-            raise RuntimeError('rate must be greater than zero')
-
         return main(args)
 
 
 def main(args):
     qos_profile = qos_profile_from_short_keys(
         args.qos_profile, reliability=args.qos_reliability, durability=args.qos_durability)
+    times = args.times
+    if args.once:
+        times = 1
     with DirectNode(args, node_name=args.node_name) as node:
         return publisher(
             node.node,
@@ -90,7 +110,7 @@ def main(args):
             args.values,
             1. / args.rate,
             args.print,
-            args.once,
+            times,
             qos_profile)
 
 
@@ -106,7 +126,7 @@ def publisher(
     values: dict,
     period: float,
     print_nth: int,
-    once: bool,
+    times: int,
     qos_profile: QoSProfile,
 ) -> Optional[str]:
     """Initialize a node with a single publisher and run its publish loop (maybe only once)."""
@@ -140,10 +160,10 @@ def publisher(
         pub.publish(msg)
 
     timer = node.create_timer(period, timer_callback)
-    if once:
+    while times == 0 or count < times:
         rclpy.spin_once(node)
+
+    if times == 1:
         time.sleep(0.1)  # make sure the message reaches the wire before exiting
-    else:
-        rclpy.spin(node)
 
     node.destroy_timer(timer)
