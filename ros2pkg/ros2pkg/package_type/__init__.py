@@ -1,3 +1,5 @@
+# Copyright 2020 Wayne Parrott
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -11,7 +13,7 @@
 # limitations under the License.
 
 from ros2cli.entry_points import get_entry_points
-from ros2cli.plugin_system import instantiate_extensions
+from ros2cli.plugin_system import _instantiate_extension
 from ros2cli.plugin_system import PLUGIN_SYSTEM_VERSION
 from ros2cli.plugin_system import satisfies_version
 
@@ -40,11 +42,7 @@ class PackageTypeExtension():
         pass
 
     def create_package(self, args):
-        """
-        Create the ROS 2 package directory structure and content.
-
-        :raises PackageCreationError: on any any internal error
-        """
+        """Create the ROS 2 package directory structure and content."""
         raise NotImplementedError
 
 
@@ -55,21 +53,10 @@ def get_package_type_names():
     :return: Sorted list of package-type string names.
     """
     names = set(PackageTypeExtension.NATIVE_PACKAGE_TYPES)
-    names.update(get_entry_points(PackageTypeExtension.EXTENSION_POINT_NAME).keys())
-    names.sort()
-    return names
-
-
-def get_package_type_extensions():
-    """
-    Get all package-type extensions.
-
-    :return: List of PackageTypeExtension subclasses.
-    """
-    extensions = instantiate_extensions(PackageTypeExtension.EXTENSION_POINT_NAME)
-    for name, extension in extensions.items():
-        extension.NAME = name
-    return extensions
+    entry_pts = get_entry_points(PackageTypeExtension.EXTENSION_POINT_NAME).keys()
+    if len(entry_pts) > 0:
+        names.update(entry_pts)
+    return sorted(names)
 
 
 def get_package_type_extension(name):
@@ -77,7 +64,13 @@ def get_package_type_extension(name):
     Get the package-type extension with name.
 
     :param name: The name of the package-type extension to search.
-    :return: The package-type extension.
+    :return: The package-type extension or None if extension is not found.
     """
-    extensions = get_package_type_extensions()
-    return extensions.get(name)
+    entry_pts = get_entry_points(PackageTypeExtension.EXTENSION_POINT_NAME)
+    if name not in entry_pts:
+        return None
+    extension = _instantiate_extension(
+                                      PackageTypeExtension.EXTENSION_POINT_NAME,
+                                      name,
+                                      entry_pts[name].load())
+    return extension
