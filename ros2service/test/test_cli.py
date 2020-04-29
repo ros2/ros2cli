@@ -280,7 +280,7 @@ class TestROS2ServiceCLI(unittest.TestCase):
             strict=True
         )
 
-    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    # @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_call(self):
         with self.launch_service_command(
             arguments=[
@@ -292,18 +292,16 @@ class TestROS2ServiceCLI(unittest.TestCase):
         ) as service_command:
             assert service_command.wait_for_shutdown(timeout=10)
         assert service_command.exit_code == launch_testing.asserts.EXIT_OK
+        expected = get_echo_call_output(
+            bool_value=False, int32_value=-1, float64_value=0.1, string_value='bazbar')
+        actual = service_command.output
         assert launch_testing.tools.expect_output(
-            expected_lines=get_echo_call_output(
-                bool_value=False,
-                int32_value=-1,
-                float64_value=0.1,
-                string_value='bazbar'
-            ),
-            text=service_command.output,
+            expected_lines=expected,
+            text=actual,
             strict=True
-        )
+        ), f'Expected {repr(expected)} got {repr(actual)}'
 
-    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    # @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_repeated_call(self):
         with self.launch_service_command(
             arguments=[
