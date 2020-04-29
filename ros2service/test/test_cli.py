@@ -314,8 +314,8 @@ class TestROS2ServiceCLI(unittest.TestCase):
                 '{bool_value: true, int32_value: 1, float64_value: 1.0, string_value: foobar}'
             ],
         ) as service_command:
-            assert service_command.wait_for_output(functools.partial(
-                launch_testing.tools.expect_output, expected_lines=2 * get_echo_call_output(
-                    bool_value=True, int32_value=1, float64_value=1.0, string_value='foobar'
-                )
-            ), timeout=10)
+            expected = 2 * get_echo_call_output(
+                bool_value=True, int32_value=1, float64_value=1.0, string_value='foobar')
+            result = service_command.wait_for_output(functools.partial(
+                launch_testing.tools.expect_output, expected_lines=expected), timeout=10)
+            assert result, f'Expected {repr(expected)} got {repr(result)}'
