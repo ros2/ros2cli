@@ -13,7 +13,6 @@
 # limitations under the License.
 
 from argparse import ArgumentTypeError
-import sys
 from typing import Any
 from typing import Callable
 from typing import Optional
