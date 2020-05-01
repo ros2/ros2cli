@@ -28,6 +28,7 @@ import test_msgs.srv
 
 TEST_NODE_NAME = 'test_node'
 TEST_NODE_NAMESPACE = '/test'
+TEST_NODE_ENCLAVE = '/'
 TEST_TOPIC_NAME = '/test/topic'
 TEST_TOPIC_TYPE = 'test_msgs/msg/Empty'
 TEST_TOPIC_PUBLISHER_QOS = rclpy.qos.QoSProfile(
@@ -122,6 +123,11 @@ def test_get_namespace(daemon_node):
 def test_get_node_names_and_namespaces(daemon_node):
     node_names_and_namespaces = daemon_node.get_node_names_and_namespaces()
     assert [TEST_NODE_NAME, TEST_NODE_NAMESPACE] in node_names_and_namespaces
+
+
+def test_get_node_names_and_namespaces_with_enclaves(daemon_node):
+    node_names_and_namespaces = daemon_node.get_node_names_and_namespaces_with_enclaves()
+    assert [TEST_NODE_NAME, TEST_NODE_NAMESPACE, TEST_NODE_ENCLAVE] in node_names_and_namespaces
 
 
 def test_get_topic_names_and_types(daemon_node):
