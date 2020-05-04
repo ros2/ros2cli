@@ -21,10 +21,7 @@ from typing import TypeVar
 import rclpy
 from rclpy.expand_topic_name import expand_topic_name
 from rclpy.node import Node
-from rclpy.qos import qos_policy_name_from_kind
 from rclpy.qos import QoSProfile
-from rclpy.qos_event import SubscriptionEventCallbacks
-from rclpy.qos_event import UnsupportedEventTypeError
 from rclpy.validate_full_topic_name import validate_full_topic_name
 from ros2cli.node.direct import DirectNode
 from ros2topic.api import add_qos_arguments_to_argument_parser
@@ -100,11 +97,6 @@ def main(args):
             node.node, args.topic_name, args.message_type, callback, qos_profile)
 
 
-def handle_incompatible_qos_event(event):
-    incompatible_qos_name = qos_policy_name_from_kind(event.last_policy_kind)
-    print(f'Incompatible QoS Policy detected: {incompatible_qos_name}')
-
-
 def subscriber(
     node: Node,
     topic_name: str,
@@ -138,13 +130,8 @@ def subscriber(
 
     msg_module = get_message(message_type)
 
-    subscription_callbacks = SubscriptionEventCallbacks(
-        incompatible_qos=handle_incompatible_qos_event)
-    try:
-        node.create_subscription(
-            msg_module, topic_name, callback, qos_profile, event_callbacks=subscription_callbacks)
-    except UnsupportedEventTypeError:
-        node.create_subscription(msg_module, topic_name, callback, qos_profile)
+    node.create_subscription(
+        msg_module, topic_name, callback, qos_profile)
 
     rclpy.spin(node)
 
