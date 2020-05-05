@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import pytest
+import time
 
 import rclpy
 import rclpy.action
@@ -104,7 +105,6 @@ def local_node():
 
 @pytest.fixture(scope='module')
 def daemon_node():
-    import time
     if is_daemon_running(args=[]):
         with DaemonNode(args=[]) as node:
             node.system.shutdown()
