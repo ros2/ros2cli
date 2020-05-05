@@ -104,39 +104,25 @@ def local_node():
 
 @pytest.fixture(scope='module')
 def daemon_node():
+    import time
     if is_daemon_running(args=[]):
         with DaemonNode(args=[]) as node:
             node.system.shutdown()
     assert spawn_daemon(args=[], wait_until_spawned=5.0)
     with DaemonNode(args=[]) as node:
+        attempts = 3
+        delay_between_attempts = 2  # seconds
+        for _ in range(attempts):
+            node_names_and_namespaces = node.get_node_names_and_namespaces()
+            if [TEST_NODE_NAME, TEST_NODE_NAMESPACE] in node_names_and_namespaces:
+                break
+            time.sleep(delay_between_attempts)
+        else:
+            pytest.fail(
+                f'daemon failed to discover {TEST_NODE_NAMESPACE}/{TEST_NODE_NAME}'
+            )
         yield node
         node.system.shutdown()
-
-
-def retry(*, times=1, delay=0):
-    import functools
-    import inspect
-    import time
-
-    assert times > 0
-    assert delay >= 0
-
-    def decorator(func):
-        @functools.wraps(func)
-        def wrapper(*args, **kwargs):
-            nonlocal times
-            while True:
-                times -= 1
-                try:
-                    return func(*args, **kwargs)
-                except AssertionError:
-                    if times == 0:
-                        raise
-                    if delay > 0:
-                        time.sleep(delay)
-        wrapper.__signature__ = inspect.signature(func)
-        return wrapper
-    return decorator
 
 
 def test_get_name(daemon_node):
@@ -147,37 +133,31 @@ def test_get_namespace(daemon_node):
     assert '/' == daemon_node.get_namespace()
 
 
-@retry(times=3, delay=3)  # cope with discovery latency
 def test_get_node_names_and_namespaces(daemon_node):
     node_names_and_namespaces = daemon_node.get_node_names_and_namespaces()
     assert [TEST_NODE_NAME, TEST_NODE_NAMESPACE] in node_names_and_namespaces
 
 
-@retry(times=3, delay=3)  # cope with discovery latency
 def test_get_node_names_and_namespaces_with_enclaves(daemon_node):
     node_names_and_namespaces = daemon_node.get_node_names_and_namespaces_with_enclaves()
     assert [TEST_NODE_NAME, TEST_NODE_NAMESPACE, TEST_NODE_ENCLAVE] in node_names_and_namespaces
 
 
-@retry(times=3, delay=3)  # cope with discovery latency
 def test_get_topic_names_and_types(daemon_node):
     topic_names_and_types = daemon_node.get_topic_names_and_types()
     assert [TEST_TOPIC_NAME, [TEST_TOPIC_TYPE]] in topic_names_and_types
 
 
-@retry(times=3, delay=3)  # cope with discovery latency
 def test_get_service_names_and_types(daemon_node):
     service_names_and_types = daemon_node.get_service_names_and_types()
     assert [TEST_SERVICE_NAME, [TEST_SERVICE_TYPE]] in service_names_and_types
 
 
-@retry(times=3, delay=3)  # cope with discovery latency
 def test_get_action_names_and_types(daemon_node):
     action_names_and_types = daemon_node.get_action_names_and_types()
     assert [TEST_ACTION_NAME, [TEST_ACTION_TYPE]] in action_names_and_types
 
 
-@retry(times=3, delay=3)  # cope with discovery latency
 def test_get_publisher_names_and_types_by_node(daemon_node):
     topic_names_and_types = daemon_node.get_publisher_names_and_types_by_node(
         TEST_NODE_NAME, TEST_NODE_NAMESPACE
@@ -185,7 +165,6 @@ def test_get_publisher_names_and_types_by_node(daemon_node):
     assert [TEST_TOPIC_NAME, [TEST_TOPIC_TYPE]] in topic_names_and_types
 
 
-@retry(times=3, delay=3)  # cope with discovery latency
 def test_get_subscriber_names_and_types_by_node(daemon_node):
     topic_names_and_types = daemon_node.get_subscriber_names_and_types_by_node(
         TEST_NODE_NAME, TEST_NODE_NAMESPACE
@@ -193,7 +172,6 @@ def test_get_subscriber_names_and_types_by_node(daemon_node):
     assert [TEST_TOPIC_NAME, [TEST_TOPIC_TYPE]] in topic_names_and_types
 
 
-@retry(times=3, delay=3)  # cope with discovery latency
 def test_get_service_names_and_types_by_node(daemon_node):
     service_names_and_types = daemon_node.get_service_names_and_types_by_node(
         TEST_NODE_NAME, TEST_NODE_NAMESPACE
@@ -201,7 +179,6 @@ def test_get_service_names_and_types_by_node(daemon_node):
     assert [TEST_SERVICE_NAME, [TEST_SERVICE_TYPE]] in service_names_and_types
 
 
-@retry(times=3, delay=3)  # cope with discovery latency
 def test_get_client_names_and_types_by_node(daemon_node):
     service_names_and_types = daemon_node.get_client_names_and_types_by_node(
         TEST_NODE_NAME, TEST_NODE_NAMESPACE
@@ -209,7 +186,6 @@ def test_get_client_names_and_types_by_node(daemon_node):
     assert [TEST_SERVICE_NAME, [TEST_SERVICE_TYPE]] in service_names_and_types
 
 
-@retry(times=3, delay=3)  # cope with discovery latency
 def test_get_action_server_names_and_types_by_node(daemon_node):
     action_names_and_types = daemon_node.get_action_server_names_and_types_by_node(
         TEST_NODE_NAME, TEST_NODE_NAMESPACE
@@ -217,7 +193,6 @@ def test_get_action_server_names_and_types_by_node(daemon_node):
     assert [TEST_ACTION_NAME, [TEST_ACTION_TYPE]] in action_names_and_types
 
 
-@retry(times=3, delay=3)  # cope with discovery latency
 def test_get_action_client_names_and_types_by_node(daemon_node):
     action_names_and_types = daemon_node.get_action_client_names_and_types_by_node(
         TEST_NODE_NAME, TEST_NODE_NAMESPACE
@@ -225,7 +200,6 @@ def test_get_action_client_names_and_types_by_node(daemon_node):
     assert [TEST_ACTION_NAME, [TEST_ACTION_TYPE]] in action_names_and_types
 
 
-@retry(times=3, delay=3)  # cope with discovery latency
 def test_get_publishers_info_by_topic(daemon_node):
     publishers_info = daemon_node.get_publishers_info_by_topic(TEST_TOPIC_NAME)
     assert len(publishers_info) == 1
@@ -239,7 +213,6 @@ def test_get_publishers_info_by_topic(daemon_node):
         TEST_TOPIC_PUBLISHER_QOS.reliability
 
 
-@retry(times=3, delay=3)  # cope with discovery latency
 def test_get_subscriptions_info_by_topic(daemon_node):
     subscriptions_info = daemon_node.get_subscriptions_info_by_topic(TEST_TOPIC_NAME)
     assert len(subscriptions_info) == 1
@@ -253,11 +226,9 @@ def test_get_subscriptions_info_by_topic(daemon_node):
         TEST_TOPIC_SUBSCRIPTION_QOS.reliability
 
 
-@retry(times=3, delay=3)  # cope with discovery latency
 def test_count_publishers(daemon_node):
     assert 1 == daemon_node.count_publishers(TEST_TOPIC_NAME)
 
 
-@retry(times=3, delay=3)  # cope with discovery latency
 def test_count_subscribers(daemon_node):
     assert 1 == daemon_node.count_subscribers(TEST_TOPIC_NAME)
