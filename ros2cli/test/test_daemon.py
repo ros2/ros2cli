@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import time
+
 import pytest
 
 import rclpy
@@ -109,7 +111,19 @@ def daemon_node():
             node.system.shutdown()
     assert spawn_daemon(args=[], wait_until_spawned=5.0)
     with DaemonNode(args=[]) as node:
+        attempts = 3
+        delay_between_attempts = 2  # seconds
+        for _ in range(attempts):
+            node_names_and_namespaces = node.get_node_names_and_namespaces()
+            if [TEST_NODE_NAME, TEST_NODE_NAMESPACE] in node_names_and_namespaces:
+                break
+            time.sleep(delay_between_attempts)
+        else:
+            pytest.fail(
+                f'daemon failed to discover {TEST_NODE_NAMESPACE}/{TEST_NODE_NAME}'
+            )
         yield node
+        node.system.shutdown()
 
 
 def test_get_name(daemon_node):
