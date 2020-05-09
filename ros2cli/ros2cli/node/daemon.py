@@ -44,6 +44,7 @@ def is_daemon_running(args):
 
 def spawn_daemon(args, wait_until_spawned=None, debug=False):
     ros_domain_id = int(os.environ.get('ROS_DOMAIN_ID', 0))
+    timeout_duration = int(args.timeout)
     kwargs = {}
     if platform.system() != 'Windows':
         cmd = ['_ros2_daemon']
@@ -75,7 +76,8 @@ def spawn_daemon(args, wait_until_spawned=None, debug=False):
     cmd.extend([
         # the arguments are only passed for visibility in e.g. the process list
         '--rmw-implementation', rmw_implementation_identifier,
-        '--ros-domain-id', str(ros_domain_id)])
+        '--ros-domain-id', str(ros_domain_id),
+        '--timeout', str(timeout_duration)])
     if not debug:
         kwargs['stdout'] = subprocess.DEVNULL
         kwargs['stderr'] = subprocess.DEVNULL
