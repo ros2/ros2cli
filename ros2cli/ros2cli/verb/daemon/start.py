@@ -28,7 +28,8 @@ class StartVerb(VerbExtension):
             help='Print debug messages')
         parser.add_argument(
             '--timeout', '-t', default=2 * 60 * 60,
-            help='Terminate daemon after integer t seconds of inactivity. Default of 7200 seconds ( 2 hours )')
+            help='Terminate daemon after integer t seconds of inactivity. \
+            Default of 7200 seconds(2 hours)')
 
     def main(self, *, args):
         running = is_daemon_running(args)
