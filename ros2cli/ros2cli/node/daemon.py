@@ -22,7 +22,6 @@ import time
 
 import rclpy
 from ros2cli.daemon import get_daemon_port
-from ros2cli.node.direct import DirectNode
 
 from ros2cli.xmlrpc.client import ProtocolError
 from ros2cli.xmlrpc.client import ServerProxy
@@ -106,6 +105,10 @@ class DaemonNode:
             allow_none=True)
         self._methods = []
 
+    @property
+    def methods(self):
+        return self._methods
+
     def __enter__(self):
         self._proxy.__enter__()
 
@@ -116,9 +119,7 @@ class DaemonNode:
                 raise
             # remote daemon returned 404, likely using different rmw impl.
             self._proxy.__exit__()
-            # fall back to use direct node
-            self._proxy = DirectNode(self._args)
-            self._proxy.__enter__()
+            self._proxy = None
         else:
             self._methods = [m for m in methods if not m.startswith('system.')]
 

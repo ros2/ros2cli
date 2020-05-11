@@ -25,21 +25,47 @@ class NodeStrategy:
     def __init__(self, args):
         use_daemon = not getattr(args, 'no_daemon', False)
         if use_daemon and is_daemon_running(args):
-            self.node = DaemonNode(args)
+            self._daemon_node = DaemonNode(args)
+            self._direct_node = None
         else:
             if use_daemon:
                 spawn_daemon(args)
-            self.node = DirectNode(args)
+            self._direct_node = DirectNode(args)
+            self._daemon_node = None
+        self._args = args
+        self._in_scope = False
+
+    @property
+    def daemon_node(self):
+        return self._daemon_node
+
+    @property
+    def direct_node(self):
+        if self._direct_node is None:
+            self._direct_node = DirectNode(self._args)
+            if self._in_scope:
+                self._direct_node.__enter__()
+        return self._direct_node
 
     def __enter__(self):
-        self.node.__enter__()
+        if self._daemon_node:
+            self._daemon_node.__enter__()
+        if self._direct_node:
+            self._direct_node.__enter__()
+        self._in_scope = True
         return self
 
     def __getattr__(self, name):
-        return getattr(self.node, name)
+        if self.daemon_node and name in self.daemon_node.methods:
+            return getattr(self.daemon_node, name)
+        return getattr(self.direct_node, name)
 
     def __exit__(self, exc_type, exc_value, traceback):
-        self.node.__exit__(exc_type, exc_value, traceback)
+        self._in_scope = False
+        if self._direct_node:
+            self._direct_node.__exit__(exc_type, exc_value, traceback)
+        if self._daemon_node:
+            self._daemon_node.__exit__(exc_type, exc_value, traceback)
 
 
 def add_arguments(parser):
