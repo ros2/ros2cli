@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ros2cli.node.strategy import add_arguments as add_strategy_node_arguments
 from ros2cli.node.strategy import NodeStrategy
 from ros2service.api import get_service_names_and_types
 from ros2service.api import ServiceNameCompleter
@@ -28,7 +27,6 @@ class TypeVerb(VerbExtension):
             help="Name of the ROS service to get type (e.g. '/talker/list_parameters')")
         arg.completer = ServiceNameCompleter(
             include_hidden_services_key='include_hidden_services')
-        add_strategy_node_arguments(parser)
 
     def main(self, *, args):
         with NodeStrategy(args) as node:

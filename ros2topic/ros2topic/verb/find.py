@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ros2cli.node.strategy import add_arguments as add_strategy_node_arguments
 from ros2cli.node.strategy import NodeStrategy
 
 from ros2topic.api import get_topic_names_and_types
@@ -35,7 +34,6 @@ class FindVerb(VerbExtension):
         parser.add_argument(
             '--include-hidden-topics', action='store_true',
             help='Consider hidden topics as well')
-        add_strategy_node_arguments(parser)
 
     def main(self, *, args):
         with NodeStrategy(args) as node:

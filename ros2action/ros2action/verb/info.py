@@ -16,7 +16,6 @@ import rclpy
 from ros2action.api import action_name_completer
 from ros2action.api import get_action_clients_and_servers
 from ros2action.verb import VerbExtension
-from ros2cli.node.strategy import add_arguments
 from ros2cli.node.strategy import NodeStrategy
 
 
@@ -34,7 +33,6 @@ class InfoVerb(VerbExtension):
         parser.add_argument(
             '-c', '--count', action='store_true',
             help='Only display the number of action clients and action servers')
-        add_arguments(parser)
 
     def main(self, *, args):
         with NodeStrategy(args) as node:

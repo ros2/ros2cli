@@ -14,7 +14,6 @@
 
 from ros2action.api import get_action_names_and_types
 from ros2action.verb import VerbExtension
-from ros2cli.node.strategy import add_arguments
 from ros2cli.node.strategy import NodeStrategy
 
 
@@ -28,7 +27,6 @@ class ListVerb(VerbExtension):
         parser.add_argument(
             '-c', '--count-actions', action='store_true',
             help='Only display the number of actions discovered')
-        add_arguments(parser)
 
     def main(self, *, args):
         with NodeStrategy(args) as node:
