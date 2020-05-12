@@ -83,7 +83,7 @@ def get_container_components_info(*, node, remote_container_node_name):
     try:
         if not list_nodes_client.wait_for_service(timeout_sec=5.0):
             raise RuntimeError(
-                f"No list_nodes service found for '{remote_container_node_name}' container"
+                f"No 'list_nodes' service found for '{remote_container_node_name}' container"
             )
         future = list_nodes_client.call_async(
             composition_interfaces.srv.ListNodes.Request()
@@ -132,7 +132,7 @@ def load_component_into_container(
     try:
         if not load_node_client.wait_for_service(timeout_sec=5.0):
             raise RuntimeError(
-                f"No load_node service found for '{remote_container_node_name}' container"
+                f"No 'load_node' service found for '{remote_container_node_name}' container"
             )
         request = composition_interfaces.srv.LoadNode.Request()
         request.package_name = package_name
@@ -184,7 +184,7 @@ def unload_component_from_container(*, node, remote_container_node_name, compone
     try:
         if not unload_node_client.wait_for_service(timeout_sec=5.0):
             raise RuntimeError(
-                f"No unload_node service found for '{remote_container_node_name}' container"
+                f"No 'unload_node' service found for '{remote_container_node_name}' container"
             )
         for uid in component_uids:
             request = composition_interfaces.srv.UnloadNode.Request()

@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from ros2cli.node.strategy import add_arguments
 from ros2cli.node.strategy import NodeStrategy
-
 from ros2topic.api import get_topic_names_and_types
 from ros2topic.verb import VerbExtension
 
@@ -22,6 +22,7 @@ class ListVerb(VerbExtension):
     """Output a list of available topics."""
 
     def add_arguments(self, parser, cli_name):
+        add_arguments(parser)
         parser.add_argument(
             '-t', '--show-types', action='store_true',
             help='Additionally show the topic type')
