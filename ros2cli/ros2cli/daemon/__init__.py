@@ -200,6 +200,7 @@ def _bind_function(func, *args, **kwargs):
     A functools.partial equivalent that is actually a function.
     """
     partial = functools.partial(func, *args, **kwargs)
+
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         return partial(*args, **kwargs)
