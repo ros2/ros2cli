@@ -12,10 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import rclpy.action
 from rclpy.expand_topic_name import expand_topic_name
 from rclpy.validate_full_topic_name import validate_full_topic_name
-from ros2cli.node.direct import DirectNode
+from ros2cli.node.strategy import NodeStrategy
 from rosidl_runtime_py import get_action_interfaces
 from rosidl_runtime_py import message_to_yaml
 from rosidl_runtime_py.utilities import get_action
@@ -38,8 +37,7 @@ def get_action_clients_and_servers(*, node, action_name):
         node_fqn = '/'.join(node_ns) + node_name
 
         # Get any action clients associated with the node
-        client_names_and_types = rclpy.action.get_action_client_names_and_types_by_node(
-            node,
+        client_names_and_types = node.get_action_client_names_and_types_by_node(
             node_name,
             node_ns,
         )
@@ -48,8 +46,7 @@ def get_action_clients_and_servers(*, node, action_name):
                 action_clients.append((node_fqn, client_types))
 
         # Get any action servers associated with the node
-        server_names_and_types = rclpy.action.get_action_server_names_and_types_by_node(
-            node,
+        server_names_and_types = node.get_action_server_names_and_types_by_node(
             node_name,
             node_ns,
         )
@@ -61,7 +58,7 @@ def get_action_clients_and_servers(*, node, action_name):
 
 
 def get_action_names_and_types(*, node):
-    return rclpy.action.get_action_names_and_types(node)
+    return node.get_action_names_and_types()
 
 
 def get_action_names(*, node):
@@ -71,7 +68,7 @@ def get_action_names(*, node):
 
 def action_name_completer(prefix, parsed_args, **kwargs):
     """Callable returning a list of action names."""
-    with DirectNode(parsed_args) as node:
+    with NodeStrategy(parsed_args) as node:
         return get_action_names(node=node)
 
 
@@ -95,7 +92,7 @@ class ActionTypeCompleter:
             return action_type_completer()
 
         action_name = getattr(parsed_args, self.action_name_key)
-        with DirectNode(parsed_args) as node:
+        with NodeStrategy(parsed_args) as node:
             names_and_types = get_action_names_and_types(node=node)
             for n, t in names_and_types:
                 if n == action_name:

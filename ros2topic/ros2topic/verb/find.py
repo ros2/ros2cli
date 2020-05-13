@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from ros2cli.node.strategy import NodeStrategy
+
 from ros2topic.api import get_topic_names_and_types
 from ros2topic.api import message_type_completer
 from ros2topic.verb import VerbExtension

@@ -24,7 +24,6 @@ import rcl_interfaces.msg
 
 import rclpy
 
-from ros2cli.node.direct import DirectNode
 from ros2cli.node.strategy import NodeStrategy
 from ros2node.api import get_node_names
 from ros2node.api import get_service_server_info
@@ -82,7 +81,10 @@ def get_container_components_info(*, node, remote_container_node_name):
         '{}/_container/list_nodes'.format(remote_container_node_name)
     )
     try:
-        list_nodes_client.wait_for_service()
+        if not list_nodes_client.wait_for_service(timeout_sec=5.0):
+            raise RuntimeError(
+                f"No 'list_nodes' service found for '{remote_container_node_name}' container"
+            )
         future = list_nodes_client.call_async(
             composition_interfaces.srv.ListNodes.Request()
         )
@@ -128,7 +130,10 @@ def load_component_into_container(
         '{}/_container/load_node'.format(remote_container_node_name)
     )
     try:
-        load_node_client.wait_for_service()
+        if not load_node_client.wait_for_service(timeout_sec=5.0):
+            raise RuntimeError(
+                f"No 'load_node' service found for '{remote_container_node_name}' container"
+            )
         request = composition_interfaces.srv.LoadNode.Request()
         request.package_name = package_name
         request.plugin_name = plugin_name
@@ -177,7 +182,10 @@ def unload_component_from_container(*, node, remote_container_node_name, compone
         '{}/_container/unload_node'.format(remote_container_node_name)
     )
     try:
-        unload_node_client.wait_for_service()
+        if not unload_node_client.wait_for_service(timeout_sec=5.0):
+            raise RuntimeError(
+                f"No 'unload_node' service found for '{remote_container_node_name}' container"
+            )
         for uid in component_uids:
             request = composition_interfaces.srv.UnloadNode.Request()
             request.unique_id = uid
@@ -193,7 +201,7 @@ def find_container_node_names(*, node, node_names):
     """
     Identify container nodes from a list of node names.
 
-    :param node: a `ros2cli.node.DirectNode` instance
+    :param node: a node-like instance
     :param node_names: list of `ros2node.api.NodeName` instances, as returned
         by `ros2node.api.get_node_names()`
     :return: list of `ros2node.api.NodeName` instances for nodes that are
@@ -230,11 +238,9 @@ def package_with_components_name_completer(prefix, parsed_args, **kwargs):
 def container_node_name_completer(prefix, parsed_args, **kwargs):
     """Callable returning a list of container node names."""
     with NodeStrategy(parsed_args) as node:
-        node_names = get_node_names(node=node)
-    with DirectNode(parsed_args) as node:
         return [
             n.full_name for n in find_container_node_names(
-                node=node, node_names=node_names
+                node=node, node_names=get_node_names(node=node)
             )
         ]
 

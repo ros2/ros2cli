@@ -14,7 +14,7 @@
 
 from ros2action.api import get_action_names_and_types
 from ros2action.verb import VerbExtension
-from ros2cli.node.strategy import DirectNode
+from ros2cli.node.strategy import NodeStrategy
 
 
 class ListVerb(VerbExtension):
@@ -29,7 +29,7 @@ class ListVerb(VerbExtension):
             help='Only display the number of actions discovered')
 
     def main(self, *, args):
-        with DirectNode(args) as node:
+        with NodeStrategy(args) as node:
             action_names_and_types = get_action_names_and_types(node=node)
 
         if args.count_actions:

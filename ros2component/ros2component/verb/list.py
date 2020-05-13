@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ros2cli.node.direct import DirectNode
 from ros2cli.node.strategy import add_arguments
 from ros2cli.node.strategy import NodeStrategy
 
@@ -39,10 +38,8 @@ class ListVerb(VerbExtension):
 
     def main(self, *, args):
         with NodeStrategy(args) as node:
-            node_names = get_node_names(node=node)
-        with DirectNode(args) as node:
             container_node_names = find_container_node_names(
-                node=node, node_names=node_names
+                node=node, node_names=get_node_names(node=node)
             )
             if args.container_node_name is not None:
                 if args.container_node_name not in [n.full_name for n in container_node_names]:
