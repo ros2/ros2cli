@@ -25,6 +25,10 @@ def main(args=None):
     node.declare_parameter('int_param', 42)
     node.declare_parameter('double_param', 1.23)
     node.declare_parameter('str_param', 'Hello World')
+    node.declare_parameter('bool_array_param', [False, False, True])
+    node.declare_parameter('int_array_param', [1, 2, 3])
+    node.declare_parameter('str_array_param', ['foo', 'bar', 'baz'])
+    node.declare_parameter('double_array_param', [3.125, 6.25, 12.5])
     node.declare_parameter('foo' + PARAMETER_SEPARATOR_STRING + 'str_param', 'foo')
     node.declare_parameter('foo' + PARAMETER_SEPARATOR_STRING +
                            'bar' + PARAMETER_SEPARATOR_STRING +
