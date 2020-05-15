@@ -22,6 +22,8 @@ import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile
 from ros2cli.node.strategy import NodeStrategy
+from ros2cli.node.strategy import add_arguments as add_strategy_node_arguments
+
 from ros2topic.api import add_qos_arguments_to_argument_parser
 from ros2topic.api import get_msg_class
 from ros2topic.api import qos_profile_from_short_keys
@@ -49,6 +51,8 @@ class EchoVerb(VerbExtension):
     """Output messages from a topic."""
 
     def add_arguments(self, parser, cli_name):
+        add_strategy_node_arguments(parser)
+        
         arg = parser.add_argument(
             'topic_name',
             help="Name of the ROS topic to listen to (e.g. '/chatter')")

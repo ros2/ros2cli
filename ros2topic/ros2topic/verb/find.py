@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from ros2cli.node.strategy import NodeStrategy
+from ros2cli.node.strategy import add_arguments as add_strategy_node_arguments
 
 from ros2topic.api import get_topic_names_and_types
 from ros2topic.api import message_type_completer
@@ -23,6 +24,8 @@ class FindVerb(VerbExtension):
     """Output a list of available topics of a given type."""
 
     def add_arguments(self, parser, cli_name):
+        add_strategy_node_arguments(parser)
+        
         arg = parser.add_argument(
             'topic_type',
             help="Name of the ROS topic type to filter for (e.g. 'std_msg/msg/String')")

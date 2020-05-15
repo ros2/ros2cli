@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from ros2cli.node.strategy import NodeStrategy
-
+from ros2cli.node.strategy import add_arguments as add_strategy_node_arguments
 from ros2topic.api import get_topic_names_and_types
 from ros2topic.api import TopicNameCompleter
 from ros2topic.verb import VerbExtension
@@ -23,6 +23,7 @@ class InfoVerb(VerbExtension):
     """Print information about a topic."""
 
     def add_arguments(self, parser, cli_name):
+        add_strategy_node_arguments(parser)
         arg = parser.add_argument(
             'topic_name',
             help="Name of the ROS topic to get info (e.g. '/chatter')")
@@ -34,6 +35,7 @@ class InfoVerb(VerbExtension):
                  'GUID and QoS Profile of the publishers and subscribers to this topic')
         arg.completer = TopicNameCompleter(
             include_hidden_topics_key='include_hidden_topics')
+
 
     def main(self, *, args):
         with NodeStrategy(args) as node:
