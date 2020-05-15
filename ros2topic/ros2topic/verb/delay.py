@@ -64,7 +64,7 @@ class DelayVerb(VerbExtension):
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
             'topic',
-            help='Topic name to be calcurated the delay')
+            help='Topic name to calculate the delay for')
         arg.completer = TopicNameCompleter(
             include_hidden_topics_key='include_hidden_topics')
         parser.add_argument(
