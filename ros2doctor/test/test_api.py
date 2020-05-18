@@ -1,4 +1,4 @@
-# Copyright 2019 Open Source Robotics Foundation, Inc.
+# Copyright 2020 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,6 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+import unittest
 
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess
@@ -29,7 +31,6 @@ from ros2doctor.api.topic import TopicReport
 @launch_testing.markers.keep_alive
 def generate_test_description():
     return LaunchDescription([
-        # Always restart daemon to isolate tests.
         ExecuteProcess(
             cmd=['ros2', 'daemon', 'stop'],
             name='daemon-stop',
@@ -46,14 +47,6 @@ def generate_test_description():
     ])
 
 
-def test_topic_check():
-    """Assume no topics are publishing or subscribing other than whitelisted ones."""
-    topic_check = TopicCheck()
-    check_result = topic_check.check()
-    assert check_result.error == 0
-    assert check_result.warning == 0
-
-
 def _generate_expected_report(topic, pub_count, sub_count):
     expected_report = Report('TOPIC LIST')
     expected_report.add_to_report('topic', topic)
@@ -62,9 +55,18 @@ def _generate_expected_report(topic, pub_count, sub_count):
     return expected_report
 
 
-def test_topic_report():
-    """Assume no topics are publishing or subscribing other than whitelisted ones."""
-    report = TopicReport().report()
-    expected_report = _generate_expected_report('none', 0, 0)
-    assert report.name == expected_report.name
-    assert report.items == expected_report.items
+class TestROS2DoctorAPI(unittest.TestCase):
+
+    def test_topic_check(self):
+        """Assume no topics are publishing or subscribing other than whitelisted ones."""
+        topic_check = TopicCheck()
+        check_result = topic_check.check()
+        self.assertEqual(check_result.error, 0)
+        self.assertEqual(check_result.warning, 0)
+
+    def test_topic_report(self):
+        """Assume no topics are publishing or subscribing other than whitelisted ones."""
+        report = TopicReport().report()
+        expected_report = _generate_expected_report('none', 0, 0)
+        self.assertEqual(report.name, expected_report.name)
+        self.assertEqual(report.items, expected_report.items)
