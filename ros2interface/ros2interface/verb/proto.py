@@ -23,7 +23,7 @@ class ProtoVerb(VerbExtension):
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
                 'type',
-                help="Show an interface definition (e.g. 'std_msgs/msg/String')")
+                help="Show an interface definition (e.g. 'example_interfaces/msg/String')")
         arg.completer = type_completer
         parser.add_argument(
             '--no-quotes', action='store_true',
