@@ -23,7 +23,7 @@ class ShowVerb(VerbExtension):
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
                 'type',
-                help='Show an interface definition (e.g. "std_msgs/msg/String")')
+                help="Show an interface definition (e.g. 'std_msgs/msg/String')")
         arg.completer = type_completer
 
     def main(self, *, args):
