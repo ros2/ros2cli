@@ -66,7 +66,7 @@ class PubVerb(VerbExtension):
         arg = parser.add_argument(
             'values', nargs='?', default='{}',
             help='Values to fill the message with in YAML format '
-                 '(e.g. "data: Hello World"), '
+                 "(e.g. 'data: Hello World'), "
                  'otherwise the message will be published with default values')
         arg.completer = TopicMessagePrototypeCompleter(
             topic_type_key='message_type')

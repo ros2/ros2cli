@@ -42,7 +42,7 @@ class CallVerb(VerbExtension):
         arg = parser.add_argument(
             'values', nargs='?', default='{}',
             help='Values to fill the service request with in YAML format ' +
-                 '(e.g. "{a: 1, b: 2}"), ' +
+                 "(e.g. '{a: 1, b: 2}'), " +
                  'otherwise the service request will be published with default values')
         arg.completer = ServicePrototypeCompleter(
             service_type_key='service_type')
