@@ -17,16 +17,35 @@ from ros2interface.verb import VerbExtension
 from rosidl_runtime_py import get_interface_path
 
 
+import sys
+import re
+
+
 class ShowVerb(VerbExtension):
     """Output the interface definition."""
 
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
                 'type',
-                help='Show an interface definition (e.g. "std_msgs/msg/String")')
+                help='Show an interface definition (e.g. "std_msgs/msg/String"; \'-\' for stdin)',
+        )
         arg.completer = type_completer
 
     def main(self, *, args):
+        if args.type == "-":
+            if sys.stdin.isatty():
+                return str("stdin is empty")
+
+            # The regex pattern is permissive so that
+            # `get_interface_path` can handle errors
+            regex_pattern = "([a-zA-Z0-9_\/]+)"
+            stdin_str = "".join(sys.stdin.readlines())
+            matches = re.findall(regex_pattern, stdin_str)
+
+            if len(matches) != 1:
+                return str("Could not determine message type from stdin")
+
+            args.type = matches[0]
         try:
             file_path = get_interface_path(args.type)
         except LookupError as e:
