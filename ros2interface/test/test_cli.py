@@ -90,6 +90,24 @@ class TestROS2InterfaceCLI(unittest.TestCase):
                 yield interface_command
         cls.launch_interface_command = launch_interface_command
 
+        @contextlib.contextmanager
+        def launch_stdin_interface_command(self, stdin_arguments, interface_arguments):
+            command = " ".join([*stdin_arguments, "|", "ros2", "interface", *interface_arguments])
+            interface_command_action = ExecuteProcess(
+                cmd=[command],
+                additional_env={'PYTHONUNBUFFERED': '1'},
+                shell=True,
+                name='ros2interface-cli',
+                output='screen'
+            )
+            with launch_testing.tools.launch_process(
+                    launch_service, interface_command_action, proc_info, proc_output
+            ) as interface_command:
+                yield interface_command
+
+        cls.launch_stdin_interface_command = launch_stdin_interface_command
+
+
     def test_list_interfaces(self):
         with self.launch_interface_command(arguments=['list']) as interface_command:
             assert interface_command.wait_for_shutdown(timeout=2)
@@ -347,6 +365,26 @@ class TestROS2InterfaceCLI(unittest.TestCase):
             expected_lines=[re.compile(
                 r"Could not find the interface '.+NotAMessageTypeName\.idl'"
             )],
+            text=interface_command.output,
+            strict=True
+        )
+
+    def test_show_from_stdin(self):
+        with self.launch_stdin_interface_command(
+                stdin_arguments=['echo', 'std_msgs/msg/String'],
+                interface_arguments=['show', '-']
+        ) as interface_command:
+            assert interface_command.wait_for_shutdown(timeout=2)
+        assert interface_command.exit_code == 0
+        assert launch_testing.tools.expect_output(
+            expected_lines=[
+                '# This was originally provided as an example message.',
+                '# It is deprecated as of Foxy',
+                '# It is recommended to create your own semantically meaningful message.',
+                '# However if you would like to continue using this please use the equivalent in example_msgs.',
+                '',
+                'string data',
+            ],
             text=interface_command.output,
             strict=True
         )
