@@ -388,3 +388,18 @@ class TestROS2InterfaceCLI(unittest.TestCase):
             text=interface_command.output,
             strict=True
         )
+
+    def test_show_from_stdin_no_valid_interface(self):
+        with self.launch_stdin_interface_command(
+                stdin_arguments=['echo', '"not an interface"'],
+                interface_arguments=['show', '-']
+        ) as interface_command:
+            assert interface_command.wait_for_shutdown(timeout=2)
+        assert interface_command.exit_code == 1
+        assert launch_testing.tools.expect_output(
+            expected_lines=[
+                "Could not determine message type from stdin"
+            ],
+            text=interface_command.output,
+            strict=True
+        )
