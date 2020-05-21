@@ -14,6 +14,7 @@
 
 from argparse import ArgumentTypeError
 import os
+import re
 import socket
 import struct
 import threading
@@ -28,6 +29,9 @@ from std_msgs.msg import String
 
 DEFAULT_GROUP = '225.0.0.1'
 DEFAULT_PORT = 49150
+
+NODE_NAME_PREFIX = \
+    f"ros2doctor_{re.sub(r'[^0-9a-zA-Z_]', '_', socket.gethostname())}_{os.getpid()}"
 
 
 def positive_int(string: str) -> int:
@@ -109,7 +113,7 @@ class Talker(Node):
     """Initialize talker node."""
 
     def __init__(self, topic, time_period, *, qos=10):
-        node_name = 'ros2doctor_' + socket.gethostname() + str(os.getpid()) + '_talker'
+        node_name = NODE_NAME_PREFIX + '_talker'
         super().__init__(node_name)
         self._i = 0
         self._pub = self.create_publisher(String, topic, qos)
@@ -128,7 +132,7 @@ class Listener(Node):
     """Initialize listener node."""
 
     def __init__(self, topic, *, qos=10):
-        node_name = 'ros2doctor_' + socket.gethostname() + str(os.getpid()) + '_listener'
+        node_name = NODE_NAME_PREFIX + '_listener'
         super().__init__(node_name)
         self._sub = self.create_subscription(
             String,
