@@ -37,15 +37,15 @@ class ShowVerb(VerbExtension):
                 return str("stdin is empty")
 
             # The regex pattern is permissive so that
-            # `get_interface_path` can handle errors
-            regex_pattern = "([a-zA-Z0-9_\/]+)"
+            # `get_interface_path` handles errors
+            pattern = "^[a-zA-Z0-9_\/]+$"
             stdin_str = "".join(sys.stdin.readlines())
-            matches = re.findall(regex_pattern, stdin_str)
+            match = re.match(pattern, stdin_str)
 
-            if len(matches) != 1:
+            if not match:
                 return str("Could not determine message type from stdin")
 
-            args.type = matches[0]
+            args.type = match.string.strip()
         try:
             file_path = get_interface_path(args.type)
         except LookupError as e:
