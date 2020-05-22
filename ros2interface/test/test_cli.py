@@ -340,14 +340,14 @@ class TestROS2InterfaceCLI(unittest.TestCase):
     def test_show_stdin(self):
         with self.launch_interface_command(
             arguments=['show', '-'],
-            prepend_arguments=[sys.executable, '-c', r'"print(\"std_msgs/msg/String\")"', '|'],
+            prepend_arguments=[sys.executable, '-c', r'"print(\"test_msgs/msg/Nested\")"', '|'],
             shell=True
         ) as interface_command:
             assert interface_command.wait_for_shutdown(timeout=2)
         assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
-                'string data'
+                'BasicTypes basic_types_value'
             ],
             text=interface_command.output,
             strict=True
