@@ -38,16 +38,16 @@ if sys.platform.startswith('win'):
             allow_module_level=True)
 
 
-some_messages_from_std_msgs = [
-    'std_msgs/msg/Bool',
-    'std_msgs/msg/Float32',
-    'std_msgs/msg/Float64',
+some_messages_from_test_msgs = [
+    'test_msgs/msg/BasicTypes',
+    'test_msgs/msg/Constants',
+    'test_msgs/msg/Strings',
 ]
 
-some_services_from_std_srvs = [
-    'std_srvs/srv/Empty',
-    'std_srvs/srv/SetBool',
-    'std_srvs/srv/Trigger',
+some_services_from_test_msgs = [
+    'test_msgs/srv/Arrays',
+    'test_msgs/srv/BasicTypes',
+    'test_msgs/srv/Empty',
 ]
 
 some_actions_from_test_msgs = [
@@ -55,8 +55,8 @@ some_actions_from_test_msgs = [
 ]
 
 some_interfaces = (
-    some_messages_from_std_msgs +
-    some_services_from_std_srvs +
+    some_messages_from_test_msgs +
+    some_services_from_test_msgs +
     some_actions_from_test_msgs
 )
 
@@ -126,7 +126,7 @@ class TestROS2InterfaceCLI(unittest.TestCase):
             strict=True
         )
         assert launch_testing.tools.expect_output(
-            expected_lines=some_messages_from_std_msgs,
+            expected_lines=some_messages_from_test_msgs,
             lines=output_lines,
             strict=False
         )
@@ -146,7 +146,7 @@ class TestROS2InterfaceCLI(unittest.TestCase):
             strict=True
         )
         assert launch_testing.tools.expect_output(
-            expected_lines=some_services_from_std_srvs,
+            expected_lines=some_services_from_test_msgs,
             lines=output_lines,
             strict=False
         )
@@ -183,38 +183,6 @@ class TestROS2InterfaceCLI(unittest.TestCase):
             strict=True
         )
 
-    def test_package_on_std_msgs(self):
-        with self.launch_interface_command(
-            arguments=['package', 'std_msgs']
-        ) as interface_command:
-            assert interface_command.wait_for_shutdown(timeout=2)
-        assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
-        output_lines = interface_command.output.splitlines()
-        assert launch_testing.tools.expect_output(
-            expected_lines=itertools.repeat(
-                re.compile(r'std_msgs/msg/[A-z0-9_]+'), len(output_lines)
-            ),
-            lines=output_lines,
-            strict=True
-        )
-        assert all(msg in output_lines for msg in some_messages_from_std_msgs)
-
-    def test_package_on_std_srvs(self):
-        with self.launch_interface_command(
-            arguments=['package', 'std_srvs']
-        ) as interface_command:
-            assert interface_command.wait_for_shutdown(timeout=2)
-        assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
-        output_lines = interface_command.output.splitlines()
-        assert launch_testing.tools.expect_output(
-            expected_lines=itertools.repeat(
-                re.compile(r'std_srvs/srv/[A-z0-9_]+'), len(output_lines)
-            ),
-            lines=output_lines,
-            strict=True
-        )
-        assert all(srv in output_lines for srv in some_services_from_std_srvs)
-
     def test_package_on_test_msgs(self):
         with self.launch_interface_command(
             arguments=['package', 'test_msgs']
@@ -229,15 +197,13 @@ class TestROS2InterfaceCLI(unittest.TestCase):
             lines=output_lines,
             strict=True
         )
-        assert all(action in output_lines for action in some_actions_from_test_msgs)
+        assert all(interface in output_lines for interface in some_interfaces)
 
     def test_packages(self):
         with self.launch_interface_command(arguments=['packages']) as interface_command:
             assert interface_command.wait_for_shutdown(timeout=2)
         assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
         output_lines = interface_command.output.splitlines()
-        assert 'std_msgs' in output_lines
-        assert 'std_srvs' in output_lines
         assert 'test_msgs' in output_lines
 
     def test_packages_with_messages(self):
@@ -247,8 +213,6 @@ class TestROS2InterfaceCLI(unittest.TestCase):
             assert interface_command.wait_for_shutdown(timeout=2)
         assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
         output_lines = interface_command.output.splitlines()
-        assert 'std_msgs' in output_lines
-        assert 'std_srvs' not in output_lines
         assert 'test_msgs' in output_lines
 
     def test_packages_with_services(self):
@@ -258,8 +222,6 @@ class TestROS2InterfaceCLI(unittest.TestCase):
             assert interface_command.wait_for_shutdown(timeout=2)
         assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
         output_lines = interface_command.output.splitlines()
-        assert 'std_msgs' not in output_lines
-        assert 'std_srvs' in output_lines
         assert 'test_msgs' in output_lines
 
     def test_packages_with_actions(self):
@@ -269,19 +231,17 @@ class TestROS2InterfaceCLI(unittest.TestCase):
             assert interface_command.wait_for_shutdown(timeout=2)
         assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
         output_lines = interface_command.output.splitlines()
-        assert 'std_msgs' not in output_lines
-        assert 'std_srvs' not in output_lines
         assert 'test_msgs' in output_lines
 
     def test_show_message(self):
         with self.launch_interface_command(
-            arguments=['show', 'std_msgs/msg/String']
+            arguments=['show', 'test_msgs/msg/Nested']
         ) as interface_command:
             assert interface_command.wait_for_shutdown(timeout=2)
         assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
-                'string data'
+                'BasicTypes basic_types_value'
             ],
             text=interface_command.output,
             strict=True
@@ -289,16 +249,41 @@ class TestROS2InterfaceCLI(unittest.TestCase):
 
     def test_show_service(self):
         with self.launch_interface_command(
-            arguments=['show', 'std_srvs/srv/SetBool']
+            arguments=['show', 'test_msgs/srv/BasicTypes']
         ) as interface_command:
             assert interface_command.wait_for_shutdown(timeout=2)
         assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
-                'bool data # e.g. for hardware enabling / disabling',
+                'bool bool_value',
+                'byte byte_value',
+                'char char_value',
+                'float32 float32_value',
+                'float64 float64_value',
+                'int8 int8_value',
+                'uint8 uint8_value',
+                'int16 int16_value',
+                'uint16 uint16_value',
+                'int32 int32_value',
+                'uint32 uint32_value',
+                'int64 int64_value',
+                'uint64 uint64_value',
+                'string string_value',
                 '---',
-                'bool success   # indicate successful run of triggered service',
-                'string message # informational, e.g. for error messages'
+                'bool bool_value',
+                'byte byte_value',
+                'char char_value',
+                'float32 float32_value',
+                'float64 float64_value',
+                'int8 int8_value',
+                'uint8 uint8_value',
+                'int16 int16_value',
+                'uint16 uint16_value',
+                'int32 int32_value',
+                'uint32 uint32_value',
+                'int64 int64_value',
+                'uint64 uint64_value',
+                'string string_value',
             ],
             text=interface_command.output,
             strict=True
@@ -339,7 +324,7 @@ class TestROS2InterfaceCLI(unittest.TestCase):
 
     def test_show_not_an_interface(self):
         with self.launch_interface_command(
-            arguments=['show', 'std_msgs/msg/NotAMessageTypeName']
+            arguments=['show', 'test_msgs/msg/NotAMessageTypeName']
         ) as interface_command:
             assert interface_command.wait_for_shutdown(timeout=2)
         assert interface_command.exit_code == 1
