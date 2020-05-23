@@ -40,7 +40,7 @@ class ShowVerb(VerbExtension):
         arg = parser.add_argument(
             'type',
             action=ReadStdinPipe,
-            help="Show an interface definition (e.g. 'std_msgs/msg/String'). "
+            help="Show an interface definition (e.g. 'example_interfaces/msg/String'). "
                  "Passing '-' reads the argument from stdin (e.g. "
                  "'ros2 topic type /chatter | ros2 interface show -').")
         arg.completer = type_completer
