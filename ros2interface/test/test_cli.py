@@ -77,11 +77,12 @@ class TestROS2InterfaceCLI(unittest.TestCase):
         proc_output
     ):
         @contextlib.contextmanager
-        def launch_interface_command(self, arguments):
+        def launch_interface_command(self, arguments, prepend_arguments=[], shell=False):
             interface_command_action = ExecuteProcess(
-                cmd=['ros2', 'interface', *arguments],
+                cmd=[*prepend_arguments, 'ros2', 'interface', *arguments],
                 additional_env={'PYTHONUNBUFFERED': '1'},
                 name='ros2interface-cli',
+                shell=shell,
                 output='screen'
             )
             with launch_testing.tools.launch_process(
@@ -332,6 +333,22 @@ class TestROS2InterfaceCLI(unittest.TestCase):
             expected_lines=[re.compile(
                 r"Could not find the interface '.+NotAMessageTypeName\.idl'"
             )],
+            text=interface_command.output,
+            strict=True
+        )
+
+    def test_show_stdin(self):
+        with self.launch_interface_command(
+            arguments=['show', '-'],
+            prepend_arguments=[sys.executable, '-c', r'"print(\"test_msgs/msg/Nested\")"', '|'],
+            shell=True
+        ) as interface_command:
+            assert interface_command.wait_for_shutdown(timeout=2)
+        assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=[
+                'BasicTypes basic_types_value'
+            ],
             text=interface_command.output,
             strict=True
         )

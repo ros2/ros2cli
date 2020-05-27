@@ -12,9 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import argparse
+import sys
+
 from ros2interface.api import type_completer
 from ros2interface.verb import VerbExtension
 from rosidl_runtime_py import get_interface_path
+
+
+class ReadStdinPipe(argparse.Action):
+    """Get argument from stdin pipe."""
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        if values == '-':
+            if sys.stdin.isatty():
+                parser.error('expected stdin pipe')
+            values = sys.stdin.readline().strip()
+        if not values:
+            parser.error('the passed value is empty')
+        setattr(namespace, self.dest, values)
 
 
 class ShowVerb(VerbExtension):
@@ -22,8 +38,11 @@ class ShowVerb(VerbExtension):
 
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
-                'type',
-                help="Show an interface definition (e.g. 'example_interfaces/msg/String')")
+            'type',
+            action=ReadStdinPipe,
+            help="Show an interface definition (e.g. 'example_interfaces/msg/String'). "
+                 "Passing '-' reads the argument from stdin (e.g. "
+                 "'ros2 topic type /chatter | ros2 interface show -').")
         arg.completer = type_completer
 
     def main(self, *, args):
