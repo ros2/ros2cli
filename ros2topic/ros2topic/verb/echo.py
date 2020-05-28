@@ -95,6 +95,10 @@ def main(args):
             message_type = get_msg_class(node, args.topic_name, include_hidden_topics=True)
         else:
             message_type = get_message(args.message_type)
+
+        if message_type is None:
+            raise RuntimeError('Could not determine the type for the passed topic')
+
         subscriber(
             node, args.topic_name, message_type, callback, qos_profile)
 
