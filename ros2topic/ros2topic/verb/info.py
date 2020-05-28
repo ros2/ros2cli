@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from ros2cli.node.strategy import add_arguments as add_strategy_node_arguments
 from ros2cli.node.strategy import NodeStrategy
-
 from ros2topic.api import get_topic_names_and_types
 from ros2topic.api import TopicNameCompleter
 from ros2topic.verb import VerbExtension
@@ -23,6 +23,7 @@ class InfoVerb(VerbExtension):
     """Print information about a topic."""
 
     def add_arguments(self, parser, cli_name):
+        add_strategy_node_arguments(parser)
         arg = parser.add_argument(
             'topic_name',
             help="Name of the ROS topic to get info (e.g. '/chatter')")
@@ -54,7 +55,8 @@ class InfoVerb(VerbExtension):
             type_str = topic_types[0] if len(topic_types) == 1 else topic_types
             print('Type: %s' % type_str, end=line_end)
 
-            print('Publisher count: %d' % node.count_publishers(topic_name), end=line_end)
+            print('Publisher count: %d' %
+                  node.count_publishers(topic_name), end=line_end)
             if args.verbose:
                 try:
                     for info in node.get_publishers_info_by_topic(topic_name):
@@ -62,7 +64,8 @@ class InfoVerb(VerbExtension):
                 except NotImplementedError as e:
                     return str(e)
 
-            print('Subscription count: %d' % node.count_subscribers(topic_name), end=line_end)
+            print('Subscription count: %d' %
+                  node.count_subscribers(topic_name), end=line_end)
             if args.verbose:
                 try:
                     for info in node.get_subscriptions_info_by_topic(topic_name):
