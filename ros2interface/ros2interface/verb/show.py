@@ -25,7 +25,7 @@ from rosidl_parser.definition import BASIC_TYPES
 
 
 PRIMITIVE_FIELD_TYPES = [
-    'bool'
+    'bool',
     'byte',
     'char',
     'float32',
@@ -74,7 +74,7 @@ class InterfaceTextLine:
     ):
 
         if not raw:
-            if self._is_comment_or_whitespace():
+            if self._is_comment_or_whitespace() and not self._is_separator():
                 return ""
             text = remove_comment_from_string(
                 self._text,
@@ -122,6 +122,9 @@ class InterfaceTextLine:
 
     def _is_comment_or_whitespace(self) -> bool:
         return self._get_interface_string_from_text() is None
+
+    def _is_separator(self) -> bool:
+        return re.match(r"^[-]{3}\s*$", self._text) is not None
 
     def _is_basic_idl_type(self) -> bool:
         return self._get_interface_string_from_text() in PRIMITIVE_FIELD_TYPES
@@ -239,15 +242,14 @@ class ShowVerb(VerbExtension):
             help="Show an interface definition (e.g. 'example_interfaces/msg/String'). "
                  "Passing '-' reads the argument from stdin (e.g. "
                  "'ros2 topic type /chatter | ros2 interface show -').")
+        parser.add_argument("-r", "--raw",
+                          dest="raw", default=False, action="store_true",
+                          help="show raw message text, including comments")
         arg.completer = type_completer
 
     def main(self, *, args):
-        try:
-            file_path = get_interface_path(args.type)
-        except (LookupError, ValueError) as e:
-            return str(e)
 
-        InterfaceExpander(args.type)
+        InterfaceExpander(args.type).print(raw=args.raw)
 
 
 class InterfaceExpander:
@@ -277,7 +279,7 @@ class InterfaceExpander:
                 self._insert_new_lines(new_lines, line_idx)
             line_idx += 1
 
-        raw = True
+    def print(self, raw: bool = True):
         for l in self._text_lines:
             text = l.get_text(raw=raw)
             if text != "" or raw:
@@ -334,8 +336,11 @@ if __name__ == '__main__':
 
     import collections
 
-    Args = collections.namedtuple('Args', 'type')
-    args = Args('geometry_msgs/msg/PolygonStamped')
-    raw = True
+    is_raw = False
+
+    Args = collections.namedtuple('Args', ['type', 'raw'])
+    #args = Args('geometry_msgs/msg/PolygonStamped', is_raw)
+    #args = Args('geometry_msgs/msg/Twist', is_raw)
+    args = Args('std_srvs/srv/Trigger', is_raw)
     sv = ShowVerb()
     sv.main(args=args)
