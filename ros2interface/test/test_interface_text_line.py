@@ -13,7 +13,7 @@ from ros2interface.verb.show import *
     ("", None),
 ])
 def test_get_interface_string_from_text(text, expected):
-    text_line = TextLine(text=text)
+    text_line = InterfaceTextLine(text=text)
     assert text_line._get_interface_string_from_text() == expected
 
 
@@ -26,7 +26,7 @@ def test_get_interface_string_from_text(text, expected):
     ("", (None, None, None)),
 ])
 def test_get_interface_parts_from_text(text, expected):
-    text_line = TextLine(text=text)
+    text_line = InterfaceTextLine(text=text)
     assert text_line._get_interface_parts_from_text() == expected
 
 
@@ -36,12 +36,12 @@ def test_get_interface_parts_from_text(text, expected):
     ("Name my_variable", "package", "type", ),
 ])
 def test_get_interface_parts(text, default_package, default_type):
-    text_line = TextLine(
+    text_line = InterfaceTextLine(
         text=text,
         default_package=default_package,
         default_type=default_type,
     )
-    assert text_line._get_interface_parts() == ("package", "type", "Name")
+    assert text_line.get_interface_parts() == ("package", "type", "Name")
 
 
 @pytest.mark.parametrize("text, default_package, default_type", [
@@ -57,13 +57,13 @@ def test_get_interface_parts(text, default_package, default_type):
     ("", None, None),
 ])
 def test_raise_errors_for_get_interface_parts(text, default_package, default_type):
-    text_line = TextLine(
+    text_line = InterfaceTextLine(
         text=text,
         default_package=default_package,
         default_type=default_type,
     )
     with pytest.raises(ValueError):
-        text_line._get_interface_parts()
+        text_line.get_interface_parts()
 
 
 @pytest.mark.parametrize("text, expected", [
@@ -76,7 +76,7 @@ def test_raise_errors_for_get_interface_parts(text, default_package, default_typ
     ("", True),
 ])
 def test_is_comment_or_whitespace(text, expected):
-    text_line = TextLine(text=text)
+    text_line = InterfaceTextLine(text=text)
     assert text_line._is_comment_or_whitespace() == expected
 
 
@@ -100,7 +100,7 @@ def test_is_comment_or_whitespace(text, expected):
     ("", None, None, False),
 ])
 def test_is_expandable(text, default_package, default_type, expected):
-    text_line = TextLine(
+    text_line = InterfaceTextLine(
         text=text,
         default_package=default_package,
         default_type=default_type,
@@ -169,7 +169,7 @@ def test_escape_chars(string, idx, expected):
 def test_get_text(text, is_raw, expected):
     if expected is None:
         expected = text
-    text_line = TextLine(
+    text_line = InterfaceTextLine(
         text=text,
     )
     assert text_line.get_text(raw=is_raw) == expected
