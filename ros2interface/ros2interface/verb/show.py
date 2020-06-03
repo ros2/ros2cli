@@ -14,10 +14,68 @@
 
 import argparse
 import sys
+import typing
 
 from ros2interface.api import type_completer
 from ros2interface.verb import VerbExtension
+from rosidl_adapter.parser import \
+    parse_message_string, MessageSpecification, \
+    SERVICE_REQUEST_RESPONSE_SEPARATOR, ACTION_REQUEST_RESPONSE_SEPARATOR, \
+    Field
 from rosidl_runtime_py import get_interface_path
+
+
+class TextLine:
+
+    def __init__(
+            self,
+            pkg_name: str,
+            msg_name: str,
+            message_string: str,
+            indent_level: int = 0
+    ):
+        if message_string in (SERVICE_REQUEST_RESPONSE_SEPARATOR, ACTION_REQUEST_RESPONSE_SEPARATOR):
+            msg_spec = None
+        else:
+            msg_spec = parse_message_string(
+                pkg_name=pkg_name,
+                msg_name=msg_name,
+                message_string=message_string,
+            )
+            if len(msg_spec.fields) > 1:
+                raise ValueError("'message_string' must be only one line")
+        self._msg_spec: typing.Optional[MessageSpecification] = msg_spec
+        self._raw_message = message_string
+        self._indent_level: int = indent_level
+
+    def __str__(self):
+        indent_str = '\t'*self._indent_level
+        return f"{indent_str}{self._raw_message}"
+
+    @property
+    def indent_level(self) -> int:
+        return self._indent_level
+
+    @property
+    def _field(self) -> typing.Optional[Field]:
+        if self._msg_spec and self._msg_spec.fields:
+            return self._msg_spec.fields[0]
+        else:
+            return None
+
+    @property
+    def nested_type(self) -> typing.Optional[str]:
+        if self._field and self._is_nested():
+            interface_type: str = str(self._field.type)
+            return interface_type.replace("/", "/msg/")
+        else:
+            return None
+
+    def _is_nested(self) -> bool:
+        if self._msg_spec and self._msg_spec.fields:
+            return "/" in str(self._field.type)
+        else:
+            return False
 
 
 class ReadStdinPipe(argparse.Action):
@@ -47,8 +105,44 @@ class ShowVerb(VerbExtension):
 
     def main(self, *, args):
         try:
-            file_path = get_interface_path(args.type)
-        except LookupError as e:
+            self._expand_message(interface_identifier=args.type)
+        except (ValueError, LookupError) as e:
             return str(e)
+
+    def _expand_message(self, interface_identifier):
+        lines = self._get_interface_content(interface_identifier, indent_level=0)
+        line_idx = 0
+        while line_idx < len(lines):
+            line = lines[line_idx]
+            if line.nested_type:
+                new_lines = self._get_interface_content(
+                    line.nested_type,
+                    indent_level=line.indent_level+1,
+                )
+                lines = lines[:line_idx + 1] + new_lines + lines[line_idx + 1:]
+            print(line)
+            line_idx += 1
+
+    @staticmethod
+    def _get_interface_content(
+            interface_identifier: str,
+            indent_level: int = 0,
+    ) -> typing.List[TextLine]:
+
+        parts: typing.List[str] = interface_identifier.split("/")
+        if len(parts) != 3:
+            raise ValueError(f"Invalid name '{interface_identifier}'. Expected at least two parts separated by '/'")
+        pkg_name, _, msg_name = parts
+
+        file_path = get_interface_path(interface_identifier)
         with open(file_path, 'r', encoding='utf-8') as h:
-            print(h.read().rstrip())
+            content = h.read().rstrip()
+        return [
+            TextLine(
+                pkg_name=pkg_name,
+                msg_name=msg_name,
+                message_string=message_string,
+                indent_level=indent_level,
+            )
+            for message_string in content.splitlines()
+        ]
