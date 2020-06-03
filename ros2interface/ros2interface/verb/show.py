@@ -70,6 +70,8 @@ class TextLine:
     def nested_type(self) -> typing.Optional[str]:
         if self._field and self._is_nested():
             interface_type: str = str(self._field.type)
+            if self._field.type.is_array:
+                interface_type = interface_type[:interface_type.find("[")]
             return interface_type.replace("/", "/msg/")
         else:
             return None
