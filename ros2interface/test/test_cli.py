@@ -236,13 +236,25 @@ class TestROS2InterfaceCLI(unittest.TestCase):
 
     def test_show_message(self):
         with self.launch_interface_command(
-            arguments=['show', 'test_msgs/msg/Nested']
+            arguments=['show', 'test_msgs/msg/BasicTypes']
         ) as interface_command:
             assert interface_command.wait_for_shutdown(timeout=2)
         assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
-                'BasicTypes basic_types_value'
+                'bool bool_value',
+                'byte byte_value',
+                'char char_value',
+                'float32 float32_value',
+                'float64 float64_value',
+                'int8 int8_value',
+                'uint8 uint8_value',
+                'int16 int16_value',
+                'uint16 uint16_value',
+                'int32 int32_value',
+                'uint32 uint32_value',
+                'int64 int64_value',
+                'uint64 uint64_value',
             ],
             text=interface_command.output,
             strict=True
@@ -311,6 +323,171 @@ class TestROS2InterfaceCLI(unittest.TestCase):
             strict=True
         )
 
+    def test_show_nested_message(self):
+        with self.launch_interface_command(
+                arguments=['show', 'test_msgs/msg/Nested']
+        ) as interface_command:
+            assert interface_command.wait_for_shutdown(timeout=2)
+        assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=[
+                'BasicTypes basic_types_value',
+                '\tbool bool_value',
+                '\tbyte byte_value',
+                '\tchar char_value',
+                '\tfloat32 float32_value',
+                '\tfloat64 float64_value',
+                '\tint8 int8_value',
+                '\tuint8 uint8_value',
+                '\tint16 int16_value',
+                '\tuint16 uint16_value',
+                '\tint32 int32_value',
+                '\tuint32 uint32_value',
+                '\tint64 int64_value',
+                '\tuint64 uint64_value',
+            ],
+            text=interface_command.output,
+            strict=True
+        )
+
+    def test_show_nested_action(self):
+        with self.launch_interface_command(
+                arguments=['show', 'test_msgs/action/NestedMessage']
+        ) as interface_command:
+            assert interface_command.wait_for_shutdown(timeout=2)
+        assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=[
+                '# goal definition',
+                'Builtins nested_field_no_pkg',
+                '\tbuiltin_interfaces/Duration duration_value',
+                '\t\t# Duration defines a period between two time points. It is comprised of a',
+                '\t\t# seconds component and a nanoseconds component.',
+                '',
+                '\t\t# Seconds component, range is valid over any possible int32 value.',
+                '\t\tint32 sec',
+                '',
+                '\t\t# Nanoseconds component in the range of [0, 10e9).',
+                '\t\tuint32 nanosec',
+                '\tbuiltin_interfaces/Time time_value',
+                '\t\t# Time indicates a specific point in time, relative to a clock\'s 0 point.',
+                '',
+                '\t\t# The seconds component, valid over all int32 values.',
+                '\t\tint32 sec',
+                '',
+                '\t\t# The nanoseconds component, valid in the range [0, 10e9).',
+                '\t\tuint32 nanosec',
+                'test_msgs/BasicTypes nested_field',
+                '\tbool bool_value',
+                '\tbyte byte_value',
+                '\tchar char_value',
+                '\tfloat32 float32_value',
+                '\tfloat64 float64_value',
+                '\tint8 int8_value',
+                '\tuint8 uint8_value',
+                '\tint16 int16_value',
+                '\tuint16 uint16_value',
+                '\tint32 int32_value',
+                '\tuint32 uint32_value',
+                '\tint64 int64_value',
+                '\tuint64 uint64_value',
+                'builtin_interfaces/Time nested_different_pkg',
+                '\t# Time indicates a specific point in time, relative to a clock\'s 0 point.',
+                '',
+                '\t# The seconds component, valid over all int32 values.',
+                '\tint32 sec',
+                '',
+                '\t# The nanoseconds component, valid in the range [0, 10e9).',
+                '\tuint32 nanosec',
+                '---',
+                '# result definition',
+                'Builtins nested_field_no_pkg',
+                '\tbuiltin_interfaces/Duration duration_value',
+                '\t\t# Duration defines a period between two time points. It is comprised of a',
+                '\t\t# seconds component and a nanoseconds component.',
+                '',
+                '\t\t# Seconds component, range is valid over any possible int32 value.',
+                '\t\tint32 sec',
+                '',
+                '\t\t# Nanoseconds component in the range of [0, 10e9).',
+                '\t\tuint32 nanosec',
+                '\tbuiltin_interfaces/Time time_value',
+                '\t\t# Time indicates a specific point in time, relative to a clock\'s 0 point.',
+                '',
+                '\t\t# The seconds component, valid over all int32 values.',
+                '\t\tint32 sec',
+                '',
+                '\t\t# The nanoseconds component, valid in the range [0, 10e9).',
+                '\t\tuint32 nanosec',
+                'test_msgs/BasicTypes nested_field',
+                '\tbool bool_value',
+                '\tbyte byte_value',
+                '\tchar char_value',
+                '\tfloat32 float32_value',
+                '\tfloat64 float64_value',
+                '\tint8 int8_value',
+                '\tuint8 uint8_value',
+                '\tint16 int16_value',
+                '\tuint16 uint16_value',
+                '\tint32 int32_value',
+                '\tuint32 uint32_value',
+                '\tint64 int64_value',
+                '\tuint64 uint64_value',
+                'builtin_interfaces/Time nested_different_pkg',
+                '\t# Time indicates a specific point in time, relative to a clock\'s 0 point.',
+                '',
+                '\t# The seconds component, valid over all int32 values.',
+                '\tint32 sec',
+                '',
+                '\t# The nanoseconds component, valid in the range [0, 10e9).',
+                '\tuint32 nanosec',
+                '---',
+                '# feedback',
+                'Builtins nested_field_no_pkg',
+                '\tbuiltin_interfaces/Duration duration_value',
+                '\t\t# Duration defines a period between two time points. It is comprised of a',
+                '\t\t# seconds component and a nanoseconds component.',
+                '',
+                '\t\t# Seconds component, range is valid over any possible int32 value.',
+                '\t\tint32 sec',
+                '',
+                '\t\t# Nanoseconds component in the range of [0, 10e9).',
+                '\t\tuint32 nanosec',
+                '\tbuiltin_interfaces/Time time_value',
+                '\t\t# Time indicates a specific point in time, relative to a clock\'s 0 point.',
+                '',
+                '\t\t# The seconds component, valid over all int32 values.',
+                '\t\tint32 sec',
+                '',
+                '\t\t# The nanoseconds component, valid in the range [0, 10e9).',
+                '\t\tuint32 nanosec',
+                'test_msgs/BasicTypes nested_field',
+                '\tbool bool_value',
+                '\tbyte byte_value',
+                '\tchar char_value',
+                '\tfloat32 float32_value',
+                '\tfloat64 float64_value',
+                '\tint8 int8_value',
+                '\tuint8 uint8_value',
+                '\tint16 int16_value',
+                '\tuint16 uint16_value',
+                '\tint32 int32_value',
+                '\tuint32 uint32_value',
+                '\tint64 int64_value',
+                '\tuint64 uint64_value',
+                'builtin_interfaces/Time nested_different_pkg',
+                '\t# Time indicates a specific point in time, relative to a clock\'s 0 point.',
+                '',
+                '\t# The seconds component, valid over all int32 values.',
+                '\tint32 sec',
+                '',
+                '\t# The nanoseconds component, valid in the range [0, 10e9).',
+                '\tuint32 nanosec',
+            ],
+            text=interface_command.output,
+            strict=True
+        )
+
     def test_show_not_a_package(self):
         with self.launch_interface_command(
             arguments=['show', 'not_a_package/msg/String']
@@ -340,14 +517,26 @@ class TestROS2InterfaceCLI(unittest.TestCase):
     def test_show_stdin(self):
         with self.launch_interface_command(
             arguments=['show', '-'],
-            prepend_arguments=[sys.executable, '-c', r'"print(\"test_msgs/msg/Nested\")"', '|'],
+            prepend_arguments=[sys.executable, '-c', r'"print(\"test_msgs/msg/BasicTypes\")"', '|'],
             shell=True
         ) as interface_command:
             assert interface_command.wait_for_shutdown(timeout=2)
         assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
-                'BasicTypes basic_types_value'
+                'bool bool_value',
+                'byte byte_value',
+                'char char_value',
+                'float32 float32_value',
+                'float64 float64_value',
+                'int8 int8_value',
+                'uint8 uint8_value',
+                'int16 int16_value',
+                'uint16 uint16_value',
+                'int32 int32_value',
+                'uint32 uint32_value',
+                'int64 int64_value',
+                'uint64 uint64_value',
             ],
             text=interface_command.output,
             strict=True
