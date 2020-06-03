@@ -304,7 +304,7 @@ class TestROS2InterfaceCLI(unittest.TestCase):
 
     def test_show_action(self):
         with self.launch_interface_command(
-            arguments=['show', 'test_msgs/action/Fibonacci']
+            arguments=['show', 'test_msgs/action/Fibonacci', '--raw']
         ) as interface_command:
             assert interface_command.wait_for_shutdown(timeout=2)
         assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
@@ -352,7 +352,7 @@ class TestROS2InterfaceCLI(unittest.TestCase):
 
     def test_show_nested_action(self):
         with self.launch_interface_command(
-                arguments=['show', 'test_msgs/action/NestedMessage']
+                arguments=['show', 'test_msgs/action/NestedMessage', '--raw']
         ) as interface_command:
             assert interface_command.wait_for_shutdown(timeout=2)
         assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
@@ -537,6 +537,55 @@ class TestROS2InterfaceCLI(unittest.TestCase):
                 'uint32 uint32_value',
                 'int64 int64_value',
                 'uint64 uint64_value',
+            ],
+            text=interface_command.output,
+            strict=True
+        )
+
+    def test_show_comments_and_whitespace(self):
+        with self.launch_interface_command(
+                arguments=['show', 'test_msgs/msg/Builtins', '--raw']
+        ) as interface_command:
+            assert interface_command.wait_for_shutdown(timeout=2)
+        assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=[
+                'builtin_interfaces/Duration duration_value',
+                '\t# Duration defines a period between two time points. It is comprised of a',
+                '\t# seconds component and a nanoseconds component.',
+                '',
+                '\t# Seconds component, range is valid over any possible int32 value.',
+                '\tint32 sec',
+                '',
+                '\t# Nanoseconds component in the range of [0, 10e9).',
+                '\tuint32 nanosec',
+                'builtin_interfaces/Time time_value',
+                '\t# Time indicates a specific point in time, relative to a clock\'s 0 point.',
+                                                                                            '',
+                '\t# The seconds component, valid over all int32 values.',
+                '\tint32 sec',
+                '',
+                '\t# The nanoseconds component, valid in the range [0, 10e9).',
+                '\tuint32 nanosec',
+            ],
+            text=interface_command.output,
+            strict=True
+        )
+
+    def test_hide_comments_and_whitespace(self):
+        with self.launch_interface_command(
+                arguments=['show', 'test_msgs/msg/Builtins']
+        ) as interface_command:
+            assert interface_command.wait_for_shutdown(timeout=2)
+        assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=[
+                'builtin_interfaces/Duration duration_value',
+                '\tint32 sec',
+                '\tuint32 nanosec',
+                'builtin_interfaces/Time time_value',
+                '\tint32 sec',
+                '\tuint32 nanosec',
             ],
             text=interface_command.output,
             strict=True
