@@ -67,6 +67,19 @@ class TextLine:
             return None
 
     @property
+    def in_line_comment(self) -> typing.Optional[str]:
+        if self.is_has_comment():
+            return self._field.annotations['comment'][0]
+        else:
+            return None
+
+    def is_comment(self) -> bool:
+        return self._msg_spec and self._msg_spec.annotations['comment']
+
+    def is_has_comment(self) -> bool:
+        return self._field and self._field.annotations['comment']
+
+    @property
     def nested_type(self) -> typing.Optional[str]:
         if self._field and self._is_nested():
             interface_type: str = str(self._field.type)
@@ -100,6 +113,11 @@ class ShowVerb(VerbExtension):
     """Output the interface definition."""
 
     def add_arguments(self, parser, cli_name):
+        parser.add_argument(
+            "-r", "--raw",
+            dest="raw", default=False, action="store_true",
+            help="show raw interface text, including whitespace and comments"
+        )
         arg = parser.add_argument(
             'type',
             action=ReadStdinPipe,
@@ -110,23 +128,44 @@ class ShowVerb(VerbExtension):
 
     def main(self, *, args):
         try:
-            self._expand_message(interface_identifier=args.type)
+            lines = self._expand_message(interface_identifier=args.type)
+            self._print(lines, raw=args.raw)
         except (ValueError, LookupError) as e:
             return str(e)
 
     def _expand_message(self, interface_identifier: str):
-        lines = self._get_interface_content(interface_identifier, indent_level=0)
+
+        lines: typing.List[TextLine] = self._get_interface_content(
+            interface_identifier,
+            indent_level=0,
+        )
+
         line_idx = 0
         while line_idx < len(lines):
-            line = lines[line_idx]
+            line: TextLine = lines[line_idx]
             if line.nested_type:
                 new_lines = self._get_interface_content(
                     line.nested_type,
                     indent_level=line.indent_level+1,
                 )
                 lines = lines[:line_idx+1] + new_lines + lines[line_idx+1:]
-            print(line)
             line_idx += 1
+        return lines
+
+    def _print(self, lines: typing.List[TextLine], raw: bool):
+        for line in lines:
+            self._print_line(line, raw=raw)
+
+    def _print_line(self, line: TextLine, raw: bool):
+        if raw:
+            print(line)
+        else:
+            message = str(line)
+            if message and not line.is_comment():
+                if line.is_has_comment():
+                    comment_start_idx = message.find(line.in_line_comment)
+                    message = message[:comment_start_idx-1].strip()
+                print(message)
 
     @staticmethod
     def _get_interface_content(
