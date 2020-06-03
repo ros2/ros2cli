@@ -48,9 +48,9 @@ class TextLine:
         self._raw_message = message_string
         self._indent_level: int = indent_level
 
-    def __str__(self):
-        indent_str = '\t'*self._indent_level
+    def __str__(self) -> str:
         if self._raw_message:
+            indent_str = '\t' * self._indent_level
             return f"{indent_str}{self._raw_message}"
         else:
             return ""
@@ -112,7 +112,7 @@ class ShowVerb(VerbExtension):
         except (ValueError, LookupError) as e:
             return str(e)
 
-    def _expand_message(self, interface_identifier):
+    def _expand_message(self, interface_identifier: str):
         lines = self._get_interface_content(interface_identifier, indent_level=0)
         line_idx = 0
         while line_idx < len(lines):
@@ -122,7 +122,7 @@ class ShowVerb(VerbExtension):
                     line.nested_type,
                     indent_level=line.indent_level+1,
                 )
-                lines = lines[:line_idx + 1] + new_lines + lines[line_idx + 1:]
+                lines = lines[:line_idx+1] + new_lines + lines[line_idx+1:]
             print(line)
             line_idx += 1
 
