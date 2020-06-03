@@ -50,7 +50,10 @@ class TextLine:
 
     def __str__(self):
         indent_str = '\t'*self._indent_level
-        return f"{indent_str}{self._raw_message}"
+        if self._raw_message:
+            return f"{indent_str}{self._raw_message}"
+        else:
+            return ""
 
     @property
     def indent_level(self) -> int:
