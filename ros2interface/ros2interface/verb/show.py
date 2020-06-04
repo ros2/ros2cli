@@ -47,12 +47,12 @@ class InterfaceTextLine:
                 message_string=line_text,
             )
             if len(msg_spec.fields) > 1:
-                raise ValueError("'message_string' must be only one line")
+                raise ValueError("'line_text' must be only one line")
         self._msg_spec: typing.Optional[MessageSpecification] = msg_spec
-        self._raw_message = line_text
+        self._raw_line_text = line_text
 
     def __str__(self) -> str:
-        return self._raw_message
+        return self._raw_line_text
 
     @property
     def nested_type(self) -> typing.Optional[str]:
