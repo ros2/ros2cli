@@ -97,9 +97,9 @@ def _get_interface_lines(interface_identifier: str) -> typing.Iterable[Interface
 def _show_interface(interface_identifier: str, indent_level: int = 0):
     for line in _get_interface_lines(interface_identifier):
 
-        if line:
+        if str(line):
             indent_string = indent_level*"\t"
-            print(f"{indent_string}{line}")
+            print(f"{indent_string}{str(line)}")
         else:
             print("")
 
