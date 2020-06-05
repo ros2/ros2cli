@@ -83,10 +83,7 @@ def _get_interface_lines(interface_identifier: str) -> typing.Iterable[Interface
 
     file_path = get_interface_path(interface_identifier)
     with open(file_path) as file_handler:
-        while True:
-            line = file_handler.readline()
-            if not line:
-                break
+        for line in file_handler:
             yield InterfaceTextLine(
                 pkg_name=pkg_name,
                 msg_name=msg_name,
