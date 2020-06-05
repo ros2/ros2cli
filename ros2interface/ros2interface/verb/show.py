@@ -28,13 +28,7 @@ from rosidl_runtime_py import get_interface_path
 
 
 class InterfaceTextLine:
-    """
-    A convenience class for a single text line in an interface file.
-
-    This class uses the class MessageSpecification to parse a single line
-    from an interface file and makes the type of the message accessible so
-    that it can be used to get the file path to nested messages.
-    """
+    """A convenience class for a single text line in an interface file."""
 
     def __init__(
             self,
