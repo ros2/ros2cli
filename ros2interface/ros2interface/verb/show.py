@@ -58,6 +58,12 @@ class InterfaceTextLine:
     def __str__(self) -> str:
         return self._raw_line_text
 
+    def is_comment(self) -> bool:
+        return self._msg_spec and self._msg_spec.annotations['comment']
+
+    def is_trailing_comment(self) -> bool:
+        return self._field and self._field.annotations['comment']
+
     @property
     def nested_type(self) -> typing.Optional[str]:
         if self._field and self._is_nested():
@@ -65,6 +71,13 @@ class InterfaceTextLine:
             if self._field.type.is_array:
                 interface_type = interface_type[:interface_type.find('[')]
             return interface_type.replace('/', '/msg/')
+
+    @property
+    def trailing_comment(self) -> typing.Optional[str]:
+        if self.is_trailing_comment():
+            return self._field.annotations['comment'][0]
+        else:
+            return None
 
     @property
     def _field(self) -> typing.Optional[Field]:
@@ -97,18 +110,31 @@ def _get_interface_lines(interface_identifier: str) -> typing.Iterable[Interface
             )
 
 
-def _show_interface(interface_identifier: str, indent_level: int = 0):
+def _print_interface_line(line: InterfaceTextLine, raw: bool, indent_level: int):
+    text = str(line)
+    if not raw:
+        if not text or line.is_comment():
+            return
+        elif line.is_trailing_comment():
+            comment_start_idx = text.find(line.trailing_comment)
+            text = text[:comment_start_idx - 1].strip()
+    if text:
+        indent_string = indent_level * '\t'
+        print(f'{indent_string}{text}')
+    else:
+        print()
+
+
+def _show_interface(interface_identifier: str, raw: bool = False, indent_level: int = 0):
+
     for line in _get_interface_lines(interface_identifier):
 
-        if str(line):
-            indent_string = indent_level*'\t'
-            print(f'{indent_string}{str(line)}')
-        else:
-            print()
+        _print_interface_line(line, raw=raw, indent_level=indent_level)
 
         if line.nested_type:
             _show_interface(
                 line.nested_type,
+                raw=raw,
                 indent_level=indent_level+1,
             )
 
@@ -130,6 +156,11 @@ class ShowVerb(VerbExtension):
     """Output the interface definition."""
 
     def add_arguments(self, parser, cli_name):
+        parser.add_argument(
+            '-r', '--raw',
+            dest='raw', default=False, action='store_true',
+            help='show raw interface text, including whitespace and comments'
+        )
         arg = parser.add_argument(
             'type',
             action=ReadStdinPipe,
@@ -140,6 +171,6 @@ class ShowVerb(VerbExtension):
 
     def main(self, *, args):
         try:
-            _show_interface(args.type)
+            _show_interface(args.type, raw=args.raw)
         except (ValueError, LookupError) as e:
             return str(e)
