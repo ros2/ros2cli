@@ -370,7 +370,7 @@ class TestROS2InterfaceCLI(unittest.TestCase):
                 '\t\t# Nanoseconds component in the range of [0, 10e9).',
                 '\t\tuint32 nanosec',
                 '\tbuiltin_interfaces/Time time_value',
-                '\t\t# Time indicates a specific point in time, relative to a clock\'s 0 point.',
+                "\t\t# Time indicates a specific point in time, relative to a clock's 0 point.",
                 '',
                 '\t\t# The seconds component, valid over all int32 values.',
                 '\t\tint32 sec',
@@ -392,7 +392,7 @@ class TestROS2InterfaceCLI(unittest.TestCase):
                 '\tint64 int64_value',
                 '\tuint64 uint64_value',
                 'builtin_interfaces/Time nested_different_pkg',
-                '\t# Time indicates a specific point in time, relative to a clock\'s 0 point.',
+                "\t# Time indicates a specific point in time, relative to a clock's 0 point.",
                 '',
                 '\t# The seconds component, valid over all int32 values.',
                 '\tint32 sec',
@@ -412,7 +412,7 @@ class TestROS2InterfaceCLI(unittest.TestCase):
                 '\t\t# Nanoseconds component in the range of [0, 10e9).',
                 '\t\tuint32 nanosec',
                 '\tbuiltin_interfaces/Time time_value',
-                '\t\t# Time indicates a specific point in time, relative to a clock\'s 0 point.',
+                "\t\t# Time indicates a specific point in time, relative to a clock's 0 point.",
                 '',
                 '\t\t# The seconds component, valid over all int32 values.',
                 '\t\tint32 sec',
@@ -434,7 +434,7 @@ class TestROS2InterfaceCLI(unittest.TestCase):
                 '\tint64 int64_value',
                 '\tuint64 uint64_value',
                 'builtin_interfaces/Time nested_different_pkg',
-                '\t# Time indicates a specific point in time, relative to a clock\'s 0 point.',
+                "\t# Time indicates a specific point in time, relative to a clock's 0 point.",
                 '',
                 '\t# The seconds component, valid over all int32 values.',
                 '\tint32 sec',
@@ -454,7 +454,7 @@ class TestROS2InterfaceCLI(unittest.TestCase):
                 '\t\t# Nanoseconds component in the range of [0, 10e9).',
                 '\t\tuint32 nanosec',
                 '\tbuiltin_interfaces/Time time_value',
-                '\t\t# Time indicates a specific point in time, relative to a clock\'s 0 point.',
+                "\t\t# Time indicates a specific point in time, relative to a clock's 0 point.",
                 '',
                 '\t\t# The seconds component, valid over all int32 values.',
                 '\t\tint32 sec',
@@ -476,7 +476,7 @@ class TestROS2InterfaceCLI(unittest.TestCase):
                 '\tint64 int64_value',
                 '\tuint64 uint64_value',
                 'builtin_interfaces/Time nested_different_pkg',
-                '\t# Time indicates a specific point in time, relative to a clock\'s 0 point.',
+                "\t# Time indicates a specific point in time, relative to a clock's 0 point.",
                 '',
                 '\t# The seconds component, valid over all int32 values.',
                 '\tint32 sec',
@@ -517,7 +517,9 @@ class TestROS2InterfaceCLI(unittest.TestCase):
     def test_show_stdin(self):
         with self.launch_interface_command(
             arguments=['show', '-'],
-            prepend_arguments=[sys.executable, '-c', r'"print(\"test_msgs/msg/BasicTypes\")"', '|'],
+            prepend_arguments=[
+                sys.executable, '-c', r'"print(\"test_msgs/msg/BasicTypes\")"', '|'
+            ],
             shell=True
         ) as interface_command:
             assert interface_command.wait_for_shutdown(timeout=2)

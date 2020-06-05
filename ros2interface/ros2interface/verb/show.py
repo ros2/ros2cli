@@ -19,14 +19,18 @@ import typing
 from ros2interface.api import type_completer
 from ros2interface.verb import VerbExtension
 from rosidl_adapter.parser import \
-    parse_message_string, MessageSpecification, \
-    SERVICE_REQUEST_RESPONSE_SEPARATOR, ACTION_REQUEST_RESPONSE_SEPARATOR, \
-    Field
+    ACTION_REQUEST_RESPONSE_SEPARATOR, \
+    Field, \
+    MessageSpecification, \
+    parse_message_string, \
+    SERVICE_REQUEST_RESPONSE_SEPARATOR
 from rosidl_runtime_py import get_interface_path
 
 
 class InterfaceTextLine:
     """
+    A convenience class for a single text line in an interface file.
+
     This class uses the class MessageSpecification to parse a single line
     from an interface file and makes the type of the message accessible so
     that it can be used to get the file path to nested messages.
@@ -59,8 +63,8 @@ class InterfaceTextLine:
         if self._field and self._is_nested():
             interface_type: str = str(self._field.type)
             if self._field.type.is_array:
-                interface_type = interface_type[:interface_type.find("[")]
-            return interface_type.replace("/", "/msg/")
+                interface_type = interface_type[:interface_type.find('[')]
+            return interface_type.replace('/', '/msg/')
 
     @property
     def _field(self) -> typing.Optional[Field]:
@@ -69,16 +73,18 @@ class InterfaceTextLine:
 
     def _is_nested(self) -> bool:
         if self._msg_spec and self._msg_spec.fields:
-            return "/" in str(self._field.type)
+            return '/' in str(self._field.type)
         else:
             return False
 
 
 def _get_interface_lines(interface_identifier: str) -> typing.Iterable[InterfaceTextLine]:
 
-    parts: typing.List[str] = interface_identifier.split("/")
+    parts: typing.List[str] = interface_identifier.split('/')
     if len(parts) != 3:
-        raise ValueError(f"Invalid name '{interface_identifier}'. Expected three parts separated by '/'")
+        raise ValueError(
+            f"Invalid name '{interface_identifier}'. Expected three parts separated by '/'"
+        )
     pkg_name, _, msg_name = parts
 
     file_path = get_interface_path(interface_identifier)
@@ -95,10 +101,10 @@ def _show_interface(interface_identifier: str, indent_level: int = 0):
     for line in _get_interface_lines(interface_identifier):
 
         if str(line):
-            indent_string = indent_level*"\t"
-            print(f"{indent_string}{str(line)}")
+            indent_string = indent_level*'\t'
+            print(f'{indent_string}{str(line)}')
         else:
-            print("")
+            print()
 
         if line.nested_type:
             _show_interface(
