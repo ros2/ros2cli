@@ -122,7 +122,6 @@ def get_components_in_containers(*, node, remote_containers_node_names):
     instances containing the unique id and name of each component or a falsy boolean and
     a reason string in case of error, per container node.
     """
-
     def list_components(node, remote_container_node_name):
         list_nodes_client = node.create_client(
             composition_interfaces.srv.ListNodes,
