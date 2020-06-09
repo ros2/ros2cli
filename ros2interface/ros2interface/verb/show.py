@@ -187,7 +187,7 @@ class ShowVerb(VerbExtension):
 
     def main(self, *, args):
 
-        is_show_top_level_comments = args.all_comments or not args.no_comments
+        is_show_top_level_comments = not args.no_comments
         is_show_nested_comments = args.all_comments
 
         try:
