@@ -95,7 +95,8 @@ class PubVerb(VerbExtension):
 
 def main(args):
     qos_profile = qos_profile_from_short_keys(
-        args.qos_profile, reliability=args.qos_reliability, durability=args.qos_durability)
+        args.qos_profile, reliability=args.qos_reliability, durability=args.qos_durability,
+        depth=args.qos_depth, history=args.qos_history)
     times = args.times
     if args.once:
         times = 1

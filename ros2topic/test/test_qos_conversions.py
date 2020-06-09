@@ -19,6 +19,7 @@ from ros2topic.api import qos_profile_from_short_keys
 
 def test_profile_conversion():
     profile = qos_profile_from_short_keys(
-        'sensor_data', reliability='reliable', durability='transient_local')
+        'sensor_data', reliability='reliable', durability='transient_local',
+        depth=10, history='keep_last')
     assert profile.durability == rclpy.qos.QoSDurabilityPolicy.TRANSIENT_LOCAL
     assert profile.reliability == rclpy.qos.QoSReliabilityPolicy.RELIABLE

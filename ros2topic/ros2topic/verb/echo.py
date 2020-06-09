@@ -24,6 +24,7 @@ from rclpy.qos import QoSProfile
 from ros2cli.node.strategy import NodeStrategy
 from ros2topic.api import add_qos_arguments_to_argument_parser
 from ros2topic.api import get_msg_class
+from ros2topic.api import unsigned_int
 from ros2topic.api import qos_profile_from_short_keys
 from ros2topic.api import TopicNameCompleter
 from ros2topic.verb import VerbExtension
@@ -33,16 +34,6 @@ from rosidl_runtime_py.utilities import get_message
 
 DEFAULT_TRUNCATE_LENGTH = 128
 MsgType = TypeVar('MsgType')
-
-
-def unsigned_int(string):
-    try:
-        value = int(string)
-    except ValueError:
-        value = -1
-    if value < 0:
-        raise ArgumentTypeError('value must be non-negative integer')
-    return value
 
 
 class EchoVerb(VerbExtension):
@@ -89,7 +80,8 @@ def main(args):
         truncate_length = args.truncate_length if not args.full_length else None
         callback = subscriber_cb_csv(truncate_length, args.no_arr, args.no_str)
     qos_profile = qos_profile_from_short_keys(
-        args.qos_profile, reliability=args.qos_reliability, durability=args.qos_durability)
+        args.qos_profile, reliability=args.qos_reliability, durability=args.qos_durability,
+        depth=args.qos_depth, history=args.qos_history)
     with NodeStrategy(args) as node:
         if args.message_type is None:
             message_type = get_msg_class(node, args.topic_name, include_hidden_topics=True)
