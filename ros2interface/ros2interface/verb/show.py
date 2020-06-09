@@ -104,9 +104,13 @@ def _get_interface_lines(interface_identifier: str) -> typing.Iterable[Interface
             )
 
 
-def _print_interface_line(line: InterfaceTextLine, raw: bool, indent_level: int):
+def _print_interface_line(
+        line: InterfaceTextLine,
+        is_show_comments: bool,
+        indent_level: int
+):
     text = str(line)
-    if not raw:
+    if not is_show_comments:
         if not text or line.is_comment():
             return
         elif line.is_trailing_comment():
@@ -119,16 +123,26 @@ def _print_interface_line(line: InterfaceTextLine, raw: bool, indent_level: int)
         print()
 
 
-def _show_interface(interface_identifier: str, raw: bool = False, indent_level: int = 0):
+def _show_interface(
+        interface_identifier: str,
+        is_show_comments: bool = False,
+        is_show_nested_comments: bool = False,
+        indent_level: int = 0
+):
 
     for line in _get_interface_lines(interface_identifier):
 
-        _print_interface_line(line, raw=raw, indent_level=indent_level)
+        _print_interface_line(
+            line,
+            is_show_comments=is_show_comments,
+            indent_level=indent_level
+        )
 
         if line.nested_type:
             _show_interface(
                 line.nested_type,
-                raw=raw,
+                is_show_comments=is_show_nested_comments,
+                is_show_nested_comments=is_show_nested_comments,
                 indent_level=indent_level+1,
             )
 
@@ -149,11 +163,19 @@ class ReadStdinPipe(argparse.Action):
 class ShowVerb(VerbExtension):
     """Output the interface definition."""
 
+    _all_comments_flag = '--all-comments'
+    _no_comments_flag = '--no-comments'
+
     def add_arguments(self, parser, cli_name):
         parser.add_argument(
-            '-r', '--raw',
-            dest='raw', default=False, action='store_true',
-            help='show raw interface text, including whitespace and comments'
+            self._all_comments_flag,
+            default=False, action='store_true',
+            help='Show all comments, including for nested interface definitions'
+        )
+        parser.add_argument(
+            self._no_comments_flag,
+            default=False, action='store_true',
+            help='Show no comments or whitespace'
         )
         arg = parser.add_argument(
             'type',
@@ -164,7 +186,25 @@ class ShowVerb(VerbExtension):
         arg.completer = type_completer
 
     def main(self, *, args):
+
+        if args.all_comments and args.no_comments:
+            return f"Cannot use the flags '{self._all_comments_flag}' and " \
+                   f"'{self._no_comments_flag}' at the same time"
+        elif args.all_comments:
+            is_show_top_level_comments = True
+            is_show_nested_comments = True
+        elif args.no_comments:
+            is_show_top_level_comments = False
+            is_show_nested_comments = False
+        else:
+            is_show_top_level_comments = True
+            is_show_nested_comments = False
+
         try:
-            _show_interface(args.type, raw=args.raw)
+            _show_interface(
+                args.type,
+                is_show_comments=is_show_top_level_comments,
+                is_show_nested_comments=is_show_nested_comments,
+            )
         except (ValueError, LookupError) as e:
             return str(e)
