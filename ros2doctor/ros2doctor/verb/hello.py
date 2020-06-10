@@ -221,7 +221,7 @@ class HelloMulticastUDPReceiver:
             return
         self._is_shutdown = True
         self._dummy_socket.sendto(
-            f'{socket.gethostname()}'.encode('utf-8'), ('', self._port)
+            f'{socket.gethostname()}'.encode('utf-8'), ('127.0.0.1', self._port)
         )
         self._dummy_socket.close()
         self._socket.setsockopt(socket.IPPROTO_IP, socket.IP_DROP_MEMBERSHIP, self._mreq)
