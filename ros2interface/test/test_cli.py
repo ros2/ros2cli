@@ -260,6 +260,55 @@ class TestROS2InterfaceCLI(unittest.TestCase):
             strict=True
         )
 
+    def test_show_all_comments_for_message(self):
+        with self.launch_interface_command(
+                arguments=['show', 'test_msgs/msg/Builtins', '--all-comments']
+        ) as interface_command:
+            assert interface_command.wait_for_shutdown(timeout=2)
+        assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=[
+                'builtin_interfaces/Duration duration_value',
+                '\t# Duration defines a period between two time points. It is comprised of a',
+                '\t# seconds component and a nanoseconds component.',
+                '',
+                '\t# Seconds component, range is valid over any possible int32 value.',
+                '\tint32 sec',
+                '',
+                '\t# Nanoseconds component in the range of [0, 10e9).',
+                '\tuint32 nanosec',
+                'builtin_interfaces/Time time_value',
+                "\t# Time indicates a specific point in time, relative to a clock's 0 point.",
+                '',
+                '\t# The seconds component, valid over all int32 values.',
+                '\tint32 sec',
+                '',
+                '\t# The nanoseconds component, valid in the range [0, 10e9).',
+                '\tuint32 nanosec',
+            ],
+            text=interface_command.output,
+            strict=True
+        )
+
+    def test_show_no_comments_for_message(self):
+        with self.launch_interface_command(
+                arguments=['show', 'test_msgs/msg/Builtins', '--no-comments']
+        ) as interface_command:
+            assert interface_command.wait_for_shutdown(timeout=2)
+        assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=[
+                'builtin_interfaces/Duration duration_value',
+                '\tint32 sec',
+                '\tuint32 nanosec',
+                'builtin_interfaces/Time time_value',
+                '\tint32 sec',
+                '\tuint32 nanosec',
+            ],
+            text=interface_command.output,
+            strict=True
+        )
+
     def test_show_service(self):
         with self.launch_interface_command(
             arguments=['show', 'test_msgs/srv/BasicTypes']
@@ -353,6 +402,183 @@ class TestROS2InterfaceCLI(unittest.TestCase):
     def test_show_nested_action(self):
         with self.launch_interface_command(
                 arguments=['show', 'test_msgs/action/NestedMessage']
+        ) as interface_command:
+            assert interface_command.wait_for_shutdown(timeout=2)
+        assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=[
+                '# goal definition',
+                'Builtins nested_field_no_pkg',
+                '\tbuiltin_interfaces/Duration duration_value',
+                '\t\tint32 sec',
+                '\t\tuint32 nanosec',
+                '\tbuiltin_interfaces/Time time_value',
+                '\t\tint32 sec',
+                '\t\tuint32 nanosec',
+                'test_msgs/BasicTypes nested_field',
+                '\tbool bool_value',
+                '\tbyte byte_value',
+                '\tchar char_value',
+                '\tfloat32 float32_value',
+                '\tfloat64 float64_value',
+                '\tint8 int8_value',
+                '\tuint8 uint8_value',
+                '\tint16 int16_value',
+                '\tuint16 uint16_value',
+                '\tint32 int32_value',
+                '\tuint32 uint32_value',
+                '\tint64 int64_value',
+                '\tuint64 uint64_value',
+                'builtin_interfaces/Time nested_different_pkg',
+                '\tint32 sec',
+                '\tuint32 nanosec',
+                '---',
+                '# result definition',
+                'Builtins nested_field_no_pkg',
+                '\tbuiltin_interfaces/Duration duration_value',
+                '\t\tint32 sec',
+                '\t\tuint32 nanosec',
+                '\tbuiltin_interfaces/Time time_value',
+                '\t\tint32 sec',
+                '\t\tuint32 nanosec',
+                'test_msgs/BasicTypes nested_field',
+                '\tbool bool_value',
+                '\tbyte byte_value',
+                '\tchar char_value',
+                '\tfloat32 float32_value',
+                '\tfloat64 float64_value',
+                '\tint8 int8_value',
+                '\tuint8 uint8_value',
+                '\tint16 int16_value',
+                '\tuint16 uint16_value',
+                '\tint32 int32_value',
+                '\tuint32 uint32_value',
+                '\tint64 int64_value',
+                '\tuint64 uint64_value',
+                'builtin_interfaces/Time nested_different_pkg',
+                '\tint32 sec',
+                '\tuint32 nanosec',
+                '---',
+                '# feedback',
+                'Builtins nested_field_no_pkg',
+                '\tbuiltin_interfaces/Duration duration_value',
+                '\t\tint32 sec',
+                '\t\tuint32 nanosec',
+                '\tbuiltin_interfaces/Time time_value',
+                '\t\tint32 sec',
+                '\t\tuint32 nanosec',
+                'test_msgs/BasicTypes nested_field',
+                '\tbool bool_value',
+                '\tbyte byte_value',
+                '\tchar char_value',
+                '\tfloat32 float32_value',
+                '\tfloat64 float64_value',
+                '\tint8 int8_value',
+                '\tuint8 uint8_value',
+                '\tint16 int16_value',
+                '\tuint16 uint16_value',
+                '\tint32 int32_value',
+                '\tuint32 uint32_value',
+                '\tint64 int64_value',
+                '\tuint64 uint64_value',
+                'builtin_interfaces/Time nested_different_pkg',
+                '\tint32 sec',
+                '\tuint32 nanosec',
+            ],
+            text=interface_command.output,
+            strict=True
+        )
+
+    def test_show_no_comments_for_nested_action(self):
+        with self.launch_interface_command(
+                arguments=['show', 'test_msgs/action/NestedMessage', '--no-comments']
+        ) as interface_command:
+            assert interface_command.wait_for_shutdown(timeout=2)
+        assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=[
+                'Builtins nested_field_no_pkg',
+                '\tbuiltin_interfaces/Duration duration_value',
+                '\t\tint32 sec',
+                '\t\tuint32 nanosec',
+                '\tbuiltin_interfaces/Time time_value',
+                '\t\tint32 sec',
+                '\t\tuint32 nanosec',
+                'test_msgs/BasicTypes nested_field',
+                '\tbool bool_value',
+                '\tbyte byte_value',
+                '\tchar char_value',
+                '\tfloat32 float32_value',
+                '\tfloat64 float64_value',
+                '\tint8 int8_value',
+                '\tuint8 uint8_value',
+                '\tint16 int16_value',
+                '\tuint16 uint16_value',
+                '\tint32 int32_value',
+                '\tuint32 uint32_value',
+                '\tint64 int64_value',
+                '\tuint64 uint64_value',
+                'builtin_interfaces/Time nested_different_pkg',
+                '\tint32 sec',
+                '\tuint32 nanosec',
+                '---',
+                'Builtins nested_field_no_pkg',
+                '\tbuiltin_interfaces/Duration duration_value',
+                '\t\tint32 sec',
+                '\t\tuint32 nanosec',
+                '\tbuiltin_interfaces/Time time_value',
+                '\t\tint32 sec',
+                '\t\tuint32 nanosec',
+                'test_msgs/BasicTypes nested_field',
+                '\tbool bool_value',
+                '\tbyte byte_value',
+                '\tchar char_value',
+                '\tfloat32 float32_value',
+                '\tfloat64 float64_value',
+                '\tint8 int8_value',
+                '\tuint8 uint8_value',
+                '\tint16 int16_value',
+                '\tuint16 uint16_value',
+                '\tint32 int32_value',
+                '\tuint32 uint32_value',
+                '\tint64 int64_value',
+                '\tuint64 uint64_value',
+                'builtin_interfaces/Time nested_different_pkg',
+                '\tint32 sec',
+                '\tuint32 nanosec',
+                '---',
+                'Builtins nested_field_no_pkg',
+                '\tbuiltin_interfaces/Duration duration_value',
+                '\t\tint32 sec',
+                '\t\tuint32 nanosec',
+                '\tbuiltin_interfaces/Time time_value',
+                '\t\tint32 sec',
+                '\t\tuint32 nanosec',
+                'test_msgs/BasicTypes nested_field',
+                '\tbool bool_value',
+                '\tbyte byte_value',
+                '\tchar char_value',
+                '\tfloat32 float32_value',
+                '\tfloat64 float64_value',
+                '\tint8 int8_value',
+                '\tuint8 uint8_value',
+                '\tint16 int16_value',
+                '\tuint16 uint16_value',
+                '\tint32 int32_value',
+                '\tuint32 uint32_value',
+                '\tint64 int64_value',
+                '\tuint64 uint64_value',
+                'builtin_interfaces/Time nested_different_pkg',
+                '\tint32 sec',
+                '\tuint32 nanosec',
+            ],
+            text=interface_command.output,
+            strict=True
+        )
+
+    def test_show_all_comments_for_nested_action(self):
+        with self.launch_interface_command(
+                arguments=['show', 'test_msgs/action/NestedMessage', '--all-comments']
         ) as interface_command:
             assert interface_command.wait_for_shutdown(timeout=2)
         assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
