@@ -23,6 +23,7 @@ import composition_interfaces.srv
 import rcl_interfaces.msg
 
 import rclpy
+from rclpy.task import Future
 
 from ros2cli.node.strategy import NodeStrategy
 from ros2node.api import get_node_names
@@ -69,33 +70,134 @@ ComponentInfo = namedtuple('Component', ('uid', 'name'))
 
 def get_container_components_info(*, node, remote_container_node_name):
     """
-    Get information about the components in a given container.
+    Get information about the components in a container.
 
     :param node: an `rclpy.Node` instance.
     :param remote_container_node_name: of the container node to inspect.
-    :return: a list of `ComponentInfo` instances, with the unique ID and
-    name for each of the components in the container.
+    :return: a list of `ComponentInfo` instances, with the unique id and name of
+    each component in the container.
+    :throws: RuntimeError if an error occurs.
     """
-    list_nodes_client = node.create_client(
-        composition_interfaces.srv.ListNodes,
-        '{}/_container/list_nodes'.format(remote_container_node_name)
+    ok, outcome = get_components_in_container(
+        node=node, remote_container_node_name=remote_container_node_name
     )
-    try:
-        if not list_nodes_client.wait_for_service(timeout_sec=5.0):
-            raise RuntimeError(
-                f"No 'list_nodes' service found for '{remote_container_node_name}' container"
-            )
-        future = list_nodes_client.call_async(
-            composition_interfaces.srv.ListNodes.Request()
+    if not ok:
+        raise RuntimeError(f'{outcome} for {remote_container_node_name}')
+    return outcome
+
+
+def get_components_in_container(*, node, remote_container_node_name):
+    """
+    Get information about the components in a container.
+
+    :param node: an `rclpy.Node` instance.
+    :param remote_container_node_names: of the container node to inspect.
+    :return: a tuple with either a truthy boolean and a list of `ComponentInfo`
+    instances containing the unique id and name of each component or a falsy
+    boolean and a reason string in case of error.
+    """
+    return get_components_in_containers(
+        node=node, remote_containers_node_names=[remote_container_node_name]
+    )[remote_container_node_name]
+
+
+def get_components_in_containers(*, node, remote_containers_node_names):
+    """
+    Get information about the components in multiple containers.
+
+    Get information about the components in a container.
+
+    :param node: an `rclpy.Node` instance.
+    :param remote_container_node_names: of the container nodes to inspect.
+    :return: a dict of tuples, with either a truthy boolean and a list of `ComponentInfo`
+    instances containing the unique id and name of each component or a falsy boolean and
+    a reason string in case of error, per container node.
+    """
+    def list_components(node, remote_container_node_name):
+        list_nodes_client = node.create_client(
+            composition_interfaces.srv.ListNodes,
+            f'{remote_container_node_name}/_container/list_nodes'
         )
-        rclpy.spin_until_future_complete(node, future)
-        response = future.result()
-        return [
-            ComponentInfo(uid, name) for uid, name in
-            zip(response.unique_ids, response.full_node_names)
-        ]
+
+        try:
+            while not list_nodes_client.service_is_ready():
+                cancel = yield
+                if cancel:
+                    return remote_container_node_name, (
+                        False, "No 'list_nodes' service found"
+                    )
+
+            future = list_nodes_client.call_async(
+                composition_interfaces.srv.ListNodes.Request()
+            )
+
+            while not future.done():
+                cancel = yield
+                if cancel:
+                    future.cancel()
+                    return remote_container_node_name, (
+                        False, "No 'list_nodes' service response"
+                    )
+
+            response = future.result()
+            return remote_container_node_name, (True, [
+                ComponentInfo(uid, name) for uid, name in
+                zip(response.unique_ids, response.full_node_names)
+            ])
+        finally:
+            node.destroy_client(list_nodes_client)
+
+    def async_run(coroutines):
+        future = Future()
+        outcomes = [None] * len(coroutines)
+
+        for i, co in enumerate(coroutines):
+            try:
+                next(co)
+            except StopIteration as ex:
+                outcomes[i] = ex.value
+            except Exception as ex:
+                future.set_exception(ex)
+                return future, None
+
+        if all(value is not None for value in outcomes):
+            future.set_result(outcomes)
+            return future, None
+
+        def _resume(to_completion=False):
+            nonlocal outcomes
+            if future.done():
+                raise RuntimeError("'async_run' done already")
+            for i, co in enumerate(coroutines):
+                if outcomes[i] is None:
+                    try:
+                        co.send(to_completion)
+                    except StopIteration as ex:
+                        outcomes[i] = ex.value
+                    except Exception as ex:
+                        future.set_exception(ex)
+                        return
+            if to_completion or all(value is not None for value in outcomes):
+                future.set_result(outcomes)
+
+        return future, _resume
+
+    future, resume = async_run([
+        list_components(node, remote_container_node_name)
+        for remote_container_node_name in remote_containers_node_names
+    ])
+
+    if future.done():
+        return dict(future.result())
+
+    timer = node.create_timer(timer_period_sec=0.1, callback=resume)
+    try:
+        rclpy.spin_until_future_complete(node, future, timeout_sec=5.0)
+        if not future.done():
+            resume(to_completion=True)
+        return dict(future.result())
     finally:
-        node.destroy_client(list_nodes_client)
+        node.destroy_timer(timer)
 
 
 def load_component_into_container(

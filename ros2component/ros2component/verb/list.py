@@ -17,7 +17,8 @@ from ros2cli.node.strategy import NodeStrategy
 
 from ros2component.api import container_node_name_completer
 from ros2component.api import find_container_node_names
-from ros2component.api import get_container_components_info
+from ros2component.api import get_components_in_container
+from ros2component.api import get_components_in_containers
 from ros2component.verb import VerbExtension
 
 from ros2node.api import get_node_names
@@ -45,19 +46,26 @@ class ListVerb(VerbExtension):
                 if args.container_node_name not in [n.full_name for n in container_node_names]:
                     return "Unable to find container node '" + args.container_node_name + "'"
                 if not args.containers_only:
-                    components = get_container_components_info(
+                    ok, outcome = get_components_in_container(
                         node=node, remote_container_node_name=args.container_node_name
                     )
-                    if any(components):
-                        print(*['{}  {}'.format(c.uid, c.name) for c in components], sep='\n')
+                    if not ok:
+                        return f'{outcome} when listing components in {args.container_node_name}'
+                    if any(outcome):
+                        print(*[
+                            f'{component.uid}  {component.name}' for component in outcome
+                        ], sep='\n')
             else:
-                for n in container_node_names:
-                    print(n.full_name)
+                results = get_components_in_containers(node=node, remote_containers_node_names=[
+                    n.full_name for n in container_node_names
+                ])
+                for container_node_name, (ok, outcome) in results.items():
+                    print(container_node_name)
                     if not args.containers_only:
-                        components = get_container_components_info(
-                            node=node, remote_container_node_name=n.full_name
-                        )
-                        if any(components):
+                        if not ok:
+                            print(f'{outcome} when listing components')
+                            continue
+                        if any(outcome):
                             print(*[
-                                '  ' + '{}  {}'.format(c.uid, c.name) for c in components
+                                f'  {component.uid}  {component.name}' for component in outcome
                             ], sep='\n')
