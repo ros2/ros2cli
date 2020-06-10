@@ -86,7 +86,6 @@ class InterfaceTextLine:
 
 
 def _get_interface_lines(interface_identifier: str) -> typing.Iterable[InterfaceTextLine]:
-
     parts: typing.List[str] = interface_identifier.split('/')
     if len(parts) != 3:
         raise ValueError(
@@ -129,14 +128,10 @@ def _show_interface(
     is_show_nested_comments: bool = False,
     indent_level: int = 0
 ):
-
     for line in _get_interface_lines(interface_identifier):
 
         _print_interface_line(
-            line,
-            is_show_comments=is_show_comments,
-            indent_level=indent_level
-        )
+            line, is_show_comments=is_show_comments, indent_level=indent_level)
 
         if line.nested_type:
             _show_interface(
@@ -164,7 +159,6 @@ class ShowVerb(VerbExtension):
     """Output the interface definition."""
 
     def add_arguments(self, parser, cli_name):
-
         comment_group = parser.add_mutually_exclusive_group()
         comment_group.add_argument(
             '--all-comments',
@@ -186,15 +180,11 @@ class ShowVerb(VerbExtension):
         arg.completer = type_completer
 
     def main(self, *, args):
-
-        is_show_top_level_comments = not args.no_comments
-        is_show_nested_comments = args.all_comments
-
         try:
             _show_interface(
                 args.type,
-                is_show_comments=is_show_top_level_comments,
-                is_show_nested_comments=is_show_nested_comments,
+                is_show_comments=not args.no_comments,
+                is_show_nested_comments=args.all_comments,
             )
         except (ValueError, LookupError) as e:
             return str(e)
