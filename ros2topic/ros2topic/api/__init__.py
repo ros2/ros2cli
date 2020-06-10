@@ -166,6 +166,8 @@ def qos_profile_from_short_keys(
         profile.history = rclpy.qos.QoSHistoryPolicy.get_from_short_key(history)
     if durability:
         profile.durability = rclpy.qos.QoSDurabilityPolicy.get_from_short_key(durability)
+        if profile.durability == rclpy.qos.QoSDurabilityPolicy.TRANSIENT_LOCAL and profile.depth == 0:
+            profile.depth = 1
     if reliability:
         profile.reliability = rclpy.qos.QoSReliabilityPolicy.get_from_short_key(reliability)
 

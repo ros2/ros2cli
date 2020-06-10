@@ -23,3 +23,5 @@ def test_profile_conversion():
         depth=10, history='keep_last')
     assert profile.durability == rclpy.qos.QoSDurabilityPolicy.TRANSIENT_LOCAL
     assert profile.reliability == rclpy.qos.QoSReliabilityPolicy.RELIABLE
+    assert profile.depth == 10
+    assert profile.history == rclpy.qos.QoSHistoryPolicy.KEEP_LAST
