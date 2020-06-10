@@ -72,7 +72,8 @@ def get_container_components_info(*, node, remote_container_node_name):
     """
     Get information about the components in a container.
 
-    .. deprecated:: Foxy
+    .. deprecated:: Galactic
+
        Use :func:`get_components_in_container()` instead.
 
     :param node: an `rclpy.Node` instance.
