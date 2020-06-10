@@ -68,33 +68,6 @@ def get_registered_component_types():
 ComponentInfo = namedtuple('Component', ('uid', 'name'))
 
 
-def get_container_components_info(*, node, remote_container_node_name):
-    """
-    Get information about the components in a container.
-
-    .. deprecated:: Foxy
-       Use :func:`get_components_in_container()` instead.
-
-    :param node: an `rclpy.Node` instance.
-    :param remote_container_node_name: of the container node to inspect.
-    :return: a list of `ComponentInfo` instances, with the unique id and name of
-    each component in the container.
-    :throws: RuntimeError if an error occurs.
-    """
-    import warnings
-    warnings.warn(
-        'get_container_components_info() is deprecated. '
-        'Use get_components_in_container() instead.'
-    )
-
-    ok, outcome = get_components_in_container(
-        node=node, remote_container_node_name=remote_container_node_name
-    )
-    if not ok:
-        raise RuntimeError(f'{outcome} for {remote_container_node_name}')
-    return outcome
-
-
 def get_components_in_container(*, node, remote_container_node_name):
     """
     Get information about the components in a container.
