@@ -378,8 +378,7 @@ class TestROS2TopicCLI(unittest.TestCase):
         arguments=[
             'echo', '--once',
             '/chatter',
-            'std_msgs/msg/String',
-            '{data: bar}'
+            'std_msgs/msg/String'
         ]
         ) as topic_command:
             assert topic_command.wait_for_output(functools.partial(
