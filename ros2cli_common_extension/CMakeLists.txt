@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(cli_meta)
+project(ros2cli_common_extensions)
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
