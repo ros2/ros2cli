@@ -155,12 +155,12 @@ class TopicMessagePrototypeCompleter:
 
 def qos_profile_from_short_keys(
     preset_profile: str, reliability: str = None, durability: str = None,
-    depth: unsigned_int = 0, history: str = None,
+    depth: int = -1, history: str = None,
 ) -> rclpy.qos.QoSProfile:
     """Construct a QoSProfile given the name of a preset, and optional overrides."""
     # Build a QoS profile based on user-supplied arguments
     profile = rclpy.qos.QoSPresetProfiles.get_from_short_key(preset_profile)
-    if depth > 0:
+    if depth >= 0:
         profile.depth = depth
     if history:
         profile.history = rclpy.qos.QoSHistoryPolicy.get_from_short_key(history)
@@ -188,10 +188,9 @@ def add_qos_arguments_to_argument_parser(
     default_profile = rclpy.qos.QoSPresetProfiles.get_from_short_key(
         default_preset)
     parser.add_argument(
-        '--qos-depth', metavar='N', type=unsigned_int, default = default_profile.depth,
+        '--qos-depth', metavar='N', type=int, default=-1,
         help='Queue size setting to {} with '
-             '(overrides depth value of --qos-profile option, default: {})'
-             .format(verb, default_profile.depth))
+             '(overrides depth value of --qos-profile option)')
     parser.add_argument(
         '--qos-history',
         choices=rclpy.qos.QoSHistoryPolicy.short_keys(),
