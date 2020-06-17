@@ -160,16 +160,17 @@ def qos_profile_from_short_keys(
     """Construct a QoSProfile given the name of a preset, and optional overrides."""
     # Build a QoS profile based on user-supplied arguments
     profile = rclpy.qos.QoSPresetProfiles.get_from_short_key(preset_profile)
-    if depth >= 0:
-        profile.depth = depth
     if history:
         profile.history = rclpy.qos.QoSHistoryPolicy.get_from_short_key(history)
     if durability:
         profile.durability = rclpy.qos.QoSDurabilityPolicy.get_from_short_key(durability)
-        if profile.durability == rclpy.qos.QoSDurabilityPolicy.TRANSIENT_LOCAL and profile.depth == 0:
-            profile.depth = 1
     if reliability:
         profile.reliability = rclpy.qos.QoSReliabilityPolicy.get_from_short_key(reliability)
+    if depth >= 0:
+        profile.depth = depth
+    else:
+        if profile.durability == rclpy.qos.QoSDurabilityPolicy.TRANSIENT_LOCAL and profile.depth == 0:
+            profile.depth = 1
 
     return profile
 
@@ -190,7 +191,8 @@ def add_qos_arguments_to_argument_parser(
     parser.add_argument(
         '--qos-depth', metavar='N', type=int, default=-1,
         help='Queue size setting to {} with '
-             '(overrides depth value of --qos-profile option)')
+             '(overrides depth value of --qos-profile option)'
+             .format(verb))
     parser.add_argument(
         '--qos-history',
         choices=rclpy.qos.QoSHistoryPolicy.short_keys(),
