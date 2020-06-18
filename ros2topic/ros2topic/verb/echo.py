@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from argparse import ArgumentTypeError
 from typing import Any
 from typing import Callable
 from typing import Optional
@@ -24,9 +23,9 @@ from rclpy.qos import QoSProfile
 from ros2cli.node.strategy import NodeStrategy
 from ros2topic.api import add_qos_arguments_to_argument_parser
 from ros2topic.api import get_msg_class
-from ros2topic.api import unsigned_int
 from ros2topic.api import qos_profile_from_short_keys
 from ros2topic.api import TopicNameCompleter
+from ros2topic.api import unsigned_int
 from ros2topic.verb import VerbExtension
 from rosidl_runtime_py import message_to_csv
 from rosidl_runtime_py import message_to_yaml

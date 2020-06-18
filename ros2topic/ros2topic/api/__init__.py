@@ -14,6 +14,7 @@
 
 import argparse
 
+from argparse import ArgumentTypeError
 from time import sleep
 
 import rclpy
@@ -25,6 +26,7 @@ from ros2cli.node.strategy import NodeStrategy
 from rosidl_runtime_py import get_message_interfaces
 from rosidl_runtime_py import message_to_yaml
 from rosidl_runtime_py.utilities import get_message
+
 
 def unsigned_int(string):
     try:
@@ -169,7 +171,8 @@ def qos_profile_from_short_keys(
     if depth >= 0:
         profile.depth = depth
     else:
-        if profile.durability == rclpy.qos.QoSDurabilityPolicy.TRANSIENT_LOCAL and profile.depth == 0:
+        if (profile.durability == rclpy.qos.QoSDurabilityPolicy.TRANSIENT_LOCAL
+                and profile.depth == 0):
             profile.depth = 1
 
     return profile
