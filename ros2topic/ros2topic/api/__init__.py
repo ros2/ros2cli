@@ -14,6 +14,7 @@
 
 import argparse
 
+from argparse import ArgumentTypeError
 from time import sleep
 
 import rclpy
@@ -25,6 +26,16 @@ from ros2cli.node.strategy import NodeStrategy
 from rosidl_runtime_py import get_message_interfaces
 from rosidl_runtime_py import message_to_yaml
 from rosidl_runtime_py.utilities import get_message
+
+
+def unsigned_int(string):
+    try:
+        value = int(string)
+    except ValueError:
+        value = -1
+    if value < 0:
+        raise ArgumentTypeError('value must be non-negative integer')
+    return value
 
 
 def get_topic_names_and_types(*, node, include_hidden_topics=False):
@@ -146,14 +157,23 @@ class TopicMessagePrototypeCompleter:
 
 def qos_profile_from_short_keys(
     preset_profile: str, reliability: str = None, durability: str = None,
+    depth: int = -1, history: str = None,
 ) -> rclpy.qos.QoSProfile:
     """Construct a QoSProfile given the name of a preset, and optional overrides."""
     # Build a QoS profile based on user-supplied arguments
     profile = rclpy.qos.QoSPresetProfiles.get_from_short_key(preset_profile)
+    if history:
+        profile.history = rclpy.qos.QoSHistoryPolicy.get_from_short_key(history)
     if durability:
         profile.durability = rclpy.qos.QoSDurabilityPolicy.get_from_short_key(durability)
     if reliability:
         profile.reliability = rclpy.qos.QoSReliabilityPolicy.get_from_short_key(reliability)
+    if depth >= 0:
+        profile.depth = depth
+    else:
+        if (profile.durability == rclpy.qos.QoSDurabilityPolicy.TRANSIENT_LOCAL
+                and profile.depth == 0):
+            profile.depth = 1
 
     return profile
 
@@ -171,6 +191,17 @@ def add_qos_arguments_to_argument_parser(
              .format(verb, default_preset))
     default_profile = rclpy.qos.QoSPresetProfiles.get_from_short_key(
         default_preset)
+    parser.add_argument(
+        '--qos-depth', metavar='N', type=int, default=-1,
+        help='Queue size setting to {} with '
+             '(overrides depth value of --qos-profile option)'
+             .format(verb))
+    parser.add_argument(
+        '--qos-history',
+        choices=rclpy.qos.QoSHistoryPolicy.short_keys(),
+        help='History of samples setting to {} with '
+             '(overrides history value of --qos-profile option, default: {})'
+             .format(verb, default_profile.history.short_key))
     parser.add_argument(
         '--qos-reliability',
         choices=rclpy.qos.QoSReliabilityPolicy.short_keys(),
