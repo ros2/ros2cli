@@ -82,7 +82,7 @@ class HelloVerb(VerbExtension):
             summary_table = SummaryTable()
         with DirectNode(args, node_name=NODE_NAME_PREFIX + '_node') as node:
             publisher = HelloPublisher(node, args.topic, summary_table)
-            HelloSubscriber(node, args.topic, summary_table)
+            subscriber = HelloSubscriber(node, args.topic, summary_table)
             sender = HelloMulticastUDPSender(summary_table, ttl=args.ttl)
             receiver = HelloMulticastUDPReceiver(summary_table)
             receiver_thread = threading.Thread(target=receiver.recv)
@@ -119,6 +119,8 @@ class HelloVerb(VerbExtension):
                 receiver.shutdown()
                 receiver_thread.join()
                 sender.shutdown()
+                subscriber.destroy()
+                publisher.destroy()
 
 
 class HelloPublisher:
@@ -127,6 +129,9 @@ class HelloPublisher:
     def __init__(self, node, topic, summary_table, *, qos=qos_profile_system_default):
         self._summary_table = summary_table
         self._pub = node.create_publisher(String, topic, qos)
+
+    def destroy(self):
+        self._pub.destroy()
 
     def publish(self):
         msg = String()
@@ -142,6 +147,9 @@ class HelloSubscriber:
     def __init__(self, node, topic, summary_table, *, qos=qos_profile_system_default):
         self._summary_table = summary_table
         self._sub = node.create_subscription(String, topic, self._callback, qos)
+
+    def destroy(self):
+        self._sub.destroy()
 
     def _callback(self, msg):
         msg_data = msg.data.split()
