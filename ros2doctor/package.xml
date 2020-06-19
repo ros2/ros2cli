@@ -12,6 +12,7 @@
   <exec_depend>ament_index_python</exec_depend>
   <exec_depend>python3-catkin-pkg-modules</exec_depend>
   <exec_depend>python3-ifcfg</exec_depend>
+  <exec_depend>python3-importlib-metadata</exec_depend>
   <exec_depend>python3-rosdistro-modules</exec_depend>
   <exec_depend>rclpy</exec_depend>
   <exec_depend>ros_environment</exec_depend>
