@@ -65,7 +65,8 @@ class DoctorCommand(CommandExtension):
         if args.report_failed and fail != 0:
             fail_reports = generate_reports(categories=fail_category)
             for report_obj in fail_reports:
-                format_print(report_obj)
+                if report_obj is not None:
+                    format_print(report_obj)
 
 
 class WtfCommand(DoctorCommand):
