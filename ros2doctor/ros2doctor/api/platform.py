@@ -114,11 +114,11 @@ class RosdistroReport(DoctorReport):
         return 'platform'
 
     def report(self):
+        ros_report = Report('ROS 2 INFORMATION')
         distros = _check_platform_helper()
         if not distros:
-            return
+            return ros_report
         distro_name, distro_info, distro_data = distros
-        ros_report = Report('ROS 2 INFORMATION')
         ros_report.add_to_report('distribution name', distro_name)
         ros_report.add_to_report('distribution type', distro_info.get('distribution_type'))
         ros_report.add_to_report('distribution status', distro_info.get('distribution_status'))
