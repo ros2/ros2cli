@@ -269,8 +269,9 @@ class TestROS2InterfaceCLI(unittest.TestCase):
         assert launch_testing.tools.expect_output(
             expected_lines=[
                 'builtin_interfaces/Duration duration_value',
-                '\t# Duration defines a period between two time points. It is comprised of a',
-                '\t# seconds component and a nanoseconds component.',
+                '\t# Duration defines a period between two time points.',
+                '\t# Messages of this datatype are of ROS Time following this design:',
+                '\t# https://design.ros2.org/articles/clock_and_time.html:',
                 '',
                 '\t# Seconds component, range is valid over any possible int32 value.',
                 '\tint32 sec',
@@ -278,7 +279,8 @@ class TestROS2InterfaceCLI(unittest.TestCase):
                 '\t# Nanoseconds component in the range of [0, 10e9).',
                 '\tuint32 nanosec',
                 'builtin_interfaces/Time time_value',
-                "\t# Time indicates a specific point in time, relative to a clock's 0 point.",
+                "\t# This message communicates ROS Time defined here:",
+                "\t# https://design.ros2.org/articles/clock_and_time.html",
                 '',
                 '\t# The seconds component, valid over all int32 values.',
                 '\tint32 sec',
