@@ -144,5 +144,6 @@ def message_lost_event_callback(message_lost_status):
     print(
         'A message was lost!!!\n\ttotal count change:'
         f'{message_lost_status.total_count_change}'
-        f'\n\ttotal count{message_lost_status.total_count}'
+        f'\n\ttotal count: {message_lost_status.total_count}',
+        end='---\n'
     )
