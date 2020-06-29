@@ -20,6 +20,9 @@ from typing import TypeVar
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile
+from rclpy.qos_event import SubscriptionEventCallbacks
+from rclpy.qos_event import UnsupportedEventTypeError
+from rclpy.utilities import get_rmw_implementation_identifier
 from ros2cli.node.strategy import NodeStrategy
 from ros2topic.api import add_qos_arguments_to_argument_parser
 from ros2topic.api import get_msg_class
@@ -66,6 +69,8 @@ class EchoVerb(VerbExtension):
             '--no-arr', action='store_true', help="Don't print array fields of messages")
         parser.add_argument(
             '--no-str', action='store_true', help="Don't print string fields of messages")
+        parser.add_argument(
+            '--lost-messages', action='store_true', help='Report when a message is lost')
 
     def main(self, *, args):
         return main(args)
@@ -91,7 +96,7 @@ def main(args):
             raise RuntimeError('Could not determine the type for the passed topic')
 
         subscriber(
-            node, args.topic_name, message_type, callback, qos_profile)
+            node, args.topic_name, message_type, callback, qos_profile, args.lost_messages)
 
 
 def subscriber(
@@ -99,12 +104,22 @@ def subscriber(
     topic_name: str,
     message_type: MsgType,
     callback: Callable[[MsgType], Any],
-    qos_profile: QoSProfile
+    qos_profile: QoSProfile,
+    report_lost_messages: bool
 ) -> Optional[str]:
     """Initialize a node with a single subscription and spin."""
-    node.create_subscription(
-        message_type, topic_name, callback, qos_profile)
-
+    event_callbacks = None
+    if report_lost_messages:
+        event_callbacks = SubscriptionEventCallbacks(message_lost=message_lost_event_callback)
+    try:
+        node.create_subscription(
+            message_type, topic_name, callback, qos_profile, event_callbacks=event_callbacks)
+    except UnsupportedEventTypeError:
+        assert report_lost_messages
+        print(
+            f"The rmw implementation '{get_rmw_implementation_identifier()}'"
+            ' does not support reporting lost messages'
+        )
     rclpy.spin(node)
 
 
@@ -123,3 +138,12 @@ def subscriber_cb_csv(truncate_length, noarr, nostr):
         nonlocal truncate_length, noarr, nostr
         print(message_to_csv(msg, truncate_length=truncate_length, no_arr=noarr, no_str=nostr))
     return cb
+
+
+def message_lost_event_callback(message_lost_status):
+    print(
+        'A message was lost!!!\n\ttotal count change:'
+        f'{message_lost_status.total_count_change}'
+        f'\n\ttotal count: {message_lost_status.total_count}',
+        end='---\n'
+    )
