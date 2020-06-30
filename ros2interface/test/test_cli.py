@@ -236,76 +236,64 @@ class TestROS2InterfaceCLI(unittest.TestCase):
 
     def test_show_message(self):
         with self.launch_interface_command(
-            arguments=['show', 'test_msgs/msg/BasicTypes']
+            arguments=['show', 'test_msgs/msg/ShortVariedMultiNested']
         ) as interface_command:
             assert interface_command.wait_for_shutdown(timeout=2)
         assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
-                'bool bool_value',
-                'byte byte_value',
-                'char char_value',
-                'float32 float32_value',
-                'float64 float64_value',
-                'int8 int8_value',
-                'uint8 uint8_value',
-                'int16 int16_value',
-                'uint16 uint16_value',
-                'int32 int32_value',
-                'uint32 uint32_value',
-                'int64 int64_value',
-                'uint64 uint64_value',
+                '# A short, varied, and nested type',
+                'ShortVariedNested short_varied_nested # Comment - Nesting Level 3: 1 of 1',
+                '\tShortVaried short_varied',
+                '\t\tbool BOOL_CONST=true',
+                '\t\tbool bool_value',
+                '\t\tbool[<=3] bool_values',
+                '# Trailing comment',
             ],
             text=interface_command.output,
             strict=True
         )
 
-    def test_show_all_comments_for_message(self):
+    def test_show_message_with_all_comments(self):
         with self.launch_interface_command(
-                arguments=['show', 'test_msgs/msg/Builtins', '--all-comments']
+            arguments=['show', 'test_msgs/msg/ShortVariedMultiNested', '--all-comments']
         ) as interface_command:
             assert interface_command.wait_for_shutdown(timeout=2)
         assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
-                'builtin_interfaces/Duration duration_value',
-                '\t# Duration defines a period between two time points.',
-                '\t# Messages of this datatype are of ROS Time following this design:',
-                '\t# https://design.ros2.org/articles/clock_and_time.html',
+                '# A short, varied, and nested type',
+                'ShortVariedNested short_varied_nested # Comment - Nesting Level 3: 1 of 1',
+                '\t# A short, varied type',
+                '\tShortVaried short_varied # Comment - Nesting Level 2: 1 of 1',
+                '\t\t# A constant',
+                '\t\tbool BOOL_CONST=true # Comment - Nesting Level 1: 1 of 2',
                 '',
-                '\t# Seconds component, range is valid over any possible int32 value.',
-                '\tint32 sec',
+                '\t\t# Bool and array of bools',
+                '\t\tbool bool_value',
+                '\t\tbool[<=3] bool_values # Comment - Nesting Level 1: 2 of 2',
                 '',
-                '\t# Nanoseconds component in the range of [0, 10e9).',
-                '\tuint32 nanosec',
-                'builtin_interfaces/Time time_value',
-                '\t# This message communicates ROS Time defined here:',
-                '\t# https://design.ros2.org/articles/clock_and_time.html',
-                '',
-                '\t# The seconds component, valid over all int32 values.',
-                '\tint32 sec',
-                '',
-                '\t# The nanoseconds component, valid in the range [0, 10e9).',
-                '\tuint32 nanosec',
+                '\t\t# Trailing comment',
+                '\t# Trailing comment',
+                '# Trailing comment',
             ],
             text=interface_command.output,
             strict=True
         )
 
-    def test_show_no_comments_for_message(self):
+    def test_show_message_with_no_comments(self):
         with self.launch_interface_command(
-                arguments=['show', 'test_msgs/msg/Builtins', '--no-comments']
+            arguments=['show', 'test_msgs/msg/ShortVariedMultiNested', '--no-comments']
         ) as interface_command:
             assert interface_command.wait_for_shutdown(timeout=2)
         assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
-                'builtin_interfaces/Duration duration_value',
-                '\tint32 sec',
-                '\tuint32 nanosec',
-                'builtin_interfaces/Time time_value',
-                '\tint32 sec',
-                '\tuint32 nanosec',
+                'ShortVariedNested short_varied_nested',
+                '\tShortVaried short_varied',
+                '\t\tbool BOOL_CONST=true',
+                '\t\tbool bool_value',
+                '\t\tbool[<=3] bool_values',
             ],
             text=interface_command.output,
             strict=True
@@ -313,41 +301,70 @@ class TestROS2InterfaceCLI(unittest.TestCase):
 
     def test_show_service(self):
         with self.launch_interface_command(
-            arguments=['show', 'test_msgs/srv/BasicTypes']
+            arguments=['show', 'test_msgs/srv/ShortVariedMultiNested']
         ) as interface_command:
             assert interface_command.wait_for_shutdown(timeout=2)
         assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
-                'bool bool_value',
-                'byte byte_value',
-                'char char_value',
-                'float32 float32_value',
-                'float64 float64_value',
-                'int8 int8_value',
-                'uint8 uint8_value',
-                'int16 int16_value',
-                'uint16 uint16_value',
-                'int32 int32_value',
-                'uint32 uint32_value',
-                'int64 int64_value',
-                'uint64 uint64_value',
-                'string string_value',
+                '# Request',
+                'ShortVariedNested short_varied_nested # Comment - Nesting Level 3: 1 of 2',
+                '\tShortVaried short_varied',
+                '\t\tbool BOOL_CONST=true',
+                '\t\tbool bool_value',
+                '\t\tbool[<=3] bool_values',
+                '---',
+                '# Response',
+                'bool bool_value # Comment - Nesting Level 3: 2 of 2',
+            ],
+            text=interface_command.output,
+            strict=True
+        )
+
+    def test_show_service_with_all_comments(self):
+        with self.launch_interface_command(
+                arguments=['show', 'test_msgs/srv/ShortVariedMultiNested', '--all-comments']
+        ) as interface_command:
+            assert interface_command.wait_for_shutdown(timeout=2)
+        assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=[
+                '# Request',
+                'ShortVariedNested short_varied_nested # Comment - Nesting Level 3: 1 of 2',
+                '\t# A short, varied type',
+                '\tShortVaried short_varied # Comment - Nesting Level 2: 1 of 1',
+                '\t\t# A constant',
+                '\t\tbool BOOL_CONST=true # Comment - Nesting Level 1: 1 of 2',
+                '',
+                '\t\t# Bool and array of bools',
+                '\t\tbool bool_value',
+                '\t\tbool[<=3] bool_values # Comment - Nesting Level 1: 2 of 2',
+                '',
+                '\t\t# Trailing comment',
+                '\t# Trailing comment',
+                '---',
+                '# Response',
+                'bool bool_value # Comment - Nesting Level 3: 2 of 2',
+            ],
+            text=interface_command.output,
+            strict=True
+        )
+
+    def test_show_service_with_no_comments(self):
+        with self.launch_interface_command(
+                arguments=['show', 'test_msgs/srv/ShortVariedMultiNested', '--no-comments']
+        ) as interface_command:
+            assert interface_command.wait_for_shutdown(timeout=2)
+        assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=[
+                'ShortVariedNested short_varied_nested',
+                '\tShortVaried short_varied',
+                '\t\tbool BOOL_CONST=true',
+                '\t\tbool bool_value',
+                '\t\tbool[<=3] bool_values',
                 '---',
                 'bool bool_value',
-                'byte byte_value',
-                'char char_value',
-                'float32 float32_value',
-                'float64 float64_value',
-                'int8 int8_value',
-                'uint8 uint8_value',
-                'int16 int16_value',
-                'uint16 uint16_value',
-                'int32 int32_value',
-                'uint32 uint32_value',
-                'int64 int64_value',
-                'uint64 uint64_value',
-                'string string_value',
             ],
             text=interface_command.output,
             strict=True
@@ -355,371 +372,78 @@ class TestROS2InterfaceCLI(unittest.TestCase):
 
     def test_show_action(self):
         with self.launch_interface_command(
-            arguments=['show', 'test_msgs/action/Fibonacci']
+                arguments=['show', 'test_msgs/action/ShortVariedMultiNested']
         ) as interface_command:
             assert interface_command.wait_for_shutdown(timeout=2)
         assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
-                '#goal definition',
-                'int32 order',
+                '# Goal definition',
+                'ShortVariedNested short_varied_nested # Comment - Nesting Level 3: 1 of 2',
+                '\tShortVaried short_varied',
+                '\t\tbool BOOL_CONST=true',
+                '\t\tbool bool_value',
+                '\t\tbool[<=3] bool_values',
                 '---',
-                '#result definition',
-                'int32[] sequence',
+                '# Result definition',
+                'bool bool_value # Comment - Nesting Level 3: 2 of 2',
                 '---',
-                '#feedback',
-                'int32[] sequence',
+                '# Feedback definition',
+                'bool[3] bool_values',
             ],
             text=interface_command.output,
             strict=True
         )
 
-    def test_show_nested_message(self):
+    def test_show_action_with_all_comments(self):
         with self.launch_interface_command(
-                arguments=['show', 'test_msgs/msg/Nested']
+                arguments=['show', 'test_msgs/action/ShortVariedMultiNested', '--all-comments']
         ) as interface_command:
             assert interface_command.wait_for_shutdown(timeout=2)
         assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
-                'BasicTypes basic_types_value',
-                '\tbool bool_value',
-                '\tbyte byte_value',
-                '\tchar char_value',
-                '\tfloat32 float32_value',
-                '\tfloat64 float64_value',
-                '\tint8 int8_value',
-                '\tuint8 uint8_value',
-                '\tint16 int16_value',
-                '\tuint16 uint16_value',
-                '\tint32 int32_value',
-                '\tuint32 uint32_value',
-                '\tint64 int64_value',
-                '\tuint64 uint64_value',
+                '# Goal definition',
+                'ShortVariedNested short_varied_nested # Comment - Nesting Level 3: 1 of 2',
+                '\t# A short, varied type',
+                '\tShortVaried short_varied # Comment - Nesting Level 2: 1 of 1',
+                '\t\t# A constant',
+                '\t\tbool BOOL_CONST=true # Comment - Nesting Level 1: 1 of 2',
+                '',
+                '\t\t# Bool and array of bools',
+                '\t\tbool bool_value',
+                '\t\tbool[<=3] bool_values # Comment - Nesting Level 1: 2 of 2',
+                '',
+                '\t\t# Trailing comment',
+                '\t# Trailing comment',
+                '---',
+                '# Result definition',
+                'bool bool_value # Comment - Nesting Level 3: 2 of 2',
+                '---',
+                '# Feedback definition',
+                'bool[3] bool_values',
             ],
             text=interface_command.output,
             strict=True
         )
 
-    def test_show_nested_action(self):
+    def test_show_action_with_no_comments(self):
         with self.launch_interface_command(
-                arguments=['show', 'test_msgs/action/NestedMessage']
+                arguments=['show', 'test_msgs/action/ShortVariedMultiNested', '--no-comments']
         ) as interface_command:
             assert interface_command.wait_for_shutdown(timeout=2)
         assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
-                '# goal definition',
-                'Builtins nested_field_no_pkg',
-                '\tbuiltin_interfaces/Duration duration_value',
-                '\t\tint32 sec',
-                '\t\tuint32 nanosec',
-                '\tbuiltin_interfaces/Time time_value',
-                '\t\tint32 sec',
-                '\t\tuint32 nanosec',
-                'test_msgs/BasicTypes nested_field',
-                '\tbool bool_value',
-                '\tbyte byte_value',
-                '\tchar char_value',
-                '\tfloat32 float32_value',
-                '\tfloat64 float64_value',
-                '\tint8 int8_value',
-                '\tuint8 uint8_value',
-                '\tint16 int16_value',
-                '\tuint16 uint16_value',
-                '\tint32 int32_value',
-                '\tuint32 uint32_value',
-                '\tint64 int64_value',
-                '\tuint64 uint64_value',
-                'builtin_interfaces/Time nested_different_pkg',
-                '\tint32 sec',
-                '\tuint32 nanosec',
+                'ShortVariedNested short_varied_nested',
+                '\tShortVaried short_varied',
+                '\t\tbool BOOL_CONST=true',
+                '\t\tbool bool_value',
+                '\t\tbool[<=3] bool_values',
                 '---',
-                '# result definition',
-                'Builtins nested_field_no_pkg',
-                '\tbuiltin_interfaces/Duration duration_value',
-                '\t\tint32 sec',
-                '\t\tuint32 nanosec',
-                '\tbuiltin_interfaces/Time time_value',
-                '\t\tint32 sec',
-                '\t\tuint32 nanosec',
-                'test_msgs/BasicTypes nested_field',
-                '\tbool bool_value',
-                '\tbyte byte_value',
-                '\tchar char_value',
-                '\tfloat32 float32_value',
-                '\tfloat64 float64_value',
-                '\tint8 int8_value',
-                '\tuint8 uint8_value',
-                '\tint16 int16_value',
-                '\tuint16 uint16_value',
-                '\tint32 int32_value',
-                '\tuint32 uint32_value',
-                '\tint64 int64_value',
-                '\tuint64 uint64_value',
-                'builtin_interfaces/Time nested_different_pkg',
-                '\tint32 sec',
-                '\tuint32 nanosec',
+                'bool bool_value',
                 '---',
-                '# feedback',
-                'Builtins nested_field_no_pkg',
-                '\tbuiltin_interfaces/Duration duration_value',
-                '\t\tint32 sec',
-                '\t\tuint32 nanosec',
-                '\tbuiltin_interfaces/Time time_value',
-                '\t\tint32 sec',
-                '\t\tuint32 nanosec',
-                'test_msgs/BasicTypes nested_field',
-                '\tbool bool_value',
-                '\tbyte byte_value',
-                '\tchar char_value',
-                '\tfloat32 float32_value',
-                '\tfloat64 float64_value',
-                '\tint8 int8_value',
-                '\tuint8 uint8_value',
-                '\tint16 int16_value',
-                '\tuint16 uint16_value',
-                '\tint32 int32_value',
-                '\tuint32 uint32_value',
-                '\tint64 int64_value',
-                '\tuint64 uint64_value',
-                'builtin_interfaces/Time nested_different_pkg',
-                '\tint32 sec',
-                '\tuint32 nanosec',
-            ],
-            text=interface_command.output,
-            strict=True
-        )
-
-    def test_show_no_comments_for_nested_action(self):
-        with self.launch_interface_command(
-                arguments=['show', 'test_msgs/action/NestedMessage', '--no-comments']
-        ) as interface_command:
-            assert interface_command.wait_for_shutdown(timeout=2)
-        assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
-        assert launch_testing.tools.expect_output(
-            expected_lines=[
-                'Builtins nested_field_no_pkg',
-                '\tbuiltin_interfaces/Duration duration_value',
-                '\t\tint32 sec',
-                '\t\tuint32 nanosec',
-                '\tbuiltin_interfaces/Time time_value',
-                '\t\tint32 sec',
-                '\t\tuint32 nanosec',
-                'test_msgs/BasicTypes nested_field',
-                '\tbool bool_value',
-                '\tbyte byte_value',
-                '\tchar char_value',
-                '\tfloat32 float32_value',
-                '\tfloat64 float64_value',
-                '\tint8 int8_value',
-                '\tuint8 uint8_value',
-                '\tint16 int16_value',
-                '\tuint16 uint16_value',
-                '\tint32 int32_value',
-                '\tuint32 uint32_value',
-                '\tint64 int64_value',
-                '\tuint64 uint64_value',
-                'builtin_interfaces/Time nested_different_pkg',
-                '\tint32 sec',
-                '\tuint32 nanosec',
-                '---',
-                'Builtins nested_field_no_pkg',
-                '\tbuiltin_interfaces/Duration duration_value',
-                '\t\tint32 sec',
-                '\t\tuint32 nanosec',
-                '\tbuiltin_interfaces/Time time_value',
-                '\t\tint32 sec',
-                '\t\tuint32 nanosec',
-                'test_msgs/BasicTypes nested_field',
-                '\tbool bool_value',
-                '\tbyte byte_value',
-                '\tchar char_value',
-                '\tfloat32 float32_value',
-                '\tfloat64 float64_value',
-                '\tint8 int8_value',
-                '\tuint8 uint8_value',
-                '\tint16 int16_value',
-                '\tuint16 uint16_value',
-                '\tint32 int32_value',
-                '\tuint32 uint32_value',
-                '\tint64 int64_value',
-                '\tuint64 uint64_value',
-                'builtin_interfaces/Time nested_different_pkg',
-                '\tint32 sec',
-                '\tuint32 nanosec',
-                '---',
-                'Builtins nested_field_no_pkg',
-                '\tbuiltin_interfaces/Duration duration_value',
-                '\t\tint32 sec',
-                '\t\tuint32 nanosec',
-                '\tbuiltin_interfaces/Time time_value',
-                '\t\tint32 sec',
-                '\t\tuint32 nanosec',
-                'test_msgs/BasicTypes nested_field',
-                '\tbool bool_value',
-                '\tbyte byte_value',
-                '\tchar char_value',
-                '\tfloat32 float32_value',
-                '\tfloat64 float64_value',
-                '\tint8 int8_value',
-                '\tuint8 uint8_value',
-                '\tint16 int16_value',
-                '\tuint16 uint16_value',
-                '\tint32 int32_value',
-                '\tuint32 uint32_value',
-                '\tint64 int64_value',
-                '\tuint64 uint64_value',
-                'builtin_interfaces/Time nested_different_pkg',
-                '\tint32 sec',
-                '\tuint32 nanosec',
-            ],
-            text=interface_command.output,
-            strict=True
-        )
-
-    def test_show_all_comments_for_nested_action(self):
-        with self.launch_interface_command(
-                arguments=['show', 'test_msgs/action/NestedMessage', '--all-comments']
-        ) as interface_command:
-            assert interface_command.wait_for_shutdown(timeout=2)
-        assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
-        assert launch_testing.tools.expect_output(
-            expected_lines=[
-                '# goal definition',
-                'Builtins nested_field_no_pkg',
-                '\tbuiltin_interfaces/Duration duration_value',
-                '\t\t# Duration defines a period between two time points.',
-                '\t\t# Messages of this datatype are of ROS Time following this design:',
-                '\t\t# https://design.ros2.org/articles/clock_and_time.html',
-                '',
-                '\t\t# Seconds component, range is valid over any possible int32 value.',
-                '\t\tint32 sec',
-                '',
-                '\t\t# Nanoseconds component in the range of [0, 10e9).',
-                '\t\tuint32 nanosec',
-                '\tbuiltin_interfaces/Time time_value',
-                '\t\t# This message communicates ROS Time defined here:',
-                '\t\t# https://design.ros2.org/articles/clock_and_time.html',
-                '',
-                '\t\t# The seconds component, valid over all int32 values.',
-                '\t\tint32 sec',
-                '',
-                '\t\t# The nanoseconds component, valid in the range [0, 10e9).',
-                '\t\tuint32 nanosec',
-                'test_msgs/BasicTypes nested_field',
-                '\tbool bool_value',
-                '\tbyte byte_value',
-                '\tchar char_value',
-                '\tfloat32 float32_value',
-                '\tfloat64 float64_value',
-                '\tint8 int8_value',
-                '\tuint8 uint8_value',
-                '\tint16 int16_value',
-                '\tuint16 uint16_value',
-                '\tint32 int32_value',
-                '\tuint32 uint32_value',
-                '\tint64 int64_value',
-                '\tuint64 uint64_value',
-                'builtin_interfaces/Time nested_different_pkg',
-                '\t# This message communicates ROS Time defined here:',
-                '\t# https://design.ros2.org/articles/clock_and_time.html',
-                '',
-                '\t# The seconds component, valid over all int32 values.',
-                '\tint32 sec',
-                '',
-                '\t# The nanoseconds component, valid in the range [0, 10e9).',
-                '\tuint32 nanosec',
-                '---',
-                '# result definition',
-                'Builtins nested_field_no_pkg',
-                '\tbuiltin_interfaces/Duration duration_value',
-                '\t\t# Duration defines a period between two time points.',
-                '\t\t# Messages of this datatype are of ROS Time following this design:',
-                '\t\t# https://design.ros2.org/articles/clock_and_time.html',
-                '',
-                '\t\t# Seconds component, range is valid over any possible int32 value.',
-                '\t\tint32 sec',
-                '',
-                '\t\t# Nanoseconds component in the range of [0, 10e9).',
-                '\t\tuint32 nanosec',
-                '\tbuiltin_interfaces/Time time_value',
-                '\t\t# This message communicates ROS Time defined here:',
-                '\t\t# https://design.ros2.org/articles/clock_and_time.html',
-                '',
-                '\t\t# The seconds component, valid over all int32 values.',
-                '\t\tint32 sec',
-                '',
-                '\t\t# The nanoseconds component, valid in the range [0, 10e9).',
-                '\t\tuint32 nanosec',
-                'test_msgs/BasicTypes nested_field',
-                '\tbool bool_value',
-                '\tbyte byte_value',
-                '\tchar char_value',
-                '\tfloat32 float32_value',
-                '\tfloat64 float64_value',
-                '\tint8 int8_value',
-                '\tuint8 uint8_value',
-                '\tint16 int16_value',
-                '\tuint16 uint16_value',
-                '\tint32 int32_value',
-                '\tuint32 uint32_value',
-                '\tint64 int64_value',
-                '\tuint64 uint64_value',
-                'builtin_interfaces/Time nested_different_pkg',
-                '\t# This message communicates ROS Time defined here:',
-                '\t# https://design.ros2.org/articles/clock_and_time.html',
-                '',
-                '\t# The seconds component, valid over all int32 values.',
-                '\tint32 sec',
-                '',
-                '\t# The nanoseconds component, valid in the range [0, 10e9).',
-                '\tuint32 nanosec',
-                '---',
-                '# feedback',
-                'Builtins nested_field_no_pkg',
-                '\tbuiltin_interfaces/Duration duration_value',
-                '\t\t# Duration defines a period between two time points.',
-                '\t\t# Messages of this datatype are of ROS Time following this design:',
-                '\t\t# https://design.ros2.org/articles/clock_and_time.html',
-                '',
-                '\t\t# Seconds component, range is valid over any possible int32 value.',
-                '\t\tint32 sec',
-                '',
-                '\t\t# Nanoseconds component in the range of [0, 10e9).',
-                '\t\tuint32 nanosec',
-                '\tbuiltin_interfaces/Time time_value',
-                '\t\t# This message communicates ROS Time defined here:',
-                '\t\t# https://design.ros2.org/articles/clock_and_time.html',
-                '',
-                '\t\t# The seconds component, valid over all int32 values.',
-                '\t\tint32 sec',
-                '',
-                '\t\t# The nanoseconds component, valid in the range [0, 10e9).',
-                '\t\tuint32 nanosec',
-                'test_msgs/BasicTypes nested_field',
-                '\tbool bool_value',
-                '\tbyte byte_value',
-                '\tchar char_value',
-                '\tfloat32 float32_value',
-                '\tfloat64 float64_value',
-                '\tint8 int8_value',
-                '\tuint8 uint8_value',
-                '\tint16 int16_value',
-                '\tuint16 uint16_value',
-                '\tint32 int32_value',
-                '\tuint32 uint32_value',
-                '\tint64 int64_value',
-                '\tuint64 uint64_value',
-                'builtin_interfaces/Time nested_different_pkg',
-                '\t# This message communicates ROS Time defined here:',
-                '\t# https://design.ros2.org/articles/clock_and_time.html',
-                '',
-                '\t# The seconds component, valid over all int32 values.',
-                '\tint32 sec',
-                '',
-                '\t# The nanoseconds component, valid in the range [0, 10e9).',
-                '\tuint32 nanosec',
+                'bool[3] bool_values',
             ],
             text=interface_command.output,
             strict=True
