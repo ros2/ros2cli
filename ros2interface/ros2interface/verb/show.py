@@ -20,6 +20,7 @@ from ros2interface.api import type_completer
 from ros2interface.verb import VerbExtension
 from rosidl_adapter.parser import \
     ACTION_REQUEST_RESPONSE_SEPARATOR, \
+    Constant, \
     Field, \
     MessageSpecification, \
     parse_message_string, \
@@ -56,7 +57,16 @@ class InterfaceTextLine:
         return self._msg_spec and self._msg_spec.annotations['comment']
 
     def is_trailing_comment(self) -> bool:
+        return (
+            self._is_field_trailing_comment()
+            or self._is_constant_trailing_comment()
+        )
+
+    def _is_field_trailing_comment(self) -> bool:
         return self._field and self._field.annotations['comment']
+
+    def _is_constant_trailing_comment(self) -> bool:
+        return self._constant and self._constant.annotations['comment']
 
     @property
     def nested_type(self) -> typing.Optional[str]:
@@ -68,8 +78,10 @@ class InterfaceTextLine:
 
     @property
     def trailing_comment(self) -> typing.Optional[str]:
-        if self.is_trailing_comment():
+        if self._is_field_trailing_comment():
             return self._field.annotations['comment'][0]
+        elif self._is_constant_trailing_comment():
+            return self._constant.annotations['comment'][0]
         else:
             return None
 
@@ -77,6 +89,11 @@ class InterfaceTextLine:
     def _field(self) -> typing.Optional[Field]:
         if self._msg_spec and self._msg_spec.fields:
             return self._msg_spec.fields[0]
+
+    @property
+    def _constant(self) -> typing.Optional[Constant]:
+        if self._msg_spec and self._msg_spec.constants:
+            return self._msg_spec.constants[0]
 
     def _is_nested(self) -> bool:
         if self._msg_spec and self._msg_spec.fields:
