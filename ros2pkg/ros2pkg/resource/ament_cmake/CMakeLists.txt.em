@@ -80,7 +80,6 @@ ament_target_dependencies(
 @[  end if]@
 
 install(TARGETS @(cpp_node_name)
-  EXPORT export_${PROJECT_NAME}
   DESTINATION lib/${PROJECT_NAME})
 @[end if]@
 
