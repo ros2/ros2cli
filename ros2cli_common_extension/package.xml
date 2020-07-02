@@ -15,7 +15,6 @@
   <exec_depend>ros2doctor</exec_depend>
   <exec_depend>ros2interface</exec_depend>
   <exec_depend>ros2lifecycle</exec_depend>
-  <exec_depend>ros2lifecycle_test_fixtures</exec_depend>
   <exec_depend>ros2multicast</exec_depend>
   <exec_depend>ros2node</exec_depend>
   <exec_depend>ros2param</exec_depend>
