@@ -85,6 +85,9 @@ class EchoVerb(VerbExtension):
             '--lost-messages', action='store_true', help='Report when a message is lost')
         parser.add_argument( 
             '--once', action='store_true', help="Print the first message received and then exit")
+        parser.add_argument(
+            '--timeout', metavar='N', type=unsigned_int, default=3.0,
+            help='If used with --once, the time after which the application will exit even if no message is received')
 
     def main(self, *, args):
         return main(args)
