@@ -116,7 +116,8 @@ def main(args):
             callback = subscriber_cb_once_decorator(callback, future)
 
         subscriber(
-            node, args.topic_name, message_type, callback, qos_profile, args.lost_messages, future)
+            node, args.topic_name, message_type, callback, qos_profile, args.lost_messages,
+            future, args.timeout)
 
 
 def subscriber(
@@ -126,7 +127,8 @@ def subscriber(
     callback: Callable[[MsgType], Any],
     qos_profile: QoSProfile,
     report_lost_messages: bool,
-    future = None
+    future = None,
+    timeout = None
 ) -> Optional[str]:
     """Initialize a node with a single subscription and spin."""
     event_callbacks = None
@@ -144,7 +146,7 @@ def subscriber(
     if future == None:
         rclpy.spin(node)
     else:
-        rclpy.spin_until_future_complete(node, future)
+        rclpy.spin_until_future_complete(node, future, timeout)
 
 
 
