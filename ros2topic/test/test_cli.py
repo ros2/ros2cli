@@ -561,7 +561,7 @@ class TestROS2TopicCLI(unittest.TestCase):
         with self.launch_topic_command(
             arguments=[
                 'pub',
-                '--keep-alive', '3',
+                '--keep-alive', '3',  # seconds
                 '--qos-durability', 'transient_local',
                 '/chit_chatter',
                 'std_msgs/msg/String',
@@ -586,7 +586,7 @@ class TestROS2TopicCLI(unittest.TestCase):
         with self.launch_topic_command(
             arguments=[
                 'pub', '--once',
-                '--keep-alive', '3',
+                '--keep-alive', '3',  # seconds
                 '--qos-durability', 'transient_local',
                 '/chit_chatter',
                 'std_msgs/msg/String',
@@ -613,7 +613,7 @@ class TestROS2TopicCLI(unittest.TestCase):
             arguments=[
                 'pub',
                 '-p', '2',
-                '--keep-alive', '3',
+                '--keep-alive', '3',  # seconds
                 '--qos-durability', 'transient_local',
                 '/chit_chatter',
                 'std_msgs/msg/String',
