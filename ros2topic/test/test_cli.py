@@ -559,7 +559,14 @@ class TestROS2TopicCLI(unittest.TestCase):
 
     def test_topic_pub(self):
         with self.launch_topic_command(
-            arguments=['pub', '/chit_chatter', 'std_msgs/msg/String', '{data: foo}'],
+            arguments=[
+                'pub',
+                '--keep-alive', '3',  # seconds
+                '--qos-durability', 'transient_local',
+                '/chit_chatter',
+                'std_msgs/msg/String',
+                '{data: foo}'
+            ],
         ) as topic_command:
             assert topic_command.wait_for_output(functools.partial(
                 launch_testing.tools.expect_output, expected_lines=[
@@ -579,6 +586,8 @@ class TestROS2TopicCLI(unittest.TestCase):
         with self.launch_topic_command(
             arguments=[
                 'pub', '--once',
+                '--keep-alive', '3',  # seconds
+                '--qos-durability', 'transient_local',
                 '/chit_chatter',
                 'std_msgs/msg/String',
                 '{data: bar}'
@@ -604,6 +613,8 @@ class TestROS2TopicCLI(unittest.TestCase):
             arguments=[
                 'pub',
                 '-p', '2',
+                '--keep-alive', '3',  # seconds
+                '--qos-durability', 'transient_local',
                 '/chit_chatter',
                 'std_msgs/msg/String',
                 '{data: fizz}'
