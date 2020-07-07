@@ -29,6 +29,7 @@ class ListVerb(VerbExtension):
         parser.add_argument(
             '-c', '--count-services', action='store_true',
             help='Only display the number of services discovered')
+        # duplicate the following argument from the command for visibility
         parser.add_argument(
             '--include-hidden-services', action='store_true',
             help='Consider hidden services as well')
