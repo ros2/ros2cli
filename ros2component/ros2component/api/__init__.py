@@ -14,7 +14,6 @@
 
 from collections import namedtuple
 import subprocess
-from ament_index_python import get_resource
 from ament_index_python import get_resources
 from ament_index_python import has_resource
 
@@ -62,7 +61,7 @@ def get_package_names_with_component_types():
 
 def get_package_component_types(*, package_name=None):
     """
-    Get all component types registered in the ament index for the given package.
+    Get all component types registered for the given package.
 
     :param package_name: whose component types are to be retrieved.
     :return: a list of component type names.
@@ -77,7 +76,7 @@ def get_package_component_types(*, package_name=None):
 
 def get_registered_component_types():
     """
-    Get all component types registered in the ament index.
+    Get all registered component types.
 
     :return: a list of (package name, component type names) tuples.
     """
@@ -419,12 +418,12 @@ def add_component_arguments(parser):
     )
 
 
-def run_standalone_container(*, container_node_name):
+def run_standalone_container(*, container_node_name, component_type='rclcpp_components'):
     """Run a standalone component container."""
     try:
-        paths = get_executable_paths(package_name='rclcpp_components')
+        paths = get_executable_paths(package_name=component_type)
     except PackageNotFound:
-        raise RuntimeError("Package 'rclcpp_components' not found")
+        raise RuntimeError("Package '%s' not found" % component_type)
 
     executable_path = next((p for p in paths if 'component_container' in p), None)
     if executable_path is None:

@@ -36,9 +36,15 @@ class StandaloneVerb(VerbExtension):
             default='standalone_container_' + uuid.uuid4().hex[:12],
             help='Name of the standalone container node to be run'
         )
+        parser.add_argument(
+            '-t', '--component-type',
+            default='rclcpp_components',
+            help='Component resource types, typically in the format rcl<language>_components'
+        )
 
     def main(self, *, args):
-        container = run_standalone_container(container_node_name=args.container_node_name)
+        container = run_standalone_container(container_node_name=args.container_node_name,
+                                             component_type=args.component_type)
 
         with DirectNode(args) as node:
             try:
