@@ -112,7 +112,7 @@ def subscriber(
     message_type: MsgType,
     callback: Callable[[MsgType], Any],
     qos_profile: QoSProfile,
-    report_lost_messages: bool
+    report_lost_messages: bool,
     raw: bool
 ) -> Optional[str]:
     """Initialize a node with a single subscription and spin."""
