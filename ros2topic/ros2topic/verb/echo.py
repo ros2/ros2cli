@@ -135,18 +135,23 @@ def subscriber(
 def subscriber_cb(truncate_length, noarr, nostr):
     def cb(msg):
         nonlocal truncate_length, noarr, nostr
-        print(
-            message_to_yaml(
-                msg, truncate_length=truncate_length, no_arr=noarr, no_str=nostr),
-            end='---\n')
+        if isinstance(msg, bytes):
+            print(msg, end='\n---\n')
+        else:
+            print(
+                message_to_yaml(
+                    msg, truncate_length=truncate_length, no_arr=noarr, no_str=nostr),
+                end='---\n')
     return cb
 
 
 def subscriber_cb_csv(truncate_length, noarr, nostr):
     def cb(msg):
         nonlocal truncate_length, noarr, nostr
-        print(message_to_csv(msg, truncate_length=truncate_length,
-                             no_arr=noarr, no_str=nostr))
+        if isinstance(msg, bytes):
+            print(msg)
+        else:
+            print(message_to_csv(msg, truncate_length=truncate_length, no_arr=noarr, no_str=nostr))
     return cb
 
 
