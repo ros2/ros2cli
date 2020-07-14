@@ -103,7 +103,13 @@ def main(args):
                 'Could not determine the type for the passed topic')
 
         subscriber(
-            node, args.topic_name, message_type, callback, qos_profile, args.lost_messages, args.raw)
+            node,
+            args.topic_name,
+            message_type,
+            callback,
+            qos_profile,
+            args.lost_messages,
+            args.raw)
 
 
 def subscriber(
@@ -122,7 +128,12 @@ def subscriber(
             message_lost=message_lost_event_callback)
     try:
         node.create_subscription(
-            message_type, topic_name, callback, qos_profile, event_callbacks=event_callbacks, raw=raw)
+            message_type,
+            topic_name,
+            callback,
+            qos_profile,
+            event_callbacks=event_callbacks,
+            raw=raw)
     except UnsupportedEventTypeError:
         assert report_lost_messages
         print(
