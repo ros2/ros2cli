@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import functools
 import sys
 import unittest
 
@@ -339,13 +340,13 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                 self.executor.spin_until_future_complete(
                     rclpy.task.Future(), timeout_sec=5
                 )
-                command.wait_for_shutdown(timeout=10)
-                # Check results
-                assert command.output, 'Echo CLI printed no output'
-                assert (
-                    "b'\\x00\\x01\\x00\\x00\\x06\\x00\\x00\\x00hello\\x00\\x00\\x00'" in
-                    command.output.splitlines()
-                ), 'Echo CLI did not print expected message'
+                assert command.wait_for_output(functools.partial(
+                    launch_testing.tools.expect_output, expected_lines=[
+                        "b'\\x00\\x01\\x00\\x00\\x06\\x00\\x00\\x00hello\\x00\\x00\\x00'",
+                        '---',
+                    ], strict=True
+                ), timeout=10), 'Echo CLI did not print expected message'
+            assert command.wait_for_shutdown(timeout=10)
 
         finally:
             # Cleanup
