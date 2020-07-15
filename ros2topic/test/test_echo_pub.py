@@ -323,7 +323,7 @@ class TestROS2TopicEchoPub(unittest.TestCase):
 
         try:
             command_action = ExecuteProcess(
-                cmd=(['ros2', 'topic', 'echo', '--raw', topic, 'std_msgs/msg/String']),
+                cmd=['ros2', 'topic', 'echo', '--raw', topic, 'std_msgs/msg/String'],
                 additional_env={
                     'PYTHONUNBUFFERED': '1'
                 },
@@ -342,9 +342,11 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                 command.wait_for_shutdown(timeout=10)
                 # Check results
                 assert command.output, 'Echo CLI printed no output'
-                assert 'AAEAAAYAAABoZWxsbwAAAA==' in command.output.splitlines(), (
-                    'Echo CLI did not print expected message'
-                )
+                assert (
+                    "b'\\x00\\x01\\x00\\x00\\x06\\x00\\x00\\x00hello\\x00\\x00\\x00'" in
+                    command.output.splitlines()
+                ), 'Echo CLI did not print expected message'
+
         finally:
             # Cleanup
             self.node.destroy_timer(publish_timer)
