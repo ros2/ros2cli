@@ -143,10 +143,8 @@ def subscriber(
             f"The rmw implementation '{get_rmw_implementation_identifier()}'"
             ' does not support reporting lost messages'
         )
-    if future == None:
-        rclpy.spin(node)
-    else:
-        rclpy.spin_until_future_complete(node, future, timeout)
+
+    rclpy.spin_until_future_complete(node, future, timeout)
 
 
 
