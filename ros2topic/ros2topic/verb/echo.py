@@ -159,7 +159,14 @@ def subscriber_cb(truncate_length, noarr, nostr):
             end='---\n')
     return cb
 
-
+def message_lost_event_callback(message_lost_status):
+    print(
+        'A message was lost!!!\n\ttotal count change:'
+        f'{message_lost_status.total_count_change}'
+        f'\n\ttotal count: {message_lost_status.total_count}',
+        end='---\n'
+    )
+    
 def subscriber_cb_csv(truncate_length, noarr, nostr):
     def cb(msg):
         nonlocal truncate_length, noarr, nostr
