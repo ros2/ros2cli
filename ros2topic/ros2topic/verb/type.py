@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from ros2cli.node.strategy import add_arguments as add_strategy_node_arguments
 from ros2cli.node.strategy import NodeStrategy
 
 from ros2topic.api import get_topic_names_and_types
@@ -23,6 +24,8 @@ class TypeVerb(VerbExtension):
     """Print a topic's type."""
 
     def add_arguments(self, parser, cli_name):
+        add_strategy_node_arguments(parser)
+
         arg = parser.add_argument(
             'topic_name',
             help="Name of the ROS topic to get type (e.g. '/chatter')")
