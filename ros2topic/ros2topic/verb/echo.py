@@ -71,6 +71,8 @@ class EchoVerb(VerbExtension):
         parser.add_argument(
             '--no-str', action='store_true', help="Don't print string fields of messages")
         parser.add_argument(
+            '--lost-messages', action='store_true', help='Report when a message is lost')
+        parser.add_argument(
             '--once', action='store_true', help='Print the first message received and then exit')
         parser.add_argument(
             '--timeout', metavar='N', type=unsigned_int, default=None,
