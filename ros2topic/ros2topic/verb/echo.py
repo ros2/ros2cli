@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from argparse import ArgumentTypeError
 from typing import Any
 from typing import Callable
 from typing import Optional
@@ -23,8 +22,8 @@ from rclpy.node import Node
 from rclpy.qos import QoSProfile
 from rclpy.qos_event import SubscriptionEventCallbacks
 from rclpy.qos_event import UnsupportedEventTypeError
-from rclpy.utilities import get_rmw_implementation_identifier
 from rclpy.task import Future
+from rclpy.utilities import get_rmw_implementation_identifier
 from ros2cli.node.strategy import NodeStrategy
 from ros2topic.api import add_qos_arguments_to_argument_parser
 from ros2topic.api import get_msg_class
@@ -38,16 +37,6 @@ from rosidl_runtime_py.utilities import get_message
 
 DEFAULT_TRUNCATE_LENGTH = 128
 MsgType = TypeVar('MsgType')
-
-
-def unsigned_int(string):
-    try:
-        value = int(string)
-    except ValueError:
-        value = -1
-    if value < 0:
-        raise ArgumentTypeError('value must be non-negative integer')
-    return value
 
 
 class EchoVerb(VerbExtension):
@@ -81,8 +70,8 @@ class EchoVerb(VerbExtension):
             '--no-arr', action='store_true', help="Don't print array fields of messages")
         parser.add_argument(
             '--no-str', action='store_true', help="Don't print string fields of messages")
-        parser.add_argument( 
-            '--once', action='store_true', help="Print the first message received and then exit")
+        parser.add_argument(
+            '--once', action='store_true', help='Print the first message received and then exit')
         parser.add_argument(
             '--timeout', metavar='N', type=unsigned_int, default=None,
             help='The time after which the application will exit')
@@ -127,8 +116,8 @@ def subscriber(
     callback: Callable[[MsgType], Any],
     qos_profile: QoSProfile,
     report_lost_messages: bool,
-    future = None,
-    timeout = None
+    future=None,
+    timeout=None
 ) -> Optional[str]:
     """Initialize a node with a single subscription and spin."""
     event_callbacks = None
@@ -147,7 +136,7 @@ def subscriber(
     rclpy.spin_until_future_complete(node, future, timeout)
 
     if not future.done():
-        node.get_logger().info("Timeout occured")
+        node.get_logger().info('Timeout occured')
 
 
 def subscriber_cb(truncate_length, noarr, nostr):
@@ -159,6 +148,7 @@ def subscriber_cb(truncate_length, noarr, nostr):
             end='---\n')
     return cb
 
+
 def message_lost_event_callback(message_lost_status):
     print(
         'A message was lost!!!\n\ttotal count change:'
@@ -166,14 +156,16 @@ def message_lost_event_callback(message_lost_status):
         f'\n\ttotal count: {message_lost_status.total_count}',
         end='---\n'
     )
-    
+
+
 def subscriber_cb_csv(truncate_length, noarr, nostr):
     def cb(msg):
         nonlocal truncate_length, noarr, nostr
         print(message_to_csv(msg, truncate_length=truncate_length, no_arr=noarr, no_str=nostr))
     return cb
 
-def subscriber_cb_once_decorator(callback : Callable, future : Future) -> Callable:
+
+def subscriber_cb_once_decorator(callback: Callable, future: Future) -> Callable:
     def cb(msg):
         if not future.done():
             callback(msg)

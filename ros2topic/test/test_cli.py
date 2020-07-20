@@ -375,11 +375,11 @@ class TestROS2TopicCLI(unittest.TestCase):
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_echo_once(self):
         with self.launch_topic_command(
-        arguments=[
-            'echo', '--once',
-            '/chatter',
-            'std_msgs/msg/String'
-        ]
+            arguments=[
+                'echo', '--once',
+                '/chatter',
+                'std_msgs/msg/String'
+            ]
         ) as topic_command:
             assert topic_command.wait_for_output(functools.partial(
                 launch_testing.tools.expect_output, expected_lines=[
@@ -574,26 +574,6 @@ class TestROS2TopicCLI(unittest.TestCase):
             text=topic_command.output,
             strict=True
         )
-
-    def test_topic_echo_once(self):
-        with self.launch_topic_command(
-            arguments=[
-                'echo', '--once',
-                '/chit_chatter',
-                'std_msgs/msg/String',
-                '{data: bar}'
-            ]
-        ) as topic_command:
-            assert topic_command.wait_for_output(functools.partial(
-                launch_testing.tools.expect_output, expected_lines=[],
-                strict=True
-            ), timeout=10)
-            assert topic_command.wait_for_shutdown(timeout=10)
-            assert self.listener_node.wait_for_output(functools.partial(
-                launch_testing.tools.expect_output, expected_lines=[],
-                strict=False
-            ), timeout=10)
-        assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
 
     def test_topic_pub(self):
         with self.launch_topic_command(
