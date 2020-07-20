@@ -137,8 +137,9 @@ def subscriber(
 
     rclpy.spin_until_future_complete(node, future, timeout)
 
-    if not future.done():
-        node.get_logger().info('Timeout occured')
+    if future is not None:
+        if not future.done():
+            node.get_logger().info('Timeout occured')
 
 
 def subscriber_cb(truncate_length, noarr, nostr):
