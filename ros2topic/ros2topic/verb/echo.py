@@ -24,6 +24,7 @@ from rclpy.qos_event import SubscriptionEventCallbacks
 from rclpy.qos_event import UnsupportedEventTypeError
 from rclpy.task import Future
 from rclpy.utilities import get_rmw_implementation_identifier
+from ros2cli.node.strategy import add_arguments as add_strategy_node_arguments
 from ros2cli.node.strategy import NodeStrategy
 from ros2topic.api import add_qos_arguments_to_argument_parser
 from ros2topic.api import get_msg_class
@@ -43,6 +44,8 @@ class EchoVerb(VerbExtension):
     """Output messages from a topic."""
 
     def add_arguments(self, parser, cli_name):
+        add_strategy_node_arguments(parser)
+
         arg = parser.add_argument(
             'topic_name',
             help="Name of the ROS topic to listen to (e.g. '/chatter')")
@@ -94,12 +97,14 @@ def main(args):
         depth=args.qos_depth, history=args.qos_history)
     with NodeStrategy(args) as node:
         if args.message_type is None:
-            message_type = get_msg_class(node, args.topic_name, include_hidden_topics=True)
+            message_type = get_msg_class(
+                node, args.topic_name, include_hidden_topics=True)
         else:
             message_type = get_message(args.message_type)
 
         if message_type is None:
-            raise RuntimeError('Could not determine the type for the passed topic')
+            raise RuntimeError(
+                'Could not determine the type for the passed topic')
 
         future = None
         if args.once:
@@ -124,7 +129,8 @@ def subscriber(
     """Initialize a node with a single subscription and spin."""
     event_callbacks = None
     if report_lost_messages:
-        event_callbacks = SubscriptionEventCallbacks(message_lost=message_lost_event_callback)
+        event_callbacks = SubscriptionEventCallbacks(
+            message_lost=message_lost_event_callback)
     try:
         node.create_subscription(
             message_type, topic_name, callback, qos_profile, event_callbacks=event_callbacks)
