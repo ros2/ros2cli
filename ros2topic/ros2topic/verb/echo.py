@@ -74,6 +74,8 @@ class EchoVerb(VerbExtension):
             '--no-str', action='store_true', help="Don't print string fields of messages")
         parser.add_argument(
             '--lost-messages', action='store_true', help='Report when a message is lost')
+        parser.add_argument(
+            '--raw', action='store_true', help='Echo the raw binary representation')
 
     def main(self, *, args):
         return main(args)
@@ -101,7 +103,13 @@ def main(args):
                 'Could not determine the type for the passed topic')
 
         subscriber(
-            node, args.topic_name, message_type, callback, qos_profile, args.lost_messages)
+            node,
+            args.topic_name,
+            message_type,
+            callback,
+            qos_profile,
+            args.lost_messages,
+            args.raw)
 
 
 def subscriber(
@@ -110,7 +118,8 @@ def subscriber(
     message_type: MsgType,
     callback: Callable[[MsgType], Any],
     qos_profile: QoSProfile,
-    report_lost_messages: bool
+    report_lost_messages: bool,
+    raw: bool
 ) -> Optional[str]:
     """Initialize a node with a single subscription and spin."""
     event_callbacks = None
@@ -119,7 +128,12 @@ def subscriber(
             message_lost=message_lost_event_callback)
     try:
         node.create_subscription(
-            message_type, topic_name, callback, qos_profile, event_callbacks=event_callbacks)
+            message_type,
+            topic_name,
+            callback,
+            qos_profile,
+            event_callbacks=event_callbacks,
+            raw=raw)
     except UnsupportedEventTypeError:
         assert report_lost_messages
         print(
@@ -132,18 +146,23 @@ def subscriber(
 def subscriber_cb(truncate_length, noarr, nostr):
     def cb(msg):
         nonlocal truncate_length, noarr, nostr
-        print(
-            message_to_yaml(
-                msg, truncate_length=truncate_length, no_arr=noarr, no_str=nostr),
-            end='---\n')
+        if isinstance(msg, bytes):
+            print(msg, end='\n---\n')
+        else:
+            print(
+                message_to_yaml(
+                    msg, truncate_length=truncate_length, no_arr=noarr, no_str=nostr),
+                end='---\n')
     return cb
 
 
 def subscriber_cb_csv(truncate_length, noarr, nostr):
     def cb(msg):
         nonlocal truncate_length, noarr, nostr
-        print(message_to_csv(msg, truncate_length=truncate_length,
-                             no_arr=noarr, no_str=nostr))
+        if isinstance(msg, bytes):
+            print(msg)
+        else:
+            print(message_to_csv(msg, truncate_length=truncate_length, no_arr=noarr, no_str=nostr))
     return cb
 
 
