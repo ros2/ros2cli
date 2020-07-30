@@ -563,6 +563,7 @@ class TestROS2TopicCLI(unittest.TestCase):
                 'pub',
                 '--keep-alive', '3',  # seconds
                 '--qos-durability', 'transient_local',
+                '--qos-reliability', 'reliable',
                 '/chit_chatter',
                 'std_msgs/msg/String',
                 '{data: foo}'
@@ -588,6 +589,7 @@ class TestROS2TopicCLI(unittest.TestCase):
                 'pub', '--once',
                 '--keep-alive', '3',  # seconds
                 '--qos-durability', 'transient_local',
+                '--qos-reliability', 'reliable',
                 '/chit_chatter',
                 'std_msgs/msg/String',
                 '{data: bar}'
@@ -615,6 +617,7 @@ class TestROS2TopicCLI(unittest.TestCase):
                 '-p', '2',
                 '--keep-alive', '3',  # seconds
                 '--qos-durability', 'transient_local',
+                '--qos-reliability', 'reliable',
                 '/chit_chatter',
                 'std_msgs/msg/String',
                 '{data: fizz}'
