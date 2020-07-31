@@ -26,7 +26,8 @@ class ListenerNode(Node):
     def __init__(self):
         super().__init__('listener')
         qos_profile = qos_profile_from_short_keys(
-            'system_default', durability='transient_local')
+            'system_default', durability='transient_local',
+            reliability='reliable')
         self.sub = self.create_subscription(
             String, 'chatter', self.callback, qos_profile
         )
