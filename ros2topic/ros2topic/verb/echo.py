@@ -96,7 +96,10 @@ def main(args):
             message_type = get_msg_class(
                 node, args.topic_name, include_hidden_topics=True)
         else:
-            message_type = get_message(args.message_type)
+            try:
+                message_type = get_message(args.message_type)
+            except (AttributeError, ModuleNotFoundError, ValueError):
+                raise RuntimeError('The passed message type is invalid')
 
         if message_type is None:
             raise RuntimeError(
