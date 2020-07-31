@@ -141,7 +141,10 @@ def _get_msg_class(node, topic, include_hidden_topics):
         # Could not determine the type for the passed topic
         return None
 
-    return get_message(message_type)
+    try:
+        return get_message(message_type)
+    except (AttributeError, ModuleNotFoundError, ValueError):
+        raise RuntimeError("The message type '%s' is invalid" % message_type)
 
 
 class TopicMessagePrototypeCompleter:
