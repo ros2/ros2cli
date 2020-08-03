@@ -69,10 +69,13 @@ def requester(service_type, service_name, values, period):
         module = importlib.import_module('.'.join(parts[:-1]))
         srv_name = parts[-1]
         srv_module = getattr(module, srv_name)
-        if not package_name or not srv_module:
-            raise ValueError()
-    except ValueError:
+    except (AttributeError, ModuleNotFoundError, ValueError):
         raise RuntimeError('The passed service type is invalid')
+    try:
+        srv_module.Request
+        srv_module.Response
+    except AttributeError:
+        raise RuntimeError('The passed type is not a service')
 
     values_dictionary = yaml.safe_load(values)
 
