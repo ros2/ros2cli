@@ -56,7 +56,7 @@ def get_parameter_value(*, string_value):
     value = ParameterValue()
     try:
         yaml_value = yaml.safe_load(string_value)
-    except yaml.parser.ParserError:
+    except (yaml.parser.ParserError, yaml.scanner.ScannerError):
         value.type = ParameterType.PARAMETER_STRING
         value.string_value = string_value
         return value
