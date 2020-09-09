@@ -125,7 +125,7 @@ def publisher(
     print_nth: int,
     times: int,
     qos_profile: QoSProfile,
-    keep_alive: float,
+    keep_alive: float = 0.1,
 ) -> Optional[str]:
     """Initialize a node with a single publisher and run its publish loop (maybe only once)."""
     msg_module = get_message(message_type)
