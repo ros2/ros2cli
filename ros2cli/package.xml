@@ -9,6 +9,7 @@
   <maintainer email="dthomas@osrfoundation.org">Dirk Thomas</maintainer>
   <license>Apache License 2.0</license>
 
+  <exec_depend>python3-argcomplete</exec_depend>
   <exec_depend>python3-importlib-metadata</exec_depend>
   <exec_depend>python3-netifaces</exec_depend>
   <exec_depend>python3-packaging</exec_depend>
