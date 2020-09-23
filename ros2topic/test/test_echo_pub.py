@@ -302,8 +302,8 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                             assert command.output, (
                                 'Echo CLI did not print incompatible QoS warning'
                             )
-                            assert ('New publisher discovered on this topic, offering incompatible'
-                                    ' QoS.' in command.output), (
+                            assert ("New publisher discovered on topic '{}', offering incompatible"
+                                    ' QoS.'.format(topic) in command.output), (
                                     'Echo CLI did not print expected incompatible QoS warning'
                                 )
                 finally:
