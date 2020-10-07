@@ -6,7 +6,8 @@
   <description>
     The pkg command for ROS 2 command line tools.
   </description>
-  <maintainer email="dthomas@osrfoundation.org">Dirk Thomas</maintainer>
+  <maintainer email="clairewang@openrobotics.org">Claire Wang</maintainer>
+  <maintainer email="mabel@openrobotics.org">Mabel Zhang</maintainer>
   <license>Apache License 2.0</license>
 
   <depend>ros2cli</depend>
