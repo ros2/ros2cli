@@ -16,7 +16,7 @@ setup(
     zip_safe=True,
     author='William Woodall',
     author_email='william@osrfoundation.org',
-    maintainer='Claire Wang, Mabel Zhang', 
+    maintainer='Claire Wang, Mabel Zhang',
     maintainer_email='clairewang@openrobotics.org, mabel@openrobotics.org',
     url='https://github.com/ros2/ros2cli/tree/master/ros2service',
     download_url='https://github.com/ros2/ros2cli/releases',

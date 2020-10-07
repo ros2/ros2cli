@@ -16,7 +16,7 @@ setup(
     zip_safe=True,
     author='Jacob Perron',
     author_email='jacob@openrobotics.org',
-    maintainer='Claire Wang, Mabel Zhang', 
+    maintainer='Claire Wang, Mabel Zhang',
     maintainer_email='clairewang@openrobotics.org, mabel@openrobotics.org',
     url='https://github.com/ros2/ros2cli/tree/master/ros2action',
     download_url='https://github.com/ros2/ros2cli/releases',

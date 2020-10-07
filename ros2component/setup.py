@@ -16,7 +16,7 @@ setup(
     zip_safe=True,
     author='Michel Hidalgo',
     author_email='michel@ekumenlabs.com',
-    maintainer='Claire Wang, Mabel Zhang', 
+    maintainer='Claire Wang, Mabel Zhang',
     maintainer_email='clairewang@openrobotics.org, mabel@openrobotics.org',
     url='https://github.com/ros2/ros2cli/tree/master/ros2component',
     download_url='https://github.com/ros2/ros2cli/releases',
