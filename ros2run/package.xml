@@ -10,6 +10,8 @@
   <maintainer email="mabel@openrobotics.org">Mabel Zhang</maintainer>
   <license>Apache License 2.0</license>
 
+  <author email="dthomas@osrfoundation.org">Dirk Thomas</author>
+
   <depend>ros2cli</depend>
 
   <exec_depend>ros2pkg</exec_depend>

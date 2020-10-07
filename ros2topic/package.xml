@@ -11,6 +11,8 @@
   <license>Apache License 2.0</license>
   <license>BSD</license>  <!-- ros2topic/verb/delay.py|hz.py|bw.py are BSD -->
 
+  <author email="dthomas@osrfoundation.org">Dirk Thomas</author>
+
   <depend>ros2cli</depend>
 
   <exec_depend>python3-numpy</exec_depend>

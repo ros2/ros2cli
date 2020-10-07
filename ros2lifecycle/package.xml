@@ -10,6 +10,8 @@
   <maintainer email="mabel@openrobotics.org">Mabel Zhang</maintainer>
   <license>Apache License 2.0</license>
 
+  <author email="dthomas@osrfoundation.org">Dirk Thomas</author>
+
   <depend>rclpy</depend>
   <depend>ros2cli</depend>
 

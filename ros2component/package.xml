@@ -10,6 +10,8 @@
   <maintainer email="mabel@openrobotics.org">Mabel Zhang</maintainer>
   <license>Apache License 2.0</license>
 
+  <author email="michel@ekumenlabs.com">Michel Hidalgo</author>	
+
   <exec_depend>ament_index_python</exec_depend>
   <exec_depend>composition_interfaces</exec_depend>
   <exec_depend>rcl_interfaces</exec_depend>
