@@ -6,7 +6,8 @@
   <description>
     The action command for ROS 2 command line tools.
   </description>
-  <maintainer email="jacob@openrobotics.org">Jacob Perron</maintainer>
+  <maintainer email="clairewang@openrobotics.org">Claire Wang</maintainer>
+  <maintainer email="mabel@openrobotics.org">Mabel Zhang</maintainer>
   <license>Apache License 2.0</license>
 
   <author email="jacob@openrobotics.org">Jacob Perron</author>

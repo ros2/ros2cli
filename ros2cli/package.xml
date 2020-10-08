@@ -6,8 +6,11 @@
   <description>
     Framework for ROS 2 command line tools.
   </description>
-  <maintainer email="dthomas@osrfoundation.org">Dirk Thomas</maintainer>
+  <maintainer email="clairewang@openrobotics.org">Claire Wang</maintainer>
+  <maintainer email="mabel@openrobotics.org">Mabel Zhang</maintainer>
   <license>Apache License 2.0</license>
+
+  <author email="dthomas@osrfoundation.org">Dirk Thomas</author>	
 
   <exec_depend>python3-argcomplete</exec_depend>
   <exec_depend>python3-importlib-metadata</exec_depend>

@@ -6,8 +6,11 @@
   <description>
     The component command for ROS 2 command line tools.
   </description>
-  <maintainer email="michel@ekumenlabs.com">Michel Hidalgo</maintainer>
+  <maintainer email="clairewang@openrobotics.org">Claire Wang</maintainer>
+  <maintainer email="mabel@openrobotics.org">Mabel Zhang</maintainer>
   <license>Apache License 2.0</license>
+
+  <author email="michel@ekumenlabs.com">Michel Hidalgo</author>	
 
   <exec_depend>ament_index_python</exec_depend>
   <exec_depend>composition_interfaces</exec_depend>
