@@ -16,7 +16,6 @@
 import argparse
 import inspect
 import os
-import shlex
 import types
 
 from ros2cli.entry_points import get_entry_points
@@ -201,7 +200,9 @@ def add_subparsers_on_demand(
         args = argv
         # for completion use the arguments provided by the argcomplete env var
         if _is_completion_requested():
-            args = shlex.split(os.environ['COMP_LINE'])[1:]
+            from argcomplete import split_line
+            _, _, _, comp_words, _ = split_line(os.environ['COMP_LINE'])
+            args = comp_words[1:]
         try:
             known_args, _ = root_parser.parse_known_args(args=args)
         except SystemExit:
