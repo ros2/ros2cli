@@ -296,7 +296,7 @@ class TestROS2TopicCLI(unittest.TestCase):
                 re.compile(r'GID: [\w\.]+'),
                 'QoS profile:',
                 re.compile(r'  Reliability: (RELIABLE|BEST_EFFORT|SYSTEM_DEFAULT|UNKNOWN)'),
-                re.compile(r'  Durability: (VOLATILE|TRANSIENT_LOCALE|SYSTEM_DEFAULT|UNKNOWN)'),
+                re.compile(r'  Durability: (VOLATILE|TRANSIENT_LOCAL|SYSTEM_DEFAULT|UNKNOWN)'),
                 re.compile(r'  Lifespan: \d+ nanoseconds'),
                 re.compile(r'  Deadline: \d+ nanoseconds'),
                 re.compile(r'  Liveliness: (AUTOMATIC|MANUAL_BY_TOPIC|SYSTEM_DEFAULT|UNKNOWN)'),
