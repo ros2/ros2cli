@@ -22,6 +22,8 @@ from ros2cli.node.strategy import NodeStrategy
 from ros2node.api import get_absolute_node_name
 from ros2node.api import get_node_names
 from ros2node.api import NodeNameCompleter
+from ros2param.api import call_describe_parameters
+from ros2param.api import get_parameter_type_string
 from ros2param.verb import VerbExtension
 from ros2service.api import get_service_names
 
@@ -41,6 +43,9 @@ class ListVerb(VerbExtension):
         parser.add_argument(
             '--param-prefixes', nargs='+', default=[],
             help='Only list parameters with the provided prefixes')
+        parser.add_argument(
+            '--param-type', action='store_true',
+            help='Print parameter types with parameter names')
 
     def main(self, *, args):  # noqa: D102
         with NodeStrategy(args) as node:
@@ -97,7 +102,14 @@ class ListVerb(VerbExtension):
                         print(f'{node_name.full_name}:')
                     response = future.result()
                     for name in sorted(response.result.names):
-                        print(f'  {name}')
+                        if args.param_type is True:
+                            resp = call_describe_parameters(
+                                node=node, node_name=node_name.full_name,
+                                parameter_names={name})
+                            param_type_str = get_parameter_type_string(resp.descriptors[0].type)
+                            print(f'  {name} [{param_type_str}]')
+                        else:
+                            print(f'  {name}')
                 else:
                     e = future.exception()
                     print(
