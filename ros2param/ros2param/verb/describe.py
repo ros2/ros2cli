@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from rcl_interfaces.msg import ParameterType
 from ros2cli.node.direct import DirectNode
 from ros2cli.node.strategy import add_arguments
 from ros2cli.node.strategy import NodeStrategy
@@ -20,6 +19,7 @@ from ros2node.api import get_absolute_node_name
 from ros2node.api import get_node_names
 from ros2node.api import NodeNameCompleter
 from ros2param.api import call_describe_parameters
+from ros2param.api import get_parameter_type_string
 from ros2param.api import ParameterNameCompleter
 from ros2param.verb import VerbExtension
 
@@ -77,19 +77,3 @@ class DescribeVerb(VerbExtension):
             if descriptor.additional_constraints:
                 print('    Additional constraints:',
                       descriptor.additional_constraints)
-
-
-def get_parameter_type_string(parameter_type):
-    mapping = {
-        ParameterType.PARAMETER_BOOL: 'boolean',
-        ParameterType.PARAMETER_INTEGER: 'integer',
-        ParameterType.PARAMETER_DOUBLE: 'double',
-        ParameterType.PARAMETER_STRING: 'string',
-        ParameterType.PARAMETER_BYTE_ARRAY: 'byte array',
-        ParameterType.PARAMETER_BOOL_ARRAY: 'boolean array',
-        ParameterType.PARAMETER_INTEGER_ARRAY: 'integer array',
-        ParameterType.PARAMETER_DOUBLE_ARRAY: 'double array',
-        ParameterType.PARAMETER_STRING_ARRAY: 'string array',
-        ParameterType.PARAMETER_NOT_SET: 'not set',
-    }
-    return mapping[parameter_type]
