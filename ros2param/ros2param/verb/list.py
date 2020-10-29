@@ -101,17 +101,20 @@ class ListVerb(VerbExtension):
                     if not args.node_name:
                         print(f'{node_name.full_name}:')
                     response = future.result()
+                    sorted_names = sorted(response.result.names)
                     # get descriptors for the node if needs to print parameter type
+                    name_to_type_map = {}
                     if args.param_type is True:
                         resp = call_describe_parameters(
                             node=node, node_name=node_name.full_name,
-                            parameter_names=sorted(response.result.names))
-                    for name in sorted(response.result.names):
+                            parameter_names=sorted_names)
+                        for descriptor in resp.descriptors:
+                            name_to_type_map[descriptor.name] = get_parameter_type_string(
+                                descriptor.type)
+
+                    for name in sorted_names:
                         if args.param_type is True:
-                            param_type_str = None
-                            for descriptor in resp.descriptors:
-                                if descriptor.name == name:
-                                    param_type_str = get_parameter_type_string(descriptor.type)
+                            param_type_str = name_to_type_map[name]
                             print(f'  {name} (type: {param_type_str})')
                         else:
                             print(f'  {name}')
