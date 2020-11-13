@@ -58,6 +58,8 @@ class EchoVerb(VerbExtension):
             help='Output all recursive fields separated by commas (e.g. for '
                  'plotting)')
         parser.add_argument(
+            '--filter', type=str, default=None, help='Filter to echo a part of a message.')
+        parser.add_argument(
             '--full-length', '-f', action='store_true',
             help='Output all elements for arrays, bytes, and string with a '
                  "length > '--truncate-length', by default they are truncated "
@@ -80,6 +82,13 @@ class EchoVerb(VerbExtension):
         self.print_func = _print_yaml
         if args.csv:
             self.print_func = _print_csv
+
+        # Validate filter
+        self.filter = args.filter
+        if self.filter is not None:
+            self.filter = list(filter(None, self.filter.split('/')))
+            if not self.filter:
+                raise RuntimeError(f"Invalid filter value '{args.filter}'")
 
         self.truncate_length = args.truncate_length if not args.full_length else None
         self.no_arr = args.no_arr
@@ -145,24 +154,32 @@ class EchoVerb(VerbExtension):
         rclpy.spin(node)
 
     def _subscriber_callback(self, msg):
-        self.print_func(msg, self.truncate_length, self.no_arr, self.no_str)
+        submsg = msg
+        if self.filter is not None:
+            for field in self.filter:
+                try:
+                    submsg = getattr(submsg, field)
+                except AttributeError as ex:
+                    raise RuntimeError(f"Invalid filter '{'/'.join(self.filter)}': {ex}")
+
+        self.print_func(submsg, self.truncate_length, self.no_arr, self.no_str)
 
 
 def _print_yaml(msg, truncate_length, noarr, nostr):
-    if isinstance(msg, bytes):
-        print(msg, end='\n---\n')
-    else:
+    if hasattr(msg, '__slots__'):
         print(
             message_to_yaml(
                 msg, truncate_length=truncate_length, no_arr=noarr, no_str=nostr),
             end='---\n')
+    else:
+        print(msg, end='\n---\n')
 
 
 def _print_csv(msg, truncate_length, noarr, nostr):
-    if isinstance(msg, bytes):
-        print(msg)
-    else:
+    if hasattr(msg, '__slots__'):
         print(message_to_csv(msg, truncate_length=truncate_length, no_arr=noarr, no_str=nostr))
+    else:
+        print(msg)
 
 
 def _message_lost_event_callback(message_lost_status):

@@ -543,6 +543,42 @@ class TestROS2TopicCLI(unittest.TestCase):
             ), timeout=10)
         assert topic_command.wait_for_shutdown(timeout=10)
 
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_topic_echo_filter(self):
+        with self.launch_topic_command(
+            arguments=['echo', '/arrays', '--filter', 'alignment_check'],
+        ) as topic_command:
+            assert topic_command.wait_for_output(functools.partial(
+                launch_testing.tools.expect_output, expected_lines=[
+                    '0',
+                    '---',
+                ], strict=True
+            ), timeout=10)
+        assert topic_command.wait_for_shutdown(timeout=10)
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_topic_echo_filter_not_a_member(self):
+        with self.launch_topic_command(
+            arguments=['echo', '/arrays', '--filter', 'not_member'],
+        ) as topic_command:
+            assert topic_command.wait_for_output(functools.partial(
+                launch_testing.tools.expect_output, expected_lines=[
+                    "Invalid filter 'not_member': 'Arrays' object has no attribute 'not_member'",
+                ], strict=True
+            ), timeout=10)
+        assert topic_command.wait_for_shutdown(timeout=10)
+
+    def test_topic_echo_filter_invalid(self):
+        with self.launch_topic_command(
+            arguments=['echo', '/arrays', '--filter', '/'],
+        ) as topic_command:
+            assert topic_command.wait_for_output(functools.partial(
+                launch_testing.tools.expect_output, expected_lines=[
+                    "Invalid filter value '/'",
+                ], strict=True
+            ), timeout=10)
+        assert topic_command.wait_for_shutdown(timeout=10)
+
     def test_topic_echo_no_publisher(self):
         with self.launch_topic_command(
             arguments=['echo', '/this_topic_has_no_pub'],
