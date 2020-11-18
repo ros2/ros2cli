@@ -544,9 +544,9 @@ class TestROS2TopicCLI(unittest.TestCase):
         assert topic_command.wait_for_shutdown(timeout=10)
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
-    def test_topic_echo_filter(self):
+    def test_topic_echo_field(self):
         with self.launch_topic_command(
-            arguments=['echo', '/arrays', '--filter', 'alignment_check'],
+            arguments=['echo', '/arrays', '--field', 'alignment_check'],
         ) as topic_command:
             assert topic_command.wait_for_output(functools.partial(
                 launch_testing.tools.expect_output, expected_lines=[
@@ -557,24 +557,49 @@ class TestROS2TopicCLI(unittest.TestCase):
         assert topic_command.wait_for_shutdown(timeout=10)
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
-    def test_topic_echo_filter_not_a_member(self):
+    def test_topic_echo_field_nested(self):
         with self.launch_topic_command(
-            arguments=['echo', '/arrays', '--filter', 'not_member'],
+            arguments=['echo', '/cmd_vel', '--field', 'twist.angular'],
         ) as topic_command:
             assert topic_command.wait_for_output(functools.partial(
                 launch_testing.tools.expect_output, expected_lines=[
-                    "Invalid filter 'not_member': 'Arrays' object has no attribute 'not_member'",
+                    'x: 0.0',
+                    'y: 0.0',
+                    'z: 0.0',
+                    '---',
                 ], strict=True
             ), timeout=10)
         assert topic_command.wait_for_shutdown(timeout=10)
 
-    def test_topic_echo_filter_invalid(self):
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_topic_echo_field_not_a_member(self):
         with self.launch_topic_command(
-            arguments=['echo', '/arrays', '--filter', '/'],
+            arguments=['echo', '/arrays', '--field', 'not_member'],
         ) as topic_command:
             assert topic_command.wait_for_output(functools.partial(
                 launch_testing.tools.expect_output, expected_lines=[
-                    "Invalid filter value '/'",
+                    "Invalid field 'not_member': 'Arrays' object has no attribute 'not_member'",
+                ], strict=True
+            ), timeout=10)
+        assert topic_command.wait_for_shutdown(timeout=10)
+
+    def test_topic_echo_field_invalid(self):
+        with self.launch_topic_command(
+            arguments=['echo', '/arrays', '--field', '/'],
+        ) as topic_command:
+            assert topic_command.wait_for_output(functools.partial(
+                launch_testing.tools.expect_output, expected_lines=[
+                    "Invalid field '/': 'Arrays' object has no attribute '/'",
+                ], strict=True
+            ), timeout=10)
+        assert topic_command.wait_for_shutdown(timeout=10)
+
+        with self.launch_topic_command(
+            arguments=['echo', '/arrays', '--field', '.'],
+        ) as topic_command:
+            assert topic_command.wait_for_output(functools.partial(
+                launch_testing.tools.expect_output, expected_lines=[
+                    "Invalid field value '.'",
                 ], strict=True
             ), timeout=10)
         assert topic_command.wait_for_shutdown(timeout=10)

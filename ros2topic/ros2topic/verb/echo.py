@@ -58,7 +58,12 @@ class EchoVerb(VerbExtension):
             help='Output all recursive fields separated by commas (e.g. for '
                  'plotting)')
         parser.add_argument(
-            '--filter', type=str, default=None, help='Filter to echo a part of a message.')
+            '--field', type=str, default=None,
+            help='Echo a selected field of a message. '
+                 "Use '.' to select sub-fields. "
+                 'For example, to echo the position field of a nav_msgs/msg/Odometry message: '
+                 "'ros2 topic echo /odom --field pose.pose.position'",
+        )
         parser.add_argument(
             '--full-length', '-f', action='store_true',
             help='Output all elements for arrays, bytes, and string with a '
@@ -83,12 +88,12 @@ class EchoVerb(VerbExtension):
         if args.csv:
             self.print_func = _print_csv
 
-        # Validate filter
-        self.filter = args.filter
-        if self.filter is not None:
-            self.filter = list(filter(None, self.filter.split('/')))
-            if not self.filter:
-                raise RuntimeError(f"Invalid filter value '{args.filter}'")
+        # Validate field selection
+        self.field = args.field
+        if self.field is not None:
+            self.field = list(filter(None, self.field.split('.')))
+            if not self.field:
+                raise RuntimeError(f"Invalid field value '{args.field}'")
 
         self.truncate_length = args.truncate_length if not args.full_length else None
         self.no_arr = args.no_arr
@@ -155,12 +160,12 @@ class EchoVerb(VerbExtension):
 
     def _subscriber_callback(self, msg):
         submsg = msg
-        if self.filter is not None:
-            for field in self.filter:
+        if self.field is not None:
+            for field in self.field:
                 try:
                     submsg = getattr(submsg, field)
                 except AttributeError as ex:
-                    raise RuntimeError(f"Invalid filter '{'/'.join(self.filter)}': {ex}")
+                    raise RuntimeError(f"Invalid field '{'.'.join(self.field)}': {ex}")
 
         self.print_func(submsg, self.truncate_length, self.no_arr, self.no_str)
 
