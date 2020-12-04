@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>ros2interface</name>
-  <version>0.8.7</version>
+  <version>0.8.8</version>
   <description>
     The interface command for ROS 2 command line tools
   </description>
