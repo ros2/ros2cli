@@ -236,7 +236,7 @@ class TestROS2InterfaceCLI(unittest.TestCase):
 
     def test_show_message(self):
         with self.launch_interface_command(
-            arguments=['show', 'test_msgs/msg/ShortVariedMultiNested']
+            arguments=['show', 'ros2cli_test_msgs/msg/ShortVariedMultiNested']
         ) as interface_command:
             assert interface_command.wait_for_shutdown(timeout=2)
         assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
@@ -256,7 +256,7 @@ class TestROS2InterfaceCLI(unittest.TestCase):
 
     def test_show_message_with_all_comments(self):
         with self.launch_interface_command(
-            arguments=['show', 'test_msgs/msg/ShortVariedMultiNested', '--all-comments']
+            arguments=['show', 'ros2cli_test_msgs/msg/ShortVariedMultiNested', '--all-comments']
         ) as interface_command:
             assert interface_command.wait_for_shutdown(timeout=2)
         assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
@@ -283,7 +283,7 @@ class TestROS2InterfaceCLI(unittest.TestCase):
 
     def test_show_message_with_no_comments(self):
         with self.launch_interface_command(
-            arguments=['show', 'test_msgs/msg/ShortVariedMultiNested', '--no-comments']
+            arguments=['show', 'ros2cli_test_msgs/msg/ShortVariedMultiNested', '--no-comments']
         ) as interface_command:
             assert interface_command.wait_for_shutdown(timeout=2)
         assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
@@ -301,7 +301,7 @@ class TestROS2InterfaceCLI(unittest.TestCase):
 
     def test_show_service(self):
         with self.launch_interface_command(
-            arguments=['show', 'test_msgs/srv/ShortVariedMultiNested']
+            arguments=['show', 'ros2cli_test_msgs/srv/ShortVariedMultiNested']
         ) as interface_command:
             assert interface_command.wait_for_shutdown(timeout=2)
         assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
@@ -323,7 +323,8 @@ class TestROS2InterfaceCLI(unittest.TestCase):
 
     def test_show_service_with_all_comments(self):
         with self.launch_interface_command(
-                arguments=['show', 'test_msgs/srv/ShortVariedMultiNested', '--all-comments']
+                arguments=[
+                    'show', 'ros2cli_test_msgs/srv/ShortVariedMultiNested', '--all-comments']
         ) as interface_command:
             assert interface_command.wait_for_shutdown(timeout=2)
         assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
@@ -352,7 +353,7 @@ class TestROS2InterfaceCLI(unittest.TestCase):
 
     def test_show_service_with_no_comments(self):
         with self.launch_interface_command(
-                arguments=['show', 'test_msgs/srv/ShortVariedMultiNested', '--no-comments']
+                arguments=['show', 'ros2cli_test_msgs/srv/ShortVariedMultiNested', '--no-comments']
         ) as interface_command:
             assert interface_command.wait_for_shutdown(timeout=2)
         assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
@@ -372,7 +373,7 @@ class TestROS2InterfaceCLI(unittest.TestCase):
 
     def test_show_action(self):
         with self.launch_interface_command(
-                arguments=['show', 'test_msgs/action/ShortVariedMultiNested']
+                arguments=['show', 'ros2cli_test_msgs/action/ShortVariedMultiNested']
         ) as interface_command:
             assert interface_command.wait_for_shutdown(timeout=2)
         assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
@@ -397,7 +398,8 @@ class TestROS2InterfaceCLI(unittest.TestCase):
 
     def test_show_action_with_all_comments(self):
         with self.launch_interface_command(
-                arguments=['show', 'test_msgs/action/ShortVariedMultiNested', '--all-comments']
+                arguments=[
+                    'show', 'ros2cli_test_msgs/action/ShortVariedMultiNested', '--all-comments']
         ) as interface_command:
             assert interface_command.wait_for_shutdown(timeout=2)
         assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
@@ -429,7 +431,8 @@ class TestROS2InterfaceCLI(unittest.TestCase):
 
     def test_show_action_with_no_comments(self):
         with self.launch_interface_command(
-                arguments=['show', 'test_msgs/action/ShortVariedMultiNested', '--no-comments']
+                arguments=[
+                    'show', 'ros2cli_test_msgs/action/ShortVariedMultiNested', '--no-comments']
         ) as interface_command:
             assert interface_command.wait_for_shutdown(timeout=2)
         assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
@@ -463,7 +466,7 @@ class TestROS2InterfaceCLI(unittest.TestCase):
 
     def test_show_not_an_interface(self):
         with self.launch_interface_command(
-            arguments=['show', 'test_msgs/msg/NotAMessageTypeName']
+            arguments=['show', 'ros2cli_test_msgs/msg/NotAMessageTypeName']
         ) as interface_command:
             assert interface_command.wait_for_shutdown(timeout=2)
         assert interface_command.exit_code == 1
