@@ -17,6 +17,7 @@ import os
 import rclpy
 import rclpy.action
 
+from rclpy.parameter import Parameter
 from ros2cli.node import NODE_NAME_PREFIX
 DEFAULT_TIMEOUT = 0.5
 
@@ -38,13 +39,18 @@ class DirectNode:
             args, 'node_name_suffix', '_%d' % os.getpid())
         start_parameter_services = getattr(
             args, 'start_parameter_services', False)
+        use_sim_time = getattr(args, 'use_sim_time', False)
 
         if node_name is None:
             node_name = NODE_NAME_PREFIX + node_name_suffix
 
         self.node = rclpy.create_node(
             node_name,
-            start_parameter_services=start_parameter_services)
+            start_parameter_services=start_parameter_services,
+            parameter_overrides=[
+                Parameter('use_sim_time', value=use_sim_time)
+            ])
+
         timeout = getattr(args, 'spin_time', DEFAULT_TIMEOUT)
         timer = self.node.create_timer(timeout, timer_callback)
 
@@ -86,3 +92,6 @@ def add_arguments(parser):
         '--spin-time', type=float, default=DEFAULT_TIMEOUT,
         help='Spin time in seconds to wait for discovery (only applies when '
              'not using an already running daemon)')
+    parser.add_argument(
+        '-s', '--use-sim-time', action='store_true',
+        help='Enable ROS simulation time')
