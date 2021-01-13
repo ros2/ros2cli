@@ -759,8 +759,8 @@ class TestROS2TopicCLI(unittest.TestCase):
             assert topic_command.wait_for_output(functools.partial(
                 launch_testing.tools.expect_output, expected_lines=[
                     'Subscribed to [/defaults]',
-                    re.compile(r'\d{2} B/s from \d+ messages'),
-                    re.compile(r'\s*Message size mean: \d{2} B min: \d{2} B max: \d{2} B')
+                    re.compile(r'\d{2,3} B/s from \d+ messages'),
+                    re.compile(r'\s*Message size mean: \d{2,3} B min: \d{2,3} B max: \d{2,3} B')
                 ], strict=True
             ), timeout=10)
         assert topic_command.wait_for_shutdown(timeout=10)

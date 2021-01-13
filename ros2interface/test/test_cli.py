@@ -15,6 +15,7 @@
 import contextlib
 import itertools
 import re
+import sys
 import unittest
 
 from launch import LaunchDescription
