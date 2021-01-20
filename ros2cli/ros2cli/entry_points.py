@@ -16,7 +16,10 @@
 from collections import defaultdict
 import logging
 
-import importlib_metadata
+try:
+    import importlib.metadata as importlib_metadata
+except ModuleNotFoundError:
+    import importlib_metadata
 
 """
 The group name for entry points identifying extension points.
