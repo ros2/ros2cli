@@ -12,6 +12,7 @@
 
   <author email="dthomas@osrfoundation.org">Dirk Thomas</author>
 
+  <depend>python3-importlib-resources</depend>
   <depend>ros2cli</depend>
 
   <exec_depend>ament_index_python</exec_depend>
