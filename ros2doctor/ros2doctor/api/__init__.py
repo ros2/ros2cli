@@ -16,7 +16,10 @@ from typing import List
 from typing import Set
 from typing import Tuple
 
-import importlib_metadata
+try:
+    import importlib.metadata as importlib_metadata
+except ModuleNotFoundError:
+    import importlib_metadata
 
 from ros2doctor.api.format import doctor_warn
 
