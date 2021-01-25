@@ -175,16 +175,16 @@ def _print_yaml(msg, truncate_length, noarr, nostr):
         print(
             message_to_yaml(
                 msg, truncate_length=truncate_length, no_arr=noarr, no_str=nostr),
-            end='---\n')
+            end='---\n', flush=True)
     else:
-        print(msg, end='\n---\n')
+        print(msg, end='\n---\n', flush=True)
 
 
 def _print_csv(msg, truncate_length, noarr, nostr):
     if hasattr(msg, '__slots__'):
-        print(message_to_csv(msg, truncate_length=truncate_length, no_arr=noarr, no_str=nostr))
+        print(message_to_csv(msg, truncate_length=truncate_length, no_arr=noarr, no_str=nostr), flush=True)
     else:
-        print(msg)
+        print(msg, flush=True)
 
 
 def _message_lost_event_callback(message_lost_status):
