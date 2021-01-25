@@ -182,7 +182,8 @@ def _print_yaml(msg, truncate_length, noarr, nostr):
 
 def _print_csv(msg, truncate_length, noarr, nostr):
     if hasattr(msg, '__slots__'):
-        print(message_to_csv(msg, truncate_length=truncate_length, no_arr=noarr, no_str=nostr), flush=True)
+        print(message_to_csv(msg, truncate_length=truncate_length, no_arr=noarr, no_str=nostr),
+              flush=True)
     else:
         print(msg, flush=True)
 
