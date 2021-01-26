@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from rcl_interfaces.msg import Parameter
 from rcl_interfaces.msg import ParameterType
 from rcl_interfaces.msg import ParameterValue
 from rcl_interfaces.srv import DescribeParameters
@@ -19,8 +20,10 @@ from rcl_interfaces.srv import GetParameters
 from rcl_interfaces.srv import ListParameters
 from rcl_interfaces.srv import SetParameters
 import rclpy
+from rclpy.parameter import PARAMETER_SEPARATOR_STRING
 from ros2cli.node.direct import DirectNode
 import yaml
+import sys
 
 
 def get_value(*, parameter_value):
@@ -90,6 +93,46 @@ def get_parameter_value(*, string_value):
         value.type = ParameterType.PARAMETER_STRING
         value.string_value = string_value
     return value
+
+
+def parse_parameter_dict(*, namespace, parameter_dict):
+    parameters = []
+    for param_name, param_value in parameter_dict.items():
+        full_param_name = namespace + param_name
+        # Unroll nested parameters
+        if type(param_value) == dict:
+            parameters += parse_parameter_dict(
+                    namespace=full_param_name + PARAMETER_SEPARATOR_STRING,
+                    parameter_dict=param_value)
+        else:
+            parameter = Parameter()
+            parameter.name = full_param_name
+            parameter.value = get_parameter_value(string_value=str(param_value))
+            parameters.append(parameter)
+    return parameters
+
+
+def load_parameter_dict(*, node, node_name, parameter_dict):
+
+    parameters = parse_parameter_dict(namespace="", parameter_dict=parameter_dict)
+    response = call_set_parameters(
+        node=node, node_name=node_name, parameters=parameters)
+
+    # output response
+    assert len(response.results) == len(parameters)
+    for i in range(0, len(response.results)):
+        result = response.results[i]
+        param_name = parameters[i].name
+        if result.successful:
+            msg = 'Set parameter {} successful'.format(param_name)
+            if result.reason:
+                msg += ': ' + result.reason
+            print(msg)
+        else:
+            msg = 'Set parameter {} failed'.format(param_name)
+            if result.reason:
+                msg += ': ' + result.reason
+            print(msg, file=sys.stderr)
 
 
 def call_describe_parameters(*, node, node_name, parameter_names=None):

@@ -46,6 +46,7 @@ The package provides the param command for the ROS 2 command line tools.""",
             'get = ros2param.verb.get:GetVerb',
             'list = ros2param.verb.list:ListVerb',
             'set = ros2param.verb.set:SetVerb',
+            'load = ros2param.verb.load:LoadVerb',
         ],
     }
 )
