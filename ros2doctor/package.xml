@@ -6,6 +6,7 @@
   <description>A command line tool to check potential issues in a ROS 2 system</description>
   <maintainer email="clairewang@openrobotics.org">Claire Wang</maintainer>
   <maintainer email="mabel@openrobotics.org">Mabel Zhang</maintainer>
+  <maintainer email="audrow@openrobotics.org">Audrow Nash</maintainer>
   <license>Apache License 2.0</license>
 
   <author email="clairewang@openrobotics.org">Claire Wang</author>
