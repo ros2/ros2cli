@@ -18,10 +18,8 @@ from ros2cli.node.strategy import NodeStrategy
 from ros2node.api import get_absolute_node_name
 from ros2node.api import get_node_names
 from ros2node.api import NodeNameCompleter
-from ros2param.api import load_parameter_dict
+from ros2param.api import load_parameter_file
 from ros2param.verb import VerbExtension
-
-import yaml
 
 
 class LoadVerb(VerbExtension):
@@ -38,9 +36,6 @@ class LoadVerb(VerbExtension):
             help='Consider hidden nodes as well')
         arg = parser.add_argument(
             'parameter_file', help='Parameter file')
-        parser.add_argument(
-            '--use-wildcard', action='store_true',
-            help='Load parameters in the \'/**\' namespace into the node')
 
     def main(self, *, args):  # noqa: D102
         with NodeStrategy(args) as node:
@@ -50,28 +45,6 @@ class LoadVerb(VerbExtension):
         node_name = get_absolute_node_name(args.node_name)
         if node_name not in {n.full_name for n in node_names}:
             return 'Node not found'
-        # Remove leading slash
-        node_namespace = node_name[1:]
 
         with DirectNode(args) as node:
-            with open(args.parameter_file, "r") as f:
-                param_file = yaml.safe_load(f)
-                param_namespaces = []
-                if args.use_wildcard and "/**" in param_file:
-                    param_namespaces.append("/**")
-                if node_namespace in param_file:
-                    param_namespaces.append(node_namespace)
-
-                if param_namespaces == []:
-                    raise RuntimeError("Param file doesn't contain parameters for {}, "
-                                       " only for namespaces: {}" .format(node_namespace,
-                                                                          param_file.keys()))
-
-                for ns in param_namespaces:
-                    value = param_file[ns]
-                    if type(value) != dict or "ros__parameters" not in value:
-                        raise RuntimeError("Invalid structure of parameter file in namespace {}"
-                                           "expected same format as provided by ros2 param dump"
-                                           .format(ns))
-                    load_parameter_dict(node=node, node_name=node_name,
-                                        parameter_dict=value["ros__parameters"])
+            load_parameter_file(node=node, node_name=node_name, parameter_file=args.parameter_file)

@@ -135,6 +135,25 @@ def load_parameter_dict(*, node, node_name, parameter_dict):
             print(msg, file=sys.stderr)
 
 
+def load_parameter_file(*, node, node_name, parameter_file):
+    # Remove leading slash and namespaces
+    internal_node_name = node_name.split('/')[-1]
+    with open(parameter_file, "r") as f:
+        param_file = yaml.safe_load(f)
+        if internal_node_name not in param_file:
+            raise RuntimeError("Param file doesn't contain parameters for {}, "
+                               " only for namespaces: {}" .format(internal_node_name,
+                                                                  param_file.keys()))
+
+        value = param_file[internal_node_name]
+        if type(value) != dict or "ros__parameters" not in value:
+            raise RuntimeError("Invalid structure of parameter file in namespace {}"
+                               "expected same format as provided by ros2 param dump"
+                               .format(internal_node_name))
+        load_parameter_dict(node=node, node_name=node_name,
+                            parameter_dict=value["ros__parameters"])
+
+
 def call_describe_parameters(*, node, node_name, parameter_names=None):
     # create client
     client = node.create_client(
