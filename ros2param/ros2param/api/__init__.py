@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import sys
+
 from rcl_interfaces.msg import Parameter
 from rcl_interfaces.msg import ParameterType
 from rcl_interfaces.msg import ParameterValue
@@ -23,7 +25,6 @@ import rclpy
 from rclpy.parameter import PARAMETER_SEPARATOR_STRING
 from ros2cli.node.direct import DirectNode
 
-import sys
 import yaml
 
 
