@@ -220,7 +220,6 @@ class TestVerbDump(unittest.TestCase):
             strict=False
         )
 
-        # TODO
     def test_verb_load_invalid_node(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             filepath = self._write_param_file(tmpdir, 'params.yaml')
@@ -245,7 +244,6 @@ class TestVerbDump(unittest.TestCase):
                 strict=True
             )
 
-        # TODO
     def test_verb_load_invalid_path(self):
         with self.launch_param_load_command(
             arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}', 'invalid_path']
