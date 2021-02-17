@@ -708,7 +708,7 @@ class TestROS2TopicCLI(unittest.TestCase):
 
         head_line = topic_command.output.splitlines()[0]
         average_delay = float(average_delay_line_pattern.match(head_line).group(1))
-        assert math.isclose(average_delay, 0.0, abs_tol=10e-3)
+        assert math.isclose(average_delay, 0.0, abs_tol=0.1)
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_hz(self):
