@@ -40,6 +40,7 @@ import rclpy
 
 from rclpy.qos import qos_profile_sensor_data
 from rclpy.time import Time
+from ros2cli.node.direct import add_arguments as add_direct_node_arguments
 from ros2cli.node.direct import DirectNode
 from ros2topic.api import get_msg_class
 from ros2topic.api import TopicNameCompleter
@@ -71,6 +72,7 @@ class DelayVerb(VerbExtension):
             '--window', '-w', type=positive_int, default=DEFAULT_WINDOW_SIZE,
             help='window size, in # of messages, for calculating rate, '
                  'string to (default: %d)' % DEFAULT_WINDOW_SIZE)
+        add_direct_node_arguments(parser)
 
     def main(self, *, args):
         return main(args)
