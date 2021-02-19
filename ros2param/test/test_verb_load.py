@@ -19,6 +19,7 @@ import tempfile
 import time
 import unittest
 import xmlrpc
+import yaml
 
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess
@@ -70,6 +71,17 @@ INPUT_PARAMETER_FILE = (
     '    - baz\n'
     '    str_param: Bye World\n'
     '    use_sim_time: false\n'
+)
+INPUT_WILDCARD_PARAMETER_FILE = (
+    f'/**:\n'
+    '  ros__parameters:\n'
+    '    str_param: Wildcard\n'
+    '    int_param: 12345\n'
+)
+INPUT_NODE_OVERLAY_PARAMETER_FILE = (
+    f'{TEST_NAMESPACE}/{TEST_NODE}:\n'
+    '  ros__parameters:\n'
+    '    str_param: Override\n'
 )
 
 # Skip cli tests on Windows while they exhibit pathological behavior
@@ -191,10 +203,10 @@ class TestVerbDump(unittest.TestCase):
         if timed_out:
             self.fail(f'CLI daemon failed to find test node after {TEST_TIMEOUT} seconds')
 
-    def _write_param_file(self, tmpdir, filename):
+    def _write_param_file(self, tmpdir, filename, contents=INPUT_PARAMETER_FILE):
         yaml_path = os.path.join(tmpdir, filename)
         with open(yaml_path, 'w') as f:
-            f.write(INPUT_PARAMETER_FILE)
+            f.write(contents)
             return yaml_path
 
     def _output_file(self):
@@ -280,3 +292,63 @@ class TestVerbDump(unittest.TestCase):
                 text=param_dump_command.output,
                 strict=True
             )
+
+    def test_verb_load_wildcard(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            # Try param file with only wildcard
+            filepath = self._write_param_file(tmpdir, 'params.yaml', INPUT_WILDCARD_PARAMETER_FILE)
+            with self.launch_param_load_command(
+                arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}', filepath]
+            ) as param_load_command:
+                assert param_load_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
+            assert param_load_command.exit_code != launch_testing.asserts.EXIT_OK
+            assert launch_testing.tools.expect_output(
+                expected_lines=['Param file does not contain parameters for '
+                                f'{TEST_NAMESPACE}/{TEST_NODE}'],
+                text=param_load_command.output,
+                strict=False
+            )
+
+            with self.launch_param_load_command(
+                arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}', filepath,
+                           '--use-wildcard']
+            ) as param_load_command:
+                assert param_load_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
+            assert param_load_command.exit_code == launch_testing.asserts.EXIT_OK
+            assert launch_testing.tools.expect_output(
+                expected_lines=[''],
+                text=param_load_command.output,
+                strict=True
+            )
+            # Dump with ros2 param and check that wildcard parameters are loaded
+            with self.launch_param_dump_command(
+                arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}', '--print']
+            ) as param_dump_command:
+                assert param_dump_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
+            assert param_dump_command.exit_code == launch_testing.asserts.EXIT_OK
+            loaded_params = yaml.safe_load(param_dump_command.output)
+            params = loaded_params[f'{TEST_NAMESPACE}/{TEST_NODE}']['ros__parameters']
+            assert params['str_param'] == 'Wildcard'
+            assert params['int_param'] == 12345
+
+            # Concatenate wildcard + some overlays
+            filepath = self._write_param_file(tmpdir, 'params.yaml',
+                                              INPUT_WILDCARD_PARAMETER_FILE + '\n' +
+                                              INPUT_NODE_OVERLAY_PARAMETER_FILE)
+            with self.launch_param_load_command(
+                arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}', filepath,
+                           '--use-wildcard']
+            ) as param_load_command:
+                assert param_load_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
+            assert param_load_command.exit_code == launch_testing.asserts.EXIT_OK
+
+            # Dump and check that wildcard parameters were overriden if in node namespace
+            with self.launch_param_dump_command(
+                arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}', '--print']
+            ) as param_dump_command:
+                assert param_dump_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
+            assert param_dump_command.exit_code == launch_testing.asserts.EXIT_OK
+            loaded_params = yaml.safe_load(param_dump_command.output)
+            params = loaded_params[f'{TEST_NAMESPACE}/{TEST_NODE}']['ros__parameters']
+            assert params['str_param'] == 'Override'  # Overriden
+            assert params['int_param'] == 12345  # Wildcard namespace
