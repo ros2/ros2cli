@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import re
 import sys
 
 from rcl_interfaces.srv import ListParameters
@@ -38,6 +39,11 @@ class ListVerb(VerbExtension):
         arg.completer = NodeNameCompleter(
             include_hidden_nodes_key='include_hidden_nodes')
         parser.add_argument(
+            '--filter', nargs=1,
+            help=(
+                'Only parameters matching the regex expression will be showed.'
+                ' Supports `re` regex syntax.'))
+        parser.add_argument(
             '--include-hidden-nodes', action='store_true',
             help='Consider hidden nodes as well')
         parser.add_argument(
@@ -58,6 +64,10 @@ class ListVerb(VerbExtension):
                 return 'Node not found'
             node_names = [
                 n for n in node_names if node_name == n.full_name]
+
+        regex_filter = getattr(args, 'filter')
+        if regex_filter is not None:
+            regex_filter = re.compile(regex_filter[0])
 
         with DirectNode(args) as node:
             service_names = get_service_names(
@@ -97,29 +107,30 @@ class ListVerb(VerbExtension):
             # print responses
             for node_name in sorted(futures.keys()):
                 future = futures[node_name]
-                if future.result() is not None:
-                    if not args.node_name:
-                        print(f'{node_name.full_name}:')
-                    response = future.result()
-                    sorted_names = sorted(response.result.names)
-                    # get descriptors for the node if needs to print parameter type
-                    name_to_type_map = {}
-                    if args.param_type is True:
-                        resp = call_describe_parameters(
-                            node=node, node_name=node_name.full_name,
-                            parameter_names=sorted_names)
-                        for descriptor in resp.descriptors:
-                            name_to_type_map[descriptor.name] = get_parameter_type_string(
-                                descriptor.type)
-
-                    for name in sorted_names:
-                        if args.param_type is True:
-                            param_type_str = name_to_type_map[name]
-                            print(f'  {name} (type: {param_type_str})')
-                        else:
-                            print(f'  {name}')
-                else:
+                if future.result() is None:
                     e = future.exception()
                     print(
                         'Exception while calling service of node '
                         f"'{node_name.full_name}': {e}", file=sys.stderr)
+                response = future.result()
+                sorted_names = sorted(response.result.names)
+                if regex_filter is not None:
+                    sorted_names = [name for name in sorted_names if regex_filter.match(name)]
+                if not args.node_name and sorted_names:
+                    print(f'{node_name.full_name}:')
+                # get descriptors for the node if needs to print parameter type
+                name_to_type_map = {}
+                if args.param_type is True:
+                    resp = call_describe_parameters(
+                        node=node, node_name=node_name.full_name,
+                        parameter_names=sorted_names)
+                    for descriptor in resp.descriptors:
+                        name_to_type_map[descriptor.name] = get_parameter_type_string(
+                            descriptor.type)
+
+                for name in sorted_names:
+                    if args.param_type is True:
+                        param_type_str = name_to_type_map[name]
+                        print(f'  {name} (type: {param_type_str})')
+                    else:
+                        print(f'  {name}')
