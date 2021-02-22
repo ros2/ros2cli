@@ -108,7 +108,7 @@ class DumpVerb(VerbExtension):
             # wait for response
             rclpy.spin_until_future_complete(node, future)
 
-            yaml_output = {node_name.name: {'ros__parameters': {}}}
+            yaml_output = {node_name.full_name: {'ros__parameters': {}}}
 
             # retrieve values
             if future.result() is not None:
@@ -116,7 +116,7 @@ class DumpVerb(VerbExtension):
                 for param_name in sorted(response.result.names):
                     pval = self.get_parameter_value(node, absolute_node_name, param_name)
                     self.insert_dict(
-                        yaml_output[node_name.name]['ros__parameters'], param_name, pval)
+                        yaml_output[node_name.full_name]['ros__parameters'], param_name, pval)
             else:
                 e = future.exception()
                 raise RuntimeError(
