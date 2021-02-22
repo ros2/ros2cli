@@ -43,7 +43,7 @@ TEST_NAMESPACE = '/foo'
 TEST_TIMEOUT = 20.0
 
 EXPECTED_PARAMETER_FILE = (
-    f'{TEST_NODE}:\n'
+    f'{TEST_NAMESPACE}/{TEST_NODE}:\n'
     '  ros__parameters:\n'
     '    bool_array_param:\n'
     '    - false\n'
