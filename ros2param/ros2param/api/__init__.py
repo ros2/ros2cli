@@ -139,19 +139,17 @@ def load_parameter_dict(*, node, node_name, parameter_dict):
 
 def load_parameter_file(*, node, node_name, parameter_file):
     # Remove leading slash and namespaces
-    internal_node_name = node_name.split('/')[-1]
     with open(parameter_file, 'r') as f:
         param_file = yaml.safe_load(f)
-        if internal_node_name not in param_file:
+        if node_name not in param_file:
             raise RuntimeError('Param file does not contain parameters for {}, '
-                               ' only for namespaces: {}' .format(internal_node_name,
-                                                                  param_file.keys()))
+                               ' only for nodes: {}' .format(node_name, param_file.keys()))
 
-        value = param_file[internal_node_name]
+        value = param_file[node_name]
         if type(value) != dict or 'ros__parameters' not in value:
-            raise RuntimeError('Invalid structure of parameter file in namespace {}'
+            raise RuntimeError('Invalid structure of parameter file for node {}'
                                'expected same format as provided by ros2 param dump'
-                               .format(internal_node_name))
+                               .format(node_name))
         load_parameter_dict(node=node, node_name=node_name,
                             parameter_dict=value['ros__parameters'])
 
