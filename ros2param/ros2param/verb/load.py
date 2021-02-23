@@ -37,8 +37,8 @@ class LoadVerb(VerbExtension):
         parser.add_argument(
             'parameter_file', help='Parameter file')
         parser.add_argument(
-            '--use-wildcard', action='store_true',
-            help='Load parameters in the \'/**\' namespace into the node')
+            '--no-use-wildcard', action='store_true',
+            help='Do not load parameters in the \'/**\' namespace into the node')
 
     def main(self, *, args):  # noqa: D102
         with NodeStrategy(args) as node:
@@ -51,4 +51,4 @@ class LoadVerb(VerbExtension):
 
         with DirectNode(args) as node:
             load_parameter_file(node=node, node_name=node_name, parameter_file=args.parameter_file,
-                                use_wildcard=args.use_wildcard)
+                                use_wildcard=not args.no_use_wildcard)

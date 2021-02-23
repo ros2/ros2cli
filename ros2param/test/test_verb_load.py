@@ -298,7 +298,8 @@ class TestVerbDump(unittest.TestCase):
             # Try param file with only wildcard
             filepath = self._write_param_file(tmpdir, 'params.yaml', INPUT_WILDCARD_PARAMETER_FILE)
             with self.launch_param_load_command(
-                arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}', filepath]
+                arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}', filepath,
+                           '--no-use-wildcard']
             ) as param_load_command:
                 assert param_load_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
             assert param_load_command.exit_code != launch_testing.asserts.EXIT_OK
@@ -310,8 +311,7 @@ class TestVerbDump(unittest.TestCase):
             )
 
             with self.launch_param_load_command(
-                arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}', filepath,
-                           '--use-wildcard']
+                arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}', filepath]
             ) as param_load_command:
                 assert param_load_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
             assert param_load_command.exit_code == launch_testing.asserts.EXIT_OK
@@ -336,8 +336,7 @@ class TestVerbDump(unittest.TestCase):
                                               INPUT_WILDCARD_PARAMETER_FILE + '\n' +
                                               INPUT_NODE_OVERLAY_PARAMETER_FILE)
             with self.launch_param_load_command(
-                arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}', filepath,
-                           '--use-wildcard']
+                arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}', filepath]
             ) as param_load_command:
                 assert param_load_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
             assert param_load_command.exit_code == launch_testing.asserts.EXIT_OK
