@@ -19,7 +19,6 @@ import tempfile
 import time
 import unittest
 import xmlrpc
-import yaml
 
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess
@@ -37,6 +36,8 @@ import rclpy
 from rclpy.utilities import get_available_rmw_implementations
 
 from ros2cli.node.strategy import NodeStrategy
+
+import yaml
 
 TEST_NODE = 'test_node'
 TEST_NAMESPACE = '/foo'
@@ -73,7 +74,7 @@ INPUT_PARAMETER_FILE = (
     '    use_sim_time: false\n'
 )
 INPUT_WILDCARD_PARAMETER_FILE = (
-    f'/**:\n'
+    '/**:\n'
     '  ros__parameters:\n'
     '    str_param: Wildcard\n'
     '    int_param: 12345\n'
