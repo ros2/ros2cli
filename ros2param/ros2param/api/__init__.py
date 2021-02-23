@@ -137,21 +137,28 @@ def load_parameter_dict(*, node, node_name, parameter_dict):
             print(msg, file=sys.stderr)
 
 
-def load_parameter_file(*, node, node_name, parameter_file):
+def load_parameter_file(*, node, node_name, parameter_file, use_wildcard):
     # Remove leading slash and namespaces
     with open(parameter_file, 'r') as f:
         param_file = yaml.safe_load(f)
-        if node_name not in param_file:
+        param_keys = []
+        if use_wildcard and '/**' in param_file:
+            param_keys.append('/**')
+        if node_name in param_file:
+            param_keys.append(node_name)
+
+        if param_keys == []:
             raise RuntimeError('Param file does not contain parameters for {}, '
                                ' only for nodes: {}' .format(node_name, param_file.keys()))
-
-        value = param_file[node_name]
-        if type(value) != dict or 'ros__parameters' not in value:
-            raise RuntimeError('Invalid structure of parameter file for node {}'
-                               'expected same format as provided by ros2 param dump'
-                               .format(node_name))
-        load_parameter_dict(node=node, node_name=node_name,
-                            parameter_dict=value['ros__parameters'])
+        param_dict = {}
+        for k in param_keys:
+            value = param_file[k]
+            if type(value) != dict or 'ros__parameters' not in value:
+                raise RuntimeError('Invalid structure of parameter file for node {}'
+                                   'expected same format as provided by ros2 param dump'
+                                   .format(k))
+            param_dict.update(value['ros__parameters'])
+        load_parameter_dict(node=node, node_name=node_name, parameter_dict=param_dict)
 
 
 def call_describe_parameters(*, node, node_name, parameter_names=None):

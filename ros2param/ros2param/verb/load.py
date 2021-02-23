@@ -34,8 +34,11 @@ class LoadVerb(VerbExtension):
         parser.add_argument(
             '--include-hidden-nodes', action='store_true',
             help='Consider hidden nodes as well')
-        arg = parser.add_argument(
+        parser.add_argument(
             'parameter_file', help='Parameter file')
+        parser.add_argument(
+            '--no-use-wildcard', action='store_true',
+            help="Do not load parameters in the '/**' namespace into the node")
 
     def main(self, *, args):  # noqa: D102
         with NodeStrategy(args) as node:
@@ -47,4 +50,5 @@ class LoadVerb(VerbExtension):
             return 'Node not found'
 
         with DirectNode(args) as node:
-            load_parameter_file(node=node, node_name=node_name, parameter_file=args.parameter_file)
+            load_parameter_file(node=node, node_name=node_name, parameter_file=args.parameter_file,
+                                use_wildcard=not args.no_use_wildcard)
