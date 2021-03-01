@@ -25,6 +25,7 @@ from launch_ros.actions import Node
 import launch_testing
 import launch_testing.actions
 import launch_testing.asserts
+import launch_testing.markers
 import launch_testing.tools
 import launch_testing_ros.tools
 
@@ -185,6 +186,7 @@ class TestVerbList(unittest.TestCase):
             strict=True
         )
 
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_verb_list_filter(self):
         with self.launch_param_list_command(
             arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}', '--filter', 'bool.*']
@@ -197,4 +199,4 @@ class TestVerbList(unittest.TestCase):
                 '  bool_param'],
             text=param_list_command.output,
             strict=True
-        )
+        ), f'actual output: {param_list_command.output}'
