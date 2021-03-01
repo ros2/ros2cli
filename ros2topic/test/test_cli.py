@@ -295,7 +295,7 @@ class TestROS2TopicCLI(unittest.TestCase):
                 re.compile(r'Endpoint type: (INVALID|PUBLISHER|SUBSCRIPTION)'),
                 re.compile(r'GID: [\w\.]+'),
                 'QoS profile:',
-                re.compile(r'  History: (KEEP_LAST|KEEP_ALL)'),
+                re.compile(r'  History: (KEEP_LAST|KEEP_ALL|UNKNOWN)'),
                 re.compile(r'  Depth: \d+'),
                 re.compile(r'  Reliability: (RELIABLE|BEST_EFFORT|SYSTEM_DEFAULT|UNKNOWN)'),
                 re.compile(r'  Durability: (VOLATILE|TRANSIENT_LOCAL|SYSTEM_DEFAULT|UNKNOWN)'),
