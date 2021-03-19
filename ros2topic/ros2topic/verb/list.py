@@ -74,4 +74,3 @@ class ListVerb(VerbExtension):
                     if args.show_types:
                         msg += ' [{topic_types_formatted}]'
                     print(msg.format_map(locals()))
-
