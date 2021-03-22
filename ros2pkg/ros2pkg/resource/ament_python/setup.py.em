@@ -1,10 +1,8 @@
 from setuptools import setup
+from ament_package.generate_setuptools_dict import generate_setuptools_dict
 
 package_name = '@project_name'
-
-setup(
-    name=package_name,
-    version='0.0.0',
+package_info = generate_setuptools_dict(
     packages=[package_name],
     data_files=[
         ('share/ament_index/resource_index/packages',
@@ -13,10 +11,6 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='@maintainer_name',
-    maintainer_email='@maintainer_email',
-    description='@package_description',
-    license='@package_license',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
@@ -26,3 +20,4 @@ setup(
         ],
     },
 )
+setup(**package_info)

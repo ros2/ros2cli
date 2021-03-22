@@ -119,12 +119,7 @@ def create_package_environment(package, destination_directory):
 def populate_ament_python(package, package_directory, source_directory, python_node_name):
     setup_py_config = {
         'project_name': package.name,
-        'maintainer_email': package.maintainers[0].email,
-        'maintainer_name': package.maintainers[0].name,
-        'package_license': package.licenses[0],
-        'node_name': python_node_name,
-        'test_dependencies': package.test_depends,
-        'package_description': package.description
+        'node_name': python_node_name
     }
 
     _create_template_file('ament_python',
