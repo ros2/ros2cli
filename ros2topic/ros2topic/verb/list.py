@@ -18,18 +18,6 @@ from ros2topic.api import get_topic_names_and_types
 from ros2topic.verb import VerbExtension
 
 
-def show_topic_info(topic_info, isPub):
-    print('\n' + ('Published' if isPub else 'Subscribed') + ' topics:')
-    for (topic_name, topic_types, pub_cnt, sub_cnt) in topic_info:
-        cnt = pub_cnt if isPub else sub_cnt
-        if cnt:
-            topic_types_formatted = ', '.join(topic_types)
-            cnt_str = str(cnt) + ' ' + ('publisher' if isPub else 'subscriber') \
-                + ('s' if cnt > 1 else '')
-            msg = ' * {topic_name} [{topic_types_formatted}] {cnt_str}'
-            print(msg.format_map(locals()))
-
-
 class ListVerb(VerbExtension):
     """Output a list of available topics."""
 
@@ -48,7 +36,19 @@ class ListVerb(VerbExtension):
             help='Consider hidden topics as well')
         parser.add_argument(
             '-v', '--verbose', action='store_true',
-            help='list full details about each topic')
+            help='List full details about each topic')
+
+    @staticmethod
+    def show_topic_info(topic_info, is_publisher):
+        message = ('Published' if is_publisher else 'Subscribed') + ' topics:\n'
+        for (topic_name, topic_types, pub_count, sub_count) in topic_info:
+            count = pub_count if is_publisher else sub_count
+            if count:
+                topic_types_formatted = ', '.join(topic_types)
+                count_str = str(count) + ' ' + ('publisher' if is_publisher else 'subscriber') \
+                    + ('s' if count > 1 else '')
+                message += ' * %s [%s] %s\n' % (topic_name, topic_types_formatted, count_str)
+        return message
 
     def main(self, *, args):
         topic_info = []
@@ -57,16 +57,16 @@ class ListVerb(VerbExtension):
                 node=node,
                 include_hidden_topics=args.include_hidden_topics)
             for (topic_name, topic_types) in topic_names_and_types:
-                pub_cnt = node.count_publishers(topic_name)
-                sub_cnt = node.count_subscribers(topic_name)
-                topic_info.append((topic_name, topic_types, pub_cnt, sub_cnt))
+                pub_count = node.count_publishers(topic_name)
+                sub_count = node.count_subscribers(topic_name)
+                topic_info.append((topic_name, topic_types, pub_count, sub_count))
 
         if args.count_topics:
             print(len(topic_names_and_types))
         elif topic_names_and_types:
             if args.verbose:
-                show_topic_info(topic_info, isPub=True)
-                show_topic_info(topic_info, isPub=False)
+                print(self.show_topic_info(topic_info, is_publisher=True))
+                print(self.show_topic_info(topic_info, is_publisher=False))
             else:
                 for (topic_name, topic_types, _, _) in topic_info:
                     msg = '{topic_name}'

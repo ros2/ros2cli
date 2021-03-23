@@ -261,7 +261,6 @@ class TestROS2TopicCLI(unittest.TestCase):
         assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
-                '',
                 'Published topics:',
                 ' * /arrays [test_msgs/msg/Arrays] 1 publisher',
                 ' * /bounded_sequences [test_msgs/msg/BoundedSequences] 1 publisher',
@@ -274,6 +273,7 @@ class TestROS2TopicCLI(unittest.TestCase):
                 '',
                 'Subscribed topics:',
                 ' * /chit_chatter [std_msgs/msg/String] 1 subscriber',
+                '',
             ],
             text=topic_command.output,
             strict=True
