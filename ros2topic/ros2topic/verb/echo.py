@@ -18,6 +18,8 @@ from typing import TypeVar
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile
+from rclpy.qos import QoSReliabilityPolicy
+from rclpy.qos import QoSDurabilityPolicy
 from rclpy.qos_event import SubscriptionEventCallbacks
 from rclpy.qos_event import UnsupportedEventTypeError
 from rclpy.utilities import get_rmw_implementation_identifier
@@ -82,6 +84,59 @@ class EchoVerb(VerbExtension):
         parser.add_argument(
             '--raw', action='store_true', help='Echo the raw binary representation')
 
+    def chooseQoS(self, node, args):
+
+        qos_profile = qos_profile_from_short_keys(
+            args.qos_profile,
+            reliability=args.qos_reliability,
+            durability=args.qos_durability,
+            depth=args.qos_depth,
+            history=args.qos_history)
+
+        reliability_reliable_endpoints_count = 0
+        durability_transient_local_endpoints_count = 0
+        node_count = 0
+
+        try:
+            for info in node.get_publishers_info_by_topic(args.topic_name):
+                node_count += 1
+                if (info.qos_profile.reliability ==
+                    QoSReliabilityPolicy.RELIABLE):
+                    reliability_reliable_endpoints_count += 1
+                if (info.qos_profile.durability ==
+                    QoSDurabilityPolicy.TRANSIENT_LOCAL):
+                    durability_transient_local_endpoints_count += 1
+        except NotImplementedError as e:
+            return str(e)
+
+        # If all endpoints are reliable, ask for reliable
+        if reliability_reliable_endpoints_count == node_count:
+            qos_profile.reliability = QoSReliabilityPolicy.RELIABLE
+        else:
+            if reliability_reliable_endpoints_count > 0 :
+                print(
+                    'Some, but not all, publisher are offering '
+                    'QoSReliabilityPolicy.RELIABLE. Falling back to '
+                    'QoSReliabilityPolicy.BEST_EFFORT as it will connect '
+                    'to all publishers', end='\n\n'
+                )
+            qos_profile.reliability = QoSReliabilityPolicy.BEST_EFFORT
+
+        # If all endpoints are transient_local, ask for transient_local
+        if  durability_transient_local_endpoints_count == node_count:
+            qos_profile.durability = QoSDurabilityPolicy.TRANSIENT_LOCAL
+        else:
+            if durability_transient_local_endpoints_count > 0 :
+                print(
+                    'Some, but not all, publisher are offering '
+                    'QoSDurabilityPolicy.TRANSIENT_LOCAL. Falling back to '
+                    'QoSDurabilityPolicy.VOLATILE as it will connect '
+                    'to all publishers', end='\n\n'
+                )
+            qos_profile.durability = QoSDurabilityPolicy.VOLATILE
+
+        return qos_profile
+
     def main(self, *, args):
         # Select print function
         self.print_func = _print_yaml
@@ -99,14 +154,10 @@ class EchoVerb(VerbExtension):
         self.no_arr = args.no_arr
         self.no_str = args.no_str
 
-        qos_profile = qos_profile_from_short_keys(
-            args.qos_profile,
-            reliability=args.qos_reliability,
-            durability=args.qos_durability,
-            depth=args.qos_depth,
-            history=args.qos_history)
-
         with NodeStrategy(args) as node:
+
+            qos_profile = self.chooseQoS(node, args)
+
             if args.message_type is None:
                 message_type = get_msg_class(
                     node, args.topic_name, include_hidden_topics=True)
