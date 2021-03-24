@@ -47,7 +47,7 @@ class ListVerb(VerbExtension):
                 topic_types_formatted = ', '.join(topic_types)
                 count_str = str(count) + ' ' + ('publisher' if is_publisher else 'subscriber') \
                     + ('s' if count > 1 else '')
-                message += ' * %s [%s] %s\n' % (topic_name, topic_types_formatted, count_str)
+                message += f' * {topic_name} [{topic_types_formatted}] {count_str}\n'
         return message
 
     def main(self, *, args):
@@ -57,9 +57,12 @@ class ListVerb(VerbExtension):
                 node=node,
                 include_hidden_topics=args.include_hidden_topics)
             for (topic_name, topic_types) in topic_names_and_types:
-                pub_count = node.count_publishers(topic_name)
-                sub_count = node.count_subscribers(topic_name)
-                topic_info.append((topic_name, topic_types, pub_count, sub_count))
+                if args.verbose:
+                    pub_count = node.count_publishers(topic_name)
+                    sub_count = node.count_subscribers(topic_name)
+                    topic_info.append((topic_name, topic_types, pub_count, sub_count))
+                else:
+                    topic_info.append((topic_name, topic_types, 0, 0))
 
         if args.count_topics:
             print(len(topic_names_and_types))
