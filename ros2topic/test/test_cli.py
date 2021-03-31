@@ -30,7 +30,6 @@ import launch_testing.actions
 import launch_testing.asserts
 import launch_testing.markers
 import launch_testing.tools
-import launch_testing.tools.text
 import launch_testing_ros.tools
 
 import pytest
@@ -189,7 +188,6 @@ class TestROS2TopicCLI(unittest.TestCase):
             output_filter=rmw_implementation_filter
         )
 
-    @unittest.skip('poop')
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_list_topics(self):
         with self.launch_topic_command(arguments=['list']) as topic_command:
@@ -211,7 +209,6 @@ class TestROS2TopicCLI(unittest.TestCase):
             strict=True
         )
 
-    @unittest.skip('poop')
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_list_all_topics(self):
         with self.launch_topic_command(
@@ -236,7 +233,6 @@ class TestROS2TopicCLI(unittest.TestCase):
             strict=True
         )
 
-    @unittest.skip('poop')
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_list_with_types(self):
         with self.launch_topic_command(arguments=['list', '-t']) as topic_command:
@@ -283,7 +279,6 @@ class TestROS2TopicCLI(unittest.TestCase):
             strict=True
         )
 
-    @unittest.skip('poop')
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_list_count(self):
         with self.launch_topic_command(arguments=['list', '-c']) as topic_command:
@@ -293,7 +288,6 @@ class TestROS2TopicCLI(unittest.TestCase):
         assert len(output_lines) == 1
         assert int(output_lines[0]) == 9
 
-    @unittest.skip('poop')
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_endpoint_info(self):
         with self.launch_topic_command(arguments=['info', '/chatter']) as topic_command:
@@ -309,46 +303,33 @@ class TestROS2TopicCLI(unittest.TestCase):
             strict=True
         )
 
-    # @launch_testing.markers.retry_on_failure(times=5)
+    @launch_testing.markers.retry_on_failure(times=5)
     def test_topic_endpoint_info_verbose(self):
-
         with self.launch_topic_command(arguments=['info', '-v', '/chatter']) as topic_command:
             assert topic_command.wait_for_shutdown(timeout=10)
         assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
-        # print(topic_command.output)
-        expected_lines=[
-            'Type: std_msgs/msg/String',
-            '',
-            'Publisher count: 1',
-            '',
-            re.compile(r'Node name: \w+'),
-            'Node namespace: /',
-            'Topic type: std_msgs/msg/String',
-            re.compile(r'Endpoint type: (INVALID|PUBLISHER|SUBSCRIPTION)'),
-            re.compile(r'GID: [\w\.]+'),
-            'QoS profile:',
-            re.compile(r'  Reliability: (RELIABLE|BEST_EFFORT|SYSTEM_DEFAULT|UNKNOWN)'),
-            re.compile(r'  Durability: (VOLATILE|TRANSIENT_LOCAL|SYSTEM_DEFAULT|UNKNOWN)'),
-            '  Lifespan: Infinite',
-            '  Deadline: Infinite',
-            re.compile(r'  Liveliness: (AUTOMATIC|MANUAL_BY_TOPIC|SYSTEM_DEFAULT|UNKNOWN)'),
-            '  Liveliness lease duration: Infinite',
-            '',
-            'Subscription count: 0',
-            ''
-        ]
-        # actual_lines = topic_command.output.splitlines()
-        # for expected_line, actual_line in zip(expected_lines, actual_lines):
-        #     if hasattr(expected_line, 'match'):
-        #         assert expected_line.match(actual_line)
-        #     else:
-        #         assert expected_line == actual_line
-            # assert expected_line == actual_line
-            # match = launch_testing.tools.text.build_line_match(expected_line)
-            # assert match([actual_line], start=0) is not None
-
         assert launch_testing.tools.expect_output(
-            expected_lines=expected_lines,
+            expected_lines=[
+                'Type: std_msgs/msg/String',
+                '',
+                'Publisher count: 1',
+                '',
+                re.compile(r'Node name: \w+'),
+                'Node namespace: /',
+                'Topic type: std_msgs/msg/String',
+                re.compile(r'Endpoint type: (INVALID|PUBLISHER|SUBSCRIPTION)'),
+                re.compile(r'GID: [\w\.]+'),
+                'QoS profile:',
+                re.compile(r'  Reliability: (RELIABLE|BEST_EFFORT|SYSTEM_DEFAULT|UNKNOWN)'),
+                re.compile(r'  Durability: (VOLATILE|TRANSIENT_LOCAL|SYSTEM_DEFAULT|UNKNOWN)'),
+                '  Lifespan: Infinite',
+                '  Deadline: Infinite',
+                re.compile(r'  Liveliness: (AUTOMATIC|MANUAL_BY_TOPIC|SYSTEM_DEFAULT|UNKNOWN)'),
+                '  Liveliness lease duration: Infinite',
+                '',
+                'Subscription count: 0',
+                ''
+            ],
             text=topic_command.output,
             strict=True
         )
@@ -364,7 +345,6 @@ class TestROS2TopicCLI(unittest.TestCase):
             strict=True
         )
 
-    @unittest.skip('poop')
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_type(self):
         with self.launch_topic_command(arguments=['type', '/chatter']) as topic_command:
@@ -376,7 +356,6 @@ class TestROS2TopicCLI(unittest.TestCase):
             strict=True
         )
 
-    @unittest.skip('poop')
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_hidden_topic_type(self):
         with self.launch_topic_command(
@@ -386,7 +365,6 @@ class TestROS2TopicCLI(unittest.TestCase):
         assert topic_command.exit_code == 1
         assert topic_command.output == ''
 
-    @unittest.skip('poop')
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_find_topic_type(self):
         with self.launch_topic_command(
@@ -398,7 +376,6 @@ class TestROS2TopicCLI(unittest.TestCase):
             expected_lines=['/rosout'], text=topic_command.output, strict=True
         )
 
-    @unittest.skip('poop')
     def test_find_not_a_topic_typename(self):
         with self.launch_topic_command(
             arguments=['find', 'rcl_interfaces/msg/NotAMessageTypeName']
@@ -407,7 +384,6 @@ class TestROS2TopicCLI(unittest.TestCase):
         assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
         assert not topic_command.output
 
-    @unittest.skip('poop')
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_echo(self):
         with self.launch_topic_command(
@@ -421,7 +397,6 @@ class TestROS2TopicCLI(unittest.TestCase):
             ), timeout=10)
         assert topic_command.wait_for_shutdown(timeout=10)
 
-    @unittest.skip('poop')
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_no_str_topic_echo(self):
         with self.launch_topic_command(
@@ -435,7 +410,6 @@ class TestROS2TopicCLI(unittest.TestCase):
             ), timeout=10)
         assert topic_command.wait_for_shutdown(timeout=10)
 
-    @unittest.skip('poop')
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_csv_topic_echo(self):
         with self.launch_topic_command(
@@ -448,7 +422,6 @@ class TestROS2TopicCLI(unittest.TestCase):
             ), timeout=10)
         assert topic_command.wait_for_shutdown(timeout=10)
 
-    @unittest.skip('poop')
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_no_arr_topic_echo_on_array_message(self):
         with self.launch_topic_command(
@@ -493,7 +466,6 @@ class TestROS2TopicCLI(unittest.TestCase):
             ), timeout=10), 'Output does not match: ' + topic_command.output
         assert topic_command.wait_for_shutdown(timeout=10)
 
-    @unittest.skip('poop')
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_no_arr_topic_echo_on_seq_message(self):
         with self.launch_topic_command(
@@ -538,7 +510,6 @@ class TestROS2TopicCLI(unittest.TestCase):
             ), timeout=10)
         assert topic_command.wait_for_shutdown(timeout=10)
 
-    @unittest.skip('poop')
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_no_arr_topic_echo_on_bounded_seq_message(self):
         with self.launch_topic_command(
@@ -584,7 +555,6 @@ class TestROS2TopicCLI(unittest.TestCase):
             ), timeout=10)
         assert topic_command.wait_for_shutdown(timeout=10)
 
-    @unittest.skip('poop')
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_truncate_length_topic_echo(self):
         with self.launch_topic_command(
@@ -598,7 +568,6 @@ class TestROS2TopicCLI(unittest.TestCase):
             ), timeout=10)
         assert topic_command.wait_for_shutdown(timeout=10)
 
-    @unittest.skip('poop')
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_echo_field(self):
         with self.launch_topic_command(
@@ -612,7 +581,6 @@ class TestROS2TopicCLI(unittest.TestCase):
             ), timeout=10)
         assert topic_command.wait_for_shutdown(timeout=10)
 
-    @unittest.skip('poop')
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_echo_field_nested(self):
         with self.launch_topic_command(
@@ -628,7 +596,6 @@ class TestROS2TopicCLI(unittest.TestCase):
             ), timeout=10)
         assert topic_command.wait_for_shutdown(timeout=10)
 
-    @unittest.skip('poop')
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_echo_field_not_a_member(self):
         with self.launch_topic_command(
@@ -641,7 +608,6 @@ class TestROS2TopicCLI(unittest.TestCase):
             ), timeout=10)
         assert topic_command.wait_for_shutdown(timeout=10)
 
-    @unittest.skip('poop')
     def test_topic_echo_field_invalid(self):
         with self.launch_topic_command(
             arguments=['echo', '/arrays', '--field', '/'],
@@ -663,7 +629,6 @@ class TestROS2TopicCLI(unittest.TestCase):
             ), timeout=10)
         assert topic_command.wait_for_shutdown(timeout=10)
 
-    @unittest.skip('poop')
     def test_topic_echo_no_publisher(self):
         with self.launch_topic_command(
             arguments=['echo', '/this_topic_has_no_pub'],
@@ -678,7 +643,6 @@ class TestROS2TopicCLI(unittest.TestCase):
             strict=True
         )
 
-    @unittest.skip('poop')
     def test_topic_pub(self):
         with self.launch_topic_command(
             arguments=[
@@ -705,7 +669,6 @@ class TestROS2TopicCLI(unittest.TestCase):
             ), timeout=10)
         assert topic_command.wait_for_shutdown(timeout=10)
 
-    @unittest.skip('poop')
     def test_topic_pub_once(self):
         with self.launch_topic_command(
             arguments=[
@@ -733,7 +696,6 @@ class TestROS2TopicCLI(unittest.TestCase):
             ), timeout=10)
         assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
 
-    @unittest.skip('poop')
     def test_topic_pub_print_every_two(self):
         with self.launch_topic_command(
             arguments=[
@@ -763,7 +725,6 @@ class TestROS2TopicCLI(unittest.TestCase):
             ), timeout=10)
         assert topic_command.wait_for_shutdown(timeout=10)
 
-    @unittest.skip('poop')
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_delay(self):
         average_delay_line_pattern = re.compile(r'average delay: (\d+.\d{3})')
@@ -782,7 +743,6 @@ class TestROS2TopicCLI(unittest.TestCase):
         average_delay = float(average_delay_line_pattern.match(head_line).group(1))
         assert math.isclose(average_delay, 0.0, abs_tol=10e-3)
 
-    @unittest.skip('poop')
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_hz(self):
         average_rate_line_pattern = re.compile(r'average rate: (\d+.\d{3})')
@@ -801,7 +761,6 @@ class TestROS2TopicCLI(unittest.TestCase):
         average_rate = float(average_rate_line_pattern.match(head_line).group(1))
         assert math.isclose(average_rate, 1., rel_tol=1e-2)
 
-    @unittest.skip('poop')
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_filtered_topic_hz(self):
         average_rate_line_pattern = re.compile(r'average rate: (\d+.\d{3})')
@@ -827,7 +786,6 @@ class TestROS2TopicCLI(unittest.TestCase):
         average_rate = float(average_rate_line_pattern.match(head_line).group(1))
         assert math.isclose(average_rate, 0.5, rel_tol=1e-2)
 
-    @unittest.skip('poop')
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_bw(self):
         with self.launch_topic_command(arguments=['bw', '/defaults']) as topic_command:
