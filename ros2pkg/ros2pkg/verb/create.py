@@ -36,7 +36,7 @@ from ros2pkg.verb import VerbExtension
 
 
 class CreateVerb(VerbExtension):
-    """Create a new ROS2 package."""
+    """Create a new ROS 2 package."""
 
     def add_arguments(self, parser, cli_name):
         parser.add_argument(
