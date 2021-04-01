@@ -255,6 +255,31 @@ class TestROS2TopicCLI(unittest.TestCase):
         )
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_list_with_verbose(self):
+        with self.launch_topic_command(arguments=['list', '-v']) as topic_command:
+            assert topic_command.wait_for_shutdown(timeout=10)
+        assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=[
+                'Published topics:',
+                ' * /arrays [test_msgs/msg/Arrays] 1 publisher',
+                ' * /bounded_sequences [test_msgs/msg/BoundedSequences] 1 publisher',
+                ' * /chatter [std_msgs/msg/String] 1 publisher',
+                ' * /cmd_vel [geometry_msgs/msg/TwistStamped] 1 publisher',
+                ' * /defaults [test_msgs/msg/Defaults] 1 publisher',
+                ' * /parameter_events [rcl_interfaces/msg/ParameterEvent] 9 publishers',
+                ' * /rosout [rcl_interfaces/msg/Log] 9 publishers',
+                ' * /unbounded_sequences [test_msgs/msg/UnboundedSequences] 1 publisher',
+                '',
+                'Subscribed topics:',
+                ' * /chit_chatter [std_msgs/msg/String] 1 subscriber',
+                '',
+            ],
+            text=topic_command.output,
+            strict=True
+        )
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_list_count(self):
         with self.launch_topic_command(arguments=['list', '-c']) as topic_command:
             assert topic_command.wait_for_shutdown(timeout=10)
