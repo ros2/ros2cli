@@ -23,6 +23,7 @@ add_executable(simple_lifecycle_node
   src/simple_lifecycle_node.cpp)
 target_link_libraries(simple_lifecycle_node
   ${rclcpp_lifecycle_LIBRARIES}
+  rclcpp::rclcpp
 )
 
 install(TARGETS
