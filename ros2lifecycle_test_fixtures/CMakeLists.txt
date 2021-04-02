@@ -18,7 +18,7 @@ find_package(rclcpp REQUIRED)
 add_executable(simple_lifecycle_node
   src/simple_lifecycle_node.cpp)
 
-ament_target_dependencies(simple_lifecycle_node 
+ament_target_dependencies(simple_lifecycle_node
   "rclcpp_lifecycle")
 
 install(TARGETS
