@@ -15,16 +15,11 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
 find_package(rclcpp REQUIRED)
 
-include_directories(
-  ${rclcpp_lifecycle_INCLUDE_DIRS}
-  ${rclcpp_INCLUDE_DIRS})
-
 add_executable(simple_lifecycle_node
   src/simple_lifecycle_node.cpp)
-target_link_libraries(simple_lifecycle_node
-  ${rclcpp_lifecycle_LIBRARIES}
-  rclcpp::rclcpp
-)
+
+ament_target_dependencies(simple_lifecycle_node 
+  "rclcpp_lifecycle")
 
 install(TARGETS
   simple_lifecycle_node
