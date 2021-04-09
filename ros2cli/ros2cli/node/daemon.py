@@ -132,5 +132,24 @@ class DaemonNode:
         self._proxy.__exit__(exc_type, exc_value, traceback)
 
 
+def shutdown_daemon(args, wait_until_shutdown=None):
+    with DaemonNode(args) as node:
+        node.system.shutdown()
+
+    if wait_until_shutdown is None:
+        return True
+
+    if wait_until_shutdown > 0.0:
+        timeout = time.time() + wait_until_shutdown
+    else:
+        timeout = None
+
+    while is_daemon_running(args):
+        time.sleep(0.1)
+        if timeout and time.time() >= timeout:
+            return False
+    return True
+
+
 def add_arguments(parser):
     pass
