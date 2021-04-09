@@ -132,15 +132,24 @@ class DaemonNode:
         self._proxy.__exit__(exc_type, exc_value, traceback)
 
 
-def shutdown_daemon(args, wait_until_shutdown=None):
+def shutdown_daemon(args, wait_duration=None):
+    """
+    Shuts down remote daemon node.
+
+    :param args: DaemonNode arguments namespace.
+    :param wait_duration: optional duration, in seconds, to wait
+      until the daemon node is fully shut down. Non-positive
+      durations will result in an indefinite wait.
+    :return: whether the daemon is shut down already or not.
+    """
     with DaemonNode(args) as node:
         node.system.shutdown()
 
-    if wait_until_shutdown is None:
-        return True
+    if wait_duration is None:
+        return not is_daemon_running(args)
 
-    if wait_until_shutdown > 0.0:
-        timeout = time.time() + wait_until_shutdown
+    if wait_duration > 0.0:
+        timeout = time.time() + wait_duration
     else:
         timeout = None
 

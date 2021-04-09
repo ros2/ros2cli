@@ -25,7 +25,7 @@ from ros2cli.node.strategy import NodeStrategy
 @pytest.fixture
 def enforce_no_daemon_is_running():
     if is_daemon_running(args=[]):
-        assert shutdown_daemon(args=[], wait_until_shutdown=5.0)
+        assert shutdown_daemon(args=[], wait_duration=5.0)
     yield
 
 
