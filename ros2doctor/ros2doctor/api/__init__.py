@@ -67,6 +67,7 @@ class Report:
         """Add report content to items list (list of string tuples)."""
         self.items.append((section_name, ''))
 
+
 class Result:
     """Stores check result."""
 

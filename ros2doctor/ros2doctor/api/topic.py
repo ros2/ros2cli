@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import List
-
 from ros2cli.node.direct import DirectNode
 from ros2doctor.api import DoctorCheck
 from ros2doctor.api import DoctorReport
