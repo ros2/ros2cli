@@ -21,6 +21,7 @@ try:
 except ModuleNotFoundError:
     import importlib_metadata
 
+from ros2cli.node.strategy import NodeStrategy
 from ros2doctor.api.format import doctor_warn
 
 
@@ -62,6 +63,9 @@ class Report:
         """Add report content to items list (list of string tuples)."""
         self.items.append((item_name, item_info))
 
+    def add_section_to_report(self, section_name: str) -> None:
+        """Add report content to items list (list of string tuples)."""
+        self.items.append((section_name, ''))
 
 class Result:
     """Stores check result."""
@@ -138,3 +142,15 @@ def generate_reports(*, categories=None) -> List[Report]:
         except Exception:
             doctor_warn(f'Fail to call {report_entry_pt.name} class functions.')
     return reports
+
+
+def get_topic_names() -> List:
+    """Get all topic names using rclpy API."""
+    white_list = ['/parameter_events', '/rosout']
+    topics = []
+    with NodeStrategy(None) as node:
+        topic_names_types = node.get_topic_names_and_types()
+        for t_name, _ in topic_names_types:
+            if t_name not in white_list:
+                topics.append(t_name)
+    return topics
