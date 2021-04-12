@@ -74,4 +74,10 @@ class QoSCompatibilityReport(DoctorReport):
                         else:
                             compatibility_msg = reason
                         report.add_to_report('compatibility status', compatibility_msg)
+        if self._is_report_empty(report):
+            report.add_to_report('compatibility status', "No publisher/subscriber pairs found")
         return report
+
+    @staticmethod
+    def _is_report_empty(report: Report) -> bool:
+        return len(report.items) == 0
