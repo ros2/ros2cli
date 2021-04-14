@@ -88,8 +88,8 @@ class EchoVerb(VerbExtension):
     def choose_qos(self, node, args):
 
         if (args.qos_profile or args.qos_reliability or args.qos_durability or
-            args.qos_depth or args.qos_history) :
-            return qos_profile_from_short_keys(args.qos_profile,
+            args.qos_depth or args.qos_history):
+                return qos_profile_from_short_keys(args.qos_profile,
                                                reliability=args.qos_reliability,
                                                durability=args.qos_durability,
                                                depth=args.qos_depth,
@@ -104,19 +104,19 @@ class EchoVerb(VerbExtension):
             publishers_count += 1
             if (info.qos_profile.reliability ==
                 QoSReliabilityPolicy.RELIABLE):
-                reliability_reliable_endpoints_count += 1
+                    reliability_reliable_endpoints_count += 1
             if (info.qos_profile.durability ==
                 QoSDurabilityPolicy.TRANSIENT_LOCAL):
-                durability_transient_local_endpoints_count += 1
+                    durability_transient_local_endpoints_count += 1
 
-        if publishers_count == 0 :
+        if publishers_count == 0:
             return qos_profile
 
         # If all endpoints are reliable, ask for reliable
         if reliability_reliable_endpoints_count == publishers_count:
             qos_profile.reliability = QoSReliabilityPolicy.RELIABLE
         else:
-            if reliability_reliable_endpoints_count > 0 :
+            if reliability_reliable_endpoints_count > 0:
                 print(
                     'Some, but not all, publisher are offering '
                     'QoSReliabilityPolicy.RELIABLE. Falling back to '
@@ -129,7 +129,7 @@ class EchoVerb(VerbExtension):
         if durability_transient_local_endpoints_count == publishers_count:
             qos_profile.durability = QoSDurabilityPolicy.TRANSIENT_LOCAL
         else:
-            if durability_transient_local_endpoints_count > 0 :
+            if durability_transient_local_endpoints_count > 0:
                 print(
                     'Some, but not all, publisher are offering '
                     'QoSDurabilityPolicy.TRANSIENT_LOCAL. Falling back to '
