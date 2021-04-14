@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import re
+
 from rclpy.qos import qos_check_compatible
 from rclpy.qos import QoSCompatibility
 from ros2cli.node.strategy import NodeStrategy
@@ -40,15 +42,29 @@ class QoSCompatibilityCheck(DoctorCheck):
                     for sub in node.get_subscriptions_info_by_topic(topic):
                         compatibility, reason = qos_check_compatible(
                             pub.qos_profile, sub.qos_profile)
+                        reason_message = self._strip_leading_warning_or_error_from_string(reason)
                         if compatibility == QoSCompatibility.WARNING:
-                            doctor_warn(f"QOS compatibility warning found on topic '{topic}'. "
-                                        'Use `ros2 doctor --report` for more details.')
+                            doctor_warn(f"QoS compatibility warning found on topic '{topic}': "
+                                        f"{reason_message}")
                             result.add_warning()
                         elif compatibility == QoSCompatibility.ERROR:
-                            doctor_error(f"QOS compatibility error found on topic '{topic}'. "
-                                         'Use `ros2 doctor --report` for more details.')
+                            doctor_error(f"QoS compatibility error found on topic '{topic}': "
+                                         f"{reason_message}")
                             result.add_error()
         return result
+
+    @staticmethod
+    def _strip_leading_warning_or_error_from_string(string: str) -> str:
+        """
+        Remove "warning: " or "error: " (case insensitive) from the beginning of a string.
+        If "warning: " or "error: " is not found, the original string is returned.
+        """
+        re_result = re.search(r'^(?i:warning|error): (.*)', string)
+        if re_result:
+            assert len(re_result.groups()) == 1
+            return re_result.groups()[0]
+        else:
+            return string
 
 
 class QoSCompatibilityReport(DoctorReport):
