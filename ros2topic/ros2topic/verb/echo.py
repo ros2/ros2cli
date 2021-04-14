@@ -17,9 +17,10 @@ from typing import TypeVar
 
 import rclpy
 from rclpy.node import Node
-from rclpy.qos import QoSProfile
-from rclpy.qos import QoSReliabilityPolicy
 from rclpy.qos import QoSDurabilityPolicy
+from rclpy.qos import QoSProfile
+from rclpy.qos import QoSPresetProfiles
+from rclpy.qos import QoSReliabilityPolicy
 from rclpy.qos_event import SubscriptionEventCallbacks
 from rclpy.qos_event import UnsupportedEventTypeError
 from rclpy.utilities import get_rmw_implementation_identifier
@@ -84,33 +85,35 @@ class EchoVerb(VerbExtension):
         parser.add_argument(
             '--raw', action='store_true', help='Echo the raw binary representation')
 
-    def chooseQoS(self, node, args):
+    def choose_qos(self, node, args):
 
-        qos_profile = qos_profile_from_short_keys(
-            args.qos_profile,
-            reliability=args.qos_reliability,
-            durability=args.qos_durability,
-            depth=args.qos_depth,
-            history=args.qos_history)
+        if (args.qos_profile or args.qos_reliability or args.qos_durability or
+            args.qos_depth or args.qos_history) :
+            return qos_profile_from_short_keys(args.qos_profile,
+                                               reliability=args.qos_reliability,
+                                               durability=args.qos_durability,
+                                               depth=args.qos_depth,
+                                               history=args.qos_history)
 
+        qos_profile = QoSPresetProfiles.get_from_short_key('sensor_data')
         reliability_reliable_endpoints_count = 0
         durability_transient_local_endpoints_count = 0
-        node_count = 0
+        publishers_count = 0
 
-        try:
-            for info in node.get_publishers_info_by_topic(args.topic_name):
-                node_count += 1
-                if (info.qos_profile.reliability ==
-                    QoSReliabilityPolicy.RELIABLE):
-                    reliability_reliable_endpoints_count += 1
-                if (info.qos_profile.durability ==
-                    QoSDurabilityPolicy.TRANSIENT_LOCAL):
-                    durability_transient_local_endpoints_count += 1
-        except NotImplementedError as e:
-            return str(e)
+        for info in node.get_publishers_info_by_topic(args.topic_name):
+            publishers_count += 1
+            if (info.qos_profile.reliability ==
+                QoSReliabilityPolicy.RELIABLE):
+                reliability_reliable_endpoints_count += 1
+            if (info.qos_profile.durability ==
+                QoSDurabilityPolicy.TRANSIENT_LOCAL):
+                durability_transient_local_endpoints_count += 1
+
+        if publishers_count == 0 :
+            return qos_profile
 
         # If all endpoints are reliable, ask for reliable
-        if reliability_reliable_endpoints_count == node_count:
+        if reliability_reliable_endpoints_count == publishers_count:
             qos_profile.reliability = QoSReliabilityPolicy.RELIABLE
         else:
             if reliability_reliable_endpoints_count > 0 :
@@ -123,7 +126,7 @@ class EchoVerb(VerbExtension):
             qos_profile.reliability = QoSReliabilityPolicy.BEST_EFFORT
 
         # If all endpoints are transient_local, ask for transient_local
-        if  durability_transient_local_endpoints_count == node_count:
+        if durability_transient_local_endpoints_count == publishers_count:
             qos_profile.durability = QoSDurabilityPolicy.TRANSIENT_LOCAL
         else:
             if durability_transient_local_endpoints_count > 0 :
@@ -156,7 +159,7 @@ class EchoVerb(VerbExtension):
 
         with NodeStrategy(args) as node:
 
-            qos_profile = self.chooseQoS(node, args)
+            qos_profile = self.choose_qos(node, args)
 
             if args.message_type is None:
                 message_type = get_msg_class(

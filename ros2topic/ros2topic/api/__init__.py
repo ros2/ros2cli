@@ -27,6 +27,7 @@ from rosidl_runtime_py import get_message_interfaces
 from rosidl_runtime_py import message_to_yaml
 from rosidl_runtime_py.utilities import get_message
 
+default_preset_str = 'sensor_data'
 
 def unsigned_int(string):
     try:
@@ -164,6 +165,8 @@ def qos_profile_from_short_keys(
 ) -> rclpy.qos.QoSProfile:
     """Construct a QoSProfile given the name of a preset, and optional overrides."""
     # Build a QoS profile based on user-supplied arguments
+    if not preset_profile :
+        preset_profile = default_preset_str
     profile = rclpy.qos.QoSPresetProfiles.get_from_short_key(preset_profile)
     if history:
         profile.history = rclpy.qos.QoSHistoryPolicy.get_from_short_key(history)
@@ -171,7 +174,7 @@ def qos_profile_from_short_keys(
         profile.durability = rclpy.qos.QoSDurabilityPolicy.get_from_short_key(durability)
     if reliability:
         profile.reliability = rclpy.qos.QoSReliabilityPolicy.get_from_short_key(reliability)
-    if depth >= 0:
+    if depth and depth >= 0:
         profile.depth = depth
     else:
         if (profile.durability == rclpy.qos.QoSDurabilityPolicy.TRANSIENT_LOCAL
@@ -182,20 +185,21 @@ def qos_profile_from_short_keys(
 
 
 def add_qos_arguments_to_argument_parser(
-    parser: argparse.ArgumentParser, is_publisher: bool = True, default_preset: str = 'sensor_data'
+    parser: argparse.ArgumentParser, is_publisher: bool = True, default_preset: str = default_preset_str
 ) -> None:
     """Extend an existing ArgumentParser to allow input of QoS policy overrides."""
     verb = 'publish' if is_publisher else 'subscribe'
     parser.add_argument(
         '--qos-profile',
         choices=rclpy.qos.QoSPresetProfiles.short_keys(),
-        default=default_preset,
+        #default=default_preset,
         help='Quality of service preset profile to {} with (default: {})'
              .format(verb, default_preset))
     default_profile = rclpy.qos.QoSPresetProfiles.get_from_short_key(
         default_preset)
     parser.add_argument(
-        '--qos-depth', metavar='N', type=int, default=-1,
+        '--qos-depth', metavar='N', type=int,
+        #default=-1,
         help='Queue size setting to {} with '
              '(overrides depth value of --qos-profile option)'
              .format(verb))
