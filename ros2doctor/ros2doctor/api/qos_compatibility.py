@@ -71,7 +71,7 @@ class QoSCompatibilityReport(DoctorReport):
     """Report QoS compatibility related information."""
 
     def category(self):
-        return 'topic'
+        return 'middleware'
 
     def report(self):
         report = Report('QOS COMPATIBILITY LIST')
