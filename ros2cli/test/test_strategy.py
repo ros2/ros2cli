@@ -16,8 +16,8 @@ import argparse
 
 import pytest
 
-from ros2cli.node.daemon import DaemonNode
 from ros2cli.node.daemon import is_daemon_running
+from ros2cli.node.daemon import shutdown_daemon
 from ros2cli.node.daemon import spawn_daemon
 from ros2cli.node.strategy import NodeStrategy
 
@@ -25,8 +25,7 @@ from ros2cli.node.strategy import NodeStrategy
 @pytest.fixture
 def enforce_no_daemon_is_running():
     if is_daemon_running(args=[]):
-        with DaemonNode(args=[]) as node:
-            node.system.shutdown()
+        assert shutdown_daemon(args=[], wait_duration=5.0)
     yield
 
 
@@ -53,8 +52,6 @@ def test_with_no_daemon_running(enforce_no_daemon_is_running):
 
 
 def test_enforce_no_daemon(enforce_daemon_is_running):
-    if not is_daemon_running(args=[]):
-        assert spawn_daemon(args=[], wait_until_spawned=5.0)
     args = argparse.Namespace(no_daemon=True)
     with NodeStrategy(args=args) as node:
         assert node._daemon_node is None
