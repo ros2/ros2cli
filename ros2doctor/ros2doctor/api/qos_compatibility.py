@@ -57,6 +57,7 @@ class QoSCompatibilityCheck(DoctorCheck):
     def _strip_leading_warning_or_error_from_string(string: str) -> str:
         """
         Remove "warning: " or "error: " (case insensitive) from the beginning of a string.
+
         If "warning: " or "error: " is not found, the original string is returned.
         """
         re_result = re.search(r'^(?i:warning|error): (.*)', string)
