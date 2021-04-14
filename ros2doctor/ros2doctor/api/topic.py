@@ -21,6 +21,9 @@ from ros2doctor.api import Result
 from ros2doctor.api.format import doctor_warn
 
 
+SKIP_TOPICS = ['/parameter_events', '/rosout']
+
+
 class TopicCheck(DoctorCheck):
     """Check for pub without sub or sub without pub."""
 
@@ -30,7 +33,7 @@ class TopicCheck(DoctorCheck):
     def check(self):
         """Check publisher and subscriber counts."""
         result = Result()
-        to_be_checked = get_topic_names()
+        to_be_checked = get_topic_names(skip_topics=SKIP_TOPICS)
         with DirectNode(None) as node:
             for topic in to_be_checked:
                 pub_count = node.count_publishers(topic)
@@ -52,7 +55,7 @@ class TopicReport(DoctorReport):
 
     def report(self):
         report = Report('TOPIC LIST')
-        to_be_reported = get_topic_names()
+        to_be_reported = get_topic_names(skip_topics=SKIP_TOPICS)
         if not to_be_reported:
             report.add_to_report('topic', 'none')
             report.add_to_report('publisher count', 0)

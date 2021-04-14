@@ -141,13 +141,12 @@ def generate_reports(*, categories=None) -> List[Report]:
     return reports
 
 
-def get_topic_names() -> List:
+def get_topic_names(skip_topics: List = ()) -> List:
     """Get all topic names using rclpy API."""
-    white_list = ['/parameter_events', '/rosout']
     topics = []
     with NodeStrategy(None) as node:
         topic_names_types = node.get_topic_names_and_types()
         for t_name, _ in topic_names_types:
-            if t_name not in white_list:
+            if t_name not in skip_topics:
                 topics.append(t_name)
     return topics
