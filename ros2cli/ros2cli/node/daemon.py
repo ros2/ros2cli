@@ -16,6 +16,7 @@ import errno
 import os
 import platform
 import socket
+import struct
 import subprocess
 import sys
 import time
@@ -29,15 +30,14 @@ from ros2cli.xmlrpc.client import ServerProxy
 
 def is_daemon_running(args):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    if platform.system() != 'Windows':
-        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_LINGER, struct.pack('ii', 1, 0))
     addr = ('localhost', get_daemon_port())
     try:
         s.bind(addr)
     except socket.error as e:
         if e.errno == errno.EADDRINUSE:
             return True
-    else:
+    finally:
         s.close()
     return False
 

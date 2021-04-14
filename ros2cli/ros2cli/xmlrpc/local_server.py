@@ -12,11 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import socket
+import struct
 from xmlrpc.server import SimpleXMLRPCRequestHandler
 from xmlrpc.server import SimpleXMLRPCServer
 
 
 class LocalXMLRPCServer(SimpleXMLRPCServer):
+
+    allow_reuse_address = False
+
+    def server_bind(self):
+        self.socket.setsockopt(
+            socket.SOL_SOCKET, socket.SO_LINGER, struct.pack('ii', 1, 0))
+        super(LocalXMLRPCServer, self).server_bind()
 
     def verify_request(self, request, client_address):
         if client_address[0] != '127.0.0.1':
