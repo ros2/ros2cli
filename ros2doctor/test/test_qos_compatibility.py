@@ -160,13 +160,13 @@ class TestROS2DoctorQoSCompatibility(unittest.TestCase):
             ) as doctor_command:
                 assert doctor_command.wait_for_shutdown(timeout=10)
             assert doctor_command.exit_code == launch_testing.asserts.EXIT_OK
-            assert ("topic [type]            : /compatible_chatter [std_msgs/msg/String]\n"
-                    "publisher node          : talker_node\n"
-                    "subscriber node         : listener\n"
-                    "compatibility status    : OK") in doctor_command.output
-            assert ("topic [type]            : /incompatible_chatter [std_msgs/msg/String]\n"
-                    "publisher node          : talker_node\n"
-                    "subscriber node         : listener\n"
-                    "compatibility status    : "
-                    "ERROR: Best effort publisher and reliable subscription;") \
+            assert ('topic [type]            : /compatible_chatter [std_msgs/msg/String]\n'
+                    'publisher node          : talker_node\n'
+                    'subscriber node         : listener\n'
+                    'compatibility status    : OK') in doctor_command.output
+            assert ('topic [type]            : /incompatible_chatter [std_msgs/msg/String]\n'
+                    'publisher node          : talker_node\n'
+                    'subscriber node         : listener\n'
+                    'compatibility status    : '
+                    'ERROR: Best effort publisher and reliable subscription;') \
                 in doctor_command.output

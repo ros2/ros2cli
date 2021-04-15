@@ -45,11 +45,11 @@ class QoSCompatibilityCheck(DoctorCheck):
                         reason_message = self._strip_leading_warning_or_error_from_string(reason)
                         if compatibility == QoSCompatibility.WARNING:
                             doctor_warn(f"QoS compatibility warning found on topic '{topic}': "
-                                        f"{reason_message}")
+                                        f'{reason_message}')
                             result.add_warning()
                         elif compatibility == QoSCompatibility.ERROR:
                             doctor_error(f"QoS compatibility error found on topic '{topic}': "
-                                         f"{reason_message}")
+                                         f'{reason_message}')
                             result.add_error()
         return result
 
@@ -92,7 +92,7 @@ class QoSCompatibilityReport(DoctorReport):
                             compatibility_msg = reason
                         report.add_to_report('compatibility status', compatibility_msg)
         if self._is_report_empty(report):
-            report.add_to_report('compatibility status', "No publisher/subscriber pairs found")
+            report.add_to_report('compatibility status', 'No publisher/subscriber pairs found')
         return report
 
     @staticmethod
