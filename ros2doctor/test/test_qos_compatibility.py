@@ -141,6 +141,7 @@ class TestROS2DoctorQoSCompatibility(unittest.TestCase):
                 yield doctor_command
         cls.launch_doctor_command = launch_doctor_command
 
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_check(self):
         with self.launch_doctor_command(
                 arguments=[]
@@ -153,6 +154,7 @@ class TestROS2DoctorQoSCompatibility(unittest.TestCase):
         assert lines_list[-1] == 'Failed modules: middleware'
         assert re.search(r'^1/\d+ check\(s\) failed$', lines_list[-2])
 
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_report(self):
         for argument in ['-r', '--report']:
             with self.launch_doctor_command(
