@@ -151,8 +151,8 @@ class TestROS2DoctorQoSCompatibility(unittest.TestCase):
         assert doctor_command.output
 
         lines_list = [line for line in doctor_command.output.splitlines() if line]
-        assert lines_list[-1] == 'Failed modules: middleware'
-        assert re.search(r'^1/\d+ check\(s\) failed$', lines_list[-2])
+        assert 'Failed modules' in lines_list[-1]
+        assert 'middleware' in lines_list[-1]
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_report(self):
