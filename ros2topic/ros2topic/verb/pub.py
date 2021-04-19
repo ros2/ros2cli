@@ -188,11 +188,16 @@ def publisher(
             print('publishing #%d: %r\n' % (count, msg))
         pub.publish(msg)
 
-    timer = node.create_timer(period, timer_callback)
-    while times == 0 or count < times:
-        rclpy.spin_once(node)
-
-    # give some time for the messages to reach the wire before exiting
-    time.sleep(keep_alive)
-
-    node.destroy_timer(timer)
+    # give some time for discovery process
+    time.sleep(0.1)
+    timer_callback()
+    if times != 1:
+        timer = node.create_timer(period, timer_callback)
+        while times == 0 or count < times:
+            rclpy.spin_once(node)
+        # give some time for the messages to reach the wire before exiting
+        time.sleep(keep_alive)
+        node.destroy_timer(timer)
+    else:
+        # give some time for the messages to reach the wire before exiting
+        time.sleep(keep_alive)
