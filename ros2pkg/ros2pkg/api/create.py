@@ -94,7 +94,7 @@ def create_package_environment(package, destination_directory):
         'buildtool_dependencies': package.buildtool_depends,
         'dependencies': package.build_depends,
         'test_dependencies': package.test_depends,
-        'build_type': package.get_build_type(),
+        'exports': package.exports,
     }
     _create_template_file(
         'package_environment',
