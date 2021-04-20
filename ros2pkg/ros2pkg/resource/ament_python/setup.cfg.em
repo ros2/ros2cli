@@ -1,4 +1,4 @@
 [develop]
-script-dir=$base/lib/@(project_name)
+script_dir=$base/lib/@(project_name)
 [install]
-install-scripts=$base/lib/@(project_name)
+install_scripts=$base/lib/@(project_name)
