@@ -13,6 +13,8 @@
 # limitations under the License.
 
 import os
+from pathlib import Path
+import sys
 from typing import Tuple
 
 from ros2doctor.api import DoctorCheck
@@ -27,7 +29,7 @@ try:
 except ImportError:  # check import error for windows and osx
     doctor_warn(
         'Unable to import ifcfg. '
-        'Use `python3 -m pip install ifcfg` to install needed package.')
+        f'Use `{Path(sys.executable).name} -m pip install ifcfg` to install needed package.')
 
 
 def _is_unix_like_platform() -> bool:
@@ -74,11 +76,10 @@ class NetworkCheck(DoctorCheck):
         if not _is_unix_like_platform():
             if not has_loopback and not has_non_loopback:
                 # no flags found, otherwise one of them should be True.
-                doctor_error(
-                    'No flags found. '
-                    'Run `ipconfig` on Windows or '
-                    'install `ifconfig` on Unix to check network interfaces.')
-                result.add_error()
+                doctor_warn(
+                    'Did not found either a loopback or no loopback interface.'
+                    'Run `ipconfig` on Windows to check what interfaces are available')
+                result.add_warning()
                 return result
         if not has_loopback:
             doctor_error('No loopback IP address is found.')

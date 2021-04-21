@@ -13,6 +13,8 @@
 # limitations under the License.
 
 import os
+from pathlib import Path
+import sys
 import textwrap
 
 from ament_index_python import get_packages_with_prefixes
@@ -26,7 +28,12 @@ from ros2doctor.api import Result
 from ros2doctor.api.format import doctor_error
 from ros2doctor.api.format import doctor_warn
 
-import rosdistro
+try:
+    import rosdistro
+except ImportError:
+    doctor_warn(
+        'Unable to import rosdistro. '
+        f'Use `{Path(sys.executable).name} -m pip install rosdistro` to install needed package.')
 
 
 def get_distro_package_versions() -> dict:
@@ -103,26 +110,26 @@ def compare_versions(result: Result, local_packages: dict, distro_packages: dict
         if not local_ver_str:
             missing_local += ' ' + name
             local_ver_str = ''
-        required_ver_str = distro_packages.get(name, '')
-        if not required_ver_str:
+        latest_ver_str = distro_packages.get(name, '')
+        if not latest_ver_str:
             missing_req += ' ' + name
         local_ver = version.parse(local_ver_str).base_version
-        required_ver = version.parse(required_ver_str).base_version
-        if local_ver < required_ver:
+        latest_ver = version.parse(latest_ver_str).base_version
+        if local_ver < latest_ver:
             doctor_warn(
                 f'{name} has been updated to a new version.'
                 f' local: {local_ver} <'
-                f' required: {required_ver}')
+                f' latest: {latest_ver}')
             result.add_warning()
     if missing_req:
         if len(missing_req) > 100:
             doctor_warn(
-                'Cannot find required versions of packages: ' +
+                'Cannot find the latest versions of packages: ' +
                 textwrap.shorten(missing_req, width=100) +
                 ' Use `ros2 doctor --report` to see full list.')
         else:
             doctor_warn(
-                'Cannot find required versions of packages: ' +
+                'Cannot find the latest versions of packages: ' +
                 missing_req)
     if missing_local:
         if len(missing_local) > 100:
@@ -145,6 +152,12 @@ class PackageCheck(DoctorCheck):
     def check(self):
         """Check packages within the directory where command is called."""
         result = Result()
+        try:
+            rosdistro
+        except NameError:
+            doctor_error('`rosdistro` module is not imported. Unable to run package check.')
+            result.add_error()
+            return result
         distro_package_vers = get_distro_package_versions()
         if not distro_package_vers:
             doctor_error('distro packages info is not found.')
@@ -168,14 +181,19 @@ class PackageReport(DoctorReport):
 
     def report(self):
         """Report packages within the directory where command is called."""
+        try:
+            rosdistro
+        except NameError:
+            doctor_error('`rosdistro` module is not imported. Unable to generate package report.')
+            return Report('')
         report = Report('PACKAGE VERSIONS')
         local_package_vers = get_local_package_versions()
         distro_package_vers = get_distro_package_versions()
         if not local_package_vers or not distro_package_vers:
             return report
         for name, local_ver_str in local_package_vers.items():
-            required_ver_str = distro_package_vers.get(name, '')
+            latest_ver_str = distro_package_vers.get(name, '')
             local_ver = version.parse(local_ver_str).base_version
-            required_ver = version.parse(required_ver_str).base_version
-            report.add_to_report(name, f'required={required_ver}, local={local_ver}')
+            latest_ver = version.parse(latest_ver_str).base_version
+            report.add_to_report(name, f'latest={latest_ver}, local={local_ver}')
         return report
