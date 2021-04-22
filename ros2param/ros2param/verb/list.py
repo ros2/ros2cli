@@ -58,24 +58,23 @@ class ListVerb(VerbExtension):
             node_names = get_node_names(
                 node=node, include_hidden_nodes=args.include_hidden_nodes)
 
-        node_name = get_absolute_node_name(args.node_name)
-        if node_name:
-            if node_name not in [n.full_name for n in node_names]:
-                return 'Node not found'
-            node_names = [
-                n for n in node_names if node_name == n.full_name]
+            node_name = get_absolute_node_name(args.node_name)
+            if node_name:
+                if node_name not in [n.full_name for n in node_names]:
+                    return 'Node not found'
+                node_names = [
+                    n for n in node_names if node_name == n.full_name]
 
-        regex_filter = getattr(args, 'filter')
-        if regex_filter is not None:
-            regex_filter = re.compile(regex_filter[0])
+            regex_filter = getattr(args, 'filter')
+            if regex_filter is not None:
+                regex_filter = re.compile(regex_filter[0])
 
-        with DirectNode(args) as node:
             service_names = get_service_names(
                 node=node, include_hidden_services=args.include_hidden_nodes)
 
-            clients = {}
-            futures = {}
+        with DirectNode(args) as node:
             # create clients for nodes which have the service
+            clients = {}
             for node_name in node_names:
                 service_name = f'{node_name.full_name}/list_parameters'
                 if service_name in service_names:
@@ -83,22 +82,16 @@ class ListVerb(VerbExtension):
                     clients[node_name] = client
 
             # wait until all clients have been called
-            while True:
-                for node_name in [
-                    n for n in clients.keys() if n not in futures
-                ]:
-                    # call as soon as ready
-                    client = clients[node_name]
-                    if client.service_is_ready():
-                        request = ListParameters.Request()
-                        for prefix in args.param_prefixes:
-                            request.prefixes.append(prefix)
-                        future = client.call_async(request)
-                        futures[node_name] = future
-
-                if len(futures) == len(clients):
-                    break
-                rclpy.spin_once(node, timeout_sec=1.0)
+            futures = {}
+            for node_name, client in clients.items():
+                # call as soon as ready
+                if not client.wait_for_service(timeout_sec=5.0):
+                    raise RuntimeError(f'Wait for {client.srv_name} service timed out')
+                request = ListParameters.Request()
+                for prefix in args.param_prefixes:
+                    request.prefixes.append(prefix)
+                future = client.call_async(request)
+                futures[node_name] = future
 
             # wait for all responses
             for future in futures.values():

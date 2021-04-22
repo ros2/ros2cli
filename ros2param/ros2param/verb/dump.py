@@ -97,9 +97,7 @@ class DumpVerb(VerbExtension):
             service_name = f'{absolute_node_name}/list_parameters'
             client = node.create_client(ListParameters, service_name)
 
-            client.wait_for_service()
-
-            if not client.service_is_ready():
+            if not client.wait_for_service(timeout_sec=5.0):
                 raise RuntimeError(f"Could not reach service '{service_name}'")
 
             request = ListParameters.Request()
