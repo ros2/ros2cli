@@ -121,7 +121,7 @@ class EchoVerb(VerbExtension):
                     'Some, but not all, publisher are offering '
                     'QoSReliabilityPolicy.RELIABLE. Falling back to '
                     'QoSReliabilityPolicy.BEST_EFFORT as it will connect '
-                    'to all publishers', end='\n\n'
+                    'to all publishers'
                 )
             qos_profile.reliability = QoSReliabilityPolicy.BEST_EFFORT
 
@@ -134,7 +134,7 @@ class EchoVerb(VerbExtension):
                     'Some, but not all, publisher are offering '
                     'QoSDurabilityPolicy.TRANSIENT_LOCAL. Falling back to '
                     'QoSDurabilityPolicy.VOLATILE as it will connect '
-                    'to all publishers', end='\n\n'
+                    'to all publishers'
                 )
             qos_profile.durability = QoSDurabilityPolicy.VOLATILE
 
