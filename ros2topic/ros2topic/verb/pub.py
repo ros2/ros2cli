@@ -31,6 +31,7 @@ from rosidl_runtime_py.utilities import get_message
 import yaml
 
 MsgType = TypeVar('MsgType')
+default_preset_str = 'system_default'
 
 
 def nonnegative_int(inval):
@@ -91,15 +92,20 @@ class PubVerb(VerbExtension):
             '-n', '--node-name',
             help='Name of the created publishing node')
         add_qos_arguments_to_argument_parser(
-            parser, is_publisher=True, default_preset='system_default')
+            parser, is_publisher=True, default_preset=default_preset_str)
 
     def main(self, *, args):
         return main(args)
 
 
 def main(args):
+
+    qos_profile_name = args.qos_profile
+    if not qos_profile_name:
+        qos_profile_name = default_preset_str
+
     qos_profile = qos_profile_from_short_keys(
-        args.qos_profile, reliability=args.qos_reliability, durability=args.qos_durability,
+        qos_profile_name, reliability=args.qos_reliability, durability=args.qos_durability,
         depth=args.qos_depth, history=args.qos_history)
     times = args.times
     if args.once:

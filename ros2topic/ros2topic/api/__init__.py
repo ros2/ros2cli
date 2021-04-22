@@ -181,7 +181,6 @@ def qos_profile_from_short_keys(
         if (profile.durability == rclpy.qos.QoSDurabilityPolicy.TRANSIENT_LOCAL
                 and profile.depth == 0):
             profile.depth = 1
-
     return profile
 
 
