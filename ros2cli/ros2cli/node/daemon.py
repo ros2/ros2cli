@@ -31,6 +31,7 @@ from ros2cli.xmlrpc.client import ServerProxy
 def is_daemon_running(args):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.setsockopt(socket.SOL_SOCKET, socket.SO_LINGER, struct.pack('ii', 1, 0))
+    s.setsockopt(socket.SOL_TCP, socket.TCP_LINGER2, struct.pack('i', -1))
     addr = ('localhost', get_daemon_port())
     try:
         s.bind(addr)
