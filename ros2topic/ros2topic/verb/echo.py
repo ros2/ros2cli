@@ -105,7 +105,6 @@ class EchoVerb(VerbExtension):
             return qos_profile
 
         for info in pubs_info:
-            publishers_count += 1
             if (info.qos_profile.reliability ==
                     QoSReliabilityPolicy.RELIABLE):
                 reliability_reliable_endpoints_count += 1
