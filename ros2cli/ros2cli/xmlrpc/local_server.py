@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import platform
 import socket
 import struct
 from xmlrpc.server import SimpleXMLRPCRequestHandler
@@ -26,8 +27,9 @@ class LocalXMLRPCServer(SimpleXMLRPCServer):
         # Prevent listening socket from lingering in TIME_WAIT state after close()
         self.socket.setsockopt(
             socket.SOL_SOCKET, socket.SO_LINGER, struct.pack('ii', 1, 0))
-        self.socket.setsockopt(
-            socket.SOL_TCP, socket.TCP_LINGER2, struct.pack('i', -1))
+        if platform.system() == 'Linux':
+            self.socket.setsockopt(
+                socket.SOL_TCP, socket.TCP_LINGER2, struct.pack('i', -1))
 
         super(LocalXMLRPCServer, self).server_bind()
 
@@ -36,8 +38,9 @@ class LocalXMLRPCServer(SimpleXMLRPCServer):
         sock, addr = super(LocalXMLRPCServer, self).get_request()
         sock.setsockopt(
             socket.SOL_SOCKET, socket.SO_LINGER, struct.pack('ii', 1, 0))
-        sock.setsockopt(
-            socket.SOL_TCP, socket.TCP_LINGER2, struct.pack('i', -1))
+        if platform.system() == 'Linux':
+            sock.setsockopt(
+                socket.SOL_TCP, socket.TCP_LINGER2, struct.pack('i', -1))
         return sock, addr
 
     def verify_request(self, request, client_address):
