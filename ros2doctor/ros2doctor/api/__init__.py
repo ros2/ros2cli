@@ -21,6 +21,7 @@ try:
 except ModuleNotFoundError:
     import importlib_metadata
 
+from ros2cli.node.strategy import NodeStrategy
 from ros2doctor.api.format import doctor_warn
 
 
@@ -142,3 +143,14 @@ def generate_reports(*, categories=None) -> List[Report]:
         except Exception:
             doctor_warn(f'Fail to call {report_entry_pt.name} class functions.')
     return reports
+
+
+def get_topic_names(skip_topics: List = ()) -> List:
+    """Get all topic names using rclpy API."""
+    topics = []
+    with NodeStrategy(None) as node:
+        topic_names_types = node.get_topic_names_and_types()
+        for t_name, _ in topic_names_types:
+            if t_name not in skip_topics:
+                topics.append(t_name)
+    return topics

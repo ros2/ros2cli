@@ -12,27 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import List
-
 from ros2cli.node.direct import DirectNode
-from ros2cli.node.strategy import NodeStrategy
 from ros2doctor.api import DoctorCheck
 from ros2doctor.api import DoctorReport
+from ros2doctor.api import get_topic_names
 from ros2doctor.api import Report
 from ros2doctor.api import Result
 from ros2doctor.api.format import doctor_warn
 
 
-def _get_topic_names() -> List:
-    """Get all topic names using rclpy API."""
-    white_list = ['/parameter_events', '/rosout']
-    topics = []
-    with NodeStrategy(None) as node:
-        topic_names_types = node.get_topic_names_and_types()
-        for t_name, _ in topic_names_types:
-            if t_name not in white_list:
-                topics.append(t_name)
-    return topics
+SKIP_TOPICS = ['/parameter_events', '/rosout']
 
 
 class TopicCheck(DoctorCheck):
@@ -44,7 +33,7 @@ class TopicCheck(DoctorCheck):
     def check(self):
         """Check publisher and subscriber counts."""
         result = Result()
-        to_be_checked = _get_topic_names()
+        to_be_checked = get_topic_names(skip_topics=SKIP_TOPICS)
         with DirectNode(None) as node:
             for topic in to_be_checked:
                 pub_count = node.count_publishers(topic)
@@ -66,7 +55,7 @@ class TopicReport(DoctorReport):
 
     def report(self):
         report = Report('TOPIC LIST')
-        to_be_reported = _get_topic_names()
+        to_be_reported = get_topic_names(skip_topics=SKIP_TOPICS)
         if not to_be_reported:
             report.add_to_report('topic', 'none')
             report.add_to_report('publisher count', 0)
