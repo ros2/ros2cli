@@ -78,7 +78,9 @@ class EchoVerb(VerbExtension):
         parser.add_argument(
             '--no-str', action='store_true', help="Don't print string fields of messages")
         parser.add_argument(
-            '--lost-messages', action='store_true', help='Report when a message is lost')
+            '--lost-messages', action='store_true', help='DEPRECATED: Does nothing')
+        parser.add_argument(
+            '--no-lost-messages', action='store_true', help="Don't report when a message is lost")
         parser.add_argument(
             '--raw', action='store_true', help='Echo the raw binary representation')
 
@@ -125,7 +127,7 @@ class EchoVerb(VerbExtension):
                 args.topic_name,
                 message_type,
                 qos_profile,
-                args.lost_messages,
+                args.no_lost_messages,
                 args.raw)
 
     def subscribe_and_spin(
@@ -134,12 +136,12 @@ class EchoVerb(VerbExtension):
         topic_name: str,
         message_type: MsgType,
         qos_profile: QoSProfile,
-        report_lost_messages: bool,
+        no_report_lost_messages: bool,
         raw: bool
     ) -> Optional[str]:
         """Initialize a node with a single subscription and spin."""
         event_callbacks = None
-        if report_lost_messages:
+        if not no_report_lost_messages:
             event_callbacks = SubscriptionEventCallbacks(
                 message_lost=_message_lost_event_callback)
         try:
@@ -151,11 +153,18 @@ class EchoVerb(VerbExtension):
                 event_callbacks=event_callbacks,
                 raw=raw)
         except UnsupportedEventTypeError:
-            assert report_lost_messages
             print(
                 f"The rmw implementation '{get_rmw_implementation_identifier()}'"
                 ' does not support reporting lost messages'
             )
+            node.create_subscription(
+                message_type,
+                topic_name,
+                self._subscriber_callback,
+                qos_profile,
+                event_callbacks=None,
+                raw=raw)
+
         rclpy.spin(node)
 
     def _subscriber_callback(self, msg):
