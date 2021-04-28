@@ -20,7 +20,6 @@ from rclpy.node import Node
 from rclpy.qos import QoSProfile
 from rclpy.qos_event import SubscriptionEventCallbacks
 from rclpy.qos_event import UnsupportedEventTypeError
-from rclpy.utilities import get_rmw_implementation_identifier
 from ros2cli.node.strategy import add_arguments as add_strategy_node_arguments
 from ros2cli.node.strategy import NodeStrategy
 from ros2topic.api import add_qos_arguments_to_argument_parser
