@@ -13,9 +13,9 @@
 # limitations under the License.
 
 import os
-from pathlib import Path
-import sys
 from typing import Tuple
+
+import ifcfg
 
 from ros2doctor.api import DoctorCheck
 from ros2doctor.api import DoctorReport
@@ -23,13 +23,6 @@ from ros2doctor.api import Report
 from ros2doctor.api import Result
 from ros2doctor.api.format import doctor_error
 from ros2doctor.api.format import doctor_warn
-
-try:
-    import ifcfg
-except ImportError:  # check import error for windows and osx
-    doctor_warn(
-        'Unable to import ifcfg. '
-        f'Use `{Path(sys.executable).name} -m pip install ifcfg` to install needed package.')
 
 
 def _is_unix_like_platform() -> bool:
@@ -63,14 +56,7 @@ class NetworkCheck(DoctorCheck):
         """Check network configuration."""
         result = Result()
         # check ifcfg import for windows and osx users
-        try:
-            ifcfg_ifaces = ifcfg.interfaces()
-        except NameError:
-            doctor_error(
-                '`ifcfg` module is not imported. '
-                'Unable to run network check.')
-            result.add_error()
-            return result
+        ifcfg_ifaces = ifcfg.interfaces()
 
         has_loopback, has_non_loopback, has_multicast = _check_network_config_helper(ifcfg_ifaces)
         if not _is_unix_like_platform():
@@ -102,11 +88,7 @@ class NetworkReport(DoctorReport):
     def report(self):
         """Print system and ROS network information."""
         # check ifcfg import for windows and osx users
-        try:
-            ifcfg_ifaces = ifcfg.interfaces()
-        except NameError:
-            doctor_error('ifcfg is not imported. Unable to generate network report.')
-            return Report('')
+        ifcfg_ifaces = ifcfg.interfaces()
 
         network_report = Report('NETWORK CONFIGURATION')
         for iface in ifcfg_ifaces.values():
