@@ -153,10 +153,7 @@ class EchoVerb(VerbExtension):
                 event_callbacks=event_callbacks,
                 raw=raw)
         except UnsupportedEventTypeError:
-            print(
-                f"The rmw implementation '{get_rmw_implementation_identifier()}'"
-                ' does not support reporting lost messages'
-            )
+            assert not no_report_lost_messages
             node.create_subscription(
                 message_type,
                 topic_name,
