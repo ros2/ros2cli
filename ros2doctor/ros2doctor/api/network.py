@@ -63,7 +63,7 @@ class NetworkCheck(DoctorCheck):
             if not has_loopback and not has_non_loopback:
                 # no flags found, otherwise one of them should be True.
                 doctor_warn(
-                    'Interface flags are not available on Windows.'
+                    'Interface flags are not available on Windows. '
                     'Run `ipconfig` to see what interfaces are available.')
                 result.add_warning()
                 return result
