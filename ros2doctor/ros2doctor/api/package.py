@@ -13,8 +13,6 @@
 # limitations under the License.
 
 import os
-from pathlib import Path
-import sys
 import textwrap
 
 from ament_index_python import get_packages_with_prefixes
@@ -28,12 +26,7 @@ from ros2doctor.api import Result
 from ros2doctor.api.format import doctor_error
 from ros2doctor.api.format import doctor_warn
 
-try:
-    import rosdistro
-except ImportError:
-    doctor_warn(
-        'Unable to import rosdistro. '
-        f'Use `{Path(sys.executable).name} -m pip install rosdistro` to install needed package.')
+import rosdistro
 
 
 def get_distro_package_versions() -> dict:
@@ -152,12 +145,6 @@ class PackageCheck(DoctorCheck):
     def check(self):
         """Check packages within the directory where command is called."""
         result = Result()
-        try:
-            rosdistro
-        except NameError:
-            doctor_error('`rosdistro` module is not imported. Unable to run package check.')
-            result.add_error()
-            return result
         distro_package_vers = get_distro_package_versions()
         if not distro_package_vers:
             doctor_error('distro packages info is not found.')
@@ -181,11 +168,6 @@ class PackageReport(DoctorReport):
 
     def report(self):
         """Report packages within the directory where command is called."""
-        try:
-            rosdistro
-        except NameError:
-            doctor_error('`rosdistro` module is not imported. Unable to generate package report.')
-            return Report('')
         report = Report('PACKAGE VERSIONS')
         local_package_vers = get_local_package_versions()
         distro_package_vers = get_distro_package_versions()

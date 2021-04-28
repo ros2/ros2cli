@@ -13,9 +13,7 @@
 # limitations under the License.
 
 import os
-from pathlib import Path
 import platform
-import sys
 from typing import Tuple
 
 from ros2doctor.api import DoctorCheck
@@ -25,12 +23,7 @@ from ros2doctor.api import Result
 from ros2doctor.api.format import doctor_error
 from ros2doctor.api.format import doctor_warn
 
-try:
-    import rosdistro
-except ImportError:
-    doctor_warn(
-        'Unable to import rosdistro. '
-        f'Use `{Path(sys.executable).name} -m pip install rosdistro` to install needed package.')
+import rosdistro
 
 
 def _check_platform_helper() -> Tuple[str, dict, dict]:
@@ -71,12 +64,6 @@ class PlatformCheck(DoctorCheck):
     def check(self):
         """Check system platform against ROS 2 Distro."""
         result = Result()
-        try:
-            rosdistro
-        except NameError:
-            doctor_error('`rosdistro` module is not imported. Unable to run platform check.')
-            result.add_error()
-            return result
         distros = _check_platform_helper()
         if not distros:
             doctor_error('Missing rosdistro info. Unable to check platform.')
@@ -108,6 +95,7 @@ class PlatformReport(DoctorReport):
 
     def report(self):
         platform_name = platform.system()
+
         # platform info
         platform_report = Report('PLATFORM INFORMATION')
         platform_report.add_to_report('system', platform_name)
@@ -126,11 +114,6 @@ class RosdistroReport(DoctorReport):
         return 'platform'
 
     def report(self):
-        try:
-            rosdistro
-        except NameError:
-            doctor_error('`rosdistro` module is not imported. Unable to generate rosdistro platform report.')
-            return Report('')
         ros_report = Report('ROS 2 INFORMATION')
         distros = _check_platform_helper()
         if not distros:
