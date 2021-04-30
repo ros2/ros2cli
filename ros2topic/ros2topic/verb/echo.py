@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import sys
 from typing import Optional
 from typing import TypeVar
 
@@ -84,6 +85,12 @@ class EchoVerb(VerbExtension):
             '--raw', action='store_true', help='Echo the raw binary representation')
 
     def main(self, *, args):
+
+        if args.lost_messages:
+            print(
+                "WARNING: '--lost-messages' is deprecated; lost messages are reported by default",
+                file=sys.stderr)
+
         # Select print function
         self.print_func = _print_yaml
         if args.csv:
