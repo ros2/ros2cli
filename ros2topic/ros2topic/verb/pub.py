@@ -20,7 +20,6 @@ import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile
 from ros2cli.node.direct import DirectNode
-from ros2topic.api import add_qos_arguments_to_argument_parser
 from ros2topic.api import qos_profile_from_short_keys
 from ros2topic.api import TopicMessagePrototypeCompleter
 from ros2topic.api import TopicNameCompleter
@@ -31,7 +30,7 @@ from rosidl_runtime_py.utilities import get_message
 import yaml
 
 MsgType = TypeVar('MsgType')
-default_preset_str = 'system_default'
+default_profile_str = 'system_default'
 
 
 def nonnegative_int(inval):
@@ -91,8 +90,36 @@ class PubVerb(VerbExtension):
         parser.add_argument(
             '-n', '--node-name',
             help='Name of the created publishing node')
-        add_qos_arguments_to_argument_parser(
-            parser, is_publisher=True, default_preset=default_preset_str)
+        parser.add_argument(
+            '--qos-profile',
+            choices=rclpy.qos.QoSPresetProfiles.short_keys(),
+            default=default_profile_str,
+            help='Quality of service preset profile to {} with (default: {})'
+                 .format('publish', default_profile_str))
+        default_profile = rclpy.qos.QoSPresetProfiles.get_from_short_key(
+            default_profile_str)
+        parser.add_argument(
+            '--qos-depth', metavar='N', type=int, default=-1,
+            help='Queue size setting to publish with '
+                 '(overrides depth value of --qos-profile option)')
+        parser.add_argument(
+            '--qos-history',
+            choices=rclpy.qos.QoSHistoryPolicy.short_keys(),
+            help='History of samples setting to publish with '
+                 '(overrides history value of --qos-profile option, default: {})'
+                 .format(default_profile.history.short_key))
+        parser.add_argument(
+            '--qos-reliability',
+            choices=rclpy.qos.QoSReliabilityPolicy.short_keys(),
+            help='Quality of service reliability setting to publish with '
+                 '(overrides reliability value of --qos-profile option, default: {})'
+                 .format(default_profile.reliability.short_key))
+        parser.add_argument(
+            '--qos-durability',
+            choices=rclpy.qos.QoSDurabilityPolicy.short_keys(),
+            help='Quality of service durability setting to publish with '
+                 '(overrides durability value of --qos-profile option, default: {})'
+                 .format(default_profile.durability.short_key))
 
     def main(self, *, args):
         return main(args)
@@ -102,7 +129,7 @@ def main(args):
 
     qos_profile_name = args.qos_profile
     if not qos_profile_name:
-        qos_profile_name = default_preset_str
+        qos_profile_name = default_profile_str
 
     qos_profile = qos_profile_from_short_keys(
         qos_profile_name, reliability=args.qos_reliability, durability=args.qos_durability,
