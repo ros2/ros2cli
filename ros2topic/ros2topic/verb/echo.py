@@ -114,11 +114,11 @@ class EchoVerb(VerbExtension):
     def choose_qos(self, node, args):
 
         if (args.qos_profile is not None or
-            args.qos_reliability is not None or
-            args.qos_durability is not None or
-            args.qos_depth is not None or
-            args.qos_history is not None
-            ):
+                args.qos_reliability is not None or
+                args.qos_durability is not None or
+                args.qos_depth is not None or
+                args.qos_history is not None):
+
             if args.qos_profile is None:
                 args.qos_profile = default_profile_str
             return qos_profile_from_short_keys(args.qos_profile,
