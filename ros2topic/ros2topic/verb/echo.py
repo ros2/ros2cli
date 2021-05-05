@@ -18,12 +18,14 @@ from typing import TypeVar
 
 import rclpy
 from rclpy.node import Node
+from rclpy.qos import QoSDurabilityPolicy
+from rclpy.qos import QoSPresetProfiles
 from rclpy.qos import QoSProfile
+from rclpy.qos import QoSReliabilityPolicy
 from rclpy.qos_event import SubscriptionEventCallbacks
 from rclpy.qos_event import UnsupportedEventTypeError
 from ros2cli.node.strategy import add_arguments as add_strategy_node_arguments
 from ros2cli.node.strategy import NodeStrategy
-from ros2topic.api import add_qos_arguments_to_argument_parser
 from ros2topic.api import get_msg_class
 from ros2topic.api import qos_profile_from_short_keys
 from ros2topic.api import TopicNameCompleter
@@ -35,6 +37,7 @@ from rosidl_runtime_py.utilities import get_message
 
 DEFAULT_TRUNCATE_LENGTH = 128
 MsgType = TypeVar('MsgType')
+default_profile_str = 'sensor_data'
 
 
 class EchoVerb(VerbExtension):
@@ -51,8 +54,34 @@ class EchoVerb(VerbExtension):
         parser.add_argument(
             'message_type', nargs='?',
             help="Type of the ROS message (e.g. 'std_msgs/msg/String')")
-        add_qos_arguments_to_argument_parser(
-            parser, is_publisher=False, default_preset='sensor_data')
+        parser.add_argument(
+            '--qos-profile',
+            choices=rclpy.qos.QoSPresetProfiles.short_keys(),
+            help='Quality of service preset profile to subscribe with (default: {})'
+                 .format(default_profile_str))
+        default_profile = rclpy.qos.QoSPresetProfiles.get_from_short_key(default_profile_str)
+        parser.add_argument(
+            '--qos-depth', metavar='N', type=int,
+            help='Queue size setting to subscribe with '
+                 '(overrides depth value of --qos-profile option)')
+        parser.add_argument(
+            '--qos-history',
+            choices=rclpy.qos.QoSHistoryPolicy.short_keys(),
+            help='History of samples setting to subscribe with '
+                 '(overrides history value of --qos-profile option, default: {})'
+                 .format(default_profile.history.short_key))
+        parser.add_argument(
+            '--qos-reliability',
+            choices=rclpy.qos.QoSReliabilityPolicy.short_keys(),
+            help='Quality of service reliability setting to subscribe with '
+                 '(overrides reliability value of --qos-profile option, default: '
+                 'Automatically match existing publishers )')
+        parser.add_argument(
+            '--qos-durability',
+            choices=rclpy.qos.QoSDurabilityPolicy.short_keys(),
+            help='Quality of service durability setting to subscribe with '
+                 '(overrides durability value of --qos-profile option, default: '
+                 'Automatically match existing publishers )')
         parser.add_argument(
             '--csv', action='store_true',
             help='Output all recursive fields separated by commas (e.g. for '
@@ -84,6 +113,65 @@ class EchoVerb(VerbExtension):
         parser.add_argument(
             '--raw', action='store_true', help='Echo the raw binary representation')
 
+    def choose_qos(self, node, args):
+
+        if (args.qos_profile is not None or
+                args.qos_reliability is not None or
+                args.qos_durability is not None or
+                args.qos_depth is not None or
+                args.qos_history is not None):
+
+            if args.qos_profile is None:
+                args.qos_profile = default_profile_str
+            return qos_profile_from_short_keys(args.qos_profile,
+                                               reliability=args.qos_reliability,
+                                               durability=args.qos_durability,
+                                               depth=args.qos_depth,
+                                               history=args.qos_history)
+
+        qos_profile = QoSPresetProfiles.get_from_short_key(default_profile_str)
+        reliability_reliable_endpoints_count = 0
+        durability_transient_local_endpoints_count = 0
+
+        pubs_info = node.get_publishers_info_by_topic(args.topic_name)
+        publishers_count = len(pubs_info)
+        if publishers_count == 0:
+            return qos_profile
+
+        for info in pubs_info:
+            if (info.qos_profile.reliability == QoSReliabilityPolicy.RELIABLE):
+                reliability_reliable_endpoints_count += 1
+            if (info.qos_profile.durability == QoSDurabilityPolicy.TRANSIENT_LOCAL):
+                durability_transient_local_endpoints_count += 1
+
+        # If all endpoints are reliable, ask for reliable
+        if reliability_reliable_endpoints_count == publishers_count:
+            qos_profile.reliability = QoSReliabilityPolicy.RELIABLE
+        else:
+            if reliability_reliable_endpoints_count > 0:
+                print(
+                    'Some, but not all, publishers are offering '
+                    'QoSReliabilityPolicy.RELIABLE. Falling back to '
+                    'QoSReliabilityPolicy.BEST_EFFORT as it will connect '
+                    'to all publishers'
+                )
+            qos_profile.reliability = QoSReliabilityPolicy.BEST_EFFORT
+
+        # If all endpoints are transient_local, ask for transient_local
+        if durability_transient_local_endpoints_count == publishers_count:
+            qos_profile.durability = QoSDurabilityPolicy.TRANSIENT_LOCAL
+        else:
+            if durability_transient_local_endpoints_count > 0:
+                print(
+                    'Some, but not all, publishers are offering '
+                    'QoSDurabilityPolicy.TRANSIENT_LOCAL. Falling back to '
+                    'QoSDurabilityPolicy.VOLATILE as it will connect '
+                    'to all publishers'
+                )
+            qos_profile.durability = QoSDurabilityPolicy.VOLATILE
+
+        return qos_profile
+
     def main(self, *, args):
 
         if args.lost_messages:
@@ -107,14 +195,10 @@ class EchoVerb(VerbExtension):
         self.no_arr = args.no_arr
         self.no_str = args.no_str
 
-        qos_profile = qos_profile_from_short_keys(
-            args.qos_profile,
-            reliability=args.qos_reliability,
-            durability=args.qos_durability,
-            depth=args.qos_depth,
-            history=args.qos_history)
-
         with NodeStrategy(args) as node:
+
+            qos_profile = self.choose_qos(node, args)
+
             if args.message_type is None:
                 message_type = get_msg_class(
                     node, args.topic_name, include_hidden_topics=True)
