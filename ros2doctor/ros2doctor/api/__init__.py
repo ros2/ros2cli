@@ -93,8 +93,8 @@ def run_checks(*, include_warnings=False) -> Tuple[Set[str], int, int]:
     for check_entry_pt in importlib_metadata.entry_points().get('ros2doctor.checks', []):
         try:
             check_class = check_entry_pt.load()
-        except ImportError:
-            doctor_warn(f'Check entry point {check_entry_pt.name} fails to load.')
+        except ImportError as e:
+            doctor_warn(f'Check entry point {check_entry_pt.name} fails to load: {e}')
             continue
         try:
             check_instance = check_class()
@@ -123,8 +123,8 @@ def generate_reports(*, categories=None) -> List[Report]:
     for report_entry_pt in importlib_metadata.entry_points().get('ros2doctor.report', []):
         try:
             report_class = report_entry_pt.load()
-        except ImportError:
-            doctor_warn(f'Report entry point {report_entry_pt.name} fails to load.')
+        except ImportError as e:
+            doctor_warn(f'Report entry point {report_entry_pt.name} fails to load: {e}')
             continue
         try:
             report_instance = report_class()
