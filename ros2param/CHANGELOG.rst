@@ -16,9 +16,9 @@ Forthcoming
 * 0.12.0
 * Make the ros2param --filter test more reliable. (`#606 <https://github.com/ros2/ros2cli/issues/606>`_)
 * Add wildcard loading to ros2 param load. (`#602 <https://github.com/ros2/ros2cli/issues/602>`_)
-* ros2 param dump/load should use fully qualified node names. (`#600 <https://github.com/ros2/ros2cli/issues/600>`_)
+* Ros2 param dump/load should use fully qualified node names. (`#600 <https://github.com/ros2/ros2cli/issues/600>`_)
 * Add --filter options for 'ros2 param list'. (`#592 <https://github.com/ros2/ros2cli/issues/592>`_)
-* remove maintainer. (`#597 <https://github.com/ros2/ros2cli/issues/597>`_)
+* Remove maintainer. (`#597 <https://github.com/ros2/ros2cli/issues/597>`_)
 * Add rosparam verb load. (`#590 <https://github.com/ros2/ros2cli/issues/590>`_)
   * Add rosparam verb load
   * Move load_parameter_file implementation to api, add test_verb_load
@@ -37,13 +37,13 @@ Forthcoming
 
 0.10.0 (2020-11-02)
 -------------------
-* add "--param-type" option to ros2param list. (`#572 <https://github.com/ros2/ros2cli/issues/572>`_)
-  * add "--param-type" option to ros2param list.
+* Add "--param-type" option to ros2param list. (`#572 <https://github.com/ros2/ros2cli/issues/572>`_)
+  * Add "--param-type" option to ros2param list.
   Co-authored-by: Chris Lalancette <clalancette@openrobotics.org>
-* update maintainers. (`#568 <https://github.com/ros2/ros2cli/issues/568>`_)
-  * update maintainers
-  * add authors, update setup.py
-  * remove trailing whitespace
+* Update maintainers. (`#568 <https://github.com/ros2/ros2cli/issues/568>`_)
+  * Update maintainers
+  * Add authors, update setup.py
+  * Remove trailing whitespace
 * Contributors: Claire Wang, tomoya
 
 0.9.5 (2020-06-01)
@@ -78,16 +78,16 @@ Forthcoming
 * [ros2param] Wait for discovery before running tests. (`#481 <https://github.com/ros2/ros2cli/issues/481>`_)
   Fixes `#480 <https://github.com/ros2/ros2cli/issues/480>`_.
   Catch expected exceptions from rclpy (or transitively as xmlrpc.client.Fault) while we wait for discovery in the test setup.
-* more verbose test_flake8 error messages (same as `ros2/launch_ros#135 <https://github.com/ros2/launch_ros/issues/135>`_)
-* use f-string. (`#448 <https://github.com/ros2/ros2cli/issues/448>`_)
-  * use f-string
-  * remove unused variable
-* fix ros2param tests. (`#441 <https://github.com/ros2/ros2cli/issues/441>`_)
-* only load required entry points which improves the performance. (`#436 <https://github.com/ros2/ros2cli/issues/436>`_)
-  * extend API to exclude extensions from loading
-  * add add_subparsers_on_demand() function
-  * update all extensions to use the new API
-  * deprecate old API, add deprecation warnings
+* More verbose test_flake8 error messages (same as `ros2/launch_ros#135 <https://github.com/ros2/launch_ros/issues/135>`_)
+* Use f-string. (`#448 <https://github.com/ros2/ros2cli/issues/448>`_)
+  * Use f-string
+  * Remove unused variable
+* Fix ros2param tests. (`#441 <https://github.com/ros2/ros2cli/issues/441>`_)
+* Only load required entry points which improves the performance. (`#436 <https://github.com/ros2/ros2cli/issues/436>`_)
+  * Extend API to exclude extensions from loading
+  * Add add_subparsers_on_demand() function
+  * Update all extensions to use the new API
+  * Deprecate old API, add deprecation warnings
 * Contributors: Dirk Thomas, DongheeYe, Jacob Perron
 
 0.8.6 (2019-11-19)
@@ -106,13 +106,13 @@ Forthcoming
 0.8.3 (2019-10-23)
 ------------------
 * 0.8.3
-* add ros2 param describe. (`#367 <https://github.com/ros2/ros2cli/issues/367>`_)
-  * add ros2 param describe
-  * fix linter
-* add completion for parameter name arguments. (`#364 <https://github.com/ros2/ros2cli/issues/364>`_)
-  * add completion for parameter name arguments
-  * style
-  * add parameter name completion for set
+* Add ros2 param describe. (`#367 <https://github.com/ros2/ros2cli/issues/367>`_)
+  * Add ros2 param describe
+  * Fix linter
+* Add completion for parameter name arguments. (`#364 <https://github.com/ros2/ros2cli/issues/364>`_)
+  * Add completion for parameter name arguments
+  * Style
+  * Add parameter name completion for set
 * Contributors: Dirk Thomas, Shane Loretz
 
 0.8.2 (2019-10-08)
@@ -127,42 +127,42 @@ Forthcoming
 
 0.8.0 (2019-09-26)
 ------------------
-* install resource marker file for packages. (`#339 <https://github.com/ros2/ros2cli/issues/339>`_)
+* Install resource marker file for packages. (`#339 <https://github.com/ros2/ros2cli/issues/339>`_)
 * Update setup.py version. (`#331 <https://github.com/ros2/ros2cli/issues/331>`_)
   Versions now match latest tag and package.xml.
-* install package manifest. (`#330 <https://github.com/ros2/ros2cli/issues/330>`_)
+* Install package manifest. (`#330 <https://github.com/ros2/ros2cli/issues/330>`_)
 * Adjusting ros2param tests to take into account automatic declaration of 'use_sim_time' parameter. (`#307 <https://github.com/ros2/ros2cli/issues/307>`_)
 * Add param dump <node-name>. (`#285 <https://github.com/ros2/ros2cli/issues/285>`_)
-  * wip param dump
-  * default path & cleanup
-  * wip test verb dump
-  * rm spin_once
-  * nested namespaces
-  * cleaning up
-  * multithread the test
-  * todo use PARAMETER_SEPARATOR_STRING
-  * test comp generate<->expected param file
-  * lipstick
-  * use proper PARAMETER_SEPARATOR_STRING
-  * mv common code to api
-  * rename param output-dir
-  * rm line breaks
-  * raise rather than print
-  * rm useless import
-  * raise rather than print
-  * add --print option
-  * prepend node namespace to output filename
-  * preempted -> preempt
+  * Wip param dump
+  * Default path & cleanup
+  * Wip test verb dump
+  * Rm spin_once
+  * Nested namespaces
+  * Cleaning up
+  * Multithread the test
+  * Todo use PARAMETER_SEPARATOR_STRING
+  * Test comp generate<->expected param file
+  * Lipstick
+  * Use proper PARAMETER_SEPARATOR_STRING
+  * Mv common code to api
+  * Rename param output-dir
+  * Rm line breaks
+  * Raise rather than print
+  * Rm useless import
+  * Raise rather than print
+  * Add --print option
+  * Prepend node namespace to output filename
+  * Preempted -> preempt
   * "w" -> 'w'
   * Output file using fully qualified node name
-  * fix linter tests
-  * relaxe --print preempt test
+  * Fix linter tests
+  * Relaxe --print preempt test
 * Contributors: Dirk Thomas, Jacob Perron, Jeremie Deray, Juan Ignacio Ubeira
 
 0.7.4 (2019-05-29)
 ------------------
-* fix param list for hidden nodes. (`#268 <https://github.com/ros2/ros2cli/issues/268>`_)
-* fix param list for nodes which don't have the service. (`#265 <https://github.com/ros2/ros2cli/issues/265>`_)
+* Fix param list for hidden nodes. (`#268 <https://github.com/ros2/ros2cli/issues/268>`_)
+* Fix param list for nodes which don't have the service. (`#265 <https://github.com/ros2/ros2cli/issues/265>`_)
 * Contributors: Dirk Thomas
 
 0.7.3 (2019-05-20)
@@ -170,12 +170,12 @@ Forthcoming
 
 0.7.2 (2019-05-08)
 ------------------
-* add xmllint linter test. (`#232 <https://github.com/ros2/ros2cli/issues/232>`_)
-  * add xmllint test to ament_python packages
-  * cover new packages as well
-* use yaml.safe_load (round2). (`#229 <https://github.com/ros2/ros2cli/issues/229>`_)
-  * use yaml.safe_load (round2)
-  * without the typo
+* Add xmllint linter test. (`#232 <https://github.com/ros2/ros2cli/issues/232>`_)
+  * Add xmllint test to ament_python packages
+  * Cover new packages as well
+* Use yaml.safe_load (round2). (`#229 <https://github.com/ros2/ros2cli/issues/229>`_)
+  * Use yaml.safe_load (round2)
+  * Without the typo
 * Add capability to use ros2 param set for array types. (`#199 <https://github.com/ros2/ros2cli/issues/199>`_)
   * Add tests for converting string values to parameter types
   * Use YAML parsing to convert parameters to correct type
@@ -184,8 +184,8 @@ Forthcoming
   * Use single quotes instead of double
   * Prevent unnecessary list comprehensions
   * Consolidate similar tests into single paramatrized function
-  * remove obsolete functions
-  * expect array.array for numerics
+  * Remove obsolete functions
+  * Expect array.array for numerics
 * Contributors: Mikael Arguedas, sgvandijk
 
 0.7.1 (2019-04-17)
@@ -199,10 +199,10 @@ Forthcoming
 
 0.6.2 (2018-12-12)
 ------------------
-* add slash for node name. (`#179 <https://github.com/ros2/ros2cli/issues/179>`_)
-  * add slash for node name
-  * check for forward slash in ros2param
-  * use get_absolute_node_name function
+* Add slash for node name. (`#179 <https://github.com/ros2/ros2cli/issues/179>`_)
+  * Add slash for node name
+  * Check for forward slash in ros2param
+  * Use get_absolute_node_name function
 * Contributors: Karsten Knese
 
 0.6.1 (2018-12-06)
@@ -213,15 +213,15 @@ Forthcoming
 
 0.6.0 (2018-11-19)
 ------------------
-* node name with namespace. (`#146 <https://github.com/ros2/ros2cli/issues/146>`_)
+* Node name with namespace. (`#146 <https://github.com/ros2/ros2cli/issues/146>`_)
 * Contributors: Dirk Thomas
 
 0.5.4 (2018-08-20)
 ------------------
-* add support for parameter prefixes in ros2 param list. (`#131 <https://github.com/ros2/ros2cli/issues/131>`_)
-  * add support for parameter prefix in ros2 param list
-  * require at least 1 prefix and simplify logic
-* remove apparently unused yaml dependency. (`#130 <https://github.com/ros2/ros2cli/issues/130>`_)
+* Add support for parameter prefixes in ros2 param list. (`#131 <https://github.com/ros2/ros2cli/issues/131>`_)
+  * Add support for parameter prefix in ros2 param list
+  * Require at least 1 prefix and simplify logic
+* Remove apparently unused yaml dependency. (`#130 <https://github.com/ros2/ros2cli/issues/130>`_)
 * Contributors: Mikael Arguedas
 
 0.5.3 (2018-07-17)
@@ -236,15 +236,15 @@ Forthcoming
 0.5.0 (2018-06-27 12:17)
 ------------------------
 * Specific message for unset parameters. (`#104 <https://github.com/ros2/ros2cli/issues/104>`_)
-* update ros2 param list output for a specific node. (`#98 <https://github.com/ros2/ros2cli/issues/98>`_)
-* add ros2 param. (`#95 <https://github.com/ros2/ros2cli/issues/95>`_)
-  * add ros2 param
-  * remove debug output
-  * add rcl_interfaces dependency instead of relying on it transitively
-  * typo
-  * check if value is None regardless of the hide type value
-  * return error when requested paraemeter is not set
-  * remove condition
+* Update ros2 param list output for a specific node. (`#98 <https://github.com/ros2/ros2cli/issues/98>`_)
+* Add ros2 param. (`#95 <https://github.com/ros2/ros2cli/issues/95>`_)
+  * Add ros2 param
+  * Remove debug output
+  * Add rcl_interfaces dependency instead of relying on it transitively
+  * Typo
+  * Check if value is None regardless of the hide type value
+  * Return error when requested paraemeter is not set
+  * Remove condition
 * Contributors: Dirk Thomas, dhood
 
 0.4.0 (2017-12-08)

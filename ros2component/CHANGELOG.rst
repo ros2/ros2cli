@@ -14,7 +14,7 @@ Forthcoming
 0.12.0 (2021-03-02)
 -------------------
 * 0.12.0
-* remove maintainer. (`#597 <https://github.com/ros2/ros2cli/issues/597>`_)
+* Remove maintainer. (`#597 <https://github.com/ros2/ros2cli/issues/597>`_)
 * Add Audrow as a maintainer. (`#591 <https://github.com/ros2/ros2cli/issues/591>`_)
 * Contributors: Audrow Nash, Claire Wang
 
@@ -26,10 +26,10 @@ Forthcoming
 
 0.10.0 (2020-11-02)
 -------------------
-* update maintainers. (`#568 <https://github.com/ros2/ros2cli/issues/568>`_)
-  * update maintainers
-  * add authors, update setup.py
-  * remove trailing whitespace
+* Update maintainers. (`#568 <https://github.com/ros2/ros2cli/issues/568>`_)
+  * Update maintainers
+  * Add authors, update setup.py
+  * Remove trailing whitespace
 * Ensure consistent timeout in ros2component list. (`#526 <https://github.com/ros2/ros2cli/issues/526>`_)
 * Contributors: Claire Wang, Michel Hidalgo
 
@@ -52,12 +52,12 @@ Forthcoming
 
 0.9.0 (2020-04-29)
 ------------------
-* more verbose test_flake8 error messages (same as `ros2/launch_ros#135 <https://github.com/ros2/launch_ros/issues/135>`_)
-* only load required entry points which improves the performance. (`#436 <https://github.com/ros2/ros2cli/issues/436>`_)
-  * extend API to exclude extensions from loading
-  * add add_subparsers_on_demand() function
-  * update all extensions to use the new API
-  * deprecate old API, add deprecation warnings
+* More verbose test_flake8 error messages (same as `ros2/launch_ros#135 <https://github.com/ros2/launch_ros/issues/135>`_)
+* Only load required entry points which improves the performance. (`#436 <https://github.com/ros2/ros2cli/issues/436>`_)
+  * Extend API to exclude extensions from loading
+  * Add add_subparsers_on_demand() function
+  * Update all extensions to use the new API
+  * Deprecate old API, add deprecation warnings
 * Contributors: Dirk Thomas
 
 0.8.6 (2019-11-19)
@@ -71,7 +71,7 @@ Forthcoming
 0.8.4 (2019-11-13)
 ------------------
 * 0.8.4
-* add service clients to ros2node info. (`#392 <https://github.com/ros2/ros2cli/issues/392>`_)
+* Add service clients to ros2node info. (`#392 <https://github.com/ros2/ros2cli/issues/392>`_)
 * Contributors: Michael Carroll, Mikael Arguedas
 
 0.8.3 (2019-10-23)
@@ -96,11 +96,11 @@ Forthcoming
 
 0.8.0 (2019-09-26)
 ------------------
-* install resource marker file for packages. (`#339 <https://github.com/ros2/ros2cli/issues/339>`_)
+* Install resource marker file for packages. (`#339 <https://github.com/ros2/ros2cli/issues/339>`_)
 * Handle find_container_node_names error. (`#322 <https://github.com/ros2/ros2cli/issues/322>`_)
 * Update setup.py version. (`#331 <https://github.com/ros2/ros2cli/issues/331>`_)
   Versions now match latest tag and package.xml.
-* install package manifest. (`#330 <https://github.com/ros2/ros2cli/issues/330>`_)
+* Install package manifest. (`#330 <https://github.com/ros2/ros2cli/issues/330>`_)
 * Use of -r/--remap flags where appropriate. (`#325 <https://github.com/ros2/ros2cli/issues/325>`_)
 * Contributors: Dirk Thomas, Jacob Perron, Michel Hidalgo, ivanpauno
 
@@ -111,7 +111,7 @@ Forthcoming
   This prevents zombie container processes from hanging around when a
   component fails to load.
   Closes: `ros2/ros2cli#260 <https://github.com/ros2/ros2cli/issues/260>`_
-* fix service names to contain 'srv' namespace part. (`#249 <https://github.com/ros2/ros2cli/issues/249>`_)
+* Fix service names to contain 'srv' namespace part. (`#249 <https://github.com/ros2/ros2cli/issues/249>`_)
 * Contributors: Dirk Thomas, Michael Carroll
 
 0.7.3 (2019-05-20)
@@ -119,10 +119,10 @@ Forthcoming
 
 0.7.2 (2019-05-08)
 ------------------
-* add xmllint linter test. (`#232 <https://github.com/ros2/ros2cli/issues/232>`_)
-  * add xmllint test to ament_python packages
-  * cover new packages as well
-* fix name of standalone verb. (`#227 <https://github.com/ros2/ros2cli/issues/227>`_)
+* Add xmllint linter test. (`#232 <https://github.com/ros2/ros2cli/issues/232>`_)
+  * Add xmllint test to ament_python packages
+  * Cover new packages as well
+* Fix name of standalone verb. (`#227 <https://github.com/ros2/ros2cli/issues/227>`_)
 * Improve ros2 component CLI. (`#226 <https://github.com/ros2/ros2cli/issues/226>`_)
   * Refactor ros2component internal API for reuse.
   In preparation for a standalone verb.

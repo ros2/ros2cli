@@ -21,7 +21,7 @@ Forthcoming
 0.12.0 (2021-03-02)
 -------------------
 * 0.12.0
-* remove maintainer. (`#597 <https://github.com/ros2/ros2cli/issues/597>`_)
+* Remove maintainer. (`#597 <https://github.com/ros2/ros2cli/issues/597>`_)
 * Add Audrow as a maintainer. (`#591 <https://github.com/ros2/ros2cli/issues/591>`_)
 * Contributors: Audrow Nash, Claire Wang
 
@@ -35,11 +35,11 @@ Forthcoming
 
 0.10.0 (2020-11-02)
 -------------------
-* update maintainers. (`#568 <https://github.com/ros2/ros2cli/issues/568>`_)
-  * update maintainers
-  * add authors, update setup.py
-  * remove trailing whitespace
-* fix incorrect EXPORT for executables. (`#545 <https://github.com/ros2/ros2cli/issues/545>`_)
+* Update maintainers. (`#568 <https://github.com/ros2/ros2cli/issues/568>`_)
+  * Update maintainers
+  * Add authors, update setup.py
+  * Remove trailing whitespace
+* Fix incorrect EXPORT for executables. (`#545 <https://github.com/ros2/ros2cli/issues/545>`_)
 * Switch ros2pkg to using importlib.
   As part of the switch away from pkg_resources (since it is
   slow), we also need to fix up ros2pkg.  ros2pkg was using
@@ -71,17 +71,17 @@ Forthcoming
 0.9.0 (2020-04-29)
 ------------------
 * Skip CLI tests on Windows until we resolve the blocking/hanging isuse. (`#489 <https://github.com/ros2/ros2cli/issues/489>`_)
-* use ament_export_targets(). (`#478 <https://github.com/ros2/ros2cli/issues/478>`_)
-* more verbose test_flake8 error messages (same as `ros2/launch_ros#135 <https://github.com/ros2/launch_ros/issues/135>`_)
+* Use ament_export_targets(). (`#478 <https://github.com/ros2/ros2cli/issues/478>`_)
+* More verbose test_flake8 error messages (same as `ros2/launch_ros#135 <https://github.com/ros2/launch_ros/issues/135>`_)
 * Remove ready_fn from test descriptions. (`#376 <https://github.com/ros2/ros2cli/issues/376>`_)
-* use f-string. (`#448 <https://github.com/ros2/ros2cli/issues/448>`_)
-  * use f-string
-  * remove unused variable
-* only load required entry points which improves the performance. (`#436 <https://github.com/ros2/ros2cli/issues/436>`_)
-  * extend API to exclude extensions from loading
-  * add add_subparsers_on_demand() function
-  * update all extensions to use the new API
-  * deprecate old API, add deprecation warnings
+* Use f-string. (`#448 <https://github.com/ros2/ros2cli/issues/448>`_)
+  * Use f-string
+  * Remove unused variable
+* Only load required entry points which improves the performance. (`#436 <https://github.com/ros2/ros2cli/issues/436>`_)
+  * Extend API to exclude extensions from loading
+  * Add add_subparsers_on_demand() function
+  * Update all extensions to use the new API
+  * Deprecate old API, add deprecation warnings
 * Merge pull request `#428 <https://github.com/ros2/ros2cli/issues/428>`_ from ros2/tfoote-patch-1
   fix create_pkg dependencies for python
 * Consistent interpretation of dependency type
@@ -89,7 +89,7 @@ Forthcoming
 
 0.8.6 (2019-11-19)
 ------------------
-* fix new linter warnings as of flake8-comprehensions 3.1.0. (`#399 <https://github.com/ros2/ros2cli/issues/399>`_)
+* Fix new linter warnings as of flake8-comprehensions 3.1.0. (`#399 <https://github.com/ros2/ros2cli/issues/399>`_)
 * Contributors: Dirk Thomas
 
 0.8.5 (2019-11-14)
@@ -129,7 +129,7 @@ Forthcoming
 
 0.8.0 (2019-09-26)
 ------------------
-* install resource marker file for packages. (`#339 <https://github.com/ros2/ros2cli/issues/339>`_)
+* Install resource marker file for packages. (`#339 <https://github.com/ros2/ros2cli/issues/339>`_)
 * Add ros2 pkg create for ament python. (`#296 <https://github.com/ros2/ros2cli/issues/296>`_)
   * Add pkg create for ament_python.
   * Add entries for setup.py to make it closer to package.xml.
@@ -145,23 +145,23 @@ Forthcoming
   * PR Feedback: Improve error message.
 * Update setup.py version. (`#331 <https://github.com/ros2/ros2cli/issues/331>`_)
   Versions now match latest tag and package.xml.
-* install package manifest. (`#330 <https://github.com/ros2/ros2cli/issues/330>`_)
-* rename package-format to match other flags. (`#291 <https://github.com/ros2/ros2cli/issues/291>`_)
+* Install package manifest. (`#330 <https://github.com/ros2/ros2cli/issues/330>`_)
+* Rename package-format to match other flags. (`#291 <https://github.com/ros2/ros2cli/issues/291>`_)
 * Add pkg xml verb. (`#280 <https://github.com/ros2/ros2cli/issues/280>`_)
-  * add pkg xml verb
-  * fix helper wording
-  * fix logic & default tag opt
-  * typo
-  * fix pkg name autocomplete
-  * exit earlier & use None actual type
-  * minor updates
+  * Add pkg xml verb
+  * Fix helper wording
+  * Fix logic & default tag opt
+  * Typo
+  * Fix pkg name autocomplete
+  * Exit earlier & use None actual type
+  * Minor updates
 * Contributors: Dirk Thomas, Jacob Perron, Jeremie Deray, Ted Kern, jpace121
 
 0.7.4 (2019-05-29)
 ------------------
-* abort pkg create if destination directory exists. (`#258 <https://github.com/ros2/ros2cli/issues/258>`_)
-  * abort pkg create if destination directory exists
-  * move check up
+* Abort pkg create if destination directory exists. (`#258 <https://github.com/ros2/ros2cli/issues/258>`_)
+  * Abort pkg create if destination directory exists
+  * Move check up
 * Contributors: Dirk Thomas
 
 0.7.3 (2019-05-20)
@@ -173,9 +173,9 @@ Forthcoming
 
 0.7.2 (2019-05-08)
 ------------------
-* add xmllint linter test. (`#232 <https://github.com/ros2/ros2cli/issues/232>`_)
-  * add xmllint test to ament_python packages
-  * cover new packages as well
+* Add xmllint linter test. (`#232 <https://github.com/ros2/ros2cli/issues/232>`_)
+  * Add xmllint test to ament_python packages
+  * Cover new packages as well
 * Contributors: Mikael Arguedas
 
 0.7.1 (2019-04-17)
@@ -186,12 +186,12 @@ Forthcoming
 
 0.6.3 (2019-02-08)
 ------------------
-* use all linters by default. (`#194 <https://github.com/ros2/ros2cli/issues/194>`_)
+* Use all linters by default. (`#194 <https://github.com/ros2/ros2cli/issues/194>`_)
 * Contributors: Dirk Thomas
 
 0.6.2 (2018-12-12)
 ------------------
-* use collections.abc.Iterable. (`#177 <https://github.com/ros2/ros2cli/issues/177>`_)
+* Use collections.abc.Iterable. (`#177 <https://github.com/ros2/ros2cli/issues/177>`_)
 * Contributors: Dirk Thomas
 
 0.6.1 (2018-12-06)
@@ -211,7 +211,7 @@ Forthcoming
 
 0.5.2 (2018-06-28)
 ------------------
-* fix tests to use packages which register themselves at the index. (`#118 <https://github.com/ros2/ros2cli/issues/118>`_)
+* Fix tests to use packages which register themselves at the index. (`#118 <https://github.com/ros2/ros2cli/issues/118>`_)
 * Contributors: Dirk Thomas
 
 0.5.1 (2018-06-27 12:27)
@@ -219,7 +219,7 @@ Forthcoming
 
 0.5.0 (2018-06-27 12:17)
 ------------------------
-* ros2pkg: avoid requiring git. (`#111 <https://github.com/ros2/ros2cli/issues/111>`_)
+* Ros2pkg: avoid requiring git. (`#111 <https://github.com/ros2/ros2cli/issues/111>`_)
 * Implementation for `#89 <https://github.com/ros2/ros2cli/issues/89>`_. (`#96 <https://github.com/ros2/ros2cli/issues/96>`_)
   * Implementation for `#89 <https://github.com/ros2/ros2cli/issues/89>`_
   ``` bash
@@ -240,9 +240,9 @@ Forthcoming
   * Revert "Implementation for `#89 <https://github.com/ros2/ros2cli/issues/89>`_"
   This reverts commit 8bec852
   * Implementation for `#89 <https://github.com/ros2/ros2cli/issues/89>`_, addressing PR feedback
-* use catkin_pkg. (`#94 <https://github.com/ros2/ros2cli/issues/94>`_)
-* add pytest markers to linter tests
-* add ament_package dependency. (`#90 <https://github.com/ros2/ros2cli/issues/90>`_)
+* Use catkin_pkg. (`#94 <https://github.com/ros2/ros2cli/issues/94>`_)
+* Add pytest markers to linter tests
+* Add ament_package dependency. (`#90 <https://github.com/ros2/ros2cli/issues/90>`_)
 * Fix installation of templates for ros2pkg create. (`#87 <https://github.com/ros2/ros2cli/issues/87>`_)
   * Move resource dir out of package
   * Install templates to share dir as data_files
@@ -258,73 +258,73 @@ Forthcoming
   Prevents resource_filename from extracting whole directory if
   installation is zipped
   * Embed _get_template_path contents
-  * exec depend on python3-pkg-resources
+  * Exec depend on python3-pkg-resources
 * Merge pull request `#85 <https://github.com/ros2/ros2cli/issues/85>`_ from ros2/avoid_builtin_use
   Avoid use of license as variable name
 * Avoid use of license as variable name
-* set zip_safe to avoid warning during installation. (`#83 <https://github.com/ros2/ros2cli/issues/83>`_)
-* ros2 pkg create. (`#42 <https://github.com/ros2/ros2cli/issues/42>`_)
-  * initial commit for ros2 pkg create
-  * managed interpreter
-  * cleanup cmakelists.txt.em
-  * single quote prints
-  * alpha order
-  * copy paste error correction
-  * ament-cmake -> ament_cmake
-  * fix typo
-  * style
-  * correct line breaks in cmake
-  * enhance CMakeLists.txt with testing section
-  * clear separation between ament_cmake and plain cmake
-  * whitespace
-  * alpha order
-  * import order
-  * use platform for uname
-  * address style comments
-  * add include and header file if building library
-  * use git config to get email and username
-  * use os.curdir
-  * cleanup cmake config
-  * address style comments
-  * disable some linters
-  * cleanup prints
-  * print error message in a single statement
-  * consolidate block
-  * add comment about disabled linters
-  * switch back to format 2 for now
-  * use build type in help text rather than build tool
-  * build type
-  * deb --> dep
-  * ament_common --> ament_lint_common
-  * use target_include_directories
-  * target_include_dir and export
-  * export symbols on plain cmake
-  * use library/node name for targets
-  * naming convention for export targets
-  * rethink nargs
-  * using ament_package data types
-  * linters
-  * set correct values in package.xml
-  * clean up package.xml with buldtool_depends and test_depends
-* print full help when no command is passed. (`#81 <https://github.com/ros2/ros2cli/issues/81>`_)
+* Set zip_safe to avoid warning during installation. (`#83 <https://github.com/ros2/ros2cli/issues/83>`_)
+* Ros2 pkg create. (`#42 <https://github.com/ros2/ros2cli/issues/42>`_)
+  * Initial commit for ros2 pkg create
+  * Managed interpreter
+  * Cleanup cmakelists.txt.em
+  * Single quote prints
+  * Alpha order
+  * Copy paste error correction
+  * Ament-cmake -> ament_cmake
+  * Fix typo
+  * Style
+  * Correct line breaks in cmake
+  * Enhance CMakeLists.txt with testing section
+  * Clear separation between ament_cmake and plain cmake
+  * Whitespace
+  * Alpha order
+  * Import order
+  * Use platform for uname
+  * Address style comments
+  * Add include and header file if building library
+  * Use git config to get email and username
+  * Use os.curdir
+  * Cleanup cmake config
+  * Address style comments
+  * Disable some linters
+  * Cleanup prints
+  * Print error message in a single statement
+  * Consolidate block
+  * Add comment about disabled linters
+  * Switch back to format 2 for now
+  * Use build type in help text rather than build tool
+  * Build type
+  * Deb --> dep
+  * Ament_common --> ament_lint_common
+  * Use target_include_directories
+  * Target_include_dir and export
+  * Export symbols on plain cmake
+  * Use library/node name for targets
+  * Naming convention for export targets
+  * Rethink nargs
+  * Using ament_package data types
+  * Linters
+  * Set correct values in package.xml
+  * Clean up package.xml with buldtool_depends and test_depends
+* Print full help when no command is passed. (`#81 <https://github.com/ros2/ros2cli/issues/81>`_)
 * Contributors: Dirk Thomas, Karsten Knese, Mikael Arguedas, Nick Medveditskov, dhood
 
 0.4.0 (2017-12-08)
 ------------------
-* remove test_suite, add pytest as test_requires
+* Remove test_suite, add pytest as test_requires
 * 0.0.3
-* implicitly inherit from object. (`#45 <https://github.com/ros2/ros2cli/issues/45>`_)
+* Implicitly inherit from object. (`#45 <https://github.com/ros2/ros2cli/issues/45>`_)
 * 0.0.2
-* add ros2 pkg executables. (`#23 <https://github.com/ros2/ros2cli/issues/23>`_)
-  * add ros2 pkg executables
-  * print basenames by default, option to print full path
+* Add ros2 pkg executables. (`#23 <https://github.com/ros2/ros2cli/issues/23>`_)
+  * Add ros2 pkg executables
+  * Print basenames by default, option to print full path
 * Merge pull request `#14 <https://github.com/ros2/ros2cli/issues/14>`_ from ros2/add_tests
   add unit tests
-* add unit tests
+* Add unit tests
 * Merge pull request `#5 <https://github.com/ros2/ros2cli/issues/5>`_ from ros2/pep257
   add pep257 tests
-* add pep257 tests
+* Add pep257 tests
 * Merge pull request `#1 <https://github.com/ros2/ros2cli/issues/1>`_ from ros2/initial_features
   Entry point, plugin system, daemon, existing tools
-* add ros2pkg for listing packages and retrieve their prefix
+* Add ros2pkg for listing packages and retrieve their prefix
 * Contributors: Dirk Thomas, Mikael Arguedas

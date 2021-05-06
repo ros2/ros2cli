@@ -19,7 +19,7 @@ Forthcoming
 0.12.0 (2021-03-02)
 -------------------
 * 0.12.0
-* remove maintainer. (`#597 <https://github.com/ros2/ros2cli/issues/597>`_)
+* Remove maintainer. (`#597 <https://github.com/ros2/ros2cli/issues/597>`_)
 * Add Audrow as a maintainer. (`#591 <https://github.com/ros2/ros2cli/issues/591>`_)
 * Contributors: Audrow Nash, Claire Wang
 
@@ -31,10 +31,10 @@ Forthcoming
 
 0.10.0 (2020-11-02)
 -------------------
-* update maintainers. (`#568 <https://github.com/ros2/ros2cli/issues/568>`_)
-  * update maintainers
-  * add authors, update setup.py
-  * remove trailing whitespace
+* Update maintainers. (`#568 <https://github.com/ros2/ros2cli/issues/568>`_)
+  * Update maintainers
+  * Add authors, update setup.py
+  * Remove trailing whitespace
 * Contributors: Claire Wang
 
 0.9.5 (2020-06-01)

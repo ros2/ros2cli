@@ -14,7 +14,7 @@ Forthcoming
 0.12.0 (2021-03-02)
 -------------------
 * 0.12.0
-* remove maintainer. (`#597 <https://github.com/ros2/ros2cli/issues/597>`_)
+* Remove maintainer. (`#597 <https://github.com/ros2/ros2cli/issues/597>`_)
 * Add Audrow as a maintainer. (`#591 <https://github.com/ros2/ros2cli/issues/591>`_)
 * Contributors: Audrow Nash, Claire Wang
 
@@ -26,10 +26,10 @@ Forthcoming
 
 0.10.0 (2020-11-02)
 -------------------
-* update maintainers. (`#568 <https://github.com/ros2/ros2cli/issues/568>`_)
-  * update maintainers
-  * add authors, update setup.py
-  * remove trailing whitespace
+* Update maintainers. (`#568 <https://github.com/ros2/ros2cli/issues/568>`_)
+  * Update maintainers
+  * Add authors, update setup.py
+  * Remove trailing whitespace
 * Contributors: Claire Wang
 
 0.9.5 (2020-06-01)
@@ -49,15 +49,15 @@ Forthcoming
 
 0.9.0 (2020-04-29)
 ------------------
-* more verbose test_flake8 error messages (same as `ros2/launch_ros#135 <https://github.com/ros2/launch_ros/issues/135>`_)
-* use f-string. (`#448 <https://github.com/ros2/ros2cli/issues/448>`_)
-  * use f-string
-  * remove unused variable
-* only load required entry points which improves the performance. (`#436 <https://github.com/ros2/ros2cli/issues/436>`_)
-  * extend API to exclude extensions from loading
-  * add add_subparsers_on_demand() function
-  * update all extensions to use the new API
-  * deprecate old API, add deprecation warnings
+* More verbose test_flake8 error messages (same as `ros2/launch_ros#135 <https://github.com/ros2/launch_ros/issues/135>`_)
+* Use f-string. (`#448 <https://github.com/ros2/ros2cli/issues/448>`_)
+  * Use f-string
+  * Remove unused variable
+* Only load required entry points which improves the performance. (`#436 <https://github.com/ros2/ros2cli/issues/436>`_)
+  * Extend API to exclude extensions from loading
+  * Add add_subparsers_on_demand() function
+  * Update all extensions to use the new API
+  * Deprecate old API, add deprecation warnings
 * Contributors: Dirk Thomas
 
 0.8.6 (2019-11-19)
@@ -96,9 +96,9 @@ Forthcoming
 
 0.8.0 (2019-09-26)
 ------------------
-* install resource marker file for packages. (`#339 <https://github.com/ros2/ros2cli/issues/339>`_)
-* install package manifest. (`#330 <https://github.com/ros2/ros2cli/issues/330>`_)
-* add --ttl option to multicast send. (`#282 <https://github.com/ros2/ros2cli/issues/282>`_)
+* Install resource marker file for packages. (`#339 <https://github.com/ros2/ros2cli/issues/339>`_)
+* Install package manifest. (`#330 <https://github.com/ros2/ros2cli/issues/330>`_)
+* Add --ttl option to multicast send. (`#282 <https://github.com/ros2/ros2cli/issues/282>`_)
 * Contributors: Dirk Thomas
 
 0.7.4 (2019-05-29)
@@ -109,9 +109,9 @@ Forthcoming
 
 0.7.2 (2019-05-08)
 ------------------
-* add xmllint linter test. (`#232 <https://github.com/ros2/ros2cli/issues/232>`_)
-  * add xmllint test to ament_python packages
-  * cover new packages as well
+* Add xmllint linter test. (`#232 <https://github.com/ros2/ros2cli/issues/232>`_)
+  * Add xmllint test to ament_python packages
+  * Cover new packages as well
 * Contributors: Mikael Arguedas
 
 0.7.1 (2019-04-17)
@@ -119,7 +119,7 @@ Forthcoming
 
 0.7.0 (2019-04-14)
 ------------------
-* fixup ros2multicast version. (`#200 <https://github.com/ros2/ros2cli/issues/200>`_)
+* Fixup ros2multicast version. (`#200 <https://github.com/ros2/ros2cli/issues/200>`_)
 * Contributors: Mikael Arguedas
 
 0.6.3 (2019-02-08)
@@ -136,11 +136,11 @@ Forthcoming
 
 0.6.0 (2018-11-19)
 ------------------
-* add ros2 multicast commands. (`#145 <https://github.com/ros2/ros2cli/issues/145>`_)
-  * add ros2 multicast commands
-  * remove comments from setup.py
-  * try to make Windows happy
-  * remove additional tests_require from setup.cfg
+* Add ros2 multicast commands. (`#145 <https://github.com/ros2/ros2cli/issues/145>`_)
+  * Add ros2 multicast commands
+  * Remove comments from setup.py
+  * Try to make Windows happy
+  * Remove additional tests_require from setup.cfg
 * Contributors: Dirk Thomas
 
 0.5.4 (2018-08-20)

@@ -40,7 +40,7 @@ Forthcoming
 0.12.0 (2021-03-02)
 -------------------
 * 0.12.0
-* remove maintainer. (`#597 <https://github.com/ros2/ros2cli/issues/597>`_)
+* Remove maintainer. (`#597 <https://github.com/ros2/ros2cli/issues/597>`_)
 * Add Audrow as a maintainer. (`#591 <https://github.com/ros2/ros2cli/issues/591>`_)
 * Contributors: Audrow Nash, Claire Wang
 
@@ -58,10 +58,10 @@ Forthcoming
 
 0.10.0 (2020-11-02)
 -------------------
-* update maintainers. (`#568 <https://github.com/ros2/ros2cli/issues/568>`_)
-  * update maintainers
-  * add authors, update setup.py
-  * remove trailing whitespace
+* Update maintainers. (`#568 <https://github.com/ros2/ros2cli/issues/568>`_)
+  * Update maintainers
+  * Add authors, update setup.py
+  * Remove trailing whitespace
 * Remove pkg_resources from ros2doctor.
   In combination with some other work, this will make the
   command-line tools faster.
@@ -99,7 +99,7 @@ Forthcoming
   This change makes it so we only provide a warning if one of the counts is zero and the
   other is not. Although this is still a legitimate configuration, it seems more likely to be
   a problem and worth reporting.
-* more verbose test_flake8 error messages (same as `ros2/launch_ros#135 <https://github.com/ros2/launch_ros/issues/135>`_)
+* More verbose test_flake8 error messages (same as `ros2/launch_ros#135 <https://github.com/ros2/launch_ros/issues/135>`_)
 * Prefix ros2doctor node names with 'ros2doctor\_'. (`#451 <https://github.com/ros2/ros2cli/issues/451>`_)
   This fixes an error when the hostname starts
   with an illegal character for a node name
@@ -107,34 +107,34 @@ Forthcoming
 * [ros2doctor] Handle non-metapackages in rosdistro check. (`#452 <https://github.com/ros2/ros2cli/issues/452>`_)
   Otherwise, we get a KeyError and get warnings about not being able to find versions for certain packages.
 * [ros2doctor] Improve doctor_warn() . (`#445 <https://github.com/ros2/ros2cli/issues/445>`_)
-  * decouple warning/error msg from result to show traceback
+  * Decouple warning/error msg from result to show traceback
   * Update print statement to use f-string
-  * remove None return and add error catching
-  * specify stacklevel; add doctor_error
+  * Remove None return and add error catching
+  * Specify stacklevel; add doctor_error
 * Multimachine communication. (`#432 <https://github.com/ros2/ros2cli/issues/432>`_)
-  * add verb call
-  * add verb entry point
-  * put executor.spin in its own thread
-  * update args
-  * add missing whitespace
-  * add summary table doc string
-  * fix exception ignore traceback
-  * fix mixed up sub/receive dicts
-  * reapply changes
-  * add option and verbose name, enforce node name uniqueness, add context lock. prefix variables, add infinite loop
-  * change verb naem
-  * add single host test case
-  * add rclpy dependency
-  * correct typo, remove stderr from test
-  * restart daemon to resolve CI runtime error
-  * replace ready_fn with ReadyToTest()
+  * Add verb call
+  * Add verb entry point
+  * Put executor.spin in its own thread
+  * Update args
+  * Add missing whitespace
+  * Add summary table doc string
+  * Fix exception ignore traceback
+  * Fix mixed up sub/receive dicts
+  * Reapply changes
+  * Add option and verbose name, enforce node name uniqueness, add context lock. prefix variables, add infinite loop
+  * Change verb naem
+  * Add single host test case
+  * Add rclpy dependency
+  * Correct typo, remove stderr from test
+  * Restart daemon to resolve CI runtime error
+  * Replace ready_fn with ReadyToTest()
 * [ros2doctor] Check for deprecated packages. (`#388 <https://github.com/ros2/ros2cli/issues/388>`_)
-  * check local package versions against rosdistro
+  * Check local package versions against rosdistro
 * Revert "simplify helper function"
   This reverts commit 2c1768d1f464aa6e8d7f4cb162a5e36647036a43.
-* simplify helper function
+* Simplify helper function
 * Update network check to fix missing flags on Windows . (`#404 <https://github.com/ros2/ros2cli/issues/404>`_)
-  * add no flags scenario
+  * Add no flags scenario
 * Contributors: Chris Lalancette, Claire Wang, Dirk Thomas, Jacob Perron, claireyywang
 
 0.8.6 (2019-11-19)
@@ -148,7 +148,7 @@ Forthcoming
 0.8.4 (2019-11-13)
 ------------------
 * 0.8.4
-* update headline to capital letters. (`#383 <https://github.com/ros2/ros2cli/issues/383>`_)
+* Update headline to capital letters. (`#383 <https://github.com/ros2/ros2cli/issues/383>`_)
 * Contributors: Claire Wang, Michael Carroll
 
 0.8.3 (2019-10-23)
@@ -166,9 +166,9 @@ Forthcoming
   Failed modules: network
   ```
   Which works if there's one or more failed modules
-  * remove double space
-* fix AttributeError. (`#370 <https://github.com/ros2/ros2cli/issues/370>`_)
-* add new args. (`#354 <https://github.com/ros2/ros2cli/issues/354>`_)
+  * Remove double space
+* Fix AttributeError. (`#370 <https://github.com/ros2/ros2cli/issues/370>`_)
+* Add new args. (`#354 <https://github.com/ros2/ros2cli/issues/354>`_)
 * Contributors: Claire Wang, Marya Belanger, Shane Loretz
 
 0.8.2 (2019-10-08)
@@ -179,97 +179,97 @@ Forthcoming
 0.8.1 (2019-10-04)
 ------------------
 * 0.8.1
-* ros2doctor: add topic check. (`#341 <https://github.com/ros2/ros2cli/issues/341>`_)
-  * add topic check&report
-  * add topic check&report
-  * add topic test, tbc
-  * add topic report unit test
-  * correct docstring
+* Ros2doctor: add topic check. (`#341 <https://github.com/ros2/ros2cli/issues/341>`_)
+  * Add topic check&report
+  * Add topic check&report
+  * Add topic test, tbc
+  * Add topic report unit test
+  * Correct docstring
 * Contributors: Claire Wang, Michael Carroll
 
 0.8.0 (2019-09-26)
 ------------------
-* install resource marker file for packages. (`#339 <https://github.com/ros2/ros2cli/issues/339>`_)
-* ros2doctor: add `--include-warning` arg. (`#338 <https://github.com/ros2/ros2cli/issues/338>`_)
-  * add include-warning arg
-  * rm whitespace
-  * update arg usage
-  * simplify error/warning mechanism
-  * simplify run_checks param
+* Install resource marker file for packages. (`#339 <https://github.com/ros2/ros2cli/issues/339>`_)
+* Ros2doctor: add `--include-warning` arg. (`#338 <https://github.com/ros2/ros2cli/issues/338>`_)
+  * Add include-warning arg
+  * Rm whitespace
+  * Update arg usage
+  * Simplify error/warning mechanism
+  * Simplify run_checks param
 * Add warning and error handling for `ifcfg` import on Windows and OSX. (`#332 <https://github.com/ros2/ros2cli/issues/332>`_)
-  * add error handling for ifcfg and check/report type
-  * modify check/report warning msgs
-  * fix code format
-  * fix grammar
-  * fix var refed before declared exception
-  * remove type check
-  * update network check/report rtypes
-  * move report if/else block
-  * remove report inits
+  * Add error handling for ifcfg and check/report type
+  * Modify check/report warning msgs
+  * Fix code format
+  * Fix grammar
+  * Fix var refed before declared exception
+  * Remove type check
+  * Update network check/report rtypes
+  * Move report if/else block
+  * Remove report inits
 * Add RMW name to report . (`#335 <https://github.com/ros2/ros2cli/issues/335>`_)
-  * add rmw library info
-  * add middleware name
-  * add entry point
+  * Add rmw library info
+  * Add middleware name
+  * Add entry point
 * Make network check case-insensitive. (`#334 <https://github.com/ros2/ros2cli/issues/334>`_)
-  * make network check case-insensitive
-  * update case insensitive function call
-* install package manifest. (`#330 <https://github.com/ros2/ros2cli/issues/330>`_)
-* update README entry point examples. (`#329 <https://github.com/ros2/ros2cli/issues/329>`_)
+  * Make network check case-insensitive
+  * Update case insensitive function call
+* Install package manifest. (`#330 <https://github.com/ros2/ros2cli/issues/330>`_)
+* Update README entry point examples. (`#329 <https://github.com/ros2/ros2cli/issues/329>`_)
 * Update report feature with new argument, add temp fix for ifcfg module . (`#324 <https://github.com/ros2/ros2cli/issues/324>`_)
-  * add network checks and report
-  * network shenanigens
-  * network shenanigens
-  * network shenanigens
-  * add network check and report
-  * update code format
-  * revised code format
-  * added rosdep key ifcfg-pip
-  * revise code
-  * working on report format
-  * improving report
-  * update platform report format
-  * update network report format
-  * add format print
-  * add --report_failed feature
-  * improving report format
-  * temp fix ifcfg import module
-  * update build dep
-  * fix flake8
-  * fix flake8
-  * add abc and Report class
+  * Add network checks and report
+  * Network shenanigens
+  * Network shenanigens
+  * Network shenanigens
+  * Add network check and report
+  * Update code format
+  * Revised code format
+  * Added rosdep key ifcfg-pip
+  * Revise code
+  * Working on report format
+  * Improving report
+  * Update platform report format
+  * Update network report format
+  * Add format print
+  * Add --report_failed feature
+  * Improving report format
+  * Temp fix ifcfg import module
+  * Update build dep
+  * Fix flake8
+  * Fix flake8
+  * Add abc and Report class
   * Implement ABC for each check and report and udpate format print
-  * update ifcfg import error, fix code format
-  * add newlines
-  * update warning msgs
-  * fix code format
-  * update report of failed checks
-  * update run_check
-  * udpate generate_report
-  * add sphinx style docstring and type annotations
-  * add context manager for custom warning msg
-  * fixed flakey issues
-  * update Check and Report class error handling
-  * fix report refed before assigned mistake
-  * add failed entry point name
-  * remove pass from try/except
-  * add error handling for check/report
-  * change ValueError to Exception
-* removing ifcfg_vendor. (`#323 <https://github.com/ros2/ros2cli/issues/323>`_)
+  * Update ifcfg import error, fix code format
+  * Add newlines
+  * Update warning msgs
+  * Fix code format
+  * Update report of failed checks
+  * Update run_check
+  * Udpate generate_report
+  * Add sphinx style docstring and type annotations
+  * Add context manager for custom warning msg
+  * Fixed flakey issues
+  * Update Check and Report class error handling
+  * Fix report refed before assigned mistake
+  * Add failed entry point name
+  * Remove pass from try/except
+  * Add error handling for check/report
+  * Change ValueError to Exception
+* Removing ifcfg_vendor. (`#323 <https://github.com/ros2/ros2cli/issues/323>`_)
 * Add network configuration check and report to ros2doctor. (`#319 <https://github.com/ros2/ros2cli/issues/319>`_)
-  * add network checks and report
-  * network shenanigens
-  * network shenanigens
-  * network shenanigens
-  * add network check and report
-  * update code format
-  * revised code format
-  * add ifcfg-pip rosdep key
+  * Add network checks and report
+  * Network shenanigens
+  * Network shenanigens
+  * Network shenanigens
+  * Add network check and report
+  * Update code format
+  * Revised code format
+  * Add ifcfg-pip rosdep key
   waiting for rosdistro PR approval https://github.com/ros/rosdistro/pull/22071
-  * added rosdep key ifcfg-pip
-  * revise code
-* add ros2doctor README. (`#318 <https://github.com/ros2/ros2cli/issues/318>`_)
-  * add README
-  * update sentence to new line
+  * Added rosdep key ifcfg-pip
+  * Revise code
+* Add ros2doctor README. (`#318 <https://github.com/ros2/ros2cli/issues/318>`_)
+  * Add README
+  * Update sentence to new line
   * Update grammer
   Co-Authored-By: Marya Belanger <marya@openrobotics.org>
   * Update grammer
@@ -279,28 +279,28 @@ Forthcoming
   * Update grammar
   Co-Authored-By: Marya Belanger <marya@openrobotics.org>
 * Add distribution check and report feature to `ros2 doctor` command  . (`#311 <https://github.com/ros2/ros2cli/issues/311>`_)
-  * created ros2debug package
-  * created setup verb, need revision
-  * added simple setup check
-  * added simple setup check, need testing
-  * added four standard tests
-  * add new line to end of file
-  * corrected code format
-  * update debug api Signed-off by: Claire Wang clairewang@openrobotics.org
-  * update code format
-  * added rosdistro
-  * fixed style and added rosdistro
-  * fixed code style
-  * corrected code style
-  * added network interface print command
-  * leave out network verb, change cmd name to doctor, add alias wtf
-  * remove network.py
-  * add version, rosdistro, platformdist, fallback checks, fallback checks
-  * add wtf alias, separate checks and report
-  * remove duplicates, correct grammer
-  * add entrypoints for checks and report, output failed checks
-  * corrected code format
-  * reformat report, correct typo
+  * Created ros2debug package
+  * Created setup verb, need revision
+  * Added simple setup check
+  * Added simple setup check, need testing
+  * Added four standard tests
+  * Add new line to end of file
+  * Corrected code format
+  * Update debug api Signed-off by: Claire Wang clairewang@openrobotics.org
+  * Update code format
+  * Added rosdistro
+  * Fixed style and added rosdistro
+  * Fixed code style
+  * Corrected code style
+  * Added network interface print command
+  * Leave out network verb, change cmd name to doctor, add alias wtf
+  * Remove network.py
+  * Add version, rosdistro, platformdist, fallback checks, fallback checks
+  * Add wtf alias, separate checks and report
+  * Remove duplicates, correct grammer
+  * Add entrypoints for checks and report, output failed checks
+  * Corrected code format
+  * Reformat report, correct typo
 * Contributors: Claire Wang, Dirk Thomas
 
 0.7.4 (2019-05-29)
