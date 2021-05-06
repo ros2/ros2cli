@@ -2,8 +2,8 @@
 Changelog for package ros2doctor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.13.1 (2021-04-26)
+-------------------
 * Continue to next iteration after exceptions in generate_reports. (`#623 <https://github.com/ros2/ros2cli/issues/623>`_)
 * Contributors: Alberto Soragna
 

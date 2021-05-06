@@ -2,8 +2,8 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.13.1 (2021-04-26)
+-------------------
 * Ensure only one daemon can run at a time. (`#622 <https://github.com/ros2/ros2cli/issues/622>`_)
 * Contributors: Michel Hidalgo
 
