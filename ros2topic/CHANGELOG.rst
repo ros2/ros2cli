@@ -4,9 +4,6 @@ Changelog for package ros2topic
 
 Forthcoming
 -----------
-* QoS autodetection. (`#613 <https://github.com/ros2/ros2cli/issues/613>`_)
-* Make Lost Messages option ON by default. (`#633 <https://github.com/ros2/ros2cli/issues/633>`_)
-* Contributors: Gonzo
 
 0.13.0 (2021-04-06)
 -------------------

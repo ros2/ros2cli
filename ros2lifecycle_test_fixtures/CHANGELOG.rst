@@ -2,6 +2,9 @@
 Changelog for package ros2lifecycle_test_fixtures
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.13.0 (2021-04-06)
 -------------------
 * Depend on rclcpp::rclcpp target. (`#618 <https://github.com/ros2/ros2cli/issues/618>`_)
