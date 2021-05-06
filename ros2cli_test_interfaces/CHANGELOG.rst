@@ -13,7 +13,6 @@ Forthcoming
 
 0.12.0 (2021-03-02)
 -------------------
-* 0.12.0
 * Remove maintainer. (`#597 <https://github.com/ros2/ros2cli/issues/597>`_)
 * Add Audrow as a maintainer. (`#591 <https://github.com/ros2/ros2cli/issues/591>`_)
 * Contributors: Audrow Nash, Claire Wang
@@ -22,13 +21,6 @@ Forthcoming
 -------------------
 * Make ros2cli_test_interfaces version equal to other packages.
 * Remove ros2interface test dependencies on builtin interface. (`#579 <https://github.com/ros2/ros2cli/issues/579>`_)
-  * Update tests to avoid using buildin_interfaces
-  * Create ros2cli_test_msgs package with interfaces
-  * Update ros2interface show to use ros2cli_test_msgs
-  * List ros2cli_test_msgs as a test dependency of ros2cli
-  * Change ros2cli_test_msgs to ros2cli_test_interfaces
-  * Correct test interfaces dependency in package.xml
-  * Remove ros2cli_test_interfaces from ros2cli test dependencies
 * Contributors: Audrow Nash, Chris Lalancette
 
 0.10.1 (2020-12-08)

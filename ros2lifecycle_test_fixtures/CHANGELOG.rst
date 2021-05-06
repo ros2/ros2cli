@@ -11,14 +11,10 @@ Forthcoming
 0.13.0 (2021-04-06)
 -------------------
 * Depend on rclcpp::rclcpp target. (`#618 <https://github.com/ros2/ros2cli/issues/618>`_)
-  * Depend on rclcpp::rclcpp target
-  * Refactor to use ament_target_dependencies
-  * Make linter happy
-* Contributors: Audrow Nash
+  Contributors: Audrow Nash
 
 0.12.0 (2021-03-02)
 -------------------
-* 0.12.0
 * Remove maintainer. (`#597 <https://github.com/ros2/ros2cli/issues/597>`_)
 * Add Audrow as a maintainer. (`#591 <https://github.com/ros2/ros2cli/issues/591>`_)
 * Contributors: Audrow Nash, Claire Wang
@@ -32,9 +28,6 @@ Forthcoming
 0.10.0 (2020-11-02)
 -------------------
 * Update maintainers. (`#568 <https://github.com/ros2/ros2cli/issues/568>`_)
-  * Update maintainers
-  * Add authors, update setup.py
-  * Remove trailing whitespace
 * Contributors: Claire Wang
 
 0.9.5 (2020-06-01)

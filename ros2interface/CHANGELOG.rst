@@ -13,7 +13,6 @@ Forthcoming
 
 0.12.0 (2021-03-02)
 -------------------
-* 0.12.0
 * Remove maintainer. (`#597 <https://github.com/ros2/ros2cli/issues/597>`_)
 * Add Audrow as a maintainer. (`#591 <https://github.com/ros2/ros2cli/issues/591>`_)
 * Contributors: Audrow Nash, Claire Wang
@@ -21,13 +20,6 @@ Forthcoming
 0.11.0 (2021-01-25)
 -------------------
 * Remove ros2interface test dependencies on builtin interface. (`#579 <https://github.com/ros2/ros2cli/issues/579>`_)
-  * Update tests to avoid using buildin_interfaces
-  * Create ros2cli_test_msgs package with interfaces
-  * Update ros2interface show to use ros2cli_test_msgs
-  * List ros2cli_test_msgs as a test dependency of ros2cli
-  * Change ros2cli_test_msgs to ros2cli_test_interfaces
-  * Correct test interfaces dependency in package.xml
-  * Remove ros2cli_test_interfaces from ros2cli test dependencies
 * Contributors: Audrow Nash
 
 0.10.1 (2020-12-08)
@@ -36,35 +28,10 @@ Forthcoming
 0.10.0 (2020-11-02)
 -------------------
 * Update maintainers. (`#568 <https://github.com/ros2/ros2cli/issues/568>`_)
-  * Update maintainers
-  * Add authors, update setup.py
-  * Remove trailing whitespace
 * Handle inline comments on constants correctly. (`#548 <https://github.com/ros2/ros2cli/issues/548>`_)
-* Merge pull request `#540 <https://github.com/ros2/ros2cli/issues/540>`_ from ros2/tfoote/fix_tests_for_changed_comment
-  Update quoted comments in the test.
-* Fix expected lines in test show all comments
-* Fix quotes
-* Update quoted comments in the test.
-* [ros2interface] Add option to include/remove whitespace and comments. (`#527 <https://github.com/ros2/ros2cli/issues/527>`_)
-  * Add option to include/remove whitespace and comments
-  * Make InterfaceTextLine docstring one line
-  * Change show interface flags to --all-comments and --no-comments
-  * Refactor to apply review feedback
-  * Simplify display logic
-  Co-authored-by: Jacob Perron <jacob@openrobotics.org>
-  * Minor refactoring
-  Co-authored-by: Jacob Perron <jacob@openrobotics.org>
-* [ros2interface] show "expanded" message definition. (`#524 <https://github.com/ros2/ros2cli/issues/524>`_)
-  * Expand interfaces with nesting in interface show
-  * Make show interface not print anything on empty lines
-  * Test nesting interface + update tests that used nested interfaces
-  * Minor refactoring
-  * Support arrays of expandable types
-  * Yield file lines and use stack to organize nesting
-  * Make member variable names and error text more consistent
-  * Use str function to make TextLineInterface usage clearer
-  * Simplify generator to get interface text lines
-  * Reformat to pass flake-8 tests
+* Update quoted comments in the test (`#540 <https://github.com/ros2/ros2cli/issues/540>`_)
+* Add option to include/remove whitespace and comments. (`#527 <https://github.com/ros2/ros2cli/issues/527>`_)
+* Show "expanded" message definition. (`#524 <https://github.com/ros2/ros2cli/issues/524>`_)
 * Contributors: Audrow, Audrow Nash, Claire Wang, Tully Foote
 
 0.9.5 (2020-06-01)

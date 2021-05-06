@@ -8,8 +8,6 @@ Forthcoming
 0.14.0 (2021-04-26)
 -------------------
 * Ensure only one daemon can run at a time. (`#622 <https://github.com/ros2/ros2cli/issues/622>`_)
-  * Substitute SO_REUSEADDR by SO_LINGER.
-  * Wait for daemon shutdown before testing NodeStrategy
 * Contributors: Michel Hidalgo
 
 0.13.0 (2021-04-06)
@@ -17,12 +15,8 @@ Forthcoming
 
 0.12.0 (2021-03-02)
 -------------------
-* 0.12.0
 * Remove maintainer. (`#597 <https://github.com/ros2/ros2cli/issues/597>`_)
 * Add option to support use_sim_time. (`#581 <https://github.com/ros2/ros2cli/issues/581>`_)
-  * Add option to support use_sim_time.
-  * Requirement is delay, not bandwidth.
-  * Add test for DirectNode Class.
 * Bugfix for `#563 <https://github.com/ros2/ros2cli/issues/563>`_. (`#570 <https://github.com/ros2/ros2cli/issues/570>`_)
 * Add Audrow as a maintainer. (`#591 <https://github.com/ros2/ros2cli/issues/591>`_)
 * Contributors: Audrow Nash, Claire Wang, Daisuke Sato, Tomoya Fujita
@@ -30,10 +24,6 @@ Forthcoming
 0.11.0 (2021-01-25)
 -------------------
 * Support Python 3.8-provided importlib.metadata. (`#585 <https://github.com/ros2/ros2cli/issues/585>`_)
-  The importlib_metadata package is a backport of the importlib.metadata
-  module from Python 3.8. Fedora (and possibly others) no longer package
-  importlib_metadata because they ship Python versions which have the
-  functionality built-in.
 * Contributors: Scott K Logan
 
 0.10.1 (2020-12-08)
@@ -42,32 +32,8 @@ Forthcoming
 0.10.0 (2020-11-02)
 -------------------
 * Update maintainers. (`#568 <https://github.com/ros2/ros2cli/issues/568>`_)
-  * Update maintainers
-  * Add authors, update setup.py
-  * Remove trailing whitespace
 * Added dependency to python3-argcomplete to ros2cli. (`#564 <https://github.com/ros2/ros2cli/issues/564>`_)
-  * Added dependency to python3-argcomplete to ros2cli
-* Remove use of pkg_resources from ros2cli.
-  Replace it with the use of the more modern importlib*
-  libraries.  There are a couple of reasons to do this:
-  1.  pkg_resources is quite slow to import; on my machine,
-  just firing up the python interpreter takes ~35ms, while
-  firing up the python interpreter and importing pkg_resources
-  takes ~175ms.  Firing up the python interpreter and importing
-  importlib_metadata takes ~70ms.  Removing 100ms per invocation
-  of the command-line both makes it speedier for users, and
-  will speed up our tests (which call out to the command-line
-  quite a lot).
-  2.  pkg_resources is somewhat deprecated and being replaced
-  by importlib.  https://importlib-metadata.readthedocs.io/en/latest/using.html
-  describes some of it
-  Note: this change definitively breaks doing releases with
-  Ubuntu Bionic, as python3-importlib-metadata is not available in Bionic
-  (though it is available via pip).
-  Note: By itself, this change is not enough to completely remove our
-  dependence on pkg_resources.  We'll also have to do something about
-  the console_scripts that setup.py generates.  That will be
-  a separate effort.
+* Remove use of pkg_resources from ros2cli. (`#537 <https://github.com/ros2/ros2cli/pull/537>`_)
 * Contributors: Chris Lalancette, Claire Wang, Yoan Mollard
 
 0.9.5 (2020-06-01)

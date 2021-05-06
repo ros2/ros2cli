@@ -5,33 +5,12 @@ Changelog for package ros2doctor
 Forthcoming
 -----------
 * Improve ros2 doctor on Windows. (`#631 <https://github.com/ros2/ros2cli/issues/631>`_)
-  Improve ros2 doctor on Windows:
-  * Print a more useful error message when failing to load plugin
-  * Print a clearer error message when failing to find either a loopback or no loopback interface on Windows.
-  * Print "latest version" instead of "required version".
-  * Print the corrent name of the python executable according to the platform.
-  Co-authored-by: Chris Lalancette <clalancette@openrobotics.org>
-  Co-authored-by: Christophe Bedard <bedard.christophe@gmail.com>
 * Contributors: Ivan Santiago Paunovic
 
 0.14.0 (2021-04-26)
 -------------------
-* [ros2doctor] Add QoS compatibility check and report. (`#621 <https://github.com/ros2/ros2cli/issues/621>`_)
-  * Add QoS compatibility check and report for ROS2 Doctor
-  * Make linter happy
-  * Handle case when report has nothing to show
-  * Remove unused function
-  * Make the option to skip topics when getting topics
-  * Output reason with QoS warning or error
-  * Update report category
-  * Add tests and test fixtures
-  * Update copyright year in test fixtures
-  * Fix quotes
-  * Retry tests on failure
-  * Make tests weaker
-  * Remove re import
+* Add QoS compatibility check and report. (`#621 <https://github.com/ros2/ros2cli/issues/621>`_)
 * Continue to next iteration after exceptions in generate_reports. (`#623 <https://github.com/ros2/ros2cli/issues/623>`_)
-  run_checks loops
 * Contributors: Alberto Soragna, Audrow Nash
 
 0.13.0 (2021-04-06)
@@ -39,7 +18,6 @@ Forthcoming
 
 0.12.0 (2021-03-02)
 -------------------
-* 0.12.0
 * Remove maintainer. (`#597 <https://github.com/ros2/ros2cli/issues/597>`_)
 * Add Audrow as a maintainer. (`#591 <https://github.com/ros2/ros2cli/issues/591>`_)
 * Contributors: Audrow Nash, Claire Wang
@@ -47,10 +25,6 @@ Forthcoming
 0.11.0 (2021-01-25)
 -------------------
 * Support Python 3.8-provided importlib.metadata. (`#585 <https://github.com/ros2/ros2cli/issues/585>`_)
-  The importlib_metadata package is a backport of the importlib.metadata
-  module from Python 3.8. Fedora (and possibly others) no longer package
-  importlib_metadata because they ship Python versions which have the
-  functionality built-in.
 * Contributors: Scott K Logan
 
 0.10.1 (2020-12-08)
@@ -59,17 +33,8 @@ Forthcoming
 0.10.0 (2020-11-02)
 -------------------
 * Update maintainers. (`#568 <https://github.com/ros2/ros2cli/issues/568>`_)
-  * Update maintainers
-  * Add authors, update setup.py
-  * Remove trailing whitespace
-* Remove pkg_resources from ros2doctor.
-  In combination with some other work, this will make the
-  command-line tools faster.
+* Remove pkg_resources from ros2doctor. (`#537 <https://github.com/ros2/ros2cli/pull/537>`_)
 * Make ros2doctor depend on ros_environment and fix platform.py bug on error. (`#538 <https://github.com/ros2/ros2cli/issues/538>`_)
-  * Make ros2doctor depend on ros_environment.
-  Since it technically needs ROS_DISTRO defined for it to work,
-  that means it also has an exec_depend on ros2doctor.  Put that
-  in here.  Also make sure RosDistroReport returns a valid report on error.
 * Refactor ros2doctor hello verb. (`#521 <https://github.com/ros2/ros2cli/issues/521>`_)
 * Contributors: Chris Lalancette, Claire Wang, Michel Hidalgo
 

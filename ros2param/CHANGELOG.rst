@@ -13,19 +13,12 @@ Forthcoming
 
 0.12.0 (2021-03-02)
 -------------------
-* 0.12.0
 * Make the ros2param --filter test more reliable. (`#606 <https://github.com/ros2/ros2cli/issues/606>`_)
 * Add wildcard loading to ros2 param load. (`#602 <https://github.com/ros2/ros2cli/issues/602>`_)
 * Ros2 param dump/load should use fully qualified node names. (`#600 <https://github.com/ros2/ros2cli/issues/600>`_)
 * Add --filter options for 'ros2 param list'. (`#592 <https://github.com/ros2/ros2cli/issues/592>`_)
 * Remove maintainer. (`#597 <https://github.com/ros2/ros2cli/issues/597>`_)
 * Add rosparam verb load. (`#590 <https://github.com/ros2/ros2cli/issues/590>`_)
-  * Add rosparam verb load
-  * Move load_parameter_file implementation to api, add test_verb_load
-  * Apply fixes for linter
-  * Remove TODO comment
-  * Fix linter errors
-  Co-authored-by: Audrow Nash <audrow.nash@gmail.com>
 * Add Audrow as a maintainer. (`#591 <https://github.com/ros2/ros2cli/issues/591>`_)
 * Contributors: Audrow Nash, Claire Wang, Ivan Santiago Paunovic, Victor Lopez
 
@@ -38,12 +31,7 @@ Forthcoming
 0.10.0 (2020-11-02)
 -------------------
 * Add "--param-type" option to ros2param list. (`#572 <https://github.com/ros2/ros2cli/issues/572>`_)
-  * Add "--param-type" option to ros2param list.
-  Co-authored-by: Chris Lalancette <clalancette@openrobotics.org>
 * Update maintainers. (`#568 <https://github.com/ros2/ros2cli/issues/568>`_)
-  * Update maintainers
-  * Add authors, update setup.py
-  * Remove trailing whitespace
 * Contributors: Claire Wang, tomoya
 
 0.9.5 (2020-06-01)

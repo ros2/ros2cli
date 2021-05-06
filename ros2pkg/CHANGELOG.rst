@@ -7,20 +7,17 @@ Forthcoming
 
 0.14.0 (2021-04-26)
 -------------------
-* [ros2pkg] Use underscores in setup.cfg.em instead of dashes. (`#627 <https://github.com/ros2/ros2cli/issues/627>`_)
+* Use underscores in setup.cfg.em instead of dashes. (`#627 <https://github.com/ros2/ros2cli/issues/627>`_)
 * Contributors: Ivan Santiago Paunovic
 
 0.13.0 (2021-04-06)
 -------------------
 * Add space for "ROS 2". (`#617 <https://github.com/ros2/ros2cli/issues/617>`_)
 * Use target_compile_features for c/c++ standards. (`#615 <https://github.com/ros2/ros2cli/issues/615>`_)
-  * Use target_compile_features for c/c++ standards
-  * Need CMake 3.8 for standard features
 * Contributors: Chris Lalancette, Shane Loretz
 
 0.12.0 (2021-03-02)
 -------------------
-* 0.12.0
 * Remove maintainer. (`#597 <https://github.com/ros2/ros2cli/issues/597>`_)
 * Add Audrow as a maintainer. (`#591 <https://github.com/ros2/ros2cli/issues/591>`_)
 * Contributors: Audrow Nash, Claire Wang
@@ -36,21 +33,8 @@ Forthcoming
 0.10.0 (2020-11-02)
 -------------------
 * Update maintainers. (`#568 <https://github.com/ros2/ros2cli/issues/568>`_)
-  * Update maintainers
-  * Add authors, update setup.py
-  * Remove trailing whitespace
 * Fix incorrect EXPORT for executables. (`#545 <https://github.com/ros2/ros2cli/issues/545>`_)
 * Switch ros2pkg to using importlib.
-  As part of the switch away from pkg_resources (since it is
-  slow), we also need to fix up ros2pkg.  ros2pkg was using
-  'resource_filename' from pkg_resources.  The equivalent in
-  importlib is importlib.resources, but there is a catch.
-  As of Python 3.8, importlib.resources does not support getting
-  data from subdirectories.  The workaround is to make each
-  level of the directory structure a python module, so that the
-  module name can be looked up.  Python 3.9 will have support for
-  directories for resources, but that won't help on Ubuntu Focal.
-  More information is in https://gitlab.com/python-devs/importlib_resources/issues/58
 * Contributors: Chris Lalancette, Claire Wang, Dirk Thomas
 
 0.9.5 (2020-06-01)

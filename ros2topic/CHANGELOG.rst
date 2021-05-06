@@ -5,19 +5,7 @@ Changelog for package ros2topic
 Forthcoming
 -----------
 * QoS autodetection. (`#613 <https://github.com/ros2/ros2cli/issues/613>`_)
-  * Added autodetection
-  * Changes based con review
-  * Fixed linter, removed comments
-  * Fixed bug, changes based on review
-  * Fixed bug
-  * Changes based on review
-  * Changes based on review
-  * Fixed style
 * Make Lost Messages option ON by default. (`#633 <https://github.com/ros2/ros2cli/issues/633>`_)
-  * Lost messages option ON by default
-  * Changes based on review. Removed warning on lost_messages not supported by implementation
-  * Removed import
-  * Changes based on review
 * Contributors: Gonzo
 
 0.14.0 (2021-04-26)
@@ -26,31 +14,12 @@ Forthcoming
 0.13.0 (2021-04-06)
 -------------------
 * Add verbose info for topic list. (`#351 <https://github.com/ros2/ros2cli/issues/351>`_)
-  * Add help argument for verbose in topic list.
-  * Able to show verbose info of topic list.
-  * Refactor the code and use function instead.
-  * Use underscore to replace unused variables
-  Co-Authored-By: Claire Wang <clairewang@openrobotics.org>
-  * Use the same indentation for consistency
-  Co-Authored-By: Claire Wang <clairewang@openrobotics.org>
-  * Use NodeStrategy instead of DirectNode for showing topic list.
-  We also need to register functions for NodeStrategy: count_publishers and
-  count_subscribers.
-  * Remove blank line.
-  * Add test for topic list verbose.
-  * Restruct the code.
-  * Restruct the code.
-  Co-authored-by: Claire Wang <clairewang@openrobotics.org>
 * Contributors: ChenYing Kuo
 
 0.12.0 (2021-03-02)
 -------------------
-* 0.12.0
 * Remove maintainer. (`#597 <https://github.com/ros2/ros2cli/issues/597>`_)
 * Add option to support use_sim_time. (`#581 <https://github.com/ros2/ros2cli/issues/581>`_)
-  * Add option to support use_sim_time.
-  * Requirement is delay, not bandwidth.
-  * Add test for DirectNode Class.
 * Add Audrow as a maintainer. (`#591 <https://github.com/ros2/ros2cli/issues/591>`_)
 * Contributors: Audrow Nash, Claire Wang, Tomoya Fujita
 
@@ -60,54 +29,21 @@ Forthcoming
 0.10.1 (2020-12-08)
 -------------------
 * Add filter option to ros2topic . (`#575 <https://github.com/ros2/ros2cli/issues/575>`_)
-  * Refactor ros2topic echo verb implementation
-  * Move subscription functions into class for easier reuse arguments.
-  * Prefix functions with an underscore to indicate they are private.
-  * Add filter option to ros2topic
-  A new '--filter' option makes it easy to echo only part of a message.
-  For example, to only echo the position part of an odometry message:
-  ros2 topic echo /odom --filter pose/pose/position
-  The filter option takes one value that must not be empty (or only forward slashes '/').
-  * Change option name and syntax
-  Option is now named '--field' and the '.' character is used as the delimiter.
-  Also updated the help message with an example and added a test for accessing a nested field.
 * Contributors: Jacob Perron
 
 0.10.0 (2020-11-02)
 -------------------
 * Update deprecated qos policy value names. (`#571 <https://github.com/ros2/ros2cli/issues/571>`_)
 * Update maintainers. (`#568 <https://github.com/ros2/ros2cli/issues/568>`_)
-  * Update maintainers
-  * Add authors, update setup.py
-  * Remove trailing whitespace
-* Fix the test in here to use the topic name. (`#566 <https://github.com/ros2/ros2cli/issues/566>`_)
+* Fix the test to use the topic name. (`#566 <https://github.com/ros2/ros2cli/issues/566>`_)
 * Improve the error message for invalid message types. (`#558 <https://github.com/ros2/ros2cli/issues/558>`_)
-  * Improve the error message for invalid message types
-  * Also catch exception for detected message types
 * Use reliable QoS for ros2topic tests. (`#555 <https://github.com/ros2/ros2cli/issues/555>`_)
-  The TestROS2TopicCLI tests perform feature testing of the ros2topic
-  command line interface. If the system is under stress during these
-  tests, messages may be lost (by design). If that happens, there is a
-  fairly high likelihood that the test_topic_pub_once test will fail
-  because there is only one opportunity for the message to be successfully
-  transported. We're likely dropping other messages in this suite, but the
-  other tests continuously publish until one of the messages is received
-  (or a timeout occurs), making them significantly less likely to fail.
-  Using the 'reliable' setting for QoS reliability seems to make the tests
-  consistently pass, even when the system is placed under additional
-  stress.
-* [ros2topic] Add option to echo serialized messages. (`#470 <https://github.com/ros2/ros2cli/issues/470>`_)
-  I found this feature useful when doing some debugging.
+* Add option to echo serialized messages. (`#470 <https://github.com/ros2/ros2cli/issues/470>`_)
 * Enable --no-daemon flag for some cli tools. (`#514 <https://github.com/ros2/ros2cli/issues/514>`_)
-  Fixes `#511 <https://github.com/ros2/ros2cli/issues/511>`_
 * Use transient_local and longer keep-alive for pub tests. (`#546 <https://github.com/ros2/ros2cli/issues/546>`_)
-  * Use transient_local and longer keep-alive for pub tests
-  * Add comment to document unit of --keep-alive
 * Add --keep-alive option to 'topic pub'. (`#544 <https://github.com/ros2/ros2cli/issues/544>`_)
 * Add option to ros2 topic echo to report lost messages. (`#542 <https://github.com/ros2/ros2cli/issues/542>`_)
 * Support QoS Depth and History via ros2 topic pub/echo. (`#528 <https://github.com/ros2/ros2cli/issues/528>`_)
-  * Support QoS Depth and History via ros2 topic pub/echo.
-  Also keep depth at least 1 with transient_local setting.
 * Contributors: Chris Lalancette, Claire Wang, Dereck Wonnacott, Dirk Thomas, Ivan Santiago Paunovic, Jacob Perron, Scott K Logan, tomoya
 
 0.9.5 (2020-06-01)
