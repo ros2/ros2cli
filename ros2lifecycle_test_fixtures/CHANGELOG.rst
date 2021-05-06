@@ -2,9 +2,6 @@
 Changelog for package ros2lifecycle_test_fixtures
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
-
 0.14.0 (2021-04-26)
 -------------------
 

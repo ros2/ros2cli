@@ -2,9 +2,6 @@
 Changelog for package ros2pkg
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
-
 0.14.0 (2021-04-26)
 -------------------
 * Use underscores in setup.cfg.em instead of dashes. (`#627 <https://github.com/ros2/ros2cli/issues/627>`_)

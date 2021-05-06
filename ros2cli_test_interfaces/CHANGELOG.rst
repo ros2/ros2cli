@@ -2,9 +2,6 @@
 Changelog for package ros2cli_test_interfaces
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
-
 0.14.0 (2021-04-26)
 -------------------
 
