@@ -14,8 +14,8 @@ Forthcoming
 0.12.0 (2021-03-02)
 -------------------
 * 0.12.0
-* remove maintainer (`#597 <https://github.com/ros2/ros2cli/issues/597>`_)
-* Add Audrow as a maintainer (`#591 <https://github.com/ros2/ros2cli/issues/591>`_)
+* remove maintainer. (`#597 <https://github.com/ros2/ros2cli/issues/597>`_)
+* Add Audrow as a maintainer. (`#591 <https://github.com/ros2/ros2cli/issues/591>`_)
 * Contributors: Audrow Nash, Claire Wang
 
 0.11.0 (2021-01-25)
@@ -26,7 +26,7 @@ Forthcoming
 
 0.10.0 (2020-11-02)
 -------------------
-* update maintainers (`#568 <https://github.com/ros2/ros2cli/issues/568>`_)
+* update maintainers. (`#568 <https://github.com/ros2/ros2cli/issues/568>`_)
   * update maintainers
   * add authors, update setup.py
   * remove trailing whitespace
@@ -50,10 +50,10 @@ Forthcoming
 0.9.0 (2020-04-29)
 ------------------
 * more verbose test_flake8 error messages (same as `ros2/launch_ros#135 <https://github.com/ros2/launch_ros/issues/135>`_)
-* use f-string (`#448 <https://github.com/ros2/ros2cli/issues/448>`_)
+* use f-string. (`#448 <https://github.com/ros2/ros2cli/issues/448>`_)
   * use f-string
   * remove unused variable
-* only load required entry points which improves the performance (`#436 <https://github.com/ros2/ros2cli/issues/436>`_)
+* only load required entry points which improves the performance. (`#436 <https://github.com/ros2/ros2cli/issues/436>`_)
   * extend API to exclude extensions from loading
   * add add_subparsers_on_demand() function
   * update all extensions to use the new API
@@ -81,7 +81,7 @@ Forthcoming
 0.8.2 (2019-10-08)
 ------------------
 * 0.8.2
-* Fix multicast entrypoint (`#352 <https://github.com/ros2/ros2cli/issues/352>`_)
+* Fix multicast entrypoint. (`#352 <https://github.com/ros2/ros2cli/issues/352>`_)
   * Fix multicast entrypoint
   Otherwise, we see an error every time we run a ros2 command:
   Failed to load entry point 'multicast': No module named 'ros2node.command.multicast'
@@ -91,14 +91,14 @@ Forthcoming
 0.8.1 (2019-10-04)
 ------------------
 * 0.8.1
-* Use setup.py fields rather than setup.cfg (`#346 <https://github.com/ros2/ros2cli/issues/346>`_)
+* Use setup.py fields rather than setup.cfg. (`#346 <https://github.com/ros2/ros2cli/issues/346>`_)
 * Contributors: Michael Carroll
 
 0.8.0 (2019-09-26)
 ------------------
-* install resource marker file for packages (`#339 <https://github.com/ros2/ros2cli/issues/339>`_)
-* install package manifest (`#330 <https://github.com/ros2/ros2cli/issues/330>`_)
-* add --ttl option to multicast send (`#282 <https://github.com/ros2/ros2cli/issues/282>`_)
+* install resource marker file for packages. (`#339 <https://github.com/ros2/ros2cli/issues/339>`_)
+* install package manifest. (`#330 <https://github.com/ros2/ros2cli/issues/330>`_)
+* add --ttl option to multicast send. (`#282 <https://github.com/ros2/ros2cli/issues/282>`_)
 * Contributors: Dirk Thomas
 
 0.7.4 (2019-05-29)
@@ -109,7 +109,7 @@ Forthcoming
 
 0.7.2 (2019-05-08)
 ------------------
-* add xmllint linter test (`#232 <https://github.com/ros2/ros2cli/issues/232>`_)
+* add xmllint linter test. (`#232 <https://github.com/ros2/ros2cli/issues/232>`_)
   * add xmllint test to ament_python packages
   * cover new packages as well
 * Contributors: Mikael Arguedas
@@ -119,7 +119,7 @@ Forthcoming
 
 0.7.0 (2019-04-14)
 ------------------
-* fixup ros2multicast version (`#200 <https://github.com/ros2/ros2cli/issues/200>`_)
+* fixup ros2multicast version. (`#200 <https://github.com/ros2/ros2cli/issues/200>`_)
 * Contributors: Mikael Arguedas
 
 0.6.3 (2019-02-08)
@@ -136,7 +136,7 @@ Forthcoming
 
 0.6.0 (2018-11-19)
 ------------------
-* add ros2 multicast commands (`#145 <https://github.com/ros2/ros2cli/issues/145>`_)
+* add ros2 multicast commands. (`#145 <https://github.com/ros2/ros2cli/issues/145>`_)
   * add ros2 multicast commands
   * remove comments from setup.py
   * try to make Windows happy

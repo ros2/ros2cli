@@ -14,8 +14,8 @@ Forthcoming
 0.12.0 (2021-03-02)
 -------------------
 * 0.12.0
-* remove maintainer (`#597 <https://github.com/ros2/ros2cli/issues/597>`_)
-* Add Audrow as a maintainer (`#591 <https://github.com/ros2/ros2cli/issues/591>`_)
+* remove maintainer. (`#597 <https://github.com/ros2/ros2cli/issues/597>`_)
+* Add Audrow as a maintainer. (`#591 <https://github.com/ros2/ros2cli/issues/591>`_)
 * Contributors: Audrow Nash, Claire Wang
 
 0.11.0 (2021-01-25)
@@ -26,7 +26,7 @@ Forthcoming
 
 0.10.0 (2020-11-02)
 -------------------
-* update maintainers (`#568 <https://github.com/ros2/ros2cli/issues/568>`_)
+* update maintainers. (`#568 <https://github.com/ros2/ros2cli/issues/568>`_)
   * update maintainers
   * add authors, update setup.py
   * remove trailing whitespace
@@ -50,7 +50,7 @@ Forthcoming
 0.9.0 (2020-04-29)
 ------------------
 * more verbose test_flake8 error messages (same as `ros2/launch_ros#135 <https://github.com/ros2/launch_ros/issues/135>`_)
-* use f-string (`#448 <https://github.com/ros2/ros2cli/issues/448>`_)
+* use f-string. (`#448 <https://github.com/ros2/ros2cli/issues/448>`_)
   * use f-string
   * remove unused variable
 * Contributors: Dirk Thomas
@@ -85,10 +85,10 @@ Forthcoming
 
 0.8.0 (2019-09-26)
 ------------------
-* install resource marker file for packages (`#339 <https://github.com/ros2/ros2cli/issues/339>`_)
-* Update setup.py version (`#331 <https://github.com/ros2/ros2cli/issues/331>`_)
+* install resource marker file for packages. (`#339 <https://github.com/ros2/ros2cli/issues/339>`_)
+* Update setup.py version. (`#331 <https://github.com/ros2/ros2cli/issues/331>`_)
   Versions now match latest tag and package.xml.
-* install package manifest (`#330 <https://github.com/ros2/ros2cli/issues/330>`_)
+* install package manifest. (`#330 <https://github.com/ros2/ros2cli/issues/330>`_)
 * Contributors: Dirk Thomas, Jacob Perron
 
 0.7.4 (2019-05-29)
@@ -99,7 +99,7 @@ Forthcoming
 
 0.7.2 (2019-05-08)
 ------------------
-* add xmllint linter test (`#232 <https://github.com/ros2/ros2cli/issues/232>`_)
+* add xmllint linter test. (`#232 <https://github.com/ros2/ros2cli/issues/232>`_)
   * add xmllint test to ament_python packages
   * cover new packages as well
 * Contributors: Mikael Arguedas
@@ -140,12 +140,12 @@ Forthcoming
 0.5.0 (2018-06-27 12:17)
 ------------------------
 * add pytest markers to linter tests
-* set zip_safe to avoid warning during installation (`#83 <https://github.com/ros2/ros2cli/issues/83>`_)
+* set zip_safe to avoid warning during installation. (`#83 <https://github.com/ros2/ros2cli/issues/83>`_)
 * Contributors: Dirk Thomas, Mikael Arguedas
 
 0.4.0 (2017-12-08)
 ------------------
-* Improve parameters passing to node in ros2run (`#61 <https://github.com/ros2/ros2cli/issues/61>`_)
+* Improve parameters passing to node in ros2run. (`#61 <https://github.com/ros2/ros2cli/issues/61>`_)
   * Improve parameter passing to node in ros2run
   * Enforce PEP
   * Fix remaining warning
@@ -161,23 +161,23 @@ Forthcoming
 * Merge pull request `#46 <https://github.com/ros2/ros2cli/issues/46>`_ from ros2/flake8_plugins
   update style to satisfy new flake8 plugins
 * update style to satisfy new flake8 plugins
-* implicitly inherit from object (`#45 <https://github.com/ros2/ros2cli/issues/45>`_)
+* implicitly inherit from object. (`#45 <https://github.com/ros2/ros2cli/issues/45>`_)
 * Merge pull request `#43 <https://github.com/ros2/ros2cli/issues/43>`_ from ros2/run_suppress_prefix_completion
   run: suppress prefix completion
 * run: suppress prefix completion
-* added --prefix argument to ros2 run (`#41 <https://github.com/ros2/ros2cli/issues/41>`_)
+* added --prefix argument to ros2 run. (`#41 <https://github.com/ros2/ros2cli/issues/41>`_)
   * added --prefix argument to ros2 run
   * Fixed issues from review by @dirk-thomas and @wjwwood
   * rephrased help message
   * added space in help message
 * 0.0.2
-* add ros2 pkg executables (`#23 <https://github.com/ros2/ros2cli/issues/23>`_)
+* add ros2 pkg executables. (`#23 <https://github.com/ros2/ros2cli/issues/23>`_)
   * add ros2 pkg executables
   * print basenames by default, option to print full path
 * Merge pull request `#15 <https://github.com/ros2/ros2cli/issues/15>`_ from ros2/various_fixes
   various fixes and improvements
 * various fixes and improvements
-* Removed node from call to get_executable path in ros2 run command, (`#13 <https://github.com/ros2/ros2cli/issues/13>`_)
+* Removed node from call to get_executable path in ros2 run command,. (`#13 <https://github.com/ros2/ros2cli/issues/13>`_)
   see `ros2/ros2cli#12 <https://github.com/ros2/ros2cli/issues/12>`_.
 * Merge pull request `#12 <https://github.com/ros2/ros2cli/issues/12>`_ from ros2/improve_executable_selection
   Improve executable selection

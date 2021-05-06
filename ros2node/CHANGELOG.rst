@@ -14,8 +14,8 @@ Forthcoming
 0.12.0 (2021-03-02)
 -------------------
 * 0.12.0
-* remove maintainer (`#597 <https://github.com/ros2/ros2cli/issues/597>`_)
-* Add Audrow as a maintainer (`#591 <https://github.com/ros2/ros2cli/issues/591>`_)
+* remove maintainer. (`#597 <https://github.com/ros2/ros2cli/issues/597>`_)
+* Add Audrow as a maintainer. (`#591 <https://github.com/ros2/ros2cli/issues/591>`_)
 * Contributors: Audrow Nash, Claire Wang
 
 0.11.0 (2021-01-25)
@@ -26,7 +26,7 @@ Forthcoming
 
 0.10.0 (2020-11-02)
 -------------------
-* update maintainers (`#568 <https://github.com/ros2/ros2cli/issues/568>`_)
+* update maintainers. (`#568 <https://github.com/ros2/ros2cli/issues/568>`_)
   * update maintainers
   * add authors, update setup.py
   * remove trailing whitespace
@@ -55,31 +55,31 @@ Forthcoming
 * Stop using 'node_name' and 'node_namespace' in tests. (`#498 <https://github.com/ros2/ros2cli/issues/498>`_)
   They are both deprecated, and print warnings in CI like:
   Warning: The parameter 'node_name' is deprecated, use 'name' instead
-* Replace deprecated launch_ros usage (`#487 <https://github.com/ros2/ros2cli/issues/487>`_)
+* Replace deprecated launch_ros usage. (`#487 <https://github.com/ros2/ros2cli/issues/487>`_)
   The Node parameter 'node_executable' has been deprecated and replaced
   with the parameter 'executable'.
 * Skip CLI tests on Windows until we resolve the blocking/hanging isuse. (`#489 <https://github.com/ros2/ros2cli/issues/489>`_)
-* Update tests to expect no launch_ros node (`#474 <https://github.com/ros2/ros2cli/issues/474>`_)
+* Update tests to expect no launch_ros node. (`#474 <https://github.com/ros2/ros2cli/issues/474>`_)
 * more verbose test_flake8 error messages (same as `ros2/launch_ros#135 <https://github.com/ros2/launch_ros/issues/135>`_)
-* Just add warning at the top of the node names list (`#462 <https://github.com/ros2/ros2cli/issues/462>`_)
-* Add a warning to ros2 node info when there is more than one node with the same name (`#463 <https://github.com/ros2/ros2cli/issues/463>`_)
+* Just add warning at the top of the node names list. (`#462 <https://github.com/ros2/ros2cli/issues/462>`_)
+* Add a warning to ros2 node info when there is more than one node with the same name. (`#463 <https://github.com/ros2/ros2cli/issues/463>`_)
   * Add a warning to ros2 node info when there is more than one node with the given name
   * Add test for nonunique node names
   * Update use of removed API
   * Add newline at top of code
   Co-Authored-By: William Woodall <william@osrfoundation.org>
   Co-authored-by: William Woodall <william@osrfoundation.org>
-* Remove ready_fn from test descriptions (`#376 <https://github.com/ros2/ros2cli/issues/376>`_)
-* used get_available_rmw_implementations from rclpy (`#461 <https://github.com/ros2/ros2cli/issues/461>`_)
-* Add delay when retrying tests involving the CLI daemon (`#459 <https://github.com/ros2/ros2cli/issues/459>`_)
+* Remove ready_fn from test descriptions. (`#376 <https://github.com/ros2/ros2cli/issues/376>`_)
+* used get_available_rmw_implementations from rclpy. (`#461 <https://github.com/ros2/ros2cli/issues/461>`_)
+* Add delay when retrying tests involving the CLI daemon. (`#459 <https://github.com/ros2/ros2cli/issues/459>`_)
   This is to give time for discovery to happen between the daemon node and the test fixture nodes.
-* only load required entry points which improves the performance (`#436 <https://github.com/ros2/ros2cli/issues/436>`_)
+* only load required entry points which improves the performance. (`#436 <https://github.com/ros2/ros2cli/issues/436>`_)
   * extend API to exclude extensions from loading
   * add add_subparsers_on_demand() function
   * update all extensions to use the new API
   * deprecate old API, add deprecation warnings
 * Merge branch 'master' of github.com:ros2/ros2cli
-* Make use of include-hidden flag for ros2node info verb (`#401 <https://github.com/ros2/ros2cli/issues/401>`_)
+* Make use of include-hidden flag for ros2node info verb. (`#401 <https://github.com/ros2/ros2cli/issues/401>`_)
 * Contributors: Alejandro Hernández Cordero, Brian Marchi, Chris Lalancette, Dirk Thomas, Emerson Knapp, Jacob Perron, Peter Baughman, Shane Loretz, Steven! Ragnarök, claireyywang
 
 0.8.6 (2019-11-19)
@@ -93,13 +93,13 @@ Forthcoming
 0.8.4 (2019-11-13)
 ------------------
 * 0.8.4
-* add service clients to ros2node info (`#392 <https://github.com/ros2/ros2cli/issues/392>`_)
+* add service clients to ros2node info. (`#392 <https://github.com/ros2/ros2cli/issues/392>`_)
 * Contributors: Michael Carroll, Mikael Arguedas
 
 0.8.3 (2019-10-23)
 ------------------
 * 0.8.3
-* End-to-end test coverage for CLI commands output (`#304 <https://github.com/ros2/ros2cli/issues/304>`_)
+* End-to-end test coverage for CLI commands output. (`#304 <https://github.com/ros2/ros2cli/issues/304>`_)
   * Add end-to-end CLI output tests for ros2:
   - ros2action
   - ros2service
@@ -109,12 +109,12 @@ Forthcoming
   - ros2interface
   - ros2node
   - ros2pkg
-* [ros2node] Add option to info verb to display hidden names (`#373 <https://github.com/ros2/ros2cli/issues/373>`_)
+* [ros2node] Add option to info verb to display hidden names. (`#373 <https://github.com/ros2/ros2cli/issues/373>`_)
   * [ros2node] Add option to info verb to display hidden names
   Changes behavior so that hidden names are not shown by default.
   * Update ros2component to request hidden service names
   Which it uses for identifier component containers.
-* [ros2node] Update info headings for actions (`#357 <https://github.com/ros2/ros2cli/issues/357>`_)
+* [ros2node] Update info headings for actions. (`#357 <https://github.com/ros2/ros2cli/issues/357>`_)
 * Contributors: Jacob Perron, Michel Hidalgo, Shane Loretz
 
 0.8.2 (2019-10-08)
@@ -125,7 +125,7 @@ Forthcoming
 0.8.1 (2019-10-04)
 ------------------
 * 0.8.1
-* ros2node info: add action category (`#345 <https://github.com/ros2/ros2cli/issues/345>`_)
+* ros2node info: add action category. (`#345 <https://github.com/ros2/ros2cli/issues/345>`_)
   * add action category
   * correct node param
   * split action into server and client
@@ -134,11 +134,11 @@ Forthcoming
 
 0.8.0 (2019-09-26)
 ------------------
-* install resource marker file for packages (`#339 <https://github.com/ros2/ros2cli/issues/339>`_)
-* Update setup.py version (`#331 <https://github.com/ros2/ros2cli/issues/331>`_)
+* install resource marker file for packages. (`#339 <https://github.com/ros2/ros2cli/issues/339>`_)
+* Update setup.py version. (`#331 <https://github.com/ros2/ros2cli/issues/331>`_)
   Versions now match latest tag and package.xml.
-* install package manifest (`#330 <https://github.com/ros2/ros2cli/issues/330>`_)
-* Convert list comprehension to generator (`#314 <https://github.com/ros2/ros2cli/issues/314>`_)
+* install package manifest. (`#330 <https://github.com/ros2/ros2cli/issues/330>`_)
+* Convert list comprehension to generator. (`#314 <https://github.com/ros2/ros2cli/issues/314>`_)
   Addresses flake8 C412 errors introduced by flake8-comprehension 2.2.0
 * Alphasort ros2 node list output. (`#305 <https://github.com/ros2/ros2cli/issues/305>`_)
   For node name order to be deterministic.
@@ -152,7 +152,7 @@ Forthcoming
 
 0.7.2 (2019-05-08)
 ------------------
-* add xmllint linter test (`#232 <https://github.com/ros2/ros2cli/issues/232>`_)
+* add xmllint linter test. (`#232 <https://github.com/ros2/ros2cli/issues/232>`_)
   * add xmllint test to ament_python packages
   * cover new packages as well
 * Contributors: Mikael Arguedas
@@ -162,7 +162,7 @@ Forthcoming
 
 0.7.0 (2019-04-14)
 ------------------
-* Solved bug when trying to find node info in namespaces (`#206 <https://github.com/ros2/ros2cli/issues/206>`_)
+* Solved bug when trying to find node info in namespaces. (`#206 <https://github.com/ros2/ros2cli/issues/206>`_)
   * Solved bug when trying to find node info in namespaces
   * Added test
   * Accepted non fully qualified names. Used better terminology for variables.
@@ -172,7 +172,7 @@ Forthcoming
 
 0.6.3 (2019-02-08)
 ------------------
-* Consistent node naming (`#158 <https://github.com/ros2/ros2cli/issues/158>`_)
+* Consistent node naming. (`#158 <https://github.com/ros2/ros2cli/issues/158>`_)
   * Support for easy integration with ros2 security features by starting CLI nodes with a consistent prefix.
   * Removing unneeded comment
   * Making DirectNode visible (removing hidden node prefix) to have consistent node naming for ros2cli.
@@ -181,13 +181,13 @@ Forthcoming
   * Importing HIDDEN_NODE_PREFIX from rclpy, renaming CLI_NODE_NAME_PREFIX -> NODE_NAME_PREFIX.
   * ros2node - Importing HIDDEN_NODE_PREFIX from rclpy
   * Linter fixes.
-* add completer for node info <node-name> (`#189 <https://github.com/ros2/ros2cli/issues/189>`_)
-* Fix node info verb description (`#186 <https://github.com/ros2/ros2cli/issues/186>`_)
+* add completer for node info <node-name>. (`#189 <https://github.com/ros2/ros2cli/issues/189>`_)
+* Fix node info verb description. (`#186 <https://github.com/ros2/ros2cli/issues/186>`_)
 * Contributors: AAlon, Dirk Thomas, Jacob Perron
 
 0.6.2 (2018-12-12)
 ------------------
-* add slash for node name (`#179 <https://github.com/ros2/ros2cli/issues/179>`_)
+* add slash for node name. (`#179 <https://github.com/ros2/ros2cli/issues/179>`_)
   * add slash for node name
   * check for forward slash in ros2param
   * use get_absolute_node_name function
@@ -197,7 +197,7 @@ Forthcoming
 ------------------
 * 0.6.1
   bump package.xml, setup.py and setup.cfg versions
-* Add ros2 node info verb (`#159 <https://github.com/ros2/ros2cli/issues/159>`_)
+* Add ros2 node info verb. (`#159 <https://github.com/ros2/ros2cli/issues/159>`_)
   * Add ros node info verb
   * Fix copyright headers
   * Fix flake8 issues
@@ -207,7 +207,7 @@ Forthcoming
 
 0.6.0 (2018-11-19)
 ------------------
-* node name with namespace (`#146 <https://github.com/ros2/ros2cli/issues/146>`_)
+* node name with namespace. (`#146 <https://github.com/ros2/ros2cli/issues/146>`_)
 * Contributors: Dirk Thomas
 
 0.5.4 (2018-08-20)
@@ -225,16 +225,16 @@ Forthcoming
 0.5.0 (2018-06-27 12:17)
 ------------------------
 * add pytest markers to linter tests
-* ignore empty or None node names (`#76 <https://github.com/ros2/ros2cli/issues/76>`_)
-* set zip_safe to avoid warning during installation (`#83 <https://github.com/ros2/ros2cli/issues/83>`_)
-* print full help when no command is passed (`#81 <https://github.com/ros2/ros2cli/issues/81>`_)
+* ignore empty or None node names. (`#76 <https://github.com/ros2/ros2cli/issues/76>`_)
+* set zip_safe to avoid warning during installation. (`#83 <https://github.com/ros2/ros2cli/issues/83>`_)
+* print full help when no command is passed. (`#81 <https://github.com/ros2/ros2cli/issues/81>`_)
 * Contributors: Dirk Thomas, Mikael Arguedas
 
 0.4.0 (2017-12-08)
 ------------------
 * remove test_suite, add pytest as test_requires
 * 0.0.3
-* implicitly inherit from object (`#45 <https://github.com/ros2/ros2cli/issues/45>`_)
+* implicitly inherit from object. (`#45 <https://github.com/ros2/ros2cli/issues/45>`_)
 * 0.0.2
 * Merge pull request `#15 <https://github.com/ros2/ros2cli/issues/15>`_ from ros2/various_fixes
   various fixes and improvements

@@ -10,7 +10,7 @@ Forthcoming
 
 0.13.0 (2021-04-06)
 -------------------
-* Depend on rclcpp::rclcpp target (`#618 <https://github.com/ros2/ros2cli/issues/618>`_)
+* Depend on rclcpp::rclcpp target. (`#618 <https://github.com/ros2/ros2cli/issues/618>`_)
   * Depend on rclcpp::rclcpp target
   * Refactor to use ament_target_dependencies
   * Make linter happy
@@ -19,8 +19,8 @@ Forthcoming
 0.12.0 (2021-03-02)
 -------------------
 * 0.12.0
-* remove maintainer (`#597 <https://github.com/ros2/ros2cli/issues/597>`_)
-* Add Audrow as a maintainer (`#591 <https://github.com/ros2/ros2cli/issues/591>`_)
+* remove maintainer. (`#597 <https://github.com/ros2/ros2cli/issues/597>`_)
+* Add Audrow as a maintainer. (`#591 <https://github.com/ros2/ros2cli/issues/591>`_)
 * Contributors: Audrow Nash, Claire Wang
 
 0.11.0 (2021-01-25)
@@ -31,7 +31,7 @@ Forthcoming
 
 0.10.0 (2020-11-02)
 -------------------
-* update maintainers (`#568 <https://github.com/ros2/ros2cli/issues/568>`_)
+* update maintainers. (`#568 <https://github.com/ros2/ros2cli/issues/568>`_)
   * update maintainers
   * add authors, update setup.py
   * remove trailing whitespace
@@ -66,7 +66,7 @@ Forthcoming
 0.8.4 (2019-11-13)
 ------------------
 * 0.8.4
-* [ros2lifecycle] Add test coverage for CLI (`#391 <https://github.com/ros2/ros2cli/issues/391>`_)
+* [ros2lifecycle] Add test coverage for CLI. (`#391 <https://github.com/ros2/ros2cli/issues/391>`_)
   * Add test coverage for ros2lifecycle CLI.
   * Add ros2lifecycle_test_fixtures package.
   * Use ros2lifecycle_test_fixtures package instead of demo lifecycle package.
