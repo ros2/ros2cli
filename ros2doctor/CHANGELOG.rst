@@ -2,6 +2,12 @@
 Changelog for package ros2doctor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Improve ros2 doctor on Windows. (`#631 <https://github.com/ros2/ros2cli/issues/631>`_) (`#634 <https://github.com/ros2/ros2cli/issues/634>`_)
+* Add changelog. (`#636 <https://github.com/ros2/ros2cli/issues/636>`_)
+* Contributors: Ivan Santiago Paunovic, mergify[bot]
+
 0.13.1 (2021-04-26)
 -------------------
 * Continue to next iteration after exceptions in generate_reports. (`#623 <https://github.com/ros2/ros2cli/issues/623>`_)
