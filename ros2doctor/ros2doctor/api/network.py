@@ -15,19 +15,14 @@
 import os
 from typing import Tuple
 
+import ifcfg
+
 from ros2doctor.api import DoctorCheck
 from ros2doctor.api import DoctorReport
 from ros2doctor.api import Report
 from ros2doctor.api import Result
 from ros2doctor.api.format import doctor_error
 from ros2doctor.api.format import doctor_warn
-
-try:
-    import ifcfg
-except ImportError:  # check import error for windows and osx
-    doctor_warn(
-        'Unable to import ifcfg. '
-        'Use `python3 -m pip install ifcfg` to install needed package.')
 
 
 def _is_unix_like_platform() -> bool:
@@ -61,24 +56,16 @@ class NetworkCheck(DoctorCheck):
         """Check network configuration."""
         result = Result()
         # check ifcfg import for windows and osx users
-        try:
-            ifcfg_ifaces = ifcfg.interfaces()
-        except NameError:
-            doctor_error(
-                '`ifcfg` module is not imported. '
-                'Unable to run network check.')
-            result.add_error()
-            return result
+        ifcfg_ifaces = ifcfg.interfaces()
 
         has_loopback, has_non_loopback, has_multicast = _check_network_config_helper(ifcfg_ifaces)
         if not _is_unix_like_platform():
             if not has_loopback and not has_non_loopback:
                 # no flags found, otherwise one of them should be True.
-                doctor_error(
-                    'No flags found. '
-                    'Run `ipconfig` on Windows or '
-                    'install `ifconfig` on Unix to check network interfaces.')
-                result.add_error()
+                doctor_warn(
+                    'Interface flags are not available on Windows. '
+                    'Run `ipconfig` to see what interfaces are available.')
+                result.add_warning()
                 return result
         if not has_loopback:
             doctor_error('No loopback IP address is found.')
@@ -101,11 +88,7 @@ class NetworkReport(DoctorReport):
     def report(self):
         """Print system and ROS network information."""
         # check ifcfg import for windows and osx users
-        try:
-            ifcfg_ifaces = ifcfg.interfaces()
-        except NameError:
-            doctor_error('ifcfg is not imported. Unable to generate network report.')
-            return Report('')
+        ifcfg_ifaces = ifcfg.interfaces()
 
         network_report = Report('NETWORK CONFIGURATION')
         for iface in ifcfg_ifaces.values():
