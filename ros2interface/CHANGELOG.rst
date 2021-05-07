@@ -2,8 +2,8 @@
 Changelog for package ros2interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.13.2 (2021-05-07)
+-------------------
 * Add changelog. (`#636 <https://github.com/ros2/ros2cli/issues/636>`_)
 * Contributors: Ivan Santiago Paunovic
 

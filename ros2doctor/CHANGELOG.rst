@@ -2,8 +2,8 @@
 Changelog for package ros2doctor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.13.2 (2021-05-07)
+-------------------
 * Improve ros2 doctor on Windows. (`#631 <https://github.com/ros2/ros2cli/issues/631>`_) (`#634 <https://github.com/ros2/ros2cli/issues/634>`_)
 * Add changelog. (`#636 <https://github.com/ros2/ros2cli/issues/636>`_)
 * Contributors: Ivan Santiago Paunovic, mergify[bot]
