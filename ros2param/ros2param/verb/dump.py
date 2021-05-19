@@ -52,8 +52,8 @@ class DumpVerb(VerbExtension):
             default='.',
             help='The absolute path were to save the generated file')
         parser.add_argument(
-            '--print', action='store_true',
-            help='Print generated file in terminal rather than saving a file.')
+            '--write', action='store_true',
+            help='Save parameters to a file, otherwise print to stdout in terminal.')
 
     @staticmethod
     def get_parameter_value(node, node_name, param):
@@ -123,7 +123,7 @@ class DumpVerb(VerbExtension):
                     'Exception while calling service of node '
                     f"'{node_name.full_name}': {e}")
 
-            if args.print:
+            if not args.write:
                 print(yaml.dump(yaml_output, default_flow_style=False))
                 return
 

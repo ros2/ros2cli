@@ -212,7 +212,7 @@ class TestVerbDump(unittest.TestCase):
     def test_verb_dump(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             with self.launch_param_dump_command(
-                arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}', '--output-dir', tmpdir]
+                arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}', '--output-dir', tmpdir, '--write']
             ) as param_dump_command:
                 assert param_dump_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
             assert param_dump_command.exit_code == launch_testing.asserts.EXIT_OK
@@ -227,7 +227,7 @@ class TestVerbDump(unittest.TestCase):
 
     def test_verb_dump_print(self):
         with self.launch_param_dump_command(
-            arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}', '--print']
+            arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}']
         ) as param_dump_command:
             assert param_dump_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
         assert param_dump_command.exit_code == launch_testing.asserts.EXIT_OK
@@ -236,11 +236,11 @@ class TestVerbDump(unittest.TestCase):
             text=param_dump_command.output,
             strict=True
         )
-        # If both '--output-dir' and '--print' options are provided, ensure it only prints
+        # If '--output-dir' is provided w/o '--write' option, ensure it only prints to stdout
         # and no file is written
         with tempfile.TemporaryDirectory() as tmpdir:
             with self.launch_param_dump_command(
-                arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}', '--output-dir', tmpdir, '--print']
+                arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}', '--output-dir', tmpdir]
             ) as param_dump_command:
                 assert param_dump_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
             assert param_dump_command.exit_code == launch_testing.asserts.EXIT_OK
@@ -249,6 +249,6 @@ class TestVerbDump(unittest.TestCase):
                 text=param_dump_command.output,
                 strict=True
             )
-            # Make sure the file was not create, thus '--print' did preempt
+            # Make sure the file was not create w/o '--write' option
             not_generated_param_file = os.path.join(tmpdir, self._output_file())
             assert not os.path.exists(not_generated_param_file)
