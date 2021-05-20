@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import os
+import signal
 import subprocess
 import sys
 
@@ -66,6 +67,8 @@ def run_executable(*, path, argv, prefix=None):
             # the subprocess will also receive the signal and should shut down
             # therefore we continue here until the process has finished
             pass
+    if process.returncode < 0:
+        print(signal.strsignal(-process.returncode))
     return process.returncode
 
 
