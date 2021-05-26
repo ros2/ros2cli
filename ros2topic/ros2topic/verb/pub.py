@@ -19,6 +19,7 @@ from typing import TypeVar
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile
+from ros2cli.node.direct import add_arguments as add_direct_node_arguments
 from ros2cli.node.direct import DirectNode
 from ros2topic.api import qos_profile_from_short_keys
 from ros2topic.api import TopicMessagePrototypeCompleter
@@ -53,6 +54,7 @@ class PubVerb(VerbExtension):
     """Publish a message to a topic."""
 
     def add_arguments(self, parser, cli_name):
+        add_direct_node_arguments(parser)
         arg = parser.add_argument(
             'topic_name',
             help="Name of the ROS topic to publish to (e.g. '/chatter')")
@@ -146,6 +148,7 @@ def main(args):
             1. / args.rate,
             args.print,
             times,
+            args.spin_time,
             qos_profile,
             args.keep_alive)
 
@@ -158,6 +161,7 @@ def publisher(
     period: float,
     print_nth: int,
     times: int,
+    spin_time: float,
     qos_profile: QoSProfile,
     keep_alive: float,
 ) -> Optional[str]:
@@ -189,7 +193,7 @@ def publisher(
         pub.publish(msg)
 
     # give some time for discovery process
-    time.sleep(0.1)
+    time.sleep(spin_time)
     timer_callback()
     if times != 1:
         timer = node.create_timer(period, timer_callback)
