@@ -81,6 +81,9 @@ class PubVerb(VerbExtension):
             '-1', '--once', action='store_true',
             help='Publish one message and exit')
         group.add_argument(
+            '-m', '--wait-matching-subscriptions', type=nonnegative_int, default=1,
+            help='Wait until finding the specified number of matching subscriptions')
+        group.add_argument(
             '-t', '--times', type=nonnegative_int, default=0,
             help='Publish this number of times and then exit')
         parser.add_argument(
@@ -146,6 +149,7 @@ def main(args):
             1. / args.rate,
             args.print,
             times,
+            args.wait_matching_subscriptions,
             qos_profile,
             args.keep_alive)
 
@@ -158,6 +162,7 @@ def publisher(
     period: float,
     print_nth: int,
     times: int,
+    wait_matching_subscriptions: int,
     qos_profile: QoSProfile,
     keep_alive: float,
 ) -> Optional[str]:
@@ -171,6 +176,14 @@ def publisher(
         return 'The passed value needs to be a dictionary in YAML format'
 
     pub = node.create_publisher(msg_module, topic_name, qos_profile)
+
+    times_since_last_log = 0
+    while pub.get_subscription_count() < wait_matching_subscriptions:
+        # Print a message reporting we're waiting each 1s, check condition each 100ms.
+        if not times_since_last_log:
+            print(f'Waiting for {wait_matching_subscriptions} matching subscription(s)...')
+        times_since_last_log = (times_since_last_log + 1) % 10
+        time.sleep(0.1)
 
     msg = msg_module()
     try:
@@ -188,8 +201,6 @@ def publisher(
             print('publishing #%d: %r\n' % (count, msg))
         pub.publish(msg)
 
-    # give some time for discovery process
-    time.sleep(0.1)
     timer_callback()
     if times != 1:
         timer = node.create_timer(period, timer_callback)
