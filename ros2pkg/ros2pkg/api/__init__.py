@@ -32,7 +32,7 @@ def get_package_names():
 def get_prefix_path(package_name):
     try:
         prefix_path = get_package_prefix(package_name)
-    except PackageNotFoundError:
+    except (PackageNotFoundError, ValueError):
         return None
     return prefix_path
 
