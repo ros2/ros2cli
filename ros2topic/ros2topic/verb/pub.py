@@ -181,7 +181,8 @@ def publisher(
     while pub.get_subscription_count() < wait_matching_subscriptions:
         # Print a message reporting we're waiting each 1s, check condition each 100ms.
         if not times_since_last_log:
-            print(f'Waiting for {wait_matching_subscriptions} matching subscription(s)...')
+            print(
+                f'Waiting for at least {wait_matching_subscriptions} matching subscription(s)...')
         times_since_last_log = (times_since_last_log + 1) % 10
         time.sleep(0.1)
 
