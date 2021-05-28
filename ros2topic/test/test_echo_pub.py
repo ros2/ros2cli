@@ -157,6 +157,8 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                     with launch_testing.tools.launch_process(
                         launch_service, command_action, proc_info, proc_output,
                         output_filter=launch_testing_ros.tools.basic_output_filter(
+                            filtered_patterns=[
+                                r'Waiting for \{[0-7]+\} matching subscription\(s\)\.\.\.'],
                             filtered_rmw_implementation=get_rmw_implementation_identifier()
                         )
                     ) as command:
@@ -180,7 +182,7 @@ class TestROS2TopicEchoPub(unittest.TestCase):
     @launch_testing.markers.retry_on_failure(times=5)
     def test_pub_times(self, launch_service, proc_info, proc_output):
         command_action = ExecuteProcess(
-            cmd=(['ros2', 'topic', 'pub', '-t', '5', '/clitest/topic/pub_times',
+            cmd=(['ros2', 'topic', 'pub', '-t', '5', '-m', '0', '/clitest/topic/pub_times',
                   'std_msgs/String', 'data: hello']),
             additional_env={
                 'PYTHONUNBUFFERED': '1'

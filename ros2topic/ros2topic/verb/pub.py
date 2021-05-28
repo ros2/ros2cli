@@ -81,11 +81,11 @@ class PubVerb(VerbExtension):
             '-1', '--once', action='store_true',
             help='Publish one message and exit')
         group.add_argument(
-            '-m', '--wait-matching-subscriptions', type=nonnegative_int, default=1,
-            help='Wait until finding the specified number of matching subscriptions')
-        group.add_argument(
             '-t', '--times', type=nonnegative_int, default=0,
             help='Publish this number of times and then exit')
+        parser.add_argument(
+            '-m', '--wait-matching-subscriptions', type=nonnegative_int, default=1,
+            help='Wait until finding the specified number of matching subscriptions')
         parser.add_argument(
             '--keep-alive', metavar='N', type=positive_float, default=0.1,
             help='Keep publishing node alive for N seconds after the last msg '
