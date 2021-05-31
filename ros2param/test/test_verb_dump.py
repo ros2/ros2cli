@@ -210,22 +210,6 @@ class TestVerbDump(unittest.TestCase):
         )
 
     def test_verb_dump(self):
-        with tempfile.TemporaryDirectory() as tmpdir:
-            with self.launch_param_dump_command(
-                arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}', '--output-dir', tmpdir, '--write']
-            ) as param_dump_command:
-                assert param_dump_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
-            assert param_dump_command.exit_code == launch_testing.asserts.EXIT_OK
-            assert launch_testing.tools.expect_output(
-                expected_lines=[''],
-                text=param_dump_command.output,
-                strict=True
-            )
-            # Compare generated parameter file against expected
-            generated_param_file = os.path.join(tmpdir, self._output_file())
-            assert (open(generated_param_file, 'r').read() == EXPECTED_PARAMETER_FILE)
-
-    def test_verb_dump_print(self):
         with self.launch_param_dump_command(
             arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}']
         ) as param_dump_command:
@@ -236,8 +220,26 @@ class TestVerbDump(unittest.TestCase):
             text=param_dump_command.output,
             strict=True
         )
-        # If '--output-dir' is provided w/o '--write' option, ensure it only prints to stdout
-        # and no file is written
+
+    # TODO(fujitatomoya): remove this test when '--print' option is removed
+    def test_verb_dump_print(self):
+        # If '--print' is provided, ensure it does nothing but print parameters to stdout
+        with self.launch_param_dump_command(
+            arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}', '--print']
+        ) as param_dump_command:
+            assert param_dump_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
+        assert param_dump_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=[
+                "WARNING: '--print' is deprecated; print to stdout in terminal by default"
+            ],
+            text=param_dump_command.output,
+            strict=True
+        )
+
+    # TODO(fujitatomoya): remove this test when '--output-dir' option is removed
+    def test_verb_dump_output(self):
+        # If '--output-dir' is provided, ensure it only saves parameters into file
         with tempfile.TemporaryDirectory() as tmpdir:
             with self.launch_param_dump_command(
                 arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}', '--output-dir', tmpdir]
@@ -245,10 +247,12 @@ class TestVerbDump(unittest.TestCase):
                 assert param_dump_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
             assert param_dump_command.exit_code == launch_testing.asserts.EXIT_OK
             assert launch_testing.tools.expect_output(
-                expected_text=EXPECTED_PARAMETER_FILE + '\n',
+                expected_lines=[
+                    "WARNING: '--output-dir' is deprecated; use redirection to save file"
+                ],
                 text=param_dump_command.output,
                 strict=True
             )
-            # Make sure the file was not create w/o '--write' option
-            not_generated_param_file = os.path.join(tmpdir, self._output_file())
-            assert not os.path.exists(not_generated_param_file)
+            # Compare generated parameter file against expected
+            generated_param_file = os.path.join(tmpdir, self._output_file())
+            assert (open(generated_param_file, 'r').read() == EXPECTED_PARAMETER_FILE)

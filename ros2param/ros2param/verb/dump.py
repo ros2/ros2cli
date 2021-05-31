@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import os
+import sys
 
 from rcl_interfaces.srv import ListParameters
 
@@ -50,10 +51,10 @@ class DumpVerb(VerbExtension):
         parser.add_argument(
             '--output-dir',
             default='.',
-            help='The absolute path were to save the generated file')
+            help='DEPRECATED: The absolute path were to save the generated file')
         parser.add_argument(
-            '--write', action='store_true',
-            help='Save parameters to a file, otherwise print to stdout in terminal.')
+            '--print', action='store_true',
+            help='DEPRECATED: Does nothing.')
 
     @staticmethod
     def get_parameter_value(node, node_name, param):
@@ -123,7 +124,16 @@ class DumpVerb(VerbExtension):
                     'Exception while calling service of node '
                     f"'{node_name.full_name}': {e}")
 
-            if not args.write:
+            if args.print:
+                print(
+                    "WARNING: '--print' is deprecated; print to stdout in terminal by default",
+                    file=sys.stderr)
+
+            if args.output_dir != '.':
+                print(
+                    "WARNING: '--output-dir' is deprecated; use redirection to save file",
+                    file=sys.stderr)
+            else:
                 print(yaml.dump(yaml_output, default_flow_style=False))
                 return
 
