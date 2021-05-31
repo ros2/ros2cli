@@ -67,8 +67,13 @@ def run_executable(*, path, argv, prefix=None):
             # the subprocess will also receive the signal and should shut down
             # therefore we continue here until the process has finished
             pass
-    if process.returncode < 0:
-        print(signal.strsignal(-process.returncode))
+    if process.returncode != 0:
+        if os.name == 'posix':
+            # a negative value -N indicates that the child was terminated by signal N.
+            print(signal.strsignal(-process.returncode))
+        else:
+            # print general failure message instead.
+            print('Process exits failure')
     return process.returncode
 
 
