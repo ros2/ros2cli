@@ -20,7 +20,6 @@ import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile
 from ros2cli.node.direct import DirectNode
-from ros2topic.api import add_qos_arguments_to_argument_parser
 from ros2topic.api import qos_profile_from_short_keys
 from ros2topic.api import TopicMessagePrototypeCompleter
 from ros2topic.api import TopicNameCompleter
@@ -31,6 +30,7 @@ from rosidl_runtime_py.utilities import get_message
 import yaml
 
 MsgType = TypeVar('MsgType')
+default_profile_str = 'system_default'
 
 
 def nonnegative_int(inval):
@@ -90,21 +90,56 @@ class PubVerb(VerbExtension):
         parser.add_argument(
             '-n', '--node-name',
             help='Name of the created publishing node')
-        add_qos_arguments_to_argument_parser(
-            parser, is_publisher=True, default_preset='system_default')
+        parser.add_argument(
+            '--qos-profile',
+            choices=rclpy.qos.QoSPresetProfiles.short_keys(),
+            default=default_profile_str,
+            help='Quality of service preset profile to {} with (default: {})'
+                 .format('publish', default_profile_str))
+        default_profile = rclpy.qos.QoSPresetProfiles.get_from_short_key(
+            default_profile_str)
+        parser.add_argument(
+            '--qos-depth', metavar='N', type=int, default=-1,
+            help='Queue size setting to publish with '
+                 '(overrides depth value of --qos-profile option)')
+        parser.add_argument(
+            '--qos-history',
+            choices=rclpy.qos.QoSHistoryPolicy.short_keys(),
+            help='History of samples setting to publish with '
+                 '(overrides history value of --qos-profile option, default: {})'
+                 .format(default_profile.history.short_key))
+        parser.add_argument(
+            '--qos-reliability',
+            choices=rclpy.qos.QoSReliabilityPolicy.short_keys(),
+            help='Quality of service reliability setting to publish with '
+                 '(overrides reliability value of --qos-profile option, default: {})'
+                 .format(default_profile.reliability.short_key))
+        parser.add_argument(
+            '--qos-durability',
+            choices=rclpy.qos.QoSDurabilityPolicy.short_keys(),
+            help='Quality of service durability setting to publish with '
+                 '(overrides durability value of --qos-profile option, default: {})'
+                 .format(default_profile.durability.short_key))
 
     def main(self, *, args):
         return main(args)
 
 
 def main(args):
+
+    qos_profile_name = args.qos_profile
+    if not qos_profile_name:
+        qos_profile_name = default_profile_str
+
     qos_profile = qos_profile_from_short_keys(
-        args.qos_profile, reliability=args.qos_reliability, durability=args.qos_durability,
+        qos_profile_name, reliability=args.qos_reliability, durability=args.qos_durability,
         depth=args.qos_depth, history=args.qos_history)
+
     times = args.times
     if args.once:
         times = 1
     with DirectNode(args, node_name=args.node_name) as node:
+        qos_profile = choose_qos(node, args)
         return publisher(
             node.node,
             args.message_type,
@@ -115,6 +150,66 @@ def main(args):
             times,
             qos_profile,
             args.keep_alive)
+
+
+def choose_qos(node, args):
+
+    if (args.qos_profile is not None or
+        args.qos_reliability is not None or
+        args.qos_durability is not None or
+        args.qos_depth is not None or
+        args.qos_history is not None):
+
+        if args.qos_profile is None:
+            args.qos_profile = default_profile_str
+        return qos_profile_from_short_keys(args.qos_profile,
+                                           reliability=args.qos_reliability,
+                                           durability=args.qos_durability,
+                                           depth=args.qos_depth,
+                                           history=args.qos_history)
+
+    qos_profile = QoSPresetProfiles.get_from_short_key(default_profile_str)
+    reliability_reliable_endpoints_count = 0
+    durability_transient_local_endpoints_count = 0
+
+    subs_info = node.get_subscriptions_info_by_topic(args.topic_name)
+    subscribers_count = len(pubs_info)
+    if subscribers_count == 0:
+        return qos_profile
+
+    for info in subs_info:
+        if (info.qos_profile.reliability == QoSReliabilityPolicy.RELIABLE):
+            reliability_reliable_endpoints_count += 1
+        if (info.qos_profile.durability == QoSDurabilityPolicy.TRANSIENT_LOCAL):
+            durability_transient_local_endpoints_count += 1
+
+    # If all endpoints are reliable, ask for reliable
+    if reliability_reliable_endpoints_count == publishers_count:
+        qos_profile.reliability = QoSReliabilityPolicy.RELIABLE
+    else:
+        if reliability_reliable_endpoints_count > 0:
+            print(
+                'Some, but not all, publishers are offering '
+                'QoSReliabilityPolicy.RELIABLE. Falling back to '
+                'QoSReliabilityPolicy.BEST_EFFORT as it will connect '
+                'to all publishers'
+            )
+        qos_profile.reliability = QoSReliabilityPolicy.BEST_EFFORT
+
+    # If all endpoints are transient_local, ask for transient_local
+    if durability_transient_local_endpoints_count == publishers_count:
+        qos_profile.durability = QoSDurabilityPolicy.TRANSIENT_LOCAL
+    else:
+        if durability_transient_local_endpoints_count > 0:
+            print(
+                'Some, but not all, publishers are offering '
+                'QoSDurabilityPolicy.TRANSIENT_LOCAL. Falling back to '
+                'QoSDurabilityPolicy.VOLATILE as it will connect '
+                'to all publishers'
+            )
+        qos_profile.durability = QoSDurabilityPolicy.VOLATILE
+
+    return qos_profile
 
 
 def publisher(
