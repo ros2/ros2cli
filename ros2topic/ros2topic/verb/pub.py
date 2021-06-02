@@ -84,8 +84,10 @@ class PubVerb(VerbExtension):
             '-t', '--times', type=nonnegative_int, default=0,
             help='Publish this number of times and then exit')
         parser.add_argument(
-            '-w', '--wait-matching-subscriptions', type=nonnegative_int, default=1,
-            help='Wait until finding the specified number of matching subscriptions')
+            '-w', '--wait-matching-subscriptions', type=nonnegative_int, default=None,
+            help=(
+                'Wait until finding the specified number of matching subscriptions. '
+                'Defaults to 1 when using "-1"/"--once"/"--times", otherwise defaults to 0.'))
         parser.add_argument(
             '--keep-alive', metavar='N', type=positive_float, default=0.1,
             help='Keep publishing node alive for N seconds after the last msg '
@@ -149,7 +151,8 @@ def main(args):
             1. / args.rate,
             args.print,
             times,
-            args.wait_matching_subscriptions,
+            args.wait_matching_subscriptions
+            if args.wait_matching_subscriptions is not None else int(times != 0),
             qos_profile,
             args.keep_alive)
 
