@@ -84,7 +84,7 @@ class PubVerb(VerbExtension):
             '-t', '--times', type=nonnegative_int, default=0,
             help='Publish this number of times and then exit')
         parser.add_argument(
-            '-m', '--wait-matching-subscriptions', type=nonnegative_int, default=1,
+            '-w', '--wait-matching-subscriptions', type=nonnegative_int, default=1,
             help='Wait until finding the specified number of matching subscriptions')
         parser.add_argument(
             '--keep-alive', metavar='N', type=positive_float, default=0.1,

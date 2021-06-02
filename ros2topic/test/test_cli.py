@@ -713,7 +713,7 @@ class TestROS2TopicCLI(unittest.TestCase):
                 arguments=[
                     'pub', '--once',
                     '--keep-alive', '3',  # seconds
-                    '-m', '2',
+                    '-w', '2',
                     '--qos-durability', 'transient_local',
                     '--qos-reliability', 'reliable',
                     '/chit_chatter',
