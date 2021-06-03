@@ -231,7 +231,7 @@ class TestVerbDump(unittest.TestCase):
         assert param_dump_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
-                "WARNING: '--print' is deprecated; print to stdout in terminal by default"
+                "WARNING: '--print' is deprecated; this utility prints to stdout by default"
             ],
             text=param_dump_command.output,
             strict=True
@@ -248,7 +248,7 @@ class TestVerbDump(unittest.TestCase):
             assert param_dump_command.exit_code == launch_testing.asserts.EXIT_OK
             assert launch_testing.tools.expect_output(
                 expected_lines=[
-                    "WARNING: '--output-dir' is deprecated; use redirection to save file"
+                    "WARNING: '--output-dir' is deprecated; use redirection to save to a file"
                 ],
                 text=param_dump_command.output,
                 strict=True

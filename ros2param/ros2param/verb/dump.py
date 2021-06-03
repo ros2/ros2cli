@@ -51,7 +51,7 @@ class DumpVerb(VerbExtension):
         parser.add_argument(
             '--output-dir',
             default='.',
-            help='DEPRECATED: The absolute path were to save the generated file')
+            help='DEPRECATED: The absolute path where to save the generated file')
         parser.add_argument(
             '--print', action='store_true',
             help='DEPRECATED: Does nothing.')
@@ -126,12 +126,12 @@ class DumpVerb(VerbExtension):
 
             if args.print:
                 print(
-                    "WARNING: '--print' is deprecated; print to stdout in terminal by default",
+                    "WARNING: '--print' is deprecated; this utility prints to stdout by default",
                     file=sys.stderr)
 
             if args.output_dir != '.':
                 print(
-                    "WARNING: '--output-dir' is deprecated; use redirection to save file",
+                    "WARNING: '--output-dir' is deprecated; use redirection to save to a file",
                     file=sys.stderr)
             else:
                 print(yaml.dump(yaml_output, default_flow_style=False))
