@@ -84,6 +84,11 @@ class PubVerb(VerbExtension):
             '-t', '--times', type=nonnegative_int, default=0,
             help='Publish this number of times and then exit')
         parser.add_argument(
+            '-w', '--wait-matching-subscriptions', type=nonnegative_int, default=None,
+            help=(
+                'Wait until finding the specified number of matching subscriptions. '
+                'Defaults to 1 when using "-1"/"--once"/"--times", otherwise defaults to 0.'))
+        parser.add_argument(
             '--keep-alive', metavar='N', type=positive_float, default=0.1,
             help='Keep publishing node alive for N seconds after the last msg '
                  '(default: 0.1)')
@@ -146,6 +151,8 @@ def main(args):
             1. / args.rate,
             args.print,
             times,
+            args.wait_matching_subscriptions
+            if args.wait_matching_subscriptions is not None else int(times != 0),
             qos_profile,
             args.keep_alive)
 
@@ -158,6 +165,7 @@ def publisher(
     period: float,
     print_nth: int,
     times: int,
+    wait_matching_subscriptions: int,
     qos_profile: QoSProfile,
     keep_alive: float,
 ) -> Optional[str]:
@@ -171,6 +179,15 @@ def publisher(
         return 'The passed value needs to be a dictionary in YAML format'
 
     pub = node.create_publisher(msg_module, topic_name, qos_profile)
+
+    times_since_last_log = 0
+    while pub.get_subscription_count() < wait_matching_subscriptions:
+        # Print a message reporting we're waiting each 1s, check condition each 100ms.
+        if not times_since_last_log:
+            print(
+                f'Waiting for at least {wait_matching_subscriptions} matching subscription(s)...')
+        times_since_last_log = (times_since_last_log + 1) % 10
+        time.sleep(0.1)
 
     msg = msg_module()
     try:
@@ -188,8 +205,6 @@ def publisher(
             print('publishing #%d: %r\n' % (count, msg))
         pub.publish(msg)
 
-    # give some time for discovery process
-    time.sleep(0.1)
     timer_callback()
     if times != 1:
         timer = node.create_timer(period, timer_callback)

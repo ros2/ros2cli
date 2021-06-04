@@ -660,7 +660,7 @@ class TestROS2TopicCLI(unittest.TestCase):
                     'publisher: beginning loop',
                     "publishing #1: std_msgs.msg.String(data='foo')",
                     ''
-                ], strict=True
+                ]
             ), timeout=10)
             assert self.listener_node.wait_for_output(functools.partial(
                 launch_testing.tools.expect_output, expected_lines=[
@@ -686,13 +686,58 @@ class TestROS2TopicCLI(unittest.TestCase):
                     'publisher: beginning loop',
                     "publishing #1: std_msgs.msg.String(data='bar')",
                     ''
-                ], strict=True
+                ]
             ), timeout=10)
             assert topic_command.wait_for_shutdown(timeout=10)
             assert self.listener_node.wait_for_output(functools.partial(
                 launch_testing.tools.expect_output, expected_lines=[
                     re.compile(r'\[INFO\] \[\d+\.\d*\] \[listener\]: I heard: \[bar\]')
                 ], strict=False
+            ), timeout=10)
+        assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
+
+    def test_topic_pub_once_matching_two_listeners(
+        self, launch_service, proc_info, proc_output, path_to_listener_node_script, additional_env
+    ):
+        second_listener_node_action = Node(
+            executable=sys.executable,
+            arguments=[path_to_listener_node_script],
+            remappings=[('chatter', 'chit_chatter')],
+            additional_env=additional_env,
+            name='second_listener',
+        )
+        with launch_testing.tools.launch_process(
+            launch_service, second_listener_node_action, proc_info, proc_output
+        ) as second_listener_node, \
+            self.launch_topic_command(
+                arguments=[
+                    'pub', '--once',
+                    '--keep-alive', '3',  # seconds
+                    '-w', '2',
+                    '--qos-durability', 'transient_local',
+                    '--qos-reliability', 'reliable',
+                    '/chit_chatter',
+                    'std_msgs/msg/String',
+                    '{data: bar}'
+                ]
+        ) as topic_command:
+            assert topic_command.wait_for_output(functools.partial(
+                launch_testing.tools.expect_output, expected_lines=[
+                    'publisher: beginning loop',
+                    "publishing #1: std_msgs.msg.String(data='bar')",
+                    ''
+                ]
+            ), timeout=10)
+            assert topic_command.wait_for_shutdown(timeout=10)
+            assert self.listener_node.wait_for_output(functools.partial(
+                launch_testing.tools.expect_output, expected_lines=[
+                    re.compile(r'\[INFO\] \[\d+\.\d*\] \[listener\]: I heard: \[bar\]')
+                ]
+            ), timeout=10)
+            assert second_listener_node.wait_for_output(functools.partial(
+                launch_testing.tools.expect_output, expected_lines=[
+                    re.compile(r'\[INFO\] \[\d+\.\d*\] \[second_listener\]: I heard: \[bar\]')
+                ]
             ), timeout=10)
         assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
 
@@ -716,7 +761,7 @@ class TestROS2TopicCLI(unittest.TestCase):
                     '',
                     "publishing #4: std_msgs.msg.String(data='fizz')",
                     ''
-                ], strict=True
+                ]
             ), timeout=10), 'Output does not match: ' + topic_command.output
             assert self.listener_node.wait_for_output(functools.partial(
                 launch_testing.tools.expect_output, expected_lines=[

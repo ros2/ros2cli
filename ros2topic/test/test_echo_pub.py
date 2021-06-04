@@ -180,7 +180,7 @@ class TestROS2TopicEchoPub(unittest.TestCase):
     @launch_testing.markers.retry_on_failure(times=5)
     def test_pub_times(self, launch_service, proc_info, proc_output):
         command_action = ExecuteProcess(
-            cmd=(['ros2', 'topic', 'pub', '-t', '5', '/clitest/topic/pub_times',
+            cmd=(['ros2', 'topic', 'pub', '-t', '5', '-w', '0', '/clitest/topic/pub_times',
                   'std_msgs/String', 'data: hello']),
             additional_env={
                 'PYTHONUNBUFFERED': '1'
