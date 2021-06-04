@@ -29,5 +29,8 @@ def test_api():
     prefix_path = get_prefix_path('ros2cli')
     assert os.path.isdir(prefix_path)
 
-    prefix_path = get_prefix_path('_not_existing_package_name')
+    prefix_path = get_prefix_path('not_existing_package_name')
+    assert prefix_path is None
+
+    prefix_path = get_prefix_path('invalid.package.name')
     assert prefix_path is None
