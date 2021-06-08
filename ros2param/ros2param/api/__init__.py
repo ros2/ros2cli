@@ -146,6 +146,8 @@ def load_parameter_file(*, node, node_name, parameter_file, use_wildcard):
             param_keys.append('/**')
         if node_name in param_file:
             param_keys.append(node_name)
+        if node_name[1:] in param_file:
+            param_keys.append(node_name[1:])
 
         if param_keys == []:
             raise RuntimeError('Param file does not contain parameters for {}, '
