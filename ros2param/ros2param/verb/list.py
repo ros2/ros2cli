@@ -104,3 +104,4 @@ class ListVerb(VerbExtension):
                     print(
                         'Exception while calling service of node '
                         f"'{node_name.full_name}': {e}", file=sys.stderr)
+                    continue
