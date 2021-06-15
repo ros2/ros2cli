@@ -18,6 +18,8 @@ import shutil
 import subprocess
 import sys
 
+import ament_copyright
+
 from catkin_pkg.package import Dependency
 from catkin_pkg.package import Export
 from catkin_pkg.package import Package
@@ -56,7 +58,9 @@ class CreateVerb(VerbExtension):
         parser.add_argument(
             '--license',
             default='TODO: License declaration',
-            help='The license attached to this package')
+            help='The license attached to this package; this can be an arbitrary string, but a '
+                 'LICENSE file will only be generated if it is one of the supported licenses '
+                 "(pass '?' to get a list)")
         parser.add_argument(
             '--destination-directory',
             default=os.curdir,
@@ -85,6 +89,14 @@ class CreateVerb(VerbExtension):
             help='name of the empty library')
 
     def main(self, *, args):
+        available_licenses = {}
+        for shortname, entry in ament_copyright.get_licenses().items():
+            available_licenses[entry.name] = entry.license_files
+
+        if args.license == '?':
+            print('Supported licenses:\n%s' % ('\n'.join(available_licenses)))
+            sys.exit(0)
+
         maintainer = Person(args.maintainer_name)
 
         if args.maintainer_email:
@@ -203,3 +215,12 @@ class CreateVerb(VerbExtension):
                     include_directory,
                     library_name
                 )
+
+        if args.license in available_licenses:
+            with open(os.path.join(package_directory, 'LICENSE'), 'w') as outfp:
+                for lic in available_licenses[args.license]:
+                    outfp.write(lic)
+        else:
+            print("\n[WARNING]: Unknown license '%s'.  This has been set in the package.xml, but "
+                  'no LICENSE file has been created.\nIt is recommended to use one of the ament '
+                  'license identitifers:\n%s' % (args.license, '\n'.join(available_licenses)))
