@@ -91,7 +91,7 @@ class CreateVerb(VerbExtension):
     def main(self, *, args):
         available_licenses = {}
         for shortname, entry in ament_copyright.get_licenses().items():
-            available_licenses[entry.name] = entry.license_files
+            available_licenses[entry.spdx] = entry.license_files
 
         if args.license == '?':
             print('Supported licenses:\n%s' % ('\n'.join(available_licenses)))
