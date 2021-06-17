@@ -13,11 +13,14 @@
 # limitations under the License.
 
 import os
+import signal
 import subprocess
 import sys
 
 from ros2pkg.api import get_executable_paths
 from ros2pkg.api import PackageNotFound
+
+ROS2RUN_MSG_PREFIX = '[ros2run]:'
 
 
 class MultipleExecutables(Exception):
@@ -66,6 +69,13 @@ def run_executable(*, path, argv, prefix=None):
             # the subprocess will also receive the signal and should shut down
             # therefore we continue here until the process has finished
             pass
+    if process.returncode != 0:
+        if -process.returncode in signal.valid_signals() and os.name == 'posix':
+            # a negative value -N indicates that the child was terminated by signal N.
+            print(ROS2RUN_MSG_PREFIX, signal.strsignal(-process.returncode))
+        else:
+            # print general failure message instead.
+            print(ROS2RUN_MSG_PREFIX, 'Process exited with failure %d' % (process.returncode))
     return process.returncode
 
 
