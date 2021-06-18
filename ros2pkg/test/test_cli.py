@@ -126,7 +126,7 @@ class TestROS2PkgCLI(unittest.TestCase):
                     'create', 'a_test_package',
                     '--package-format', '3',
                     '--description', 'A test package dummy description',
-                    '--license', 'Apache License, Version 2.0',
+                    '--license', 'Apache-2.0',
                     '--build-type', 'ament_cmake',
                     '--dependencies', 'ros2pkg',
                     '--maintainer-email', 'nobody@nowhere.com',
@@ -146,7 +146,7 @@ class TestROS2PkgCLI(unittest.TestCase):
                     'version: 0.0.0',
                     'description: A test package dummy description',
                     "maintainer: ['Nobody <nobody@nowhere.com>']",
-                    "licenses: ['Apache License, Version 2.0']",
+                    "licenses: ['Apache-2.0']",
                     'build type: ament_cmake',
                     "dependencies: ['ros2pkg']",
                     'node_name: test_node',
@@ -201,6 +201,6 @@ class TestROS2PkgCLI(unittest.TestCase):
             assert root.find('description').text == 'A test package dummy description'
             assert root.find('maintainer').text == 'Nobody'
             assert root.find('maintainer').attrib['email'] == 'nobody@nowhere.com'
-            assert root.find('license').text == 'Apache License, Version 2.0'
+            assert root.find('license').text == 'Apache-2.0'
             assert root.find('depend').text == 'ros2pkg'
             assert root.find('.//build_type').text == 'ament_cmake'
