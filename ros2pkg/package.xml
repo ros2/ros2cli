@@ -15,12 +15,12 @@
   <depend>python3-importlib-resources</depend>
   <depend>ros2cli</depend>
 
+  <exec_depend>ament_copyright</exec_depend>
   <exec_depend>ament_index_python</exec_depend>
   <exec_depend>python3-catkin-pkg-modules</exec_depend>
   <exec_depend>python3-empy</exec_depend>
   <exec_depend>python3-pkg-resources</exec_depend>
 
-  <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
   <test_depend>ament_pep257</test_depend>
   <test_depend>ament_xmllint</test_depend>
