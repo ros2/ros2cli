@@ -39,7 +39,7 @@ class PicklerForProcess(pickle.Pickler):
     @staticmethod
     def load_socket(data):
         if platform.system() == 'Windows':
-            return socket.socket.fromshare(data)
+            return socket.fromshare(data)
         return socket.socket(fileno=data)
 
     def reduce_socket(self, obj):
@@ -69,9 +69,8 @@ def daemonize(func, tags={}, timeout=None, debug=False):
         cmd += [flag, str(value)]
     kwargs = {}
     if platform.system() == 'Windows':
-        # Process Creation Flag documented in the MSDN
-        DETACHED_PROCESS = 0x00000008  # noqa: N806
-        kwargs.update(creationflags=DETACHED_PROCESS)
+        if not debug:
+            kwargs.update(creationflags=subprocess.DETACHED_PROCESS)
         # avoid showing cmd windows for subprocess
         si = subprocess.STARTUPINFO()
         si.dwFlags = subprocess.STARTF_USESHOWWINDOW
