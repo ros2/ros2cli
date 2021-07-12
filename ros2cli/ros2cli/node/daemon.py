@@ -1,4 +1,4 @@
-# Copyright 2017 Open Source Robotics Foundation, Inc.
+# Copyright 2017-2021 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,87 +13,18 @@
 # limitations under the License.
 
 import errno
-import os
-import platform
+import functools
 import socket
-import struct
-import subprocess
-import sys
-import time
 
 import rclpy
-from ros2cli.daemon import get_daemon_port
 
-from ros2cli.xmlrpc.client import ProtocolError
+import ros2cli.daemon as daemon
+from ros2cli.daemon.daemonize import daemonize
+
+from ros2cli.helpers import get_ros_domain_id
+from ros2cli.helpers import wait_for
+
 from ros2cli.xmlrpc.client import ServerProxy
-
-
-def is_daemon_running(args):
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.setsockopt(socket.SOL_SOCKET, socket.SO_LINGER, struct.pack('ii', 1, 0))
-    addr = ('localhost', get_daemon_port())
-    try:
-        s.bind(addr)
-    except socket.error as e:
-        if e.errno == errno.EADDRINUSE:
-            return True
-    finally:
-        s.close()
-    return False
-
-
-def spawn_daemon(args, wait_until_spawned=None, debug=False):
-    ros_domain_id = int(os.environ.get('ROS_DOMAIN_ID', 0))
-    kwargs = {}
-    if platform.system() != 'Windows':
-        cmd = ['_ros2_daemon']
-    else:
-        # allow closing the shell the daemon was spawned from
-        # while the daemon is still running
-        cmd = [
-            sys.executable,
-            os.path.join(
-                os.path.dirname(os.path.dirname(__file__)),
-                'daemon/__init__.py')]
-        # Process Creation Flag documented in the MSDN
-        DETACHED_PROCESS = 0x00000008  # noqa: N806
-        kwargs.update(creationflags=DETACHED_PROCESS)
-        # avoid showing cmd windows for subprocess
-        si = subprocess.STARTUPINFO()
-        si.dwFlags = subprocess.STARTF_USESHOWWINDOW
-        si.wShowWindow = subprocess.SW_HIDE
-        kwargs['startupinfo'] = si
-        # don't keep handle of current working directory in daemon process
-        kwargs.update(cwd=os.environ.get('SYSTEMROOT', None))
-
-    rmw_implementation_identifier = rclpy.get_rmw_implementation_identifier()
-    if rmw_implementation_identifier is None:
-        raise RuntimeError(
-            'Unable to get rmw_implementation_identifier, '
-            'try specifying the implementation to use via the '
-            "'RMW_IMPLEMENTATION' environment variable")
-    cmd.extend([
-        # the arguments are only passed for visibility in e.g. the process list
-        '--rmw-implementation', rmw_implementation_identifier,
-        '--ros-domain-id', str(ros_domain_id)])
-    if not debug:
-        kwargs['stdout'] = subprocess.DEVNULL
-        kwargs['stderr'] = subprocess.DEVNULL
-    subprocess.Popen(cmd, **kwargs)
-
-    if wait_until_spawned is None:
-        return True
-
-    if wait_until_spawned > 0.0:
-        timeout = time.time() + wait_until_spawned
-    else:
-        timeout = None
-    while True:
-        if is_daemon_running(args):
-            return True
-        time.sleep(0.1)
-        if timeout is not None and time.time() >= timeout:
-            return None
 
 
 class DaemonNode:
@@ -101,28 +32,28 @@ class DaemonNode:
     def __init__(self, args):
         self._args = args
         self._proxy = ServerProxy(
-            'http://localhost:%d/ros2cli/' % get_daemon_port(),
+            daemon.get_xmlrpc_server_url(),
             allow_none=True)
         self._methods = []
 
     @property
+    def connected(self):
+        try:
+            self._proxy.system.listMethods()
+        except ConnectionRefusedError:
+            return False
+        return True
+
+    @property
     def methods(self):
-        return self._methods
+        return [
+            method
+            for method in self._proxy.system.listMethods()
+            if not method.startswith('system.')
+        ]
 
     def __enter__(self):
         self._proxy.__enter__()
-
-        try:
-            methods = self._proxy.system.listMethods()
-        except ProtocolError as e:
-            if e.errcode != 404:
-                raise
-            # remote daemon returned 404, likely using different rmw impl.
-            self._proxy.__exit__()
-            self._proxy = None
-        else:
-            self._methods = [m for m in methods if not m.startswith('system.')]
-
         return self
 
     def __getattr__(self, name):
@@ -132,7 +63,12 @@ class DaemonNode:
         self._proxy.__exit__(exc_type, exc_value, traceback)
 
 
-def shutdown_daemon(args, wait_duration=None):
+def is_daemon_running(args):
+    with DaemonNode(args) as node:
+        return node.connected
+
+
+def shutdown_daemon(args, timeout=None):
     """
     Shuts down remote daemon node.
 
@@ -143,20 +79,39 @@ def shutdown_daemon(args, wait_duration=None):
     :return: whether the daemon is shut down already or not.
     """
     with DaemonNode(args) as node:
-        node.system.shutdown()
-
-    if wait_duration is None:
-        return not is_daemon_running(args)
-
-    if wait_duration > 0.0:
-        timeout = time.time() + wait_duration
-    else:
-        timeout = None
-
-    while is_daemon_running(args):
-        time.sleep(0.1)
-        if timeout and time.time() >= timeout:
+        if not node.connected:
             return False
+        node.system.shutdown()
+        if timeout is not None:
+            predicate = (lambda: not node.connected)
+            if not wait_for(predicate, timeout):
+                raise RuntimeError(
+                    'Timed out waiting for '
+                    'daemon to shutdown'
+                )
+        return True
+
+
+def spawn_daemon(args, timeout=None, debug=False):
+    try:
+        server = daemon.make_xmlrpc_server()
+        server.socket.set_inheritable(True)
+    except socket.error as e:
+        if e.errno == errno.EADDRINUSE:
+            return False
+        raise
+
+    try:
+        tags = {
+            'name': 'ros2-daemon', 'ros_domain_id': get_ros_domain_id(),
+            'rmw_implementation': rclpy.get_rmw_implementation_identifier()}
+
+        daemonize(
+            functools.partial(daemon.serve_forever, server),
+            tags=tags, timeout=timeout, debug=debug)
+    finally:
+        server.server_close()
+
     return True
 
 

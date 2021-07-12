@@ -20,8 +20,7 @@ class StatusVerb(VerbExtension):
     """Output the status of the daemon."""
 
     def main(self, *, args):
-        running = is_daemon_running(args)
-        if running:
+        if is_daemon_running(args):
             print('The daemon is running')
         else:
             print('The daemon is not running')
