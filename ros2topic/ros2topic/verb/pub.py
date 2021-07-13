@@ -30,7 +30,7 @@ from rosidl_runtime_py.utilities import get_message
 import yaml
 
 MsgType = TypeVar('MsgType')
-default_profile_str = 'system_default'
+default_profile_str = 'ACTION_STATUS_DEFAULT'
 
 
 def nonnegative_int(inval):
