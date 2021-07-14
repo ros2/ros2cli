@@ -23,6 +23,17 @@ def get_ros_domain_id():
 
 
 def wait_for(predicate, timeout, period=0.1):
+    """
+    Wait for a predicate to evaluate to `True`.
+
+    :param timeout: duration, in seconds, to wait
+      for the predicate to evaluate to `True`.
+      Non-positive durations will result in an
+      indefinite wait.
+    :param period: predicate evaluation period,
+      in seconds.
+    :return: predicate result
+    """
     if timeout < 0:
         timeout = float('+inf')
     deadline = time.time() + timeout
@@ -49,6 +60,11 @@ def bind(func, *args, **kwargs):
 
 
 def pretty_print_call(func, *args, **kwargs):
+    """
+    Print a function invocation.
+
+    See `before_invocation` for usage as a hook.
+    """
     name = func.__name__
     arguments = ', '.join(
         [f'{v!r}' for v in args] +
@@ -58,6 +74,12 @@ def pretty_print_call(func, *args, **kwargs):
 
 
 def before_invocation(func, hook):
+    """
+    Invoke a `hook` before every `func` invocation.
+
+    `hook` may take no arguments or take the `func`
+    and arbitrary positional and keyword arguments.
+    """
     signature = inspect.signature(hook)
     nargs = len(signature.parameters)
     if inspect.ismethod(hook):

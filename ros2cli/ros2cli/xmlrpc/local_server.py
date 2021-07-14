@@ -14,6 +14,7 @@
 
 import socket
 import struct
+# Import SimpleXMLRPCRequestHandler to re-export it.
 from xmlrpc.server import SimpleXMLRPCRequestHandler  # noqa
 from xmlrpc.server import SimpleXMLRPCServer
 

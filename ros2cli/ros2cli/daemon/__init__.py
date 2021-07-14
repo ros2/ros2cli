@@ -52,6 +52,7 @@ def get_xmlrpc_server_url(address=None):
 
 
 def make_xmlrpc_server():
+    """Make local XMLRPC server listening over ros2cli daemon's default port."""
     address = get_address()
 
     return LocalXMLRPCServer(
@@ -61,7 +62,14 @@ def make_xmlrpc_server():
     )
 
 
-def serve_forever(server, *, timeout=2 * 60 * 60):
+def serve(server, *, timeout=2 * 60 * 60):
+    """
+    Serve the ros2cli daemon API using the given `server`.
+
+    :param server: an XMLRPC server instance
+    :param timeout: how long to wait before shutting
+      down the server due to inactivity.
+    """
     try:
         ros_domain_id = get_ros_domain_id()
         node_args = argparse.Namespace(
@@ -141,7 +149,7 @@ def main(*, argv=None):
     assert args.rmw_implementation == rclpy.get_rmw_implementation_identifier()
     assert args.ros_domain_id == get_ros_domain_id()
 
-    serve_forever(make_xmlrpc_server(), timeout=args.timeout)
+    serve(make_xmlrpc_server(), timeout=args.timeout)
 
 
 if __name__ == '__main__':

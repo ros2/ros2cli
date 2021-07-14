@@ -25,8 +25,21 @@ from ros2cli.helpers import wait_for
 
 
 class PicklerForProcess(pickle.Pickler):
+    """
+    Pickle objects for subprocess.
+
+    This `pickle.Pickler` subclass sends serialized objects
+    to the given process through its `stdin` pipe. It can
+    serialize and send inheritable sockets and file descriptors.
+    """
 
     def __init__(self, process, *args, **kwargs):
+        """
+        See `pickle.Pickler` class for further reference.
+
+        :param process: a `subprocess.Popen` instance.
+          It is assumed its `stdin` attribute is an open pipe.
+        """
         super().__init__(process.stdin, *args, **kwargs)
         self.process = process
         self.dispatch_table = copyreg.dispatch_table.copy()
@@ -55,13 +68,39 @@ class PicklerForProcess(pickle.Pickler):
 
 
 def main():
-    func = pickle.load(sys.stdin.buffer)
+    """
+    Execute incoming, serialized callable.
+
+    See `daemonize()` for further reference.
+    """
+    callable_ = pickle.load(sys.stdin.buffer)
     sys.stdin.close()
     os.close(0)  # force C stream close
-    return func()
+    return callable_()
 
 
-def daemonize(func, tags={}, timeout=None, debug=False):
+def daemonize(callable_, tags={}, timeout=None, debug=False):
+    """
+    Spawn a callable object as a daemon.
+
+    The callable object is pickled and sent for execution
+    via the `stdin` pipe, which is closed immediately after
+    deserialization succeeds. The callable object may hold
+    inheritable sockets and file descriptors.
+
+    :param callable_: callable object to be daemonized.
+    :param tags: optional key-value pairs to show up as
+      command-line '--key value' arguments of the daemon
+      process. Useful for identification in the OS process
+      list.
+    :param timeout: optional duration, in seconds, to wait
+      for the daemon to be ready. Non-positive durations will
+      result in an indefinite wait.
+    :param debug: if `True`, the daemon process will not be
+      detached and share both `stdout` and `stderr` streams
+      with its parent process.
+    """
+    # Use daemon `main()` function
     prog = f'from {__name__} import main; main()'
     cmd = [sys.executable, '-c', prog]
     for name, value in tags.items():
@@ -71,32 +110,39 @@ def daemonize(func, tags={}, timeout=None, debug=False):
     if platform.system() == 'Windows':
         if not debug:
             kwargs.update(creationflags=subprocess.DETACHED_PROCESS)
-        # avoid showing cmd windows for subprocess
+        # Avoid showing cmd windows for subprocess
         si = subprocess.STARTUPINFO()
         si.dwFlags = subprocess.STARTF_USESHOWWINDOW
         si.wShowWindow = subprocess.SW_HIDE
         kwargs['startupinfo'] = si
-        # don't keep handle of current working directory in daemon process
+        # Don't keep handle of current working directory in daemon process
         kwargs.update(cwd=os.environ.get('SYSTEMROOT', None))
 
     kwargs['stdin'] = subprocess.PIPE
     if not debug:
         kwargs['stdout'] = subprocess.DEVNULL
         kwargs['stderr'] = subprocess.DEVNULL
+    # Don't close inheritable file descriptors,
+    # the given callable object may be carrying
+    # some.
     kwargs['close_fds'] = False
 
+    # Spawn child process
     process = subprocess.Popen(cmd, **kwargs)
 
+    # Send serialized callable object through stdin pipe
     pickler = PicklerForProcess(process)
-
-    pickler.dump(func)
+    pickler.dump(callable_)
 
     if timeout is not None:
+        # Wait for daemon to be ready by
+        # monitoring when the stdin pipe
+        # is closed
         def daemon_ready():
             try:
                 pickler.dump(None)
                 return False
-            except OSError:
+            except BrokenPipeError:
                 return True
         if not wait_for(daemon_ready, timeout):
             process.terminate()
@@ -104,6 +150,9 @@ def daemonize(func, tags={}, timeout=None, debug=False):
                 'Timed out waiting for '
                 'daemon to become ready'
             )
+    # Make sure the daemon process is still alive
+    # (and that the stdin pipe was purposefully closed)
+    # before returning.
     if process.poll() is not None:
         rc = process.returncode
         raise RuntimeError(

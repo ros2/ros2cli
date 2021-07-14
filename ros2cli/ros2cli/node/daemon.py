@@ -64,19 +64,26 @@ class DaemonNode:
 
 
 def is_daemon_running(args):
+    """
+    Check if the daemon node is running.
+
+    :param args: `DaemonNode` arguments namespace.
+    """
     with DaemonNode(args) as node:
         return node.connected
 
 
 def shutdown_daemon(args, timeout=None):
     """
-    Shuts down remote daemon node.
+    Shut down daemon node if it's running.
 
-    :param args: DaemonNode arguments namespace.
-    :param wait_duration: optional duration, in seconds, to wait
+    :param args: `DaemonNode` arguments namespace.
+    :param timeout: optional duration, in seconds, to wait
       until the daemon node is fully shut down. Non-positive
       durations will result in an indefinite wait.
-    :return: whether the daemon is shut down already or not.
+    :return: `True` if the the daemon was shut down,
+      `False` if it was already shut down.
+    :raises: if it fails to shutdown the daemon.
     """
     with DaemonNode(args) as node:
         if not node.connected:
@@ -93,21 +100,44 @@ def shutdown_daemon(args, timeout=None):
 
 
 def spawn_daemon(args, timeout=None, debug=False):
+    """
+    Spawn daemon node if it's not running.
+
+    To avoid TOCTOU races, this function instantiates
+    the XMLRPC server (binding the socket in the process)
+    and transfers it to the daemon process through pipes
+    (sending the inheritable socket with it). In a sense,
+    the socket functionally behaves as a mutex.
+
+    :param args: `DaemonNode` arguments namespace.
+    :param timeout: optional duration, in seconds, to wait
+      until the daemon node is ready. Non-positive
+      durations will result in an indefinite wait.
+    :param debug: if `True`, the daemon process will output
+      to the current `stdout` and `stderr` streams.
+    :return: `True` if the the daemon was spawned,
+      `False` if it was already running.
+    :raises: if it fails to spawn the daemon.
+    """
+    # Acquire socket by instantiating XMLRPC server.
     try:
         server = daemon.make_xmlrpc_server()
         server.socket.set_inheritable(True)
     except socket.error as e:
         if e.errno == errno.EADDRINUSE:
+            # Failed to acquire socket
+            # Daemon already running
             return False
         raise
 
+    # Transfer XMLRPC server to daemon (and the socket with it).
     try:
         tags = {
             'name': 'ros2-daemon', 'ros_domain_id': get_ros_domain_id(),
             'rmw_implementation': rclpy.get_rmw_implementation_identifier()}
 
         daemonize(
-            functools.partial(daemon.serve_forever, server),
+            functools.partial(daemon.serve, server),
             tags=tags, timeout=timeout, debug=debug)
     finally:
         server.server_close()
