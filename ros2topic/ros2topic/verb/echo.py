@@ -112,6 +112,10 @@ class EchoVerb(VerbExtension):
             '--no-lost-messages', action='store_true', help="Don't report when a message is lost")
         parser.add_argument(
             '--raw', action='store_true', help='Echo the raw binary representation')
+        parser.add_argument(
+            '--filter', dest='filter_expr', help='Python expression to filter messages that '
+                                                 'are printed. Expression can use Python builtins '
+                                                 'as well as m (the message).')
 
     def choose_qos(self, node, args):
 
@@ -195,6 +199,10 @@ class EchoVerb(VerbExtension):
         self.no_arr = args.no_arr
         self.no_str = args.no_str
 
+        self.filter_fn = None
+        if args.filter_expr:
+            self.filter_fn = _expr_eval(args.filter_expr)
+
         with NodeStrategy(args) as node:
 
             qos_profile = self.choose_qos(node, args)
@@ -263,7 +271,17 @@ class EchoVerb(VerbExtension):
                 except AttributeError as ex:
                     raise RuntimeError(f"Invalid field '{'.'.join(self.field)}': {ex}")
 
+        # Evaluate the current msg against the supplied expression
+        if self.filter_fn is not None and not self.filter_fn(submsg):
+            return
+
         self.print_func(submsg, self.truncate_length, self.no_arr, self.no_str)
+
+
+def _expr_eval(expr):
+    def eval_fn(m):
+        return eval(expr)
+    return eval_fn
 
 
 def _print_yaml(msg, truncate_length, noarr, nostr):
