@@ -14,7 +14,8 @@
 
 import socket
 import struct
-from xmlrpc.server import SimpleXMLRPCRequestHandler
+# Import SimpleXMLRPCRequestHandler to re-export it.
+from xmlrpc.server import SimpleXMLRPCRequestHandler  # noqa
 from xmlrpc.server import SimpleXMLRPCServer
 
 
@@ -39,7 +40,3 @@ class LocalXMLRPCServer(SimpleXMLRPCServer):
         if client_address[0] != '127.0.0.1':
             return False
         return super(LocalXMLRPCServer, self).verify_request(request, client_address)
-
-
-class RequestHandler(SimpleXMLRPCRequestHandler):
-    rpc_paths = ('/ros2cli/',)

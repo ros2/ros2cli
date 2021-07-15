@@ -21,6 +21,7 @@ import rclpy.action
 
 from ros2cli.node.daemon import DaemonNode
 from ros2cli.node.daemon import is_daemon_running
+from ros2cli.node.daemon import shutdown_daemon
 from ros2cli.node.daemon import spawn_daemon
 
 import test_msgs.action
@@ -107,9 +108,8 @@ def local_node():
 @pytest.fixture(scope='module')
 def daemon_node():
     if is_daemon_running(args=[]):
-        with DaemonNode(args=[]) as node:
-            node.system.shutdown()
-    assert spawn_daemon(args=[], wait_until_spawned=5.0)
+        assert shutdown_daemon(args=[], timeout=5.0)
+    assert spawn_daemon(args=[], timeout=5.0)
     with DaemonNode(args=[]) as node:
         attempts = 3
         delay_between_attempts = 2  # seconds
