@@ -142,7 +142,7 @@ def daemonize(callable_, tags={}, timeout=None, debug=False):
             try:
                 pickler.dump(None)
                 return False
-            except BrokenPipeError:
+            except OSError:
                 return True
         if not wait_for(daemon_ready, timeout):
             process.terminate()
