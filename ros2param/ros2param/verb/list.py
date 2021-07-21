@@ -101,7 +101,6 @@ class ListVerb(VerbExtension):
                     break
                 rclpy.spin_once(node, timeout_sec=1.0)
 
-
             # wait for all responses
             for future in futures.values():
                 rclpy.spin_until_future_complete(node, future, timeout_sec=1.0)
