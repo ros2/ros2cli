@@ -69,10 +69,11 @@ class ListVerb(VerbExtension):
         if regex_filter is not None:
             regex_filter = re.compile(regex_filter[0])
 
-        with DirectNode(args) as node:
+        with NodeStrategy(args) as node:
             service_names = get_service_names(
                 node=node, include_hidden_services=args.include_hidden_nodes)
 
+        with DirectNode(args) as node:
             clients = {}
             futures = {}
             # create clients for nodes which have the service
