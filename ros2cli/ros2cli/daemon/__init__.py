@@ -14,6 +14,7 @@
 
 import argparse
 import os
+import uuid
 
 import rclpy
 import rclpy.action
@@ -73,7 +74,7 @@ def serve(server, *, timeout=2 * 60 * 60):
     try:
         ros_domain_id = get_ros_domain_id()
         node_args = argparse.Namespace(
-            node_name_suffix=f'_daemon_{ros_domain_id}',
+            node_name_suffix=f'_daemon_{ros_domain_id}_{uuid.uuid4().hex}',
             start_parameter_services=False)
         with NetworkAwareNode(node_args) as node:
             functions = [
