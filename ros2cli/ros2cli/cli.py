@@ -14,6 +14,8 @@
 # limitations under the License.
 
 import argparse
+import builtins
+import functools
 import signal
 import sys
 
@@ -68,7 +70,9 @@ def main(*, script_name='ros2', argv=None, description=None, extension=None):
         try:
             sys.stdout.reconfigure(line_buffering=True)
         except AttributeError:
-            # if stdout is not a TextIoWrapper instance, we don't do anything
+            # if stdout is not a TextIoWrapper instance, or we're using python older than 3.7,
+            # force line buffering by patching print
+            builtins.print = functools.partial(print, flush=True)
             pass
 
     if extension is None:
