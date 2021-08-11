@@ -14,12 +14,20 @@
 # limitations under the License.
 
 import argparse
+import builtins
+import functools
 import signal
 
 from ros2cli.command import add_subparsers_on_demand
 
 
 def main(*, script_name='ros2', argv=None, description=None, extension=None):
+    # Make the output always line buffered, even when piping the output to another process.
+    # If you explicitly passed `flush=false`, that's not going to be the case.
+    # This only modifies the behavior of print(), if you write to stdout in another way line
+    # buffering is not guaranteed.
+    builtins.print = functools.partial(print, flush=True)
+
     if description is None:
         description = f'{script_name} is an extensible command-line tool ' \
             'for ROS 2.'
