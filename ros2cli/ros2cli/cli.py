@@ -35,6 +35,7 @@ def main(*, script_name='ros2', argv=None, description=None, extension=None):
     parser.add_argument(
         '--use-python-default-buffering',
         action='store_true',
+        default=False,
         help=(
             'Do not force line buffering in stdout and instead use the python default buffering, '
             'which might be affected by PYTHONUNBUFFERED/-u and depends on whatever stdout is '
@@ -73,7 +74,6 @@ def main(*, script_name='ros2', argv=None, description=None, extension=None):
             # if stdout is not a TextIoWrapper instance, or we're using python older than 3.7,
             # force line buffering by patching print
             builtins.print = functools.partial(print, flush=True)
-            pass
 
     if extension is None:
         # get extension identified by the passed command (if available)
