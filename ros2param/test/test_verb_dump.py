@@ -233,7 +233,7 @@ class TestVerbDump(unittest.TestCase):
             expected_lines=[
                 "WARNING: '--print' is deprecated; this utility prints to stdout by default"
             ],
-            text=param_dump_command.output,
+            text=param_dump_command.stderr,
             strict=True
         )
 
@@ -250,7 +250,7 @@ class TestVerbDump(unittest.TestCase):
                 expected_lines=[
                     "WARNING: '--output-dir' is deprecated; use redirection to save to a file"
                 ],
-                text=param_dump_command.output,
+                text=param_dump_command.stderr,
                 strict=True
             )
             # Compare generated parameter file against expected
