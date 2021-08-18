@@ -14,7 +14,10 @@
 # limitations under the License.
 
 import argparse
+import builtins
+import functools
 import signal
+import sys
 
 from ros2cli.command import add_subparsers_on_demand
 
@@ -29,6 +32,14 @@ def main(*, script_name='ros2', argv=None, description=None, extension=None):
         description=description,
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
+    parser.add_argument(
+        '--use-python-default-buffering',
+        action='store_true',
+        default=False,
+        help=(
+            'Do not force line buffering in stdout and instead use the python default buffering, '
+            'which might be affected by PYTHONUNBUFFERED/-u and depends on whatever stdout is '
+            'interactive or not'))
 
     # add arguments for command extension(s)
     if extension:
@@ -52,6 +63,17 @@ def main(*, script_name='ros2', argv=None, description=None, extension=None):
 
     # parse the command line arguments
     args = parser.parse_args(args=argv)
+
+    if not args.use_python_default_buffering:
+        # Make the output always line buffered.
+        # TextIoWrapper has a reconfigure() method, call that if available.
+        # https://docs.python.org/3/library/io.html#io.TextIOWrapper.reconfigure
+        try:
+            sys.stdout.reconfigure(line_buffering=True)
+        except AttributeError:
+            # if stdout is not a TextIoWrapper instance, or we're using python older than 3.7,
+            # force line buffering by patching print
+            builtins.print = functools.partial(print, flush=True)
 
     if extension is None:
         # get extension identified by the passed command (if available)
