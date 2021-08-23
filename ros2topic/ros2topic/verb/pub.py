@@ -18,9 +18,11 @@ from typing import TypeVar
 
 import rclpy
 from rclpy.node import Node
+from rclpy.qos import QoSDurabilityPolicy
+from rclpy.qos import QoSHistoryPolicy
 from rclpy.qos import QoSProfile
+from rclpy.qos import QoSReliabilityPolicy
 from ros2cli.node.direct import DirectNode
-from ros2topic.api import qos_profile_from_short_keys
 from ros2topic.api import TopicMessagePrototypeCompleter
 from ros2topic.api import TopicNameCompleter
 from ros2topic.api import TopicTypeCompleter
@@ -47,6 +49,13 @@ def positive_float(inval):
         # The error message here gets completely swallowed by argparse
         raise ValueError('Value must be positive')
     return ret
+
+
+def get_pub_qos_profile():
+    return QoSProfile(
+        reliability=QoSReliabilityPolicy.RELIABLE,
+        durability=QoSDurabilityPolicy.TRANSIENT_LOCAL,
+        depth=1)
 
 
 class PubVerb(VerbExtension):
@@ -98,11 +107,8 @@ class PubVerb(VerbExtension):
         parser.add_argument(
             '--qos-profile',
             choices=rclpy.qos.QoSPresetProfiles.short_keys(),
-            default=default_profile_str,
-            help='Quality of service preset profile to {} with (default: {})'
-                 .format('publish', default_profile_str))
-        default_profile = rclpy.qos.QoSPresetProfiles.get_from_short_key(
-            default_profile_str)
+            help='Quality of service preset profile to publish)')
+        default_profile = get_pub_qos_profile()
         parser.add_argument(
             '--qos-depth', metavar='N', type=int, default=-1,
             help='Queue size setting to publish with '
@@ -131,17 +137,26 @@ class PubVerb(VerbExtension):
 
 
 def main(args):
-
+    qos_profile = get_pub_qos_profile()
     qos_profile_name = args.qos_profile
-    if not qos_profile_name:
-        qos_profile_name = default_profile_str
-
-    qos_profile = qos_profile_from_short_keys(
-        qos_profile_name, reliability=args.qos_reliability, durability=args.qos_durability,
-        depth=args.qos_depth, history=args.qos_history)
+    if qos_profile_name:
+        qos_profile = rclpy.qos.QoSPresetProfiles.get_from_short_key(qos_profile_name)
+    if args.qos_history:
+        qos_profile.history = QoSHistoryPolicy.get_from_short_key(args.qos_history)
+    if args.qos_durability:
+        qos_profile.durability = QoSDurabilityPolicy.get_from_short_key(args.qos_durability)
+    if args.qos_reliability:
+        qos_profile.reliability = QoSReliabilityPolicy.get_from_short_key(args.qos_reliability)
+    if args.qos_depth and args.qos_depth >= 0:
+        qos_profile.depth = args.qos_depth
+    else:
+        if (qos_profile.durability == rclpy.qos.QoSDurabilityPolicy.TRANSIENT_LOCAL
+                and qos_profile.depth == 0):
+            qos_profile.depth = 1
     times = args.times
     if args.once:
         times = 1
+
     with DirectNode(args, node_name=args.node_name) as node:
         return publisher(
             node.node,
