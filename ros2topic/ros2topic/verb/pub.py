@@ -19,10 +19,10 @@ from typing import TypeVar
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSDurabilityPolicy
-from rclpy.qos import QoSHistoryPolicy
 from rclpy.qos import QoSProfile
 from rclpy.qos import QoSReliabilityPolicy
 from ros2cli.node.direct import DirectNode
+from ros2topic.api import profile_configure_short_keys
 from ros2topic.api import TopicMessagePrototypeCompleter
 from ros2topic.api import TopicNameCompleter
 from ros2topic.api import TopicTypeCompleter
@@ -32,7 +32,6 @@ from rosidl_runtime_py.utilities import get_message
 import yaml
 
 MsgType = TypeVar('MsgType')
-default_profile_str = 'ACTION_STATUS_DEFAULT'
 
 
 def nonnegative_int(inval):
@@ -138,21 +137,13 @@ class PubVerb(VerbExtension):
 
 def main(args):
     qos_profile = get_pub_qos_profile()
+
     qos_profile_name = args.qos_profile
     if qos_profile_name:
         qos_profile = rclpy.qos.QoSPresetProfiles.get_from_short_key(qos_profile_name)
-    if args.qos_history:
-        qos_profile.history = QoSHistoryPolicy.get_from_short_key(args.qos_history)
-    if args.qos_durability:
-        qos_profile.durability = QoSDurabilityPolicy.get_from_short_key(args.qos_durability)
-    if args.qos_reliability:
-        qos_profile.reliability = QoSReliabilityPolicy.get_from_short_key(args.qos_reliability)
-    if args.qos_depth and args.qos_depth >= 0:
-        qos_profile.depth = args.qos_depth
-    else:
-        if (qos_profile.durability == rclpy.qos.QoSDurabilityPolicy.TRANSIENT_LOCAL
-                and qos_profile.depth == 0):
-            qos_profile.depth = 1
+    profile_configure_short_keys(qos_profile, args.qos_reliability, args.qos_durability,
+      args.qos_depth, args.qos_history)
+
     times = args.times
     if args.once:
         times = 1
