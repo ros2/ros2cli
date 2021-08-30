@@ -159,7 +159,7 @@ class TopicMessagePrototypeCompleter:
 
 def profile_configure_short_keys(
     profile: rclpy.qos.QoSProfile = None, reliability: str = None,
-    durability: str = None,depth: Optional[int] = None, history: str = None, 
+    durability: str = None, depth: Optional[int] = None, history: str = None,
 ) -> rclpy.qos.QoSProfile:
     """Configure a QoSProfile given a profile, and optional overrides."""
     if history:
