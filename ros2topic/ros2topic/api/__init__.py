@@ -183,4 +183,5 @@ def qos_profile_from_short_keys(
     """Construct a QoSProfile given the name of a preset, and optional overrides."""
     # Build a QoS profile based on user-supplied arguments
     profile = rclpy.qos.QoSPresetProfiles.get_from_short_key(preset_profile)
-    return profile_configure_short_keys(profile, reliability, durability, depth, history)
+    profile_configure_short_keys(profile, reliability, durability, depth, history)
+    return profile
