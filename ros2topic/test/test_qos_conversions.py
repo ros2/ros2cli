@@ -14,14 +14,18 @@
 
 import rclpy
 
+from ros2topic.api import duration_ns
 from ros2topic.api import qos_profile_from_short_keys
 
 
 def test_profile_conversion():
     profile = qos_profile_from_short_keys(
         'sensor_data', reliability='reliable', durability='transient_local',
-        depth=10, history='keep_last')
+        depth=10, history='keep_last', liveliness='automatic',
+        liveliness_lease_duration=duration_ns(1e9))
     assert profile.durability == rclpy.qos.QoSDurabilityPolicy.TRANSIENT_LOCAL
     assert profile.reliability == rclpy.qos.QoSReliabilityPolicy.RELIABLE
     assert profile.depth == 10
     assert profile.history == rclpy.qos.QoSHistoryPolicy.KEEP_LAST
+    assert profile.liveliness == rclpy.qos.QoSLivelinessPolicy.RMW_QOS_POLICY_LIVELINESS_AUTOMATIC
+    assert profile.liveliness_lease_duration == rclpy.duration.Duration(nanoseconds=1e9)

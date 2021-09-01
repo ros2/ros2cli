@@ -18,6 +18,7 @@ from typing import Optional
 
 import rclpy
 
+from rclpy.duration import Duration
 from rclpy.expand_topic_name import expand_topic_name
 from rclpy.topic_or_service_is_hidden import topic_or_service_is_hidden
 from rclpy.validate_full_topic_name import validate_full_topic_name
@@ -35,6 +36,20 @@ def unsigned_int(string):
     if value < 0:
         raise ArgumentTypeError('value must be non-negative integer')
     return value
+
+
+def positive_float(inval):
+    try:
+        value = float(inval)
+    except ValueError:
+        value = -1
+    if value <= 0.0:
+        raise ArgumentTypeError('value must be a non-negative positive float')
+    return value
+
+
+def duration_ns(inval):
+    return Duration(nanoseconds=unsigned_int(inval))
 
 
 def get_topic_names_and_types(*, node, include_hidden_topics=False):
@@ -160,6 +175,7 @@ class TopicMessagePrototypeCompleter:
 def profile_configure_short_keys(
     profile: rclpy.qos.QoSProfile = None, reliability: str = None,
     durability: str = None, depth: Optional[int] = None, history: str = None,
+    liveliness: str = None, liveliness_lease_duration: Duration = None
 ) -> rclpy.qos.QoSProfile:
     """Configure a QoSProfile given a profile, and optional overrides."""
     if history:
@@ -168,6 +184,10 @@ def profile_configure_short_keys(
         profile.durability = rclpy.qos.QoSDurabilityPolicy.get_from_short_key(durability)
     if reliability:
         profile.reliability = rclpy.qos.QoSReliabilityPolicy.get_from_short_key(reliability)
+    if liveliness:
+        profile.liveliness = rclpy.qos.LivelinessPolicy.get_from_short_key(liveliness)
+    if liveliness_lease_duration:
+        profile.liveliness_lease_duration = liveliness_lease_duration
     if depth and depth >= 0:
         profile.depth = depth
     else:
@@ -178,10 +198,12 @@ def profile_configure_short_keys(
 
 def qos_profile_from_short_keys(
     preset_profile: str, reliability: str = None, durability: str = None,
-    depth: Optional[int] = None, history: str = None,
+    depth: Optional[int] = None, history: str = None, liveliness: str = None,
+    liveliness_lease_duration: Duration = None
 ) -> rclpy.qos.QoSProfile:
     """Construct a QoSProfile given the name of a preset, and optional overrides."""
     # Build a QoS profile based on user-supplied arguments
     profile = rclpy.qos.QoSPresetProfiles.get_from_short_key(preset_profile)
-    profile_configure_short_keys(profile, reliability, durability, depth, history)
+    profile_configure_short_keys(
+        profile, reliability, durability, depth, history, liveliness, liveliness_lease_duration)
     return profile

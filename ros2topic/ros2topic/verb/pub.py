@@ -22,6 +22,9 @@ from rclpy.qos import QoSDurabilityPolicy
 from rclpy.qos import QoSProfile
 from rclpy.qos import QoSReliabilityPolicy
 from ros2cli.node.direct import DirectNode
+from ros2topic.api import duration_ns
+from ros2topic.api import nonnegative_int
+from ros2topic.api import positive_float
 from ros2topic.api import profile_configure_short_keys
 from ros2topic.api import TopicMessagePrototypeCompleter
 from ros2topic.api import TopicNameCompleter
@@ -32,22 +35,6 @@ from rosidl_runtime_py.utilities import get_message
 import yaml
 
 MsgType = TypeVar('MsgType')
-
-
-def nonnegative_int(inval):
-    ret = int(inval)
-    if ret < 0:
-        # The error message here gets completely swallowed by argparse
-        raise ValueError('Value must be positive or zero')
-    return ret
-
-
-def positive_float(inval):
-    ret = float(inval)
-    if ret <= 0.0:
-        # The error message here gets completely swallowed by argparse
-        raise ValueError('Value must be positive')
-    return ret
 
 
 def get_pub_qos_profile():
@@ -130,6 +117,15 @@ class PubVerb(VerbExtension):
             help='Quality of service durability setting to publish with '
                  '(overrides durability value of --qos-profile option, default: {})'
                  .format(default_profile.durability.short_key))
+        parser.add_argument(
+            '--qos-liveliness',
+            choices=rclpy.qos.LivelinessPolicy.short_keys(),
+            help='Quality of service liveliness setting to publish with '
+                 '(overrides liveliness value of --qos-profile option, default: {})'
+                 .format(default_profile.liveliness.short_key))
+        parser.add_argument(
+            '--qos-liveliness-lease-duration', metavar='N', type=duration_ns,
+            help='Quality of service liveliness lease duration in nanoseconds')
 
     def main(self, *, args):
         return main(args)
@@ -140,10 +136,12 @@ def main(args):
 
     qos_profile_name = args.qos_profile
     if qos_profile_name:
-        qos_profile = rclpy.qos.QoSPresetProfiles.get_from_short_key(qos_profile_name)
+        qos_profile = rclpy.qos.QoSPresetProfiles.get_from_short_key(
+            qos_profile_name)
     profile_configure_short_keys(
         qos_profile, args.qos_reliability, args.qos_durability,
-        args.qos_depth, args.qos_history)
+        args.qos_depth, args.qos_history, args.qos_liveliness,
+        args.qos_liveliness_lease_duration)
 
     times = args.times
     if args.once:
