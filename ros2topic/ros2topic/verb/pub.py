@@ -141,8 +141,9 @@ def main(args):
     qos_profile_name = args.qos_profile
     if qos_profile_name:
         qos_profile = rclpy.qos.QoSPresetProfiles.get_from_short_key(qos_profile_name)
-    profile_configure_short_keys(qos_profile, args.qos_reliability, args.qos_durability,
-                                 args.qos_depth, args.qos_history)
+    profile_configure_short_keys(
+        qos_profile, args.qos_reliability, args.qos_durability,
+        args.qos_depth, args.qos_history)
 
     times = args.times
     if args.once:
