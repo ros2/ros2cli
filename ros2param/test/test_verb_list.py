@@ -163,6 +163,7 @@ class TestVerbList(unittest.TestCase):
             strict=True
         )
 
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_verb_list(self):
         with self.launch_param_list_command(
             arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}']
