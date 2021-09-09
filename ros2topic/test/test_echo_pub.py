@@ -311,6 +311,56 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                     self.node.destroy_timer(publish_timer)
                     self.node.destroy_publisher(publisher)
 
+    @launch_testing.markers.retry_on_failure(times=1)
+    def test_echo_filter(self, launch_service, proc_info, proc_output):
+        params = [
+            ('/clitest/topic/echo_filter_all_pass', "m.data=='hello'", True),
+            ('/clitest/topic/echo_filter_all_filtered', "m.data=='success'", False),
+
+        ]
+        for topic, filter_expr, has_output in params:
+            with self.subTest(topic=topic, filter_expr=filter_expr, print_count=10):
+                # Check for inconsistent arguments
+                publisher = self.node.create_publisher(String, topic, 10)
+                assert publisher
+
+                def publish_message():
+                    publisher.publish(String(data='hello'))
+
+                publish_timer = self.node.create_timer(0.5, publish_message)
+
+                try:
+                    command_action = ExecuteProcess(
+                        cmd=(['ros2', 'topic', 'echo'] +
+                             ['--filter', filter_expr] +
+                             [topic, 'std_msgs/String']),
+                        additional_env={
+                            'PYTHONUNBUFFERED': '1'
+                        },
+                        output='screen'
+                    )
+                    with launch_testing.tools.launch_process(
+                        launch_service, command_action, proc_info, proc_output,
+                        output_filter=launch_testing_ros.tools.basic_output_filter(
+                            filtered_rmw_implementation=get_rmw_implementation_identifier()
+                        )
+                    ) as command:
+                        # The future won't complete - we will hit the timeout
+                        self.executor.spin_until_future_complete(
+                            rclpy.task.Future(), timeout_sec=5
+                        )
+                    command.wait_for_shutdown(timeout=10)
+                    # Check results
+                    if has_output:
+                        assert 'hello' in command.output, 'Echo CLI did not output'
+                    else:
+                        assert 'hello' not in command.output, 'All messages should be filtered out'
+
+                finally:
+                    # Cleanup
+                    self.node.destroy_timer(publish_timer)
+                    self.node.destroy_publisher(publisher)
+
     @launch_testing.markers.retry_on_failure(times=5)
     def test_echo_raw(self, launch_service, proc_info, proc_output):
         topic = '/clitest/topic/echo_raw'
