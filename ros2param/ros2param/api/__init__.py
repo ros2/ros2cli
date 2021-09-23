@@ -179,10 +179,6 @@ def call_describe_parameters(*, node, node_name, parameter_names=None):
 
     # handle response
     response = future.result()
-    if response is None:
-        e = future.exception()
-        raise RuntimeError(
-            f"Exception while calling service of node '{node_name}': {e}")
     return response
 
 
@@ -202,10 +198,6 @@ def call_get_parameters(*, node, node_name, parameter_names):
 
     # handle response
     response = future.result()
-    if response is None:
-        e = future.exception()
-        raise RuntimeError(
-            f"Exception while calling service of node '{node_name}': {e}")
     return response
 
 
@@ -225,10 +217,6 @@ def call_set_parameters(*, node, node_name, parameters):
 
     # handle response
     response = future.result()
-    if response is None:
-        e = future.exception()
-        raise RuntimeError(
-            f"Exception while calling service of node '{node_name}': {e}")
     return response
 
 
@@ -247,10 +235,6 @@ def call_list_parameters(*, node, node_name, prefix=None):
 
     # handle response
     response = future.result()
-    if response is None:
-        e = future.exception()
-        raise RuntimeError(
-            f"Exception while calling service of node '{node_name}': {e}")
     return response.result.names
 
 
