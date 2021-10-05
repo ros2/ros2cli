@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>ros2doctor</name>
-  <version>0.9.9</version>
+  <version>0.9.10</version>
   <description>A command line tool to check potential issues in a ROS 2 system</description>
   <maintainer email="clairewang@openrobotics.org">Claire Wang</maintainer>
   <license>Apache License 2.0</license>
