@@ -248,8 +248,8 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                             depth=10,
                             reliability=ReliabilityPolicy.BEST_EFFORT,
                             durability=DurabilityPolicy.VOLATILE)
-                if message_lost:
-                    echo_extra_options.append('--lost-messages')
+                if not message_lost:
+                    echo_extra_options.append('--no-lost-messages')
                 publisher = self.node.create_publisher(String, topic, publisher_qos_profile)
                 assert publisher
 
@@ -281,13 +281,7 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                     command.wait_for_shutdown(timeout=10)
                     # Check results
                     if compatible_qos:
-                        # TODO(ivanpauno): remove special case when FastRTPS implements the feature
-                        # https://github.com/ros2/rmw_fastrtps/issues/395
                         assert command.output, 'Echo CLI printed no output'
-                        if message_lost and 'rmw_fastrtps' in get_rmw_implementation_identifier():
-                            assert 'does not support reporting lost messages' in command.output
-                            assert get_rmw_implementation_identifier() in command.output
-                            return
                         assert 'data: hello' in command.output.splitlines(), (
                             'Echo CLI did not print expected message'
                         )
