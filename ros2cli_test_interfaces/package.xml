@@ -4,10 +4,12 @@
   <name>ros2cli_test_interfaces</name>
   <version>0.14.0</version>
   <description>A package containing interface definitions for testing ros2cli.</description>
-  <maintainer email="mabel@openrobotics.org">Mabel Zhang</maintainer>
   <maintainer email="audrow@openrobotics.org">Audrow Nash</maintainer>
+  <maintainer email="aditya.pande@openrobotics.org">Aditya Pande</maintainer>
+  <maintainer email="michael.jeronimo@openrobotics.org">Michael Jeronimo</maintainer>
   <license>Apache License 2.0</license>
   <author email="audrow@osrfoundation.org">Audrow Nash</author>
+  <author email="mabel@openrobotics.org">Mabel Zhang</author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 

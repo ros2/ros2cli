@@ -6,12 +6,14 @@
   <description>
     The topic command for ROS 2 command line tools.
   </description>
-  <maintainer email="mabel@openrobotics.org">Mabel Zhang</maintainer>
   <maintainer email="audrow@openrobotics.org">Audrow Nash</maintainer>
+  <maintainer email="aditya.pande@openrobotics.org">Aditya Pande</maintainer>
+  <maintainer email="michael.jeronimo@openrobotics.org">Michael Jeronimo</maintainer>
   <license>Apache License 2.0</license>
   <license>BSD</license>  <!-- ros2topic/verb/delay.py|hz.py|bw.py are BSD -->
 
   <author email="dthomas@osrfoundation.org">Dirk Thomas</author>
+  <author email="mabel@openrobotics.org">Mabel Zhang</author>
 
   <depend>ros2cli</depend>
 
