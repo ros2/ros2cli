@@ -2,6 +2,14 @@
 Changelog for package ros2run
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update maintainers to Aditya Pande, Audrow Nash, and Michael Jeronimo (`#673 <https://github.com/ros2/ros2cli/issues/673>`_)
+* Updated maintainers (`#670 <https://github.com/ros2/ros2cli/issues/670>`_)
+* check subprocess.returncode to print error message. (`#639 <https://github.com/ros2/ros2cli/issues/639>`_)
+* Add changelogs (`#635 <https://github.com/ros2/ros2cli/issues/635>`_)
+* Contributors: Aditya Pande, Audrow Nash, Ivan Santiago Paunovic, Tomoya Fujita
+
 0.14.0 (2021-04-26)
 -------------------
 

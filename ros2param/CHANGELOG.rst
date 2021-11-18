@@ -2,6 +2,18 @@
 Changelog for package ros2param
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update maintainers to Aditya Pande, Audrow Nash, and Michael Jeronimo (`#673 <https://github.com/ros2/ros2cli/issues/673>`_)
+* Updated maintainers (`#670 <https://github.com/ros2/ros2cli/issues/670>`_)
+* Removed redundant code (`#666 <https://github.com/ros2/ros2cli/issues/666>`_)
+* Reapply `#659 <https://github.com/ros2/ros2cli/issues/659>`_ (`#661 <https://github.com/ros2/ros2cli/issues/661>`_)
+* Fix flaky ros2 param list (`#656 <https://github.com/ros2/ros2cli/issues/656>`_)
+* Skip None Result (`#646 <https://github.com/ros2/ros2cli/issues/646>`_)
+* add '--write' option to avoid an unintentional data loss. (`#638 <https://github.com/ros2/ros2cli/issues/638>`_)
+* Add changelogs (`#635 <https://github.com/ros2/ros2cli/issues/635>`_)
+* Contributors: Aditya Pande, Audrow Nash, Ivan Santiago Paunovic, Jacob Perron, Jay Wang, Tomoya Fujita
+
 0.14.0 (2021-04-26)
 -------------------
 

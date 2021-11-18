@@ -2,6 +2,18 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update maintainers to Aditya Pande, Audrow Nash, and Michael Jeronimo (`#673 <https://github.com/ros2/ros2cli/issues/673>`_)
+* Updated maintainers (`#670 <https://github.com/ros2/ros2cli/issues/670>`_)
+* Reapply `#659 <https://github.com/ros2/ros2cli/issues/659>`_ (`#661 <https://github.com/ros2/ros2cli/issues/661>`_)
+* Revert "Make the ros2cli output always line buffered (`#659 <https://github.com/ros2/ros2cli/issues/659>`_)" (`#660 <https://github.com/ros2/ros2cli/issues/660>`_)
+* Make the ros2cli output always line buffered (`#659 <https://github.com/ros2/ros2cli/issues/659>`_)
+* add uuid to ros2 daemon node name. (`#658 <https://github.com/ros2/ros2cli/issues/658>`_)
+* Transfer daemon socket ownership on spawn. (`#652 <https://github.com/ros2/ros2cli/issues/652>`_)
+* Add changelogs (`#635 <https://github.com/ros2/ros2cli/issues/635>`_)
+* Contributors: Aditya Pande, Audrow Nash, Ivan Santiago Paunovic, Michel Hidalgo, Tomoya Fujita
+
 0.14.0 (2021-04-26)
 -------------------
 * Ensure only one daemon can run at a time. (`#622 <https://github.com/ros2/ros2cli/issues/622>`_)

@@ -4,9 +4,18 @@ Changelog for package ros2topic
 
 Forthcoming
 -----------
-* QoS autodetection. (`#613 <https://github.com/ros2/ros2cli/issues/613>`_)
-* Make Lost Messages option ON by default. (`#633 <https://github.com/ros2/ros2cli/issues/633>`_)
-* Contributors: Gonzo
+* Update maintainers to Aditya Pande, Audrow Nash, and Michael Jeronimo (`#673 <https://github.com/ros2/ros2cli/issues/673>`_)
+* Updated maintainers (`#670 <https://github.com/ros2/ros2cli/issues/670>`_)
+* Update lost messages test case (`#669 <https://github.com/ros2/ros2cli/issues/669>`_)
+* Implementation of message filtering for ros2 (`#654 <https://github.com/ros2/ros2cli/issues/654>`_)
+* Change default QoSProfile for pub (`#653 <https://github.com/ros2/ros2cli/issues/653>`_)
+* Add option in ros2 topic pub to wait for N matching subscriptions, use N=1 by default when combined with --times (`#642 <https://github.com/ros2/ros2cli/issues/642>`_)
+* `ros2 topic pub` starts publishing right away. (`#626 <https://github.com/ros2/ros2cli/issues/626>`_)
+* Fix Topic Info Test with "Infinite" printing (`#616 <https://github.com/ros2/ros2cli/issues/616>`_)
+* Add changelogs (`#635 <https://github.com/ros2/ros2cli/issues/635>`_)
+* QoS autodetection (`#613 <https://github.com/ros2/ros2cli/issues/613>`_)
+* Make Lost Messages option ON by default (`#633 <https://github.com/ros2/ros2cli/issues/633>`_)
+* Contributors: Aditya Pande, Audrow Nash, Emerson Knapp, Gonzo, Ivan Santiago Paunovic, Jorge Perez, Tomoya Fujita, matthews-jca
 
 0.14.0 (2021-04-26)
 -------------------

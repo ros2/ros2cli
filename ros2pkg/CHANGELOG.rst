@@ -2,6 +2,16 @@
 Changelog for package ros2pkg
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update maintainers to Aditya Pande, Audrow Nash, and Michael Jeronimo (`#673 <https://github.com/ros2/ros2cli/issues/673>`_)
+* Updated maintainers (`#670 <https://github.com/ros2/ros2cli/issues/670>`_)
+* Generate LICENSE files on ros2 pkg create. (`#650 <https://github.com/ros2/ros2cli/issues/650>`_)
+* Handle ValueError (`#643 <https://github.com/ros2/ros2cli/issues/643>`_)
+* Pass package exports to template in pkg create api (`#619 <https://github.com/ros2/ros2cli/issues/619>`_) (`#628 <https://github.com/ros2/ros2cli/issues/628>`_)
+* Add changelogs (`#635 <https://github.com/ros2/ros2cli/issues/635>`_)
+* Contributors: Aditya Pande, Audrow Nash, Chris Lalancette, Ivan Santiago Paunovic, rob-clarke, tim-fan
+
 0.14.0 (2021-04-26)
 -------------------
 * Use underscores in setup.cfg.em instead of dashes. (`#627 <https://github.com/ros2/ros2cli/issues/627>`_)
