@@ -2,8 +2,8 @@
 Changelog for package ros2service
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.15.0 (2021-11-18)
+-------------------
 * Update maintainers to Aditya Pande, Audrow Nash, and Michael Jeronimo (`#673 <https://github.com/ros2/ros2cli/issues/673>`_)
 * Updated maintainers (`#670 <https://github.com/ros2/ros2cli/issues/670>`_)
 * Add changelogs (`#635 <https://github.com/ros2/ros2cli/issues/635>`_)

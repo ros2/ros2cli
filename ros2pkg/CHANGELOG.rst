@@ -2,8 +2,8 @@
 Changelog for package ros2pkg
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.15.0 (2021-11-18)
+-------------------
 * Update maintainers to Aditya Pande, Audrow Nash, and Michael Jeronimo (`#673 <https://github.com/ros2/ros2cli/issues/673>`_)
 * Updated maintainers (`#670 <https://github.com/ros2/ros2cli/issues/670>`_)
 * Generate LICENSE files on ros2 pkg create. (`#650 <https://github.com/ros2/ros2cli/issues/650>`_)
