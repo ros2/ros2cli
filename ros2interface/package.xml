@@ -6,14 +6,16 @@
   <description>
     The interface command for ROS 2 command line tools
   </description>
-  <maintainer email="audrow@openrobotics.org">Audrow Nash</maintainer>
+
   <maintainer email="aditya.pande@openrobotics.org">Aditya Pande</maintainer>
+  <maintainer email="audrow@openrobotics.org">Audrow Nash</maintainer>
   <maintainer email="michael.jeronimo@openrobotics.org">Michael Jeronimo</maintainer>
+
   <license>Apache License 2.0</license>
 
-  <author>Siddharth Kucheria</author>
   <author email="jacob@osrfoundation.org">Jacob Perron</author>
   <author email="mabel@openrobotics.org">Mabel Zhang</author>
+  <author>Siddharth Kucheria</author>
 
   <depend>ros2cli</depend>
 

@@ -16,8 +16,8 @@ setup(
     zip_safe=True,
     author='Claire Wang',
     author_email='clairewang@openrobotics.org',
-    maintainer='Claire Wang',
-    maintainer_email='clairewang@openrobotics.org',
+    maintainer='Aditya Pande, Audrow Nash, Michael Jeronimo',
+    maintainer_email='aditya.pande@openrobotics.org, audrow@openrobotics.org, michael.jeronimo@openrobotics.org',  # noqa: E501
     url='',
     download_url='',
     keywords=[],

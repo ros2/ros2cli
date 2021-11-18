@@ -24,8 +24,8 @@ setup(
     zip_safe=False,
     author='Dirk Thomas',
     author_email='dthomas@osrfoundation.org',
-    maintainer='Claire Wang, Mabel Zhang',
-    maintainer_email='clairewang@openrobotics.org, mabel@openrobotics.org',
+    maintainer='Aditya Pande, Audrow Nash, Michael Jeronimo',
+    maintainer_email='aditya.pande@openrobotics.org, audrow@openrobotics.org, michael.jeronimo@openrobotics.org',  # noqa: E501
     url='https://github.com/ros2/ros2cli/tree/master/ros2cli',
     download_url='https://github.com/ros2/ros2cli/releases',
     keywords=[],
