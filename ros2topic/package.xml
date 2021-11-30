@@ -12,7 +12,7 @@
   <maintainer email="michael.jeronimo@openrobotics.org">Michael Jeronimo</maintainer>
 
   <license>Apache License 2.0</license>
-  <license>BSD</license>  <!-- ros2topic/verb/delay.py|hz.py|bw.py are BSD -->
+  <license>BSD-3-Clause</license>  <!-- ros2topic/verb/delay.py|hz.py|bw.py are BSD -->
 
   <author email="dthomas@osrfoundation.org">Dirk Thomas</author>
   <author email="mabel@openrobotics.org">Mabel Zhang</author>
