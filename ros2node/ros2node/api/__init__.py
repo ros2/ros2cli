@@ -25,6 +25,7 @@ INFO_NONUNIQUE_WARNING_TEMPLATE = (
 )
 
 NodeName = namedtuple('NodeName', ('name', 'namespace', 'full_name'))
+NodeNameEnclave = namedtuple('NodeNameEnclave', ('name', 'enclave'))
 TopicInfo = namedtuple('Topic', ('name', 'types'))
 
 
@@ -59,10 +60,12 @@ def has_duplicates(values: List[Any]) -> bool:
 def get_node_names(*, node, include_hidden_nodes=False):
     node_names_and_namespaces = node.get_node_names_and_namespaces()
     return [
-        NodeName(
-            name=t[0],
-            namespace=t[1],
-            full_name=t[1] + ('' if t[1].endswith('/') else '/') + t[0])
+        NodeNameEnclave(
+            name=NodeName(
+                name=t[0],
+                namespace=t[1],
+                full_name=t[1] + ('' if t[1].endswith('/') else '/') + t[0]),
+            enclave=t[2])
         for t in node_names_and_namespaces
         if (
             include_hidden_nodes or
@@ -70,6 +73,101 @@ def get_node_names(*, node, include_hidden_nodes=False):
         )
     ]
 
+
+def get_node_names_with_enclaves(*, node, include_hidden_nodes=False):
+    node_names_and_namespaces_with_enclaves = node.get_node_names_and_namespaces_with_enclaves()
+    return [
+        (NodeName(
+            name=t[0],
+            namespace=t[1],
+            full_name=t[1] + ('' if t[1].endswith('/') else '/') + t[0]),
+        t[2])
+        for t in node_names_and_namespaces_with_enclaves
+        if (
+            include_hidden_nodes or
+            (t[0] and not t[0].startswith(HIDDEN_NODE_PREFIX))
+        )
+    ]
+
+
+def get_topics(remote_node_name, func, *, include_hidden_topics=False):
+    node = parse_node_name(remote_node_name)
+    names_and_types = func(node.name, node.namespace)
+    return [
+        TopicInfo(
+            name=t[0],
+            types=t[1])
+        for t in names_and_types if include_hidden_topics or not _is_hidden_name(t[0])]
+
+
+def get_subscriber_info(*, node, remote_node_name, include_hidden=False):
+    return get_topics(
+        remote_node_name,
+        node.get_subscriber_names_and_types_by_node,
+        include_hidden_topics=include_hidden
+    )
+
+
+def get_publisher_info(*, node, remote_node_name, include_hidden=False):
+    return get_topics(
+        remote_node_name,
+        node.get_publisher_names_and_types_by_node,
+        include_hidden_topics=include_hidden
+    )
+
+
+def get_service_client_info(*, node, remote_node_name, include_hidden=False):
+    return get_topics(
+        remote_node_name,
+        node.get_client_names_and_types_by_node,
+        include_hidden_topics=include_hidden
+    )
+
+
+def get_service_server_info(*, node, remote_node_name, include_hidden=False):
+    return get_topics(
+        remote_node_name,
+        node.get_service_names_and_types_by_node,
+        include_hidden_topics=include_hidden
+    )
+
+
+def get_action_server_info(*, node, remote_node_name, include_hidden=False):
+    remote_node = parse_node_name(remote_node_name)
+    names_and_types = node.get_action_server_names_and_types_by_node(
+        remote_node.name, remote_node.namespace)
+    return [
+        TopicInfo(
+            name=n,
+            types=t)
+        for n, t in names_and_types if include_hidden or not _is_hidden_name(n)]
+
+
+def get_action_client_info(*, node, remote_node_name, include_hidden=False):
+    remote_node = parse_node_name(remote_node_name)
+    names_and_types = node.get_action_client_names_and_types_by_node(
+        remote_node.name, remote_node.namespace)
+    return [
+        TopicInfo(
+            name=n,
+            types=t)
+        for n, t in names_and_types if include_hidden or not _is_hidden_name(n)]
+
+
+class NodeNameCompleter:
+    """Callable returning a list of node names."""
+
+    def __init__(self, *, include_hidden_nodes_key=None):
+        self.include_hidden_nodes_key = include_hidden_nodes_key
+
+    def __call__(self, prefix, parsed_args, **kwargs):
+        include_hidden_nodes = getattr(
+            parsed_args, self.include_hidden_nodes_key) \
+            if self.include_hidden_nodes_key else False
+        with NodeStrategy(parsed_args) as node:
+            return [
+                n.full_name for n in get_node_names(
+                    node=node, include_hidden_nodes=include_hidden_nodes)]
 
 def get_topics(remote_node_name, func, *, include_hidden_topics=False):
     node = parse_node_name(remote_node_name)

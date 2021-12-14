@@ -28,6 +28,10 @@ from ros2node.api import NodeNameCompleter
 from ros2node.verb import VerbExtension
 
 
+def print_enclaves(enclaves):
+    print(*[2 * '  {}'.format(e) for e in enclaves], sep='\n')
+
+
 def print_names_and_types(names_and_types):
     print(*[2 * '  ' + s.name + ': ' + ', '.join(s.types) for s in names_and_types], sep='\n')
 
@@ -47,8 +51,10 @@ class InfoVerb(VerbExtension):
 
     def main(self, *, args):
         with NodeStrategy(args) as node:
-            node_names = get_node_names(node=node, include_hidden_nodes=args.include_hidden)
-            count = [n.full_name for n in node_names].count(args.node_name)
+            node_names_with_enclaves = get_node_names_with_enclaves(
+                node=node,
+                include_hidden_nodes=args.include_hidden)
+            count = [n.full_name for n in node_names_with_enclaves.name].count(args.node_name)
             if count > 1:
                 print(
                     INFO_NONUNIQUE_WARNING_TEMPLATE.format(
@@ -80,5 +86,8 @@ class InfoVerb(VerbExtension):
                     node=node, remote_node_name=args.node_name, include_hidden=args.include_hidden)
                 print('  Action Clients:')
                 print_names_and_types(actions_clients)
+                print('  Enclaves:')
+                print_enclaves(node_names_with_enclaves.enclaves)
+
             else:
                 return "Unable to find node '" + args.node_name + "'"
