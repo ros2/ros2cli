@@ -18,7 +18,7 @@ from ros2cli.node.strategy import add_arguments
 from ros2cli.node.strategy import NodeStrategy
 from ros2node.api import get_action_client_info
 from ros2node.api import get_action_server_info
-from ros2node.api import get_node_names
+from ros2node.api import get_node_names_with_enclaves
 from ros2node.api import get_publisher_info
 from ros2node.api import get_service_client_info
 from ros2node.api import get_service_server_info
