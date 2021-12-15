@@ -54,7 +54,7 @@ class InfoVerb(VerbExtension):
             node_names_with_enclaves = get_node_names_with_enclaves(
                 node=node,
                 include_hidden_nodes=args.include_hidden)
-            count = [n.full_name for n in node_names_with_enclaves.name].count(args.node_name)
+            count = [n.name.full_name for n in node_names_with_enclaves].count(args.node_name)
             if count > 1:
                 print(
                     INFO_NONUNIQUE_WARNING_TEMPLATE.format(
@@ -87,7 +87,7 @@ class InfoVerb(VerbExtension):
                 print('  Action Clients:')
                 print_names_and_types(actions_clients)
                 print('  Enclaves:')
-                print_enclaves(node_names_with_enclaves.enclaves)
+                print_enclaves([n.enclave for n in node_names_with_enclaves])
 
             else:
                 return "Unable to find node '" + args.node_name + "'"
