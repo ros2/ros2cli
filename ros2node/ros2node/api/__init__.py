@@ -60,12 +60,10 @@ def has_duplicates(values: List[Any]) -> bool:
 def get_node_names(*, node, include_hidden_nodes=False):
     node_names_and_namespaces = node.get_node_names_and_namespaces()
     return [
-        NodeNameEnclave(
-            name=NodeName(
-                name=t[0],
-                namespace=t[1],
-                full_name=t[1] + ('' if t[1].endswith('/') else '/') + t[0]),
-            enclave=t[2])
+        NodeName(
+            name=t[0],
+            namespace=t[1],
+            full_name=t[1] + ('' if t[1].endswith('/') else '/') + t[0])
         for t in node_names_and_namespaces
         if (
             include_hidden_nodes or
@@ -77,11 +75,12 @@ def get_node_names(*, node, include_hidden_nodes=False):
 def get_node_names_with_enclaves(*, node, include_hidden_nodes=False):
     node_names_and_namespaces_with_enclaves = node.get_node_names_and_namespaces_with_enclaves()
     return [
-        (NodeName(
-            name=t[0],
-            namespace=t[1],
-            full_name=t[1] + ('' if t[1].endswith('/') else '/') + t[0]),
-        t[2])
+        NodeNameEnclave(
+            name=NodeName(
+                name=t[0],
+                namespace=t[1],
+                full_name=t[1] + ('' if t[1].endswith('/') else '/') + t[0]),
+            enclave=t[2])
         for t in node_names_and_namespaces_with_enclaves
         if (
             include_hidden_nodes or
