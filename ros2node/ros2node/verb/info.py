@@ -29,7 +29,7 @@ from ros2node.verb import VerbExtension
 
 
 def print_enclaves(enclaves):
-    print(*[2 * '  {}'.format(e) for e in enclaves], sep='\n')
+    print(*[2 * '    {}'.format(e) for e in enclaves if e != '/'], sep='\n')
 
 
 def print_names_and_types(names_and_types):
@@ -87,7 +87,8 @@ class InfoVerb(VerbExtension):
                 print('  Action Clients:')
                 print_names_and_types(actions_clients)
                 print('  Enclaves:')
-                print_enclaves([n.enclave for n in node_names_with_enclaves])
+                print_enclaves([n.enclave for n in node_names_with_enclaves
+                    if n.name.full_name == args.node_name])
 
             else:
                 return "Unable to find node '" + args.node_name + "'"
