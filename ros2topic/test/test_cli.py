@@ -321,6 +321,9 @@ class TestROS2TopicCLI(unittest.TestCase):
                 re.compile(r'GID: [\w\.]+'),
                 'QoS profile:',
                 re.compile(r'  Reliability: (RELIABLE|BEST_EFFORT|SYSTEM_DEFAULT|UNKNOWN)'),
+                re.compile(
+                    r'  History \(Depth\): (KEEP_LAST|KEEP_ALL|SYSTEM_DEFAULT|UNKNOWN)[\s\(\d\)]?'
+                ),
                 re.compile(r'  Durability: (VOLATILE|TRANSIENT_LOCAL|SYSTEM_DEFAULT|UNKNOWN)'),
                 '  Lifespan: Infinite',
                 '  Deadline: Infinite',
