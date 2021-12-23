@@ -62,9 +62,7 @@ def get_parameter_value(*, string_value):
     try:
         yaml_value = yaml.safe_load(string_value)
     except yaml.parser.ParserError:
-        value.type = ParameterType.PARAMETER_STRING
-        value.string_value = string_value
-        return value
+        yaml_value = string_value
 
     if isinstance(yaml_value, bool):
         value.type = ParameterType.PARAMETER_BOOL
@@ -90,10 +88,10 @@ def get_parameter_value(*, string_value):
             value.string_array_value = yaml_value
         else:
             value.type = ParameterType.PARAMETER_STRING
-            value.string_value = string_value
+            value.string_value = yaml_value
     else:
         value.type = ParameterType.PARAMETER_STRING
-        value.string_value = string_value
+        value.string_value = yaml_value
     return value
 
 

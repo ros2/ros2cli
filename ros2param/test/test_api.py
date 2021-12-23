@@ -66,6 +66,13 @@ from ros2param.api import get_parameter_value
             'string_value',
             '["foo", "bar", "buzz"',
         ),
+        (
+            # With !!str, text that would otherwise be a bool is a string
+            '!!str off',
+            ParameterType.PARAMETER_STRING,
+            'string_value',
+            'off'
+        ),
     ],
 )
 def test_get_parameter_value(
