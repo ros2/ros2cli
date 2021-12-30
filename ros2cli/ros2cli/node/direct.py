@@ -84,7 +84,7 @@ class DirectNode:
 
     def __exit__(self, exc_type, exc_value, traceback):
         self.node.destroy_node()
-        rclpy.shutdown()
+        rclpy.try_shutdown()
 
 
 def add_arguments(parser):
