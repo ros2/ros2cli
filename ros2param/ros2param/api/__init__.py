@@ -88,7 +88,7 @@ def get_parameter_value(*, string_value):
             value.string_array_value = yaml_value
         else:
             value.type = ParameterType.PARAMETER_STRING
-            value.string_value = yaml_value
+            value.string_value = string_value
     else:
         value.type = ParameterType.PARAMETER_STRING
         value.string_value = yaml_value

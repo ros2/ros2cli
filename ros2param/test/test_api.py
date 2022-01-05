@@ -67,11 +67,26 @@ from ros2param.api import get_parameter_value
             '["foo", "bar", "buzz"',
         ),
         (
+            # With 'off', YAML interprets this as a bool
+            'off',
+            ParameterType.PARAMETER_BOOL,
+            'bool_value',
+            False
+        ),
+        (
             # With !!str, text that would otherwise be a bool is a string
             '!!str off',
             ParameterType.PARAMETER_STRING,
             'string_value',
             'off'
+        ),
+        (
+            # While YAML supports a mixed-type list, ROS 2 parameters do not,
+            # so these end up being strings
+            '[true,0.1,1]',
+            ParameterType.PARAMETER_STRING,
+            'string_value',
+            '[true,0.1,1]'
         ),
     ],
 )
