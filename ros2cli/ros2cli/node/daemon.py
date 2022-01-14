@@ -100,8 +100,9 @@ class DaemonNode:
 
     def __init__(self, args):
         self._args = args
+        host = '127.0.0.1' if platform.system() == 'Windows' else 'localhost'
         self._proxy = ServerProxy(
-            'http://127.0.0.1:%d/ros2cli/' % get_daemon_port(),
+            'http://%s:%d/ros2cli/' % (host, get_daemon_port()),
             allow_none=True)
         self._methods = []
 
