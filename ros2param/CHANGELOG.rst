@@ -2,6 +2,9 @@
 Changelog for package ros2param
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.16.1 (2022-01-14)
+-------------------
+
 0.16.0 (2022-01-14)
 -------------------
 * Fix how ros2 param interprets command-line arguments. (`#684 <https://github.com/ros2/ros2cli/issues/684>`_)
