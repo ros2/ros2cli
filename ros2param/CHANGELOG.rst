@@ -2,6 +2,11 @@
 Changelog for package ros2param
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.16.0 (2022-01-14)
+-------------------
+* Fix how ros2 param interprets command-line arguments. (`#684 <https://github.com/ros2/ros2cli/issues/684>`_)
+* Contributors: Chris Lalancette
+
 0.15.0 (2021-11-18)
 -------------------
 * Update maintainers to Aditya Pande, Audrow Nash, and Michael Jeronimo (`#673 <https://github.com/ros2/ros2cli/issues/673>`_)

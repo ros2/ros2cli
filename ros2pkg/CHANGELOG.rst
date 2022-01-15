@@ -2,6 +2,12 @@
 Changelog for package ros2pkg
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Depend on launch packages instead of ros_testing to avoid circular dependency (`#685 <https://github.com/ros2/ros2cli/issues/685>`_)
+* [ros2pkg] Skip copyright tests in template packages (`#676 <https://github.com/ros2/ros2cli/issues/676>`_)
+* Contributors: Abrar Rahman Protyasha, Shane Loretz
+
 0.15.0 (2021-11-18)
 -------------------
 * Update maintainers to Aditya Pande, Audrow Nash, and Michael Jeronimo (`#673 <https://github.com/ros2/ros2cli/issues/673>`_)

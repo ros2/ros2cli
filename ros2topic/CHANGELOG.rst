@@ -2,6 +2,13 @@
 Changelog for package ros2topic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.16.0 (2022-01-14)
+-------------------
+* Depend on launch packages instead of ros_testing to avoid circular dependency (`#685 <https://github.com/ros2/ros2cli/issues/685>`_)
+* Add QoS history and depth information if available. (`#678 <https://github.com/ros2/ros2cli/issues/678>`_)
+* Cleanup mislabeled BSD license (`#447 <https://github.com/ros2/ros2cli/issues/447>`_)
+* Contributors: Shane Loretz, Tomoya Fujita, Tully Foote
+
 0.15.0 (2021-11-18)
 -------------------
 * Update maintainers to Aditya Pande, Audrow Nash, and Michael Jeronimo (`#673 <https://github.com/ros2/ros2cli/issues/673>`_)

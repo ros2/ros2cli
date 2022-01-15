@@ -2,6 +2,11 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.16.0 (2022-01-14)
+-------------------
+* Use try_shutdown() instead of shutdown() in DirectNode.__exit_\_() (`#683 <https://github.com/ros2/ros2cli/issues/683>`_)
+* Contributors: Ivan Santiago Paunovic
+
 0.15.0 (2021-11-18)
 -------------------
 * Update maintainers to Aditya Pande, Audrow Nash, and Michael Jeronimo (`#673 <https://github.com/ros2/ros2cli/issues/673>`_)
