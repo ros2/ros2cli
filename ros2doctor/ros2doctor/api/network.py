@@ -13,9 +13,11 @@
 # limitations under the License.
 
 import os
-from typing import Tuple
+import socket
+import struct
+import sys
 
-import ifcfg
+import psutil
 
 from ros2doctor.api import DoctorCheck
 from ros2doctor.api import DoctorReport
@@ -25,25 +27,106 @@ from ros2doctor.api.format import doctor_error
 from ros2doctor.api.format import doctor_warn
 
 
-def _is_unix_like_platform() -> bool:
-    """Return True if conforms to UNIX/POSIX-style APIs."""
-    return os.name == 'posix'
+class InterfaceFlags:
+    POSIX_NET_FLAGS = (
+        ('UP', 0),
+        ('BROADCAST', 1),
+        ('DEBUG', 2),
+        ('LOOPBACK', 3),
 
+        ('PTP', 4),
+        ('NOTRAILERS', 5),
+        ('RUNNING', 6),
+        ('NOARP', 7),
 
-def _check_network_config_helper(ifcfg_ifaces: dict) -> Tuple[bool, bool, bool]:
-    """Check if loopback and multicast IP addresses are found."""
-    has_loopback, has_non_loopback, has_multicast = False, False, False
-    for iface in ifcfg_ifaces.values():
-        flags = iface.get('flags')
-        if flags:
-            flags = flags.lower()
-            if 'loopback' in flags:
-                has_loopback = True
-            else:
-                has_non_loopback = True
-            if 'multicast' in flags:
-                has_multicast = True
-    return has_loopback, has_non_loopback, has_multicast
+        ('PROMISC', 8),
+        ('ALLMULTI', 9),
+        ('MASTER', 10),
+        ('SLAVE', 11),
+
+        ('MULTICAST', 12),
+        ('PORTSEL', 13),
+        ('AUTOMEDIA', 14),
+        ('DYNAMIC', 15),
+    )
+
+    def __init__(self, interface_name):
+        self.flags = -1
+        self.flag_list = set()
+        self.has_loopback = False
+        self.has_non_loopback = False
+        self.has_multicast = False
+        self.get(interface_name)
+
+    def get(self, interface_name):
+        if os.name != 'posix':
+            return
+
+        import fcntl
+
+        if sys.platform == 'darwin':
+            SIOCGIFFLAGS = 0xc0206911
+        else:
+            SIOCGIFFLAGS = 0x8913
+
+        # We need to pass a 'struct ifreq' to the SIOCGIFFLAGS ioctl.  Nominally the
+        # structure looks like:
+        #
+        #            struct ifreq {
+        #               char ifr_name[IFNAMSIZ]; /* Interface name */
+        #               union {
+        #                   struct sockaddr ifr_addr;
+        #                   struct sockaddr ifr_dstaddr;
+        #                   struct sockaddr ifr_broadaddr;
+        #                   struct sockaddr ifr_netmask;
+        #                   struct sockaddr ifr_hwaddr;
+        #                   short           ifr_flags;
+        #                   int             ifr_ifindex;
+        #                   int             ifr_metric;
+        #                   int             ifr_mtu;
+        #                   struct ifmap    ifr_map;
+        #                   char            ifr_slave[IFNAMSIZ];
+        #                   char            ifr_newname[IFNAMSIZ];
+        #                   char           *ifr_data;
+        #               };
+        #           };
+        #
+        # Where IFNAMSIZ is 16 bytes long.  The caller (that's us) sets the ifr_name
+        # to the interface in question, and the call fills in the union.  In the case
+        # of this particular ioctl, only the 'ifr_flags' is valid after the call.
+        # Either way, we need to provide enough room in the provided structure for the
+        # ioctl to fill it out, so we just provide an additional 256 bytes which should
+        # be more than enough.
+
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+            try:
+                result = fcntl.ioctl(s.fileno(), SIOCGIFFLAGS, interface_name + '\0' * 256)
+            except OSError:
+                return
+
+        # On success, result contains the structure filled in with the info we asked
+        # for (the flags).  We just need to extract it from the correct place.
+
+        self.flags = struct.unpack('H', result[16:18])[0]
+        for flagname, bit in self.POSIX_NET_FLAGS:
+            if self.flags & (1 << bit):
+                self.flag_list.add(flagname)
+
+        if 'LOOPBACK' in self.flag_list:
+            self.has_loopback = True
+        else:
+            self.has_non_loopback = True
+
+        if 'MULTICAST' in self.flag_list:
+            self.has_multicast = True
+
+    def __str__(self):
+        if self.flags == -1:
+            return ''
+
+        output_flags = ','.join(self.flag_list)
+
+        return f'{self.flags}<{output_flags}>'
 
 
 class NetworkCheck(DoctorCheck):
@@ -55,11 +138,17 @@ class NetworkCheck(DoctorCheck):
     def check(self):
         """Check network configuration."""
         result = Result()
-        # check ifcfg import for windows and osx users
-        ifcfg_ifaces = ifcfg.interfaces()
 
-        has_loopback, has_non_loopback, has_multicast = _check_network_config_helper(ifcfg_ifaces)
-        if not _is_unix_like_platform():
+        has_loopback = False
+        has_non_loopback = False
+        has_multicast = False
+        for interface in psutil.net_if_addrs().keys():
+            flags = InterfaceFlags(interface)
+            has_loopback |= flags.has_loopback
+            has_non_loopback |= flags.has_non_loopback
+            has_multicast |= flags.has_multicast
+
+        if os.name != 'posix':
             if not has_loopback and not has_non_loopback:
                 # no flags found, otherwise one of them should be True.
                 doctor_warn(
@@ -87,12 +176,44 @@ class NetworkReport(DoctorReport):
 
     def report(self):
         """Print system and ROS network information."""
-        # check ifcfg import for windows and osx users
-        ifcfg_ifaces = ifcfg.interfaces()
+        if_stats = psutil.net_if_stats()
 
         network_report = Report('NETWORK CONFIGURATION')
-        for iface in ifcfg_ifaces.values():
-            for k, v in iface.items():
+
+        for interface, addrs in psutil.net_if_addrs().items():
+            if_info = {
+                'inet': None,
+                'inet4': [],
+                'ether': None,
+                'inet6': [],
+                'netmask': None,
+                'device': interface,
+                'flags': None,
+                'mtu': None,
+                'broadcast': None,
+            }
+            for addr in addrs:
+                if addr.family == socket.AddressFamily.AF_INET:
+                    if_info['inet'] = addr.address
+                    if_info['inet4'].append(addr.address)
+                    if_info['netmask'] = addr.netmask
+                    if_info['broadcast'] = addr.broadcast
+                elif addr.family == socket.AddressFamily.AF_INET6:
+                    if_info['inet6'].append(addr.address)
+                elif 'AF_PACKET' in socket.AddressFamily.__members__:
+                    if addr.family == socket.AddressFamily.AF_PACKET:
+                        # Loopback reports an all-zero MAC address, which is
+                        # bogus and should not be reported
+                        if addr.address != '00:00:00:00:00:00':
+                            if_info['ether'] = addr.address
+
+            if interface in if_stats:
+                if_info['mtu'] = if_stats[interface].mtu
+
+            flags = InterfaceFlags(interface)
+            if_info['flags'] = str(flags)
+
+            for k, v in if_info.items():
                 if v:
                     network_report.add_to_report(k, v)
         return network_report
