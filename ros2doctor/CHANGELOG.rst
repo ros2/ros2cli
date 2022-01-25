@@ -2,6 +2,9 @@
 Changelog for package ros2doctor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.17.1 (2022-01-25)
+-------------------
+
 0.17.0 (2022-01-25)
 -------------------
 * Switch ros2 doctor to using psutil for network checks. (`#687 <https://github.com/ros2/ros2cli/issues/687>`_)
