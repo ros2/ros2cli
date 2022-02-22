@@ -24,6 +24,7 @@ from rclpy.qos import QoSProfile
 from rclpy.qos import QoSReliabilityPolicy
 from rclpy.qos_event import SubscriptionEventCallbacks
 from rclpy.qos_event import UnsupportedEventTypeError
+from rclpy.task import Future
 from ros2cli.node.strategy import add_arguments as add_strategy_node_arguments
 from ros2cli.node.strategy import NodeStrategy
 from ros2topic.api import get_msg_class
@@ -116,6 +117,8 @@ class EchoVerb(VerbExtension):
             '--filter', dest='filter_expr', help='Python expression to filter messages that '
                                                  'are printed. Expression can use Python builtins '
                                                  'as well as m (the message).')
+        parser.add_argument(
+            '--once', action='store_true', help='Print the first message received and then exit.')
 
     def choose_qos(self, node, args):
 
@@ -203,6 +206,10 @@ class EchoVerb(VerbExtension):
         if args.filter_expr:
             self.filter_fn = _expr_eval(args.filter_expr)
 
+        self.future = None
+        if args.once:
+            self.future = Future()
+
         with NodeStrategy(args) as node:
 
             qos_profile = self.choose_qos(node, args)
@@ -260,7 +267,10 @@ class EchoVerb(VerbExtension):
                 event_callbacks=None,
                 raw=raw)
 
-        rclpy.spin(node)
+        if self.future is not None:
+            rclpy.spin_until_future_complete(node, self.future)
+        else:
+            rclpy.spin(node)
 
     def _subscriber_callback(self, msg):
         submsg = msg
@@ -274,6 +284,9 @@ class EchoVerb(VerbExtension):
         # Evaluate the current msg against the supplied expression
         if self.filter_fn is not None and not self.filter_fn(submsg):
             return
+
+        if self.future is not None:
+            self.future.set_result(True)
 
         self.print_func(submsg, self.truncate_length, self.no_arr, self.no_str)
 

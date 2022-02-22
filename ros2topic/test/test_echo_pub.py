@@ -389,3 +389,47 @@ class TestROS2TopicEchoPub(unittest.TestCase):
             # Cleanup
             self.node.destroy_timer(publish_timer)
             self.node.destroy_publisher(publisher)
+
+    @launch_testing.markers.retry_on_failure(times=5)
+    def test_echo_once(self, launch_service, proc_info, proc_output):
+        topic = '/clitest/topic/echo_once'
+        publisher = self.node.create_publisher(String, topic, 10)
+        assert publisher
+
+        def publish_message():
+            publisher.publish(String(data='hello'))
+
+        publish_timer = self.node.create_timer(1.0, publish_message)
+
+        try:
+            command_action = ExecuteProcess(
+                cmd=['ros2', 'topic', 'echo', '--once', topic, 'std_msgs/msg/String'],
+                additional_env={
+                    'PYTHONUNBUFFERED': '1'
+                },
+                output='screen'
+            )
+            with launch_testing.tools.launch_process(
+                launch_service, command_action, proc_info, proc_output,
+                output_filter=launch_testing_ros.tools.basic_output_filter(
+                    filtered_rmw_implementation=get_rmw_implementation_identifier()
+                )
+            ) as command:
+                # The future won't complete - we will hit the timeout
+                self.executor.spin_until_future_complete(
+                    rclpy.task.Future(), timeout_sec=3
+                )
+                assert command.wait_for_shutdown(timeout=5)
+            assert launch_testing.tools.expect_output(
+                expected_lines=[
+                    'data: hello',
+                    '---',
+                ],
+                text=command.output,
+                strict=True
+            )
+
+        finally:
+            # Cleanup
+            self.node.destroy_timer(publish_timer)
+            self.node.destroy_publisher(publisher)
