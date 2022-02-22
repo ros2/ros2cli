@@ -286,20 +286,13 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                             'Echo CLI did not print expected message'
                         )
                     else:
-                        # TODO(mm318): remove special case for FastRTPS when
-                        # https://github.com/ros2/rmw_fastrtps/issues/356 is resolved
-                        if 'rmw_fastrtps' in get_rmw_implementation_identifier():
-                            assert not command.output, (
-                                'Echo CLI should not have received anything with incompatible QoS'
+                        assert command.output, (
+                            'Echo CLI did not print incompatible QoS warning'
+                        )
+                        assert ("New publisher discovered on topic '{}', offering incompatible"
+                                ' QoS.'.format(topic) in command.output), (
+                                'Echo CLI did not print expected incompatible QoS warning'
                             )
-                        else:
-                            assert command.output, (
-                                'Echo CLI did not print incompatible QoS warning'
-                            )
-                            assert ("New publisher discovered on topic '{}', offering incompatible"
-                                    ' QoS.'.format(topic) in command.output), (
-                                    'Echo CLI did not print expected incompatible QoS warning'
-                                )
                 finally:
                     # Cleanup
                     self.node.destroy_timer(publish_timer)
