@@ -2,6 +2,12 @@
 Changelog for package ros2topic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* support ros2topic echo once option. (`#695 <https://github.com/ros2/ros2cli/issues/695>`_)
+* Fix special case for fastrtps incompatible QoS. (`#694 <https://github.com/ros2/ros2cli/issues/694>`_)
+* Contributors: Chris Lalancette, Tomoya Fujita
+
 0.17.1 (2022-01-25)
 -------------------
 

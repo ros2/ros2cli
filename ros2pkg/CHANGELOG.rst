@@ -2,6 +2,11 @@
 Changelog for package ros2pkg
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Use local git config instead of global (`#693 <https://github.com/ros2/ros2cli/issues/693>`_)
+* Contributors: Amro Al-Baali
+
 0.17.1 (2022-01-25)
 -------------------
 
