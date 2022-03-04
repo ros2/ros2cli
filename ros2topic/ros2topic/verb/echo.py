@@ -108,6 +108,8 @@ class EchoVerb(VerbExtension):
         parser.add_argument(
             '--no-str', action='store_true', help="Don't print string fields of messages")
         parser.add_argument(
+            '--flow-style', action='store_true', help="Print collections in the block style")
+        parser.add_argument(
             '--lost-messages', action='store_true', help='DEPRECATED: Does nothing')
         parser.add_argument(
             '--no-lost-messages', action='store_true', help="Don't report when a message is lost")
@@ -201,6 +203,7 @@ class EchoVerb(VerbExtension):
         self.truncate_length = args.truncate_length if not args.full_length else None
         self.no_arr = args.no_arr
         self.no_str = args.no_str
+        self.flow_style = args.flow_style
 
         self.filter_fn = None
         if args.filter_expr:
@@ -288,7 +291,7 @@ class EchoVerb(VerbExtension):
         if self.future is not None:
             self.future.set_result(True)
 
-        self.print_func(submsg, self.truncate_length, self.no_arr, self.no_str)
+        self.print_func(submsg, self.truncate_length, self.no_arr, self.no_str, self.flow_style)
 
 
 def _expr_eval(expr):
@@ -297,11 +300,11 @@ def _expr_eval(expr):
     return eval_fn
 
 
-def _print_yaml(msg, truncate_length, noarr, nostr):
+def _print_yaml(msg, truncate_length, noarr, nostr, flowstyle):
     if hasattr(msg, '__slots__'):
         print(
             message_to_yaml(
-                msg, truncate_length=truncate_length, no_arr=noarr, no_str=nostr),
+                msg, truncate_length=truncate_length, no_arr=noarr, no_str=nostr, flow_style=flowstyle),
             end='---\n')
     else:
         print(msg, end='\n---\n')
