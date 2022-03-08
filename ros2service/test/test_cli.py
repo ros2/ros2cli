@@ -157,7 +157,7 @@ class TestROS2ServiceCLI(unittest.TestCase):
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_list_hidden(self):
         with self.launch_service_command(
-            arguments=['--include-hidden-services', 'list']
+            arguments=['list', '--include-hidden-services']
         ) as service_command:
             assert service_command.wait_for_shutdown(timeout=10)
         assert service_command.exit_code == launch_testing.asserts.EXIT_OK
