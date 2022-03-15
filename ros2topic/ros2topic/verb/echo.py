@@ -108,7 +108,8 @@ class EchoVerb(VerbExtension):
         parser.add_argument(
             '--no-str', action='store_true', help="Don't print string fields of messages")
         parser.add_argument(
-            '--flow-style', action='store_true', help="Print collections in the block style")
+            '--flow-style', action='store_true',
+            help='Print collections in the block style (not available with csv format)')
         parser.add_argument(
             '--lost-messages', action='store_true', help='DEPRECATED: Does nothing')
         parser.add_argument(
@@ -190,7 +191,8 @@ class EchoVerb(VerbExtension):
 
         # Select print function
         self.print_func = _print_yaml
-        if args.csv:
+        self.csv = args.csv
+        if self.csv:
             self.print_func = _print_csv
 
         # Validate field selection
@@ -291,7 +293,11 @@ class EchoVerb(VerbExtension):
         if self.future is not None:
             self.future.set_result(True)
 
-        self.print_func(submsg, self.truncate_length, self.no_arr, self.no_str, self.flow_style)
+        if self.csv:
+            self.print_func(submsg, self.truncate_length, self.no_arr, self.no_str)
+        else:
+            self.print_func(
+                submsg, self.truncate_length, self.no_arr, self.no_str, self.flow_style)
 
 
 def _expr_eval(expr):
@@ -304,7 +310,8 @@ def _print_yaml(msg, truncate_length, noarr, nostr, flowstyle):
     if hasattr(msg, '__slots__'):
         print(
             message_to_yaml(
-                msg, truncate_length=truncate_length, no_arr=noarr, no_str=nostr, flow_style=flowstyle),
+                msg, truncate_length=truncate_length,
+                no_arr=noarr, no_str=nostr, flow_style=flowstyle),
             end='---\n')
     else:
         print(msg, end='\n---\n')
