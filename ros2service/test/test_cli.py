@@ -68,6 +68,9 @@ def generate_test_description(rmw_implementation):
     path_to_echo_server_script = os.path.join(
         os.path.dirname(__file__), 'fixtures', 'echo_server.py'
     )
+    path_to_echo_client_script = os.path.join(
+        os.path.dirname(__file__), 'fixtures', 'echo_client.py'
+    )
     additional_env = {'RMW_IMPLEMENTATION': rmw_implementation}
     return LaunchDescription([
         # Always restart daemon to isolate tests.
@@ -93,6 +96,13 @@ def generate_test_description(rmw_implementation):
                             name='_hidden_echo_server',
                             namespace='my_ns',
                             remappings=[('echo', '_echo')],
+                            additional_env=additional_env,
+                        ),
+                        Node(
+                            executable=sys.executable,
+                            arguments=[path_to_echo_client_script],
+                            name='echo_client',
+                            namespace='my_ns',
                             additional_env=additional_env,
                         ),
                         launch_testing.actions.ReadyToTest()
@@ -147,8 +157,11 @@ class TestROS2ServiceCLI(unittest.TestCase):
             expected_lines=itertools.chain(
                 ['/my_ns/echo'],
                 itertools.repeat(re.compile(
+                    r'/my_ns/echo_client/.*parameter.*'
+                ), 6),
+                itertools.repeat(re.compile(
                     r'/my_ns/echo_server/.*parameter.*'
-                ), 6)
+                ), 6),
             ),
             text=service_command.output,
             strict=True
@@ -169,6 +182,9 @@ class TestROS2ServiceCLI(unittest.TestCase):
                 ), 6),
                 ['/my_ns/echo'],
                 itertools.repeat(re.compile(
+                    r'/my_ns/echo_client/.*parameter.*'
+                ), 6),
+                itertools.repeat(re.compile(
                     r'/my_ns/echo_server/.*parameter.*'
                 ), 6)
             ),
@@ -185,9 +201,13 @@ class TestROS2ServiceCLI(unittest.TestCase):
             expected_lines=itertools.chain(
                 ['/my_ns/echo [test_msgs/srv/BasicTypes]'],
                 itertools.repeat(re.compile(
+                    r'/my_ns/echo_client/.*parameter.*'
+                    r' \[rcl_interfaces/srv/.*Parameter.*\]'
+                ), 6),
+                itertools.repeat(re.compile(
                     r'/my_ns/echo_server/.*parameter.*'
                     r' \[rcl_interfaces/srv/.*Parameter.*\]'
-                ), 6)
+                ), 6),
             ),
             text=service_command.output,
             strict=True
@@ -200,7 +220,58 @@ class TestROS2ServiceCLI(unittest.TestCase):
         assert service_command.exit_code == launch_testing.asserts.EXIT_OK
         output_lines = service_command.output.splitlines()
         assert len(output_lines) == 1
-        assert int(output_lines[0]) == 7
+        assert int(output_lines[0]) == 13
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_info(self):
+        with self.launch_service_command(arguments=['info', '/my_ns/echo']) as service_command:
+            assert service_command.wait_for_shutdown(timeout=10)
+        assert service_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=[
+                'Service: /my_ns/echo',
+                'Service clients: 1',
+                '    /my_ns/echo_client',
+                'Service servers: 1',
+                '    /my_ns/echo_server',
+            ],
+            text=service_command.output,
+            strict=True
+        )
+
+    def test_info_types(self):
+        with self.launch_service_command(
+                arguments=['info', '-t', '/my_ns/echo']
+        ) as service_command:
+            assert service_command.wait_for_shutdown(timeout=10)
+        assert service_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=[
+                'Service: /my_ns/echo',
+                'Service clients: 1',
+                '    /my_ns/echo_client [test_msgs/srv/BasicTypes]',
+                'Service servers: 1',
+                '    /my_ns/echo_server [test_msgs/srv/BasicTypes]',
+            ],
+            text=service_command.output,
+            strict=True
+        )
+
+    def test_info_count(self):
+        with self.launch_service_command(
+                arguments=['info', '-c', '/my_ns/echo']
+        ) as service_command:
+            assert service_command.wait_for_shutdown(timeout=10)
+        assert service_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=[
+                'Service: /my_ns/echo',
+                'Service clients: 1',
+                'Service servers: 1',
+            ],
+            text=service_command.output,
+            strict=True
+        )
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_find(self):
