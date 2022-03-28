@@ -2,6 +2,11 @@
 Changelog for package ros2topic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.18.1 (2022-03-28)
+-------------------
+* Add yaml dump flow style. (`#698 <https://github.com/ros2/ros2cli/issues/698>`_)
+* Contributors: Tomoya Fujita
+
 0.18.0 (2022-03-01)
 -------------------
 * support ros2topic echo once option. (`#695 <https://github.com/ros2/ros2cli/issues/695>`_)
