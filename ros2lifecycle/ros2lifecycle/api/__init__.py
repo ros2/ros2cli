@@ -67,7 +67,7 @@ def call_get_states(*, node, node_names):
 
     # wait for all responses
     for future in futures.values():
-        rclpy.spin_until_future_complete(node, future)
+        rclpy.spin_until_complete(node, future)
 
     # return current state or exception for each node
     states = {}
@@ -112,7 +112,7 @@ def _call_get_transitions(node, states, service_name):
 
     # wait for all responses
     for future in futures.values():
-        rclpy.spin_until_future_complete(node, future)
+        rclpy.spin_until_complete(node, future)
 
     # return transitions from current state or exception for each node
     transitions = {}
@@ -157,7 +157,7 @@ def call_change_states(*, node, transitions):
 
     # wait for all responses
     for future in futures.values():
-        rclpy.spin_until_future_complete(node, future)
+        rclpy.spin_until_complete(node, future)
 
     # return success flag or exception for each node
     results = {}
