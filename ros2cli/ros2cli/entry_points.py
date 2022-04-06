@@ -63,8 +63,13 @@ def get_entry_points(group_name):
       to ``EntryPoint`` instances
     :rtype: dict
     """
+    entry_points_impl = importlib_metadata.entry_points()
+    if hasattr(entry_points_impl, 'select'):
+        groups = entry_points_impl.select(group=group_name)
+    else:
+        groups = entry_points_impl.get(group_name, [])
     entry_points = {}
-    for entry_point in importlib_metadata.entry_points().get(group_name, []):
+    for entry_point in groups:
         entry_points[entry_point.name] = entry_point
     return entry_points
 
