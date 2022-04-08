@@ -2,6 +2,11 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix importlib_metadata warning on Python 3.10. (`#706 <https://github.com/ros2/ros2cli/issues/706>`_)
+* Contributors: Chris Lalancette
+
 0.18.2 (2022-03-30)
 -------------------
 * Add timeout to kill hanging tests (`#701 <https://github.com/ros2/ros2cli/issues/701>`_)
