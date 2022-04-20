@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from os import remove
 import sys
 from typing import Optional
 from typing import TypeVar
@@ -32,6 +33,7 @@ from ros2topic.api import qos_profile_from_short_keys
 from ros2topic.api import TopicNameCompleter
 from ros2topic.api import unsigned_int
 from ros2topic.verb import VerbExtension
+import rosidl_parser
 from rosidl_runtime_py import message_to_csv
 from rosidl_runtime_py import message_to_yaml
 from rosidl_runtime_py.utilities import get_message
@@ -122,6 +124,9 @@ class EchoVerb(VerbExtension):
                                                  'as well as m (the message).')
         parser.add_argument(
             '--once', action='store_true', help='Print the first message received and then exit.')
+        parser.add_argument(
+            '--verbose', '-v', action='store_true',
+            help='Shows the associated message info.')
 
     def choose_qos(self, node, args):
 
@@ -214,6 +219,7 @@ class EchoVerb(VerbExtension):
         self.future = None
         if args.once:
             self.future = Future()
+        self.verbose = args.verbose
 
         with NodeStrategy(args) as node:
 
@@ -247,7 +253,7 @@ class EchoVerb(VerbExtension):
         message_type: MsgType,
         qos_profile: QoSProfile,
         no_report_lost_messages: bool,
-        raw: bool
+        raw: bool,
     ) -> Optional[str]:
         """Initialize a node with a single subscription and spin."""
         event_callbacks = None
@@ -277,7 +283,7 @@ class EchoVerb(VerbExtension):
         else:
             rclpy.spin(node)
 
-    def _subscriber_callback(self, msg):
+    def _subscriber_callback(self, msg, info):
         submsg = msg
         if self.field is not None:
             for field in self.field:
@@ -293,19 +299,59 @@ class EchoVerb(VerbExtension):
         if self.future is not None:
             self.future.set_result(True)
 
+        if self.verbose:
+            if hasattr(msg, '__slots__'):
+                submsg = MessageWrapperWithInfo(submsg, info)
+            else:
+                print('---Got new message, message info:---')
+                print(info)
+                print('---Message data:---')
         if self.csv:
             self.print_func(submsg, self.truncate_length, self.no_arr, self.no_str)
         else:
             self.print_func(
                 submsg, self.truncate_length, self.no_arr, self.no_str, self.flow_style)
 
-
 def _expr_eval(expr):
     def eval_fn(m):
         return eval(expr)
     return eval_fn
 
+class MessageInfo:
 
+    __slots__ = [
+        '_source_timestamp',
+        '_received_timestamp',
+        '_publication_sequence_number',
+        '_reception_sequence_number',
+    ]
+    SLOT_TYPES = [
+        int,
+        int,
+        int,
+        int,
+    ]
+
+    def __init__(self, dict):
+        for slot in self.__slots__:
+            value = dict[slot[1:]]
+            if value is None:
+                self.__slots__.remove(slot)
+            else:
+                setattr(self, slot, value)
+
+class MessageWrapperWithInfo:
+
+    __slots__ = ['_message_info', '_message']
+    SLOT_TYPES = [
+        rosidl_parser.definition.NamespacedType(['doesntmatter', 'msg'], 'neitherthismatter'),  # noqa: E501
+        rosidl_parser.definition.NamespacedType(['doesntmatter', 'msg'], 'neitherthismatter'),  # noqa: E501
+    ]
+
+    def __init__(self, msg, info):
+        self._message = msg
+        self._message_info = MessageInfo(info)
+    
 def _print_yaml(msg, truncate_length, noarr, nostr, flowstyle):
     if hasattr(msg, '__slots__'):
         print(
