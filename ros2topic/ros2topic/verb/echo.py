@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from os import remove
 import sys
 from typing import Optional
 from typing import TypeVar
@@ -312,10 +311,12 @@ class EchoVerb(VerbExtension):
             self.print_func(
                 submsg, self.truncate_length, self.no_arr, self.no_str, self.flow_style)
 
+
 def _expr_eval(expr):
     def eval_fn(m):
         return eval(expr)
     return eval_fn
+
 
 class MessageInfo:
 
@@ -332,13 +333,14 @@ class MessageInfo:
         int,
     ]
 
-    def __init__(self, dict):
+    def __init__(self, message_info_dict):
         for slot in self.__slots__:
-            value = dict[slot[1:]]
+            value = message_info_dict[slot[1:]]
             if value is None:
                 self.__slots__.remove(slot)
             else:
                 setattr(self, slot, value)
+
 
 class MessageWrapperWithInfo:
 
@@ -351,7 +353,8 @@ class MessageWrapperWithInfo:
     def __init__(self, msg, info):
         self._message = msg
         self._message_info = MessageInfo(info)
-    
+
+
 def _print_yaml(msg, truncate_length, noarr, nostr, flowstyle):
     if hasattr(msg, '__slots__'):
         print(
