@@ -88,8 +88,14 @@ class EchoVerb(VerbExtension):
                  'Automatically match existing publishers )')
         parser.add_argument(
             '--csv', action='store_true',
-            help='Output all recursive fields separated by commas (e.g. for '
-                 'plotting)')
+            help=(
+                'Output all recursive fields separated by commas (e.g. for '
+                'plotting). '
+                'If --include-message-info is also passed, the following fields are prepended: '
+                'source_timestamp, received_timestamp, publication_sequence_number,'
+                ' reception_sequence_number.'
+            )
+        )
         parser.add_argument(
             '--field', type=str, default=None,
             help='Echo a selected field of a message. '
