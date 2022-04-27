@@ -32,7 +32,6 @@ from ros2topic.api import qos_profile_from_short_keys
 from ros2topic.api import TopicNameCompleter
 from ros2topic.api import unsigned_int
 from ros2topic.verb import VerbExtension
-import rosidl_parser
 from rosidl_runtime_py import message_to_csv
 from rosidl_runtime_py import message_to_yaml
 from rosidl_runtime_py.utilities import get_message
@@ -310,7 +309,7 @@ class EchoVerb(VerbExtension):
                 print('---Message data:---')
             print(msg, end='\n---\n')
             return
-                    
+
         if self.csv:
             to_print = message_to_csv(
                 msg, truncate_length=self.truncate_length, no_arr=self.no_arr, no_str=self.no_str)
