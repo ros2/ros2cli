@@ -37,6 +37,8 @@ from rosidl_runtime_py import message_to_csv
 from rosidl_runtime_py import message_to_yaml
 from rosidl_runtime_py.utilities import get_message
 
+import yaml
+
 DEFAULT_TRUNCATE_LENGTH = 128
 MsgType = TypeVar('MsgType')
 default_profile_str = 'sensor_data'
@@ -124,7 +126,7 @@ class EchoVerb(VerbExtension):
         parser.add_argument(
             '--once', action='store_true', help='Print the first message received and then exit.')
         parser.add_argument(
-            '--verbose', '-v', action='store_true',
+            '--include-message-info', '-i', action='store_true',
             help='Shows the associated message info.')
 
     def choose_qos(self, node, args):
@@ -193,11 +195,7 @@ class EchoVerb(VerbExtension):
                 "WARNING: '--lost-messages' is deprecated; lost messages are reported by default",
                 file=sys.stderr)
 
-        # Select print function
-        self.print_func = _print_yaml
         self.csv = args.csv
-        if self.csv:
-            self.print_func = _print_csv
 
         # Validate field selection
         self.field = args.field
@@ -218,7 +216,7 @@ class EchoVerb(VerbExtension):
         self.future = None
         if args.once:
             self.future = Future()
-        self.verbose = args.verbose
+        self.include_message_info = args.include_message_info
 
         with NodeStrategy(args) as node:
 
@@ -298,79 +296,36 @@ class EchoVerb(VerbExtension):
         if self.future is not None:
             self.future.set_result(True)
 
-        if self.verbose:
-            if hasattr(msg, '__slots__'):
-                submsg = MessageWrapperWithInfo(submsg, info)
-            else:
+        if not hasattr(msg, '__slots__'):
+            # raw
+            if self.include_message_info:
                 print('---Got new message, message info:---')
                 print(info)
                 print('---Message data:---')
+            print(msg, end='\n---\n')
+            return
+                    
         if self.csv:
-            self.print_func(submsg, self.truncate_length, self.no_arr, self.no_str)
-        else:
-            self.print_func(
-                submsg, self.truncate_length, self.no_arr, self.no_str, self.flow_style)
+            to_print = message_to_csv(
+                msg, truncate_length=self.truncate_length, no_arr=self.no_arr, no_str=self.no_str)
+            if self.include_message_info:
+                to_print = f'{",".join(str(x) for x in info.values())},{to_print}'
+            print(to_print)
+            return
+        # yaml
+        if self.include_message_info:
+            print(yaml.dump(info), end='---\n')
+        print(
+            message_to_yaml(
+                msg, truncate_length=self.truncate_length,
+                no_arr=self.no_arr, no_str=self.no_str, flow_style=self.flow_style),
+            end='---\n')
 
 
 def _expr_eval(expr):
     def eval_fn(m):
         return eval(expr)
     return eval_fn
-
-
-class MessageInfo:
-
-    __slots__ = [
-        '_source_timestamp',
-        '_received_timestamp',
-        '_publication_sequence_number',
-        '_reception_sequence_number',
-    ]
-    SLOT_TYPES = [
-        int,
-        int,
-        int,
-        int,
-    ]
-
-    def __init__(self, message_info_dict):
-        for slot in self.__slots__:
-            value = message_info_dict[slot[1:]]
-            if value is None:
-                self.__slots__.remove(slot)
-            else:
-                setattr(self, slot, value)
-
-
-class MessageWrapperWithInfo:
-
-    __slots__ = ['_message_info', '_message']
-    SLOT_TYPES = [
-        rosidl_parser.definition.NamespacedType(['doesntmatter', 'msg'], 'neitherthismatter'),  # noqa: E501
-        rosidl_parser.definition.NamespacedType(['doesntmatter', 'msg'], 'neitherthismatter'),  # noqa: E501
-    ]
-
-    def __init__(self, msg, info):
-        self._message = msg
-        self._message_info = MessageInfo(info)
-
-
-def _print_yaml(msg, truncate_length, noarr, nostr, flowstyle):
-    if hasattr(msg, '__slots__'):
-        print(
-            message_to_yaml(
-                msg, truncate_length=truncate_length,
-                no_arr=noarr, no_str=nostr, flow_style=flowstyle),
-            end='---\n')
-    else:
-        print(msg, end='\n---\n')
-
-
-def _print_csv(msg, truncate_length, noarr, nostr):
-    if hasattr(msg, '__slots__'):
-        print(message_to_csv(msg, truncate_length=truncate_length, no_arr=noarr, no_str=nostr))
-    else:
-        print(msg)
 
 
 def _message_lost_event_callback(message_lost_status):
