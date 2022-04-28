@@ -301,18 +301,18 @@ class EchoVerb(VerbExtension):
         if self.future is not None:
             self.future.set_result(True)
 
-        if not hasattr(msg, '__slots__'):
+        if not hasattr(submsg, '__slots__'):
             # raw
             if self.include_message_info:
                 print('---Got new message, message info:---')
                 print(info)
                 print('---Message data:---')
-            print(msg, end='\n---\n')
+            print(submsg, end='\n---\n')
             return
 
         if self.csv:
             to_print = message_to_csv(
-                msg, truncate_length=self.truncate_length, no_arr=self.no_arr, no_str=self.no_str)
+                submsg, truncate_length=self.truncate_length, no_arr=self.no_arr, no_str=self.no_str)
             if self.include_message_info:
                 to_print = f'{",".join(str(x) for x in info.values())},{to_print}'
             print(to_print)
@@ -322,7 +322,7 @@ class EchoVerb(VerbExtension):
             print(yaml.dump(info), end='---\n')
         print(
             message_to_yaml(
-                msg, truncate_length=self.truncate_length,
+                submsg, truncate_length=self.truncate_length,
                 no_arr=self.no_arr, no_str=self.no_str, flow_style=self.flow_style),
             end='---\n')
 
