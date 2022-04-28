@@ -2,6 +2,9 @@
 Changelog for package ros2multicast
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.13.2 (2021-05-07)
 -------------------
 * Add changelog. (`#636 <https://github.com/ros2/ros2cli/issues/636>`_)
