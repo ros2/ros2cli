@@ -112,7 +112,7 @@ class ROSTopicBandwidth(object):
                 traceback.print_exc()
 
     def get_bw(self):
-        """Print the average publishing bw to screen."""
+        """Get the average publishing bw."""
         if len(self.times) < 2:
             return None, None, None, None, None
         with self.lock:
@@ -131,6 +131,7 @@ class ROSTopicBandwidth(object):
         return bytes_per_s, n, mean, min_s, max_s
 
     def print_bw(self):
+        """Print the average publishing bw to screen."""
         (bytes_per_s, n, mean, min_s, max_s) = self.get_bw()
         if bytes_per_s is None:
             return
