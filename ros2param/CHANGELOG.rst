@@ -2,8 +2,8 @@
 Changelog for package ros2param
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.13.3 (2022-04-28)
+-------------------
 * Fix flaky ros2 param list (`#656 <https://github.com/ros2/ros2cli/issues/656>`_) (`#663 <https://github.com/ros2/ros2cli/issues/663>`_)
 * Contributors: Jacob Perron
 
