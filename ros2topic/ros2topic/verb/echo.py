@@ -312,7 +312,10 @@ class EchoVerb(VerbExtension):
 
         if self.csv:
             to_print = message_to_csv(
-                submsg, truncate_length=self.truncate_length, no_arr=self.no_arr, no_str=self.no_str)
+                submsg,
+                truncate_length=self.truncate_length,
+                no_arr=self.no_arr,
+                no_str=self.no_str)
             if self.include_message_info:
                 to_print = f'{",".join(str(x) for x in info.values())},{to_print}'
             print(to_print)
