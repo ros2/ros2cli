@@ -5,7 +5,7 @@ package_name = 'ros2lifecycle'
 
 setup(
     name=package_name,
-    version='0.18.3',
+    version='0.19.0',
     packages=find_packages(exclude=['test']),
     data_files=[
         ('share/' + package_name, ['package.xml']),
