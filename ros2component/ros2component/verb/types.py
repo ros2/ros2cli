@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ros2cli.node.strategy import add_arguments
 from ros2component.api import get_package_component_types
 from ros2component.api import get_registered_component_types
 from ros2component.verb import VerbExtension
@@ -25,7 +24,6 @@ class TypesVerb(VerbExtension):
     """Output a list of components registered in the ament index."""
 
     def add_arguments(self, parser, cli_name):
-        add_arguments(parser)
         argument = parser.add_argument(
             'package_name', nargs='?', default=None,
             help='Package name to look for registered components in'
