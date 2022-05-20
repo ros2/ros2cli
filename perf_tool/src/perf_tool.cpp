@@ -57,7 +57,7 @@ public:
     const rclcpp::NodeOptions & options = rclcpp::NodeOptions{})
   : Node("perf_tool_server", options)
   {
-    this->create_subscription<perf_tool_msgs::msg::Bytes>(
+    sub_ = this->create_subscription<perf_tool_msgs::msg::Bytes>(
       "perf_topic", sub_qos,
       std::bind(&Server::handle_msg, this, std::placeholders::_1, std::placeholders::_2));
   }
