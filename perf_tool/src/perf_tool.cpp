@@ -17,11 +17,12 @@
 
 #include "perf_tool_msgs/msg/bytes.hpp"
 
+#include "rclcpp/executors.hpp"
 #include "rclcpp/logging.hpp"
 #include "rclcpp/node.hpp"
+#include "rclcpp/serialization.hpp"
+#include "rclcpp/serialized_message.hpp"
 #include "rclcpp/subscription.hpp"
-
-#include "rmw/features.h"
 
 // Ignore -Wunused-value for clang.
 // Based on https://github.com/pybind/pybind11/issues/2225
@@ -45,6 +46,7 @@ struct PerfToolMessageInfo
 {
   size_t message_id;
   std::chrono::nanoseconds latency;
+  size_t received_bytes;
 };
 
 class Server : public rclcpp::Node
@@ -61,21 +63,15 @@ public:
   }
 
   void handle_msg(
-    const perf_tool_msgs::msg::Bytes & msg,
+    const rclcpp::SerializedMessage & serialized_msg,
     const rclcpp::MessageInfo & msg_info)
   {
-    PerfToolMessageInfo perf_info;
-    perf_info.latency = this->calculate_latency(msg, msg_info);
-    // we could use the publication sequence number instead, but not all rmw support it
-    perf_info.message_id = msg.id;
-  }
-
-  std::chrono::nanoseconds
-  calculate_latency(
-    const perf_tool_msgs::msg::Bytes & msg,
-    const rclcpp::MessageInfo & msg_info)
-  {
+    auto now = std::chrono::system_clock::now();
     std::chrono::nanoseconds latency;
+    size_t received_bytes = serialized_msg.size();
+    rclcpp::Serialization<perf_tool_msgs::msg::Bytes> deserializer;
+    perf_tool_msgs::msg::Bytes msg;
+    deserializer.deserialize_message(&serialized_msg, &msg);
     const auto & rmw_msg_info = msg_info.get_rmw_message_info();
     if (rmw_msg_info.source_timestamp != 0 && rmw_msg_info.received_timestamp != 0) {
       // source and received timestamp supported
@@ -90,7 +86,6 @@ public:
           std::chrono::nanoseconds{rmw_msg_info.received_timestamp}};
       latency = rec_timestamp - pub_timestamp;
     } else {
-      auto rec_timestamp = std::chrono::system_clock::now();
       // TODO(ivanpauno): Maybe it's worth to always calculate this latency (?)
       // as it takes in account the executor overhead.
       RCLCPP_INFO_ONCE(
@@ -100,9 +95,16 @@ public:
       auto pub_timestamp = 
         std::chrono::time_point<std::chrono::system_clock>{
           std::chrono::nanoseconds{msg.timestamp}};
-      latency = rec_timestamp - pub_timestamp;
+      latency = now - pub_timestamp;
     }
-    return latency;
+
+    collected_info_.emplace_back(PerfToolMessageInfo{msg.id, latency, received_bytes});
+  }
+
+  std::vector<PerfToolMessageInfo>
+  get_collected_info() const
+  {
+    return collected_info_;
   }
 
 private:
@@ -110,13 +112,30 @@ private:
   rclcpp::Subscription<perf_tool_msgs::msg::Bytes>::SharedPtr sub_;
 };
 
+std::vector<PerfToolMessageInfo>
+run_perf_server(rmw_qos_profile_t rmw_sub_qos, std::chrono::nanoseconds experiment_duration)
+{
+  auto start = std::chrono::system_clock::now();
+  rclcpp::QoS sub_qos{{rmw_sub_qos.history, rmw_sub_qos.depth}, rmw_sub_qos};
+  auto perf_server = std::make_shared<Server>(sub_qos);
+  rclcpp::executors::SingleThreadedExecutor ex;
+  ex.add_node(perf_server);
+
+  auto now = start;
+  while (now < start + experiment_duration) {
+    ex.spin_once(start + experiment_duration - now);
+    now = std::chrono::system_clock::now();
+  }
+  return perf_server->get_collected_info();
+}
 }  // namespace perf_tool
 
 PYBIND11_MODULE(perf_tool_impl, m) {
   m.doc() = "Python wrapper of perf tool implementation";
 
+  m.def("run_perf_server", &perf_tool::run_perf_server);
   // pybind11::class_<perf_tool::Server, std::shared_ptr<perf_tool::Server>>(
-  //   m, "Server")
+    // m, "Server")
   // .def(pybind11::init());
   // // .def("open", &rosbag2_py::Writer<rosbag2_cpp::writers::SequentialWriter>::open)
 }
