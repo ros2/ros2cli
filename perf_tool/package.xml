@@ -22,6 +22,7 @@
   <depend>pybind11_vendor</depend>
   <depend>python_cmake_module</depend>
   <depend>rclcpp</depend>
+  <depend>rpyutils</depend>
 
   <test_depend>ament_cppcheck</test_depend>
   <test_depend>ament_cpplint</test_depend>

@@ -36,7 +36,7 @@ find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
 find_package(pybind11_vendor REQUIRED)
 find_package(pybind11 REQUIRED)
 
-# ament_python_install_package(${c})
+ament_python_install_package(${PROJECT_NAME})
 
 pybind11_add_module(perf_tool_impl SHARED
   src/perf_tool.cpp
@@ -54,45 +54,6 @@ install(
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
-#   find_package(ament_cmake_pytest REQUIRED)
-
-#   set(append_env_vars "PYTHONPATH=${CMAKE_CURRENT_SOURCE_DIR}")
-#   set(set_env_vars "ROSBAG2_PY_TEST_RESOURCES_DIR=${CMAKE_CURRENT_SOURCE_DIR}/test/resources")
-#   if(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-#     # Work around a rtti bug when using class_loader from a
-#     # python extension built with libc++.
-#     set(set_env_vars "${set_env_vars} ROSBAG2_PY_TEST_WITH_RTLD_GLOBAL=True")
-#   endif()
-
-#   # message(FATAL_ERROR "HELP I AM THE PATH ${CMAKE_CURRENT_SOURCE_DIR}")
-#   ament_add_pytest_test(test_sequential_reader_py "test/test_sequential_reader.py"
-#     APPEND_ENV "${append_env_vars}"
-#     ENV "${set_env_vars}"
-#   )
-#   ament_add_pytest_test(test_sequential_reader_multiple_files_py "test/test_sequential_reader_multiple_files.py"
-#     APPEND_ENV "${append_env_vars}"
-#     ENV "${set_env_vars}"
-#   )
-#   ament_add_pytest_test(test_sequential_writer_py
-#     "test/test_sequential_writer.py"
-#     APPEND_ENV "${append_env_vars}"
-#     ENV "${set_env_vars}"
-#   )
-#   ament_add_pytest_test(test_transport_py
-#     "test/test_transport.py"
-#     APPEND_ENV "${append_env_vars}"
-#     ENV "${set_env_vars}"
-#   )
-#   ament_add_pytest_test(test_reindexer_py
-#     "test/test_reindexer.py"
-#     APPEND_ENV "${append_env_vars}"
-#     ENV "${set_env_vars}"
-#   )
-#   ament_add_pytest_test(test_convert_py
-#     "test/test_convert.py"
-#     APPEND_ENV "${append_env_vars}"
-#     ENV "${set_env_vars}"
-#   )
 endif()
 
 ament_package()
