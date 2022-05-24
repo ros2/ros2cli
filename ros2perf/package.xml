@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="2">
+  <name>ros2perf</name>
+  <version>0.19.0</version>
+  <description>
+    The perf command for ROS 2 command line tools.
+  </description>
+
+  <maintainer email="aditya.pande@openrobotics.org">Aditya Pande</maintainer>
+  <maintainer email="audrow@openrobotics.org">Audrow Nash</maintainer>
+  <maintainer email="michael.jeronimo@openrobotics.org">Michael Jeronimo</maintainer>
+
+  <license>Apache License 2.0</license>
+
+  <author email="ivanpauno@ekumenlabs.com">Ivan Paunovic</author>
+
+  <depend>ros2cli</depend>
+  <depend>perf_tool</depend>
+  <depend>perf_tool_msgs</depend>
+
+  <exec_depend>python3-numpy</exec_depend>
+  <exec_depend>ros2topic</exec_depend>
+
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>ament_xmllint</test_depend>
+  <test_depend>python3-pytest</test_depend>
+  <test_depend>python3-pytest-timeout</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
