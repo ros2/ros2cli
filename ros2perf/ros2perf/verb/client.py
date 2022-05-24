@@ -116,8 +116,11 @@ class ClientVerb(VerbExtension):
         profile_configure_short_keys(
             qos_profile, args.qos_reliability, args.qos_durability,
             args.qos_depth, args.qos_history)
-        # pub_period[sec] = 8[b/Byte] * message_size[Byte] * 1M / target_bandwidth[Mb/s]
-        pub_period = 8 * args.message_size * 10e6 / args.target_bw
+        # pub_period[sec] = 8[b/Byte] * message_size[Byte] * 1[M]/10^6 / target_bandwidth[Mb/s]
+        pub_period = 8 * args.message_size / 1e6 / args.target_bw
         results = perf_tool.run_client(
             args.message_size, pub_period, qos_profile.get_c_qos_profile(), args.duration)
-        
+        # TODO(ivanpauno): Add some processing to be able to show better statistics
+        print(results.message_ids)
+        print(results.message_published_times)
+        print(results.message_sizes)
