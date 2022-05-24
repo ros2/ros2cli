@@ -24,6 +24,7 @@
 #include "rclcpp/serialization.hpp"
 #include "rclcpp/serialized_message.hpp"
 #include "rclcpp/subscription.hpp"
+#include "rclcpp/utilities.hpp"
 
 // Ignore -Wunused-value for clang.
 // Based on https://github.com/pybind/pybind11/issues/2225
@@ -43,7 +44,7 @@ using namespace std::chrono_literals;
 namespace perf_tool
 {
 
-struct PerfToolMessageInfo
+struct PerfServerMessageInfo
 {
   size_t message_id;
   std::chrono::nanoseconds latency;
@@ -70,9 +71,8 @@ public:
     auto now = std::chrono::system_clock::now();
     std::chrono::nanoseconds latency;
     size_t received_bytes = serialized_msg.size();
-    rclcpp::Serialization<perf_tool_msgs::msg::Bytes> deserializer;
     perf_tool_msgs::msg::Bytes msg;
-    deserializer.deserialize_message(&serialized_msg, &msg);
+    deserializer_.deserialize_message(&serialized_msg, &msg);
     const auto & rmw_msg_info = msg_info.get_rmw_message_info();
     if (rmw_msg_info.source_timestamp != 0 && rmw_msg_info.received_timestamp != 0) {
       // source and received timestamp supported
@@ -99,38 +99,54 @@ public:
       latency = now - pub_timestamp;
     }
 
-    collected_info_.emplace_back(PerfToolMessageInfo{msg.id, latency, received_bytes});
+    collected_info_.emplace_back(PerfServerMessageInfo{msg.id, latency, received_bytes});
   }
 
-  std::vector<PerfToolMessageInfo>
+  std::vector<PerfServerMessageInfo>
   get_collected_info() const
   {
     return collected_info_;
   }
 
 private:
-  std::vector<PerfToolMessageInfo> collected_info_;
+  std::vector<PerfServerMessageInfo> collected_info_;
   rclcpp::Subscription<perf_tool_msgs::msg::Bytes>::SharedPtr sub_;
+  rclcpp::Serialization<perf_tool_msgs::msg::Bytes> deserializer_;
 };
 
-std::vector<PerfToolMessageInfo>
+std::vector<PerfServerMessageInfo>
 run_perf_server(rmw_qos_profile_t rmw_sub_qos, std::chrono::nanoseconds experiment_duration)
 {
-  auto start = std::chrono::system_clock::now();
+  if(!rclcpp::signal_handlers_installed()) {
+    rclcpp::install_signal_handlers();
+  }
+  auto context = std::make_shared<rclcpp::Context>();
+  context->init(0, nullptr);
+  rclcpp::NodeOptions no;
+  no.context(context);
   rclcpp::QoS sub_qos{{rmw_sub_qos.history, rmw_sub_qos.depth}, rmw_sub_qos};
-  auto perf_server = std::make_shared<Server>(sub_qos);
-  rclcpp::executors::SingleThreadedExecutor ex;
+  auto perf_server = std::make_shared<Server>(sub_qos, no);
+  rclcpp::ExecutorOptions eo;
+  eo.context = context;
+  rclcpp::executors::SingleThreadedExecutor ex{eo};
   ex.add_node(perf_server);
 
+  auto start = std::chrono::system_clock::now();
   auto now = start;
   pybind11::gil_scoped_release gil_guard;
-  while (now < start + experiment_duration) {
+  while (now < start + experiment_duration && context->is_valid()) {
     ex.spin_once(start + experiment_duration - now);
     now = std::chrono::system_clock::now();
   }
   return perf_server->get_collected_info();
 }
 
+struct PerfClientMessageInfo
+{
+  size_t message_id;
+  std::chrono::time_point<std::chrono::system_clock> published_time;
+  size_t sent_bytes;
+};
 
 class Client : public rclcpp::Node
 {
@@ -153,19 +169,24 @@ public:
   void pub_next_msg()
   {
     perf_tool_msgs::msg::Bytes msg;
+    rclcpp::SerializedMessage serialized_msg;
     msg.id = next_id;
-    msg.timestamp = std::chrono::system_clock::now().time_since_epoch().count();
+    auto now = std::chrono::system_clock::now();
+    msg.timestamp = now.time_since_epoch().count();
     msg.data = std::move(bytes_);
+    serializer_.serialize_message(&msg, &serialized_msg);
+    auto sent_bytes = serialized_msg.size();
     pub_->publish(msg);
     // always keep the vector preallocated, to avoid delays when the timer is triggered
     bytes_.resize(array_size_);
-    // published_info_.emplace_back()
+    published_info_.emplace_back(PerfClientMessageInfo{msg.id, now, sent_bytes});
+    ++next_id;
   }
 
-  // std::vector<PerfToolMessageInfo>
-  // get_published_info() {
-  //   return published_info_;
-  // }
+  std::vector<PerfClientMessageInfo>
+  get_published_info() {
+    return published_info_;
+  }
 
 private:
   size_t array_size_;
@@ -173,31 +194,39 @@ private:
   uint64_t next_id{};
   std::shared_ptr<rclcpp::TimerBase> timer_;
   rclcpp::Publisher<perf_tool_msgs::msg::Bytes>::SharedPtr pub_;
-  // std::vector<PerfToolMessageInfo> published_info_;
+  std::vector<PerfClientMessageInfo> published_info_;
+  rclcpp::Serialization<perf_tool_msgs::msg::Bytes> serializer_;
 };
 
-// TODO(ivanpauno): Split PerfToolMessageInfo in PerfServerMessageInfo and PerfClientMessageInfo.
-// std::vector<PerfToolMessageInfo>
-void
+std::vector<PerfClientMessageInfo>
 run_perf_client(
   size_t array_size,
   std::chrono::nanoseconds target_pub_period,
   rmw_qos_profile_t rmw_pub_qos,
   std::chrono::nanoseconds experiment_duration)
 {
+  if(!rclcpp::signal_handlers_installed()) {
+    rclcpp::install_signal_handlers();
+  }
+  auto context = std::make_shared<rclcpp::Context>();
+  context->init(0, nullptr);
+  rclcpp::NodeOptions no;
+  no.context(context);
   auto start = std::chrono::system_clock::now();
   rclcpp::QoS pub_qos{{rmw_pub_qos.history, rmw_pub_qos.depth}, rmw_pub_qos};
-  auto perf_client = std::make_shared<Client>(array_size, target_pub_period ,pub_qos);
-  rclcpp::executors::SingleThreadedExecutor ex;
+  auto perf_client = std::make_shared<Client>(array_size, target_pub_period ,pub_qos, no);
+  rclcpp::ExecutorOptions eo;
+  eo.context = context;
+  rclcpp::executors::SingleThreadedExecutor ex{eo};
   ex.add_node(perf_client);
 
   auto now = start;
   pybind11::gil_scoped_release gil_guard;
-  while (now < start + experiment_duration) {
+  while (now < start + experiment_duration && context->is_valid()) {
     ex.spin_once(start + experiment_duration - now);
     now = std::chrono::system_clock::now();
   }
-  // return perf_server->get_collected_info();
+  return perf_client->get_published_info();
 }
 }  // namespace perf_tool
 
@@ -206,8 +235,14 @@ PYBIND11_MODULE(perf_tool_impl, m) {
 
   m.def("run_perf_server", &perf_tool::run_perf_server);
   m.def("run_perf_client", &perf_tool::run_perf_client);
-  // pybind11::class_<perf_tool::Server, std::shared_ptr<perf_tool::Server>>(
-    // m, "Server")
-  // .def(pybind11::init());
-  // // .def("open", &rosbag2_py::Writer<rosbag2_cpp::writers::SequentialWriter>::open)
+  pybind11::class_<perf_tool::PerfClientMessageInfo>(
+    m, "PerfClientMessageInfo")
+    .def_readwrite("message_id", &perf_tool::PerfClientMessageInfo::message_id)
+    .def_readwrite("published_time", &perf_tool::PerfClientMessageInfo::published_time)
+    .def_readwrite("sent_bytes", &perf_tool::PerfClientMessageInfo::sent_bytes);
+  pybind11::class_<perf_tool::PerfServerMessageInfo>(
+    m, "PerfServerMessageInfo")
+    .def_readwrite("message_id", &perf_tool::PerfServerMessageInfo::message_id)
+    .def_readwrite("latency", &perf_tool::PerfServerMessageInfo::latency)
+    .def_readwrite("received_bytes", &perf_tool::PerfServerMessageInfo::received_bytes);
 }
