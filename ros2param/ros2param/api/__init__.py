@@ -14,112 +14,38 @@
 
 import sys
 
-from rcl_interfaces.msg import Parameter
-from rcl_interfaces.msg import ParameterType
-from rcl_interfaces.msg import ParameterValue
-from rcl_interfaces.srv import DescribeParameters
-from rcl_interfaces.srv import GetParameters
-from rcl_interfaces.srv import ListParameters
-from rcl_interfaces.srv import SetParameters
 import rclpy
-from rclpy.parameter import PARAMETER_SEPARATOR_STRING
+from rcl_interfaces.msg import ParameterType
+from rclpy.parameter import parameter_value_to_python
+from rclpy.parameter import get_parameter_value as rclpy_get_parameter_value
+from rclpy.parameter_client import AsyncParameterClient
+
 from ros2cli.node.direct import DirectNode
 
-import yaml
+
+def get_parameter_value(*, string_value):
+    rclpy_get_parameter_value(string_value)
 
 
 def get_value(*, parameter_value):
     """Get the value from a ParameterValue."""
-    if parameter_value.type == ParameterType.PARAMETER_BOOL:
-        value = parameter_value.bool_value
-    elif parameter_value.type == ParameterType.PARAMETER_INTEGER:
-        value = parameter_value.integer_value
-    elif parameter_value.type == ParameterType.PARAMETER_DOUBLE:
-        value = parameter_value.double_value
-    elif parameter_value.type == ParameterType.PARAMETER_STRING:
-        value = parameter_value.string_value
-    elif parameter_value.type == ParameterType.PARAMETER_BYTE_ARRAY:
-        value = list(parameter_value.byte_array_value)
-    elif parameter_value.type == ParameterType.PARAMETER_BOOL_ARRAY:
-        value = list(parameter_value.bool_array_value)
-    elif parameter_value.type == ParameterType.PARAMETER_INTEGER_ARRAY:
-        value = list(parameter_value.integer_array_value)
-    elif parameter_value.type == ParameterType.PARAMETER_DOUBLE_ARRAY:
-        value = list(parameter_value.double_array_value)
-    elif parameter_value.type == ParameterType.PARAMETER_STRING_ARRAY:
-        value = list(parameter_value.string_array_value)
-    elif parameter_value.type == ParameterType.PARAMETER_NOT_SET:
-        value = None
-    else:
-        value = None
-
-    return value
-
-
-def get_parameter_value(*, string_value):
-    """Guess the desired type of the parameter based on the string value."""
-    value = ParameterValue()
+    value = None
     try:
-        yaml_value = yaml.safe_load(string_value)
-    except yaml.parser.ParserError:
-        yaml_value = string_value
-
-    if isinstance(yaml_value, bool):
-        value.type = ParameterType.PARAMETER_BOOL
-        value.bool_value = yaml_value
-    elif isinstance(yaml_value, int):
-        value.type = ParameterType.PARAMETER_INTEGER
-        value.integer_value = yaml_value
-    elif isinstance(yaml_value, float):
-        value.type = ParameterType.PARAMETER_DOUBLE
-        value.double_value = yaml_value
-    elif isinstance(yaml_value, list):
-        if all((isinstance(v, bool) for v in yaml_value)):
-            value.type = ParameterType.PARAMETER_BOOL_ARRAY
-            value.bool_array_value = yaml_value
-        elif all((isinstance(v, int) for v in yaml_value)):
-            value.type = ParameterType.PARAMETER_INTEGER_ARRAY
-            value.integer_array_value = yaml_value
-        elif all((isinstance(v, float) for v in yaml_value)):
-            value.type = ParameterType.PARAMETER_DOUBLE_ARRAY
-            value.double_array_value = yaml_value
-        elif all((isinstance(v, str) for v in yaml_value)):
-            value.type = ParameterType.PARAMETER_STRING_ARRAY
-            value.string_array_value = yaml_value
-        else:
-            value.type = ParameterType.PARAMETER_STRING
-            value.string_value = string_value
-    else:
-        value.type = ParameterType.PARAMETER_STRING
-        value.string_value = yaml_value
+        value = parameter_value_to_python(parameter_value)
+    except RuntimeError as e:
+        print(e)
+    # NOTE(ihasdapie): parameter_value_to_python raises an error if the type is not supported but 
+    # get_value would just return value=None
     return value
 
 
-def parse_parameter_dict(*, namespace, parameter_dict):
-    parameters = []
-    for param_name, param_value in parameter_dict.items():
-        full_param_name = namespace + param_name
-        # Unroll nested parameters
-        if type(param_value) == dict:
-            parameters += parse_parameter_dict(
-                    namespace=full_param_name + PARAMETER_SEPARATOR_STRING,
-                    parameter_dict=param_value)
-        else:
-            parameter = Parameter()
-            parameter.name = full_param_name
-            parameter.value = get_parameter_value(string_value=str(param_value))
-            parameters.append(parameter)
-    return parameters
-
-
-def load_parameter_dict(*, node, node_name, parameter_dict):
-
-    parameters = parse_parameter_dict(namespace='', parameter_dict=parameter_dict)
-    response = call_set_parameters(
-        node=node, node_name=node_name, parameters=parameters)
-
-    # output response
-    assert len(response.results) == len(parameters)
+def load_parameter_file(*, node, node_name, parameter_file, use_wildcard):
+    # Remove leading slash and namespaces
+    client = AsyncParameterClient(node, node_name)
+    (future, parameters) = client.load_parameter_file(parameter_file, use_wildcard, return_parameters = True)
+    rclpy.spin_until_future_complete(node, future)
+    response = future.result()
+    assert len(response.results) == len(parameters), "Not all parameters set"
     for i in range(0, len(response.results)):
         result = response.results[i]
         param_name = parameters[i].name
@@ -135,103 +61,46 @@ def load_parameter_dict(*, node, node_name, parameter_dict):
             print(msg, file=sys.stderr)
 
 
-def load_parameter_file(*, node, node_name, parameter_file, use_wildcard):
-    # Remove leading slash and namespaces
-    with open(parameter_file, 'r') as f:
-        param_file = yaml.safe_load(f)
-        param_keys = []
-        if use_wildcard and '/**' in param_file:
-            param_keys.append('/**')
-        if node_name in param_file:
-            param_keys.append(node_name)
-
-        if param_keys == []:
-            raise RuntimeError('Param file does not contain parameters for {}, '
-                               ' only for nodes: {}' .format(node_name, param_file.keys()))
-        param_dict = {}
-        for k in param_keys:
-            value = param_file[k]
-            if type(value) != dict or 'ros__parameters' not in value:
-                raise RuntimeError('Invalid structure of parameter file for node {}'
-                                   'expected same format as provided by ros2 param dump'
-                                   .format(k))
-            param_dict.update(value['ros__parameters'])
-        load_parameter_dict(node=node, node_name=node_name, parameter_dict=param_dict)
-
-
 def call_describe_parameters(*, node, node_name, parameter_names=None):
-    # create client
-    client = node.create_client(
-        DescribeParameters, f'{node_name}/describe_parameters')
-
-    # call as soon as ready
-    ready = client.wait_for_service(timeout_sec=5.0)
-    if not ready:
-        raise RuntimeError('Wait for service timed out')
-
-    request = DescribeParameters.Request()
-    if parameter_names:
-        request.names = parameter_names
-    future = client.call_async(request)
+    client = AsyncParameterClient(node, node_name)
+    future = client.describe_parameters(parameter_names)
     rclpy.spin_until_future_complete(node, future)
-
-    # handle response
     response = future.result()
     return response
 
 
 def call_get_parameters(*, node, node_name, parameter_names):
-    # create client
-    client = node.create_client(GetParameters, f'{node_name}/get_parameters')
-
-    # call as soon as ready
-    ready = client.wait_for_service(timeout_sec=5.0)
-    if not ready:
-        raise RuntimeError('Wait for service timed out')
-
-    request = GetParameters.Request()
-    request.names = parameter_names
-    future = client.call_async(request)
+    """
+    :param node: node to create client on
+    :param node_name: name of node to set parameters on
+    """
+    client = AsyncParameterClient(node, node_name)
+    future = client.get_parameters(parameter_names)
     rclpy.spin_until_future_complete(node, future)
-
-    # handle response
     response = future.result()
     return response
 
 
 def call_set_parameters(*, node, node_name, parameters):
-    # create client
-    client = node.create_client(SetParameters, f'{node_name}/set_parameters')
-
-    # call as soon as ready
-    ready = client.wait_for_service(timeout_sec=5.0)
-    if not ready:
-        raise RuntimeError('Wait for service timed out')
-
-    request = SetParameters.Request()
-    request.parameters = parameters
-    future = client.call_async(request)
+    """
+    :param node: node to create client on
+    :param node_name: name of node to set parameters on
+    """
+    client = AsyncParameterClient(node, node_name)
+    future = client.set_parameters(parameters)
     rclpy.spin_until_future_complete(node, future)
-
-    # handle response
     response = future.result()
     return response
 
 
 def call_list_parameters(*, node, node_name, prefix=None):
-    # create client
-    client = node.create_client(ListParameters, f'{node_name}/list_parameters')
-
-    # call as soon as ready
-    ready = client.wait_for_service(timeout_sec=5.0)
-    if not ready:
-        raise RuntimeError('Wait for service timed out')
-
-    request = ListParameters.Request()
-    future = client.call_async(request)
+    """
+    :param node: node to create client on
+    :param node_name: name of node to set parameters on
+    """
+    client = AsyncParameterClient(node, node_name)
+    future = client.list_parameters()
     rclpy.spin_until_future_complete(node, future)
-
-    # handle response
     response = future.result()
     return response.result.names
 
