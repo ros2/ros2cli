@@ -29,8 +29,10 @@ from ros2node.api import get_node_names
 from ros2node.api import NodeNameCompleter
 from ros2node.api import parse_node_name
 
-from ros2param.api import call_get_parameters
+from rclpy.parameter import get_parameter_value
 from ros2param.api import get_value
+from ros2param.api import call_list_parameters
+from ros2param.api import call_get_parameters
 from ros2param.verb import VerbExtension
 
 import yaml
@@ -97,6 +99,7 @@ class DumpVerb(VerbExtension):
             # create client
             service_name = f'{absolute_node_name}/list_parameters'
             client = node.create_client(ListParameters, service_name)
+            # TODO(ihasdapie): use api call
 
             client.wait_for_service()
 
@@ -112,9 +115,10 @@ class DumpVerb(VerbExtension):
             yaml_output = {node_name.full_name: {'ros__parameters': {}}}
 
             # retrieve values
-            if future.result() is not None:
-                response = future.result()
-                for param_name in sorted(response.result.names):
+            response = call_list_parameters(node=node, node_name=absolute_node_name)
+
+            if response is not None:
+                for param_name in sorted(response):
                     pval = self.get_parameter_value(node, absolute_node_name, param_name)
                     self.insert_dict(
                         yaml_output[node_name.full_name]['ros__parameters'], param_name, pval)

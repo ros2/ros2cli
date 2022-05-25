@@ -24,9 +24,11 @@ from ros2node.api import get_absolute_node_name
 from ros2node.api import get_node_names
 from ros2node.api import NodeNameCompleter
 from ros2param.api import call_describe_parameters
+from ros2param.api import call_list_parameters
 from ros2param.api import get_parameter_type_string
 from ros2param.verb import VerbExtension
 from ros2service.api import get_service_names
+from rclpy.parameter_client import AsyncParameterClient
 
 
 class ListVerb(VerbExtension):
@@ -74,48 +76,19 @@ class ListVerb(VerbExtension):
                 node=node, include_hidden_services=args.include_hidden_nodes)
 
         with DirectNode(args) as node:
-            clients = {}
-            futures = {}
-            # create clients for nodes which have the service
+            responses = {}
             for node_name in node_names:
-                service_name = f'{node_name.full_name}/list_parameters'
-                if service_name in service_names:
-                    client = node.create_client(ListParameters, service_name)
-                    clients[node_name] = client
-
-            # wait until all clients have been called
-            while True:
-                for node_name in [
-                    n for n in clients.keys() if n not in futures
-                ]:
-                    # call as soon as ready
-                    client = clients[node_name]
-                    if client.service_is_ready():
-                        request = ListParameters.Request()
-                        for prefix in args.param_prefixes:
-                            request.prefixes.append(prefix)
-                        future = client.call_async(request)
-                        futures[node_name] = future
-
-                if len(futures) == len(clients):
-                    break
-                rclpy.spin_once(node, timeout_sec=1.0)
-
-            # wait for all responses
-            for future in futures.values():
-                rclpy.spin_until_future_complete(node, future, timeout_sec=1.0)
-
+                responses[node_name] = call_list_parameters(node=node, node_name=node_name.name)
             # print responses
-            for node_name in sorted(futures.keys()):
-                future = futures[node_name]
-                if future.result() is None:
-                    e = future.exception()
+            for node_name in sorted(responses.keys()):
+                response = responses[node_name]
+                if response is None:
+                    e = response.exception()
                     print(
                         'Exception while calling service of node '
                         f"'{node_name.full_name}': {e}", file=sys.stderr)
                     continue
-                response = future.result()
-                sorted_names = sorted(response.result.names)
+                sorted_names = sorted(response)
                 if regex_filter is not None:
                     sorted_names = [name for name in sorted_names if regex_filter.match(name)]
                 if not args.node_name and sorted_names:
