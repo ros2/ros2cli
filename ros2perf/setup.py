@@ -41,7 +41,7 @@ The package provides the perf command for the ROS 2 command line tools.""",
         ],
         'ros2perf.verb': [
             'client = ros2perf.verb.client:ClientVerb',
-            # 'server = ros2topic.verb.server:ServerVerb',
+            'server = ros2perf.verb.server:ServerVerb',
         ],
     }
 )

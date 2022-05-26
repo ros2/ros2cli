@@ -22,24 +22,10 @@ from ros2perf.api import positive_int
 from ros2perf.verb import VerbExtension
 
 
-class ClientVerb(VerbExtension):
-    """Run client side of ros2 performace tester."""
+class ServerVerb(VerbExtension):
+    """Run server side of ros2 performance tester."""
 
     def add_arguments(self, parser, cli_name):
-        parser.add_argument(
-            '-s',
-            '--message-size',
-            help='Message size to be used in bytes',
-            type=positive_int
-        )
-        parser.add_argument(
-            '-b',
-            '--target-bw',
-            help='Target bandwidth in Mbps. The client will use a publishing rate '
-            'to achieve the desired bandwidth utilization. '
-            'If zero (0), the client will publish as fast as possible.',
-            type=nonnegative_float
-        )
         parser.add_argument(
             '-d',
             '--duration',
@@ -51,12 +37,13 @@ class ClientVerb(VerbExtension):
 
     def main(self, *, args):
         qos_profile = get_qos_profile_from_args(args)
-        # pub_period[sec] = 8[b/Byte] * message_size[Byte] * 1[M]/10^6 / target_bandwidth[Mb/s]
-        pub_period = 8 * args.message_size / 1e6 / args.target_bw
 
-        # run perf client
-        results = perf_tool.run_client(
-            args.message_size, pub_period, qos_profile.get_c_qos_profile(), args.duration)
+        try:
+            # run perf client
+            results = perf_tool.run_server(
+                qos_profile.get_c_qos_profile(), args.duration)
+        except KeyboardInterrupt:
+            pass
 
         # TODO(ivanpauno): Add some processing to be able to show better statistics
         print(results.message_ids)

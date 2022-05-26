@@ -12,140 +12,84 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# from collections import namedtuple
-# from typing import Any
-# from typing import List
+from rclpy.qos import QoSDurabilityPolicy
+from rclpy.qos import QoSHistoryPolicy
+from rclpy.qos import QoSPresetProfiles
+from rclpy.qos import QoSProfile
+from rclpy.qos import QoSReliabilityPolicy
 
-# from rclpy.node import HIDDEN_NODE_PREFIX
-# from ros2cli.node.strategy import NodeStrategy
-
-# INFO_NONUNIQUE_WARNING_TEMPLATE = (
-#     'There are {num_nodes} nodes in the graph with the exact name "{node_name}". '
-#     'You are seeing information about only one of them.'
-# )
-
-# NodeName = namedtuple('NodeName', ('name', 'namespace', 'full_name'))
-# TopicInfo = namedtuple('Topic', ('name', 'types'))
+from ros2topic.api import profile_configure_short_keys
 
 
-# def _is_hidden_name(name):
-#     # note, we're assuming the hidden node prefix is the same for other hidden names
-#     return any(part.startswith(HIDDEN_NODE_PREFIX) for part in name.split('/'))
+def positive_int(inval):
+    # Convert first to float, to support scientific notation, like 10e3
+    ret = float(inval)
+    if not ret.is_integer():
+        raise ValueError('Value must be integer')
+    ret = int(ret)
+    if ret <= 0:
+        raise ValueError('Value must be positive')
+    return ret
 
 
-# def get_absolute_node_name(node_name):
-#     if not node_name:
-#         return None
-#     if node_name[0] != '/':
-#         node_name = '/' + node_name
-#     return node_name
+def positive_float(inval):
+    ret = float(inval)
+    if ret <= 0.0:
+        raise ValueError('Value must be positive')
+    return ret
 
 
-# def parse_node_name(node_name):
-#     full_node_name = node_name
-#     if not full_node_name.startswith('/'):
-#         full_node_name = '/' + full_node_name
-#     namespace, node_basename = full_node_name.rsplit('/', 1)
-#     if namespace == '':
-#         namespace = '/'
-#     return NodeName(node_basename, namespace, full_node_name)
+def nonnegative_float(inval):
+    ret = float(inval)
+    if ret < 0.0:
+        raise ValueError('Value must be positive or zero')
+    return ret
 
 
-# def has_duplicates(values: List[Any]) -> bool:
-#     """Find out if there are any exact duplicates in a list of strings."""
-#     return len(set(values)) < len(values)
+def get_default_qos_profile():
+    return QoSProfile(
+        reliability=QoSReliabilityPolicy.RELIABLE,
+        durability=QoSDurabilityPolicy.TRANSIENT_LOCAL,
+        depth=1)
 
 
-# def get_node_names(*, node, include_hidden_nodes=False):
-#     node_names_and_namespaces = node.get_node_names_and_namespaces()
-#     return [
-#         NodeName(
-#             name=t[0],
-#             namespace=t[1],
-#             full_name=t[1] + ('' if t[1].endswith('/') else '/') + t[0])
-#         for t in node_names_and_namespaces
-#         if (
-#             include_hidden_nodes or
-#             (t[0] and not t[0].startswith(HIDDEN_NODE_PREFIX))
-#         )
-#     ]
+def add_qos_arguments_to_parser(parser):
+    parser.add_argument(
+        '--qos-profile',
+        choices=QoSPresetProfiles.short_keys(),
+        help='Quality of service preset profile to publish')
+    default_profile = get_default_qos_profile()
+    parser.add_argument(
+        '--qos-depth', metavar='N', type=int, default=-1,
+        help='Queue size setting to publish with '
+                '(overrides depth value of --qos-profile option)')
+    parser.add_argument(
+        '--qos-history',
+        choices=QoSHistoryPolicy.short_keys(),
+        help='History of samples setting to publish with '
+                '(overrides history value of --qos-profile option, default: {})'
+                .format(default_profile.history.short_key))
+    parser.add_argument(
+        '--qos-reliability',
+        choices=QoSReliabilityPolicy.short_keys(),
+        help='Quality of service reliability setting to publish with '
+                '(overrides reliability value of --qos-profile option, default: {})'
+                .format(default_profile.reliability.short_key))
+    parser.add_argument(
+        '--qos-durability',
+        choices=QoSDurabilityPolicy.short_keys(),
+        help='Quality of service durability setting to publish with '
+                '(overrides durability value of --qos-profile option, default: {})'
+                .format(default_profile.durability.short_key))
 
 
-# def get_topics(remote_node_name, func, *, include_hidden_topics=False):
-#     node = parse_node_name(remote_node_name)
-#     names_and_types = func(node.name, node.namespace)
-#     return [
-#         TopicInfo(
-#             name=t[0],
-#             types=t[1])
-#         for t in names_and_types if include_hidden_topics or not _is_hidden_name(t[0])]
+def get_qos_profile_from_args(args):
+    qos_profile = get_default_qos_profile()
 
-
-# def get_subscriber_info(*, node, remote_node_name, include_hidden=False):
-#     return get_topics(
-#         remote_node_name,
-#         node.get_subscriber_names_and_types_by_node,
-#         include_hidden_topics=include_hidden
-#     )
-
-
-# def get_publisher_info(*, node, remote_node_name, include_hidden=False):
-#     return get_topics(
-#         remote_node_name,
-#         node.get_publisher_names_and_types_by_node,
-#         include_hidden_topics=include_hidden
-#     )
-
-
-# def get_service_client_info(*, node, remote_node_name, include_hidden=False):
-#     return get_topics(
-#         remote_node_name,
-#         node.get_client_names_and_types_by_node,
-#         include_hidden_topics=include_hidden
-#     )
-
-
-# def get_service_server_info(*, node, remote_node_name, include_hidden=False):
-#     return get_topics(
-#         remote_node_name,
-#         node.get_service_names_and_types_by_node,
-#         include_hidden_topics=include_hidden
-#     )
-
-
-# def get_action_server_info(*, node, remote_node_name, include_hidden=False):
-#     remote_node = parse_node_name(remote_node_name)
-#     names_and_types = node.get_action_server_names_and_types_by_node(
-#         remote_node.name, remote_node.namespace)
-#     return [
-#         TopicInfo(
-#             name=n,
-#             types=t)
-#         for n, t in names_and_types if include_hidden or not _is_hidden_name(n)]
-
-
-# def get_action_client_info(*, node, remote_node_name, include_hidden=False):
-#     remote_node = parse_node_name(remote_node_name)
-#     names_and_types = node.get_action_client_names_and_types_by_node(
-#         remote_node.name, remote_node.namespace)
-#     return [
-#         TopicInfo(
-#             name=n,
-#             types=t)
-#         for n, t in names_and_types if include_hidden or not _is_hidden_name(n)]
-
-
-# class NodeNameCompleter:
-#     """Callable returning a list of node names."""
-
-#     def __init__(self, *, include_hidden_nodes_key=None):
-#         self.include_hidden_nodes_key = include_hidden_nodes_key
-
-#     def __call__(self, prefix, parsed_args, **kwargs):
-#         include_hidden_nodes = getattr(
-#             parsed_args, self.include_hidden_nodes_key) \
-#             if self.include_hidden_nodes_key else False
-#         with NodeStrategy(parsed_args) as node:
-#             return [
-#                 n.full_name for n in get_node_names(
-#                     node=node, include_hidden_nodes=include_hidden_nodes)]
+    qos_profile_name = args.qos_profile
+    if qos_profile_name:
+        qos_profile = QoSPresetProfiles.get_from_short_key(qos_profile_name)
+    profile_configure_short_keys(
+        qos_profile, args.qos_reliability, args.qos_durability,
+        args.qos_depth, args.qos_history)
+    return qos_profile
