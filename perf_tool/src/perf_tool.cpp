@@ -44,7 +44,7 @@ using namespace std::chrono_literals;
 namespace perf_tool
 {
 
-struct PerfServerResults
+struct ServerResults
 {
   std::vector<size_t> message_ids;
   std::vector<std::chrono::nanoseconds> message_latencies;
@@ -103,20 +103,20 @@ public:
     results_.message_sizes.emplace_back(received_bytes);
   }
 
-  PerfServerResults
+  ServerResults
   get_results() const
   {
     return results_;
   }
 
 private:
-  PerfServerResults results_;
+  ServerResults results_;
   rclcpp::Subscription<perf_tool_msgs::msg::Bytes>::SharedPtr sub_;
   rclcpp::Serialization<perf_tool_msgs::msg::Bytes> deserializer_;
 };
 
-PerfServerResults
-run_perf_server(rmw_qos_profile_t rmw_sub_qos, std::chrono::nanoseconds experiment_duration)
+ServerResults
+run_server(rmw_qos_profile_t rmw_sub_qos, std::chrono::nanoseconds experiment_duration)
 {
   if(!rclcpp::signal_handlers_installed()) {
     rclcpp::install_signal_handlers();
@@ -142,7 +142,7 @@ run_perf_server(rmw_qos_profile_t rmw_sub_qos, std::chrono::nanoseconds experime
   return perf_server->get_results();
 }
 
-struct PerfClientResults
+struct ClientResults
 {
   std::vector<size_t> message_ids;
   std::vector<std::chrono::time_point<std::chrono::system_clock>> message_published_times;
@@ -186,7 +186,7 @@ public:
     ++next_id;
   }
 
-  PerfClientResults
+  ClientResults
   get_results() {
     return results_;
   }
@@ -197,12 +197,12 @@ private:
   uint64_t next_id{};
   std::shared_ptr<rclcpp::TimerBase> timer_;
   rclcpp::Publisher<perf_tool_msgs::msg::Bytes>::SharedPtr pub_;
-  PerfClientResults results_;
+  ClientResults results_;
   rclcpp::Serialization<perf_tool_msgs::msg::Bytes> serializer_;
 };
 
-PerfClientResults
-run_perf_client(
+ClientResults
+run_client(
   size_t array_size,
   std::chrono::nanoseconds target_pub_period,
   rmw_qos_profile_t rmw_pub_qos,
@@ -238,18 +238,18 @@ run_perf_client(
 PYBIND11_MODULE(perf_tool_impl, m) {
   m.doc() = "Python wrapper of perf tool implementation";
 
-  m.def("run_perf_server", &perf_tool::run_perf_server);
-  m.def("run_perf_client", &perf_tool::run_perf_client);
-  pybind11::class_<perf_tool::PerfClientResults>(
-    m, "PerfClientResults")
-    .def_readwrite("message_ids", &perf_tool::PerfClientResults::message_ids)
+  m.def("run_server", &perf_tool::run_server);
+  m.def("run_client", &perf_tool::run_client);
+  pybind11::class_<perf_tool::ClientResults>(
+    m, "ClientResults")
+    .def_readwrite("message_ids", &perf_tool::ClientResults::message_ids)
     .def_readwrite(
       "message_published_times",
-      &perf_tool::PerfClientResults::message_published_times)
-    .def_readwrite("message_sizes", &perf_tool::PerfClientResults::message_sizes);
-  pybind11::class_<perf_tool::PerfServerResults>(
-    m, "PerfServerResults")
-    .def_readwrite("message_ids", &perf_tool::PerfServerResults::message_ids)
-    .def_readwrite("message_latencies", &perf_tool::PerfServerResults::message_latencies)
-    .def_readwrite("message_sizes", &perf_tool::PerfServerResults::message_sizes);
+      &perf_tool::ClientResults::message_published_times)
+    .def_readwrite("message_sizes", &perf_tool::ClientResults::message_sizes);
+  pybind11::class_<perf_tool::ServerResults>(
+    m, "ServerResults")
+    .def_readwrite("message_ids", &perf_tool::ServerResults::message_ids)
+    .def_readwrite("message_latencies", &perf_tool::ServerResults::message_latencies)
+    .def_readwrite("message_sizes", &perf_tool::ServerResults::message_sizes);
 }

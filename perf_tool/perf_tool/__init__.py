@@ -19,15 +19,11 @@ from rpyutils import add_dll_directories_from_env
 # See https://docs.python.org/3/whatsnew/3.8.html#bpo-36085-whatsnew
 with add_dll_directories_from_env('PATH'):
     from perf_tool.perf_tool_impl import (
-        PerfClientResults,
-        PerfServerResults,
-        run_perf_client,
-        run_perf_server,
+        ClientResults,
+        ServerResults,
+        run_client,
+        run_server,
     )
-ClientResults = PerfClientResults
-ServerResults = PerfServerResults
-run_client = run_perf_client
-run_server = run_perf_server
 
 
 __all__ = [
