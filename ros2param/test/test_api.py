@@ -90,12 +90,7 @@ from ros2param.api import get_parameter_value
         ),
     ],
 )
-
-
-# TODO(ihasapie): Move into rclpy
-# def test_get_parameter_value(
-#     string_value, expected_type, value_attribute, expected_value
-# ):
-#     value = get_parameter_value(string_value=string_value)
-#     assert value.type == expected_type
-#     assert getattr(value, value_attribute) == expected_value
+def test_get_parameter_value(string_value, expected_type, value_attribute, expected_value):
+    value = get_parameter_value(string_value=string_value)
+    assert value.type == expected_type
+    assert getattr(value, value_attribute) == expected_value

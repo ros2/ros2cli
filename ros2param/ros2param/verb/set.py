@@ -15,14 +15,15 @@
 import sys
 
 from rcl_interfaces.msg import Parameter
+from rclpy.parameter import get_parameter_value
 from ros2cli.node.direct import DirectNode
 from ros2cli.node.strategy import add_arguments
 from ros2cli.node.strategy import NodeStrategy
 from ros2node.api import get_absolute_node_name
 from ros2node.api import get_node_names
 from ros2node.api import NodeNameCompleter
+
 from ros2param.api import call_set_parameters
-from rclpy.parameter import get_parameter_value
 from ros2param.api import ParameterNameCompleter
 from ros2param.verb import VerbExtension
 

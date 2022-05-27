@@ -16,25 +16,20 @@ import os
 import sys
 
 from rcl_interfaces.srv import ListParameters
-
 import rclpy
 from rclpy.parameter import PARAMETER_SEPARATOR_STRING
-
 from ros2cli.node.direct import DirectNode
 from ros2cli.node.strategy import add_arguments
 from ros2cli.node.strategy import NodeStrategy
-
 from ros2node.api import get_absolute_node_name
 from ros2node.api import get_node_names
 from ros2node.api import NodeNameCompleter
 from ros2node.api import parse_node_name
 
-from rclpy.parameter import get_parameter_value
-from ros2param.api import get_value
-from ros2param.api import call_list_parameters
 from ros2param.api import call_get_parameters
+from ros2param.api import call_list_parameters
+from ros2param.api import get_value
 from ros2param.verb import VerbExtension
-
 import yaml
 
 

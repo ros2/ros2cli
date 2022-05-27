@@ -13,17 +13,20 @@
 # limitations under the License.
 
 import sys
+import warnings
 
-import rclpy
 from rcl_interfaces.msg import ParameterType
-from rclpy.parameter import parameter_value_to_python
+import rclpy
 from rclpy.parameter import get_parameter_value as rclpy_get_parameter_value
+from rclpy.parameter import parameter_dict_from_yaml_file
+from rclpy.parameter import parameter_value_to_python
 from rclpy.parameter_client import AsyncParameterClient
-
 from ros2cli.node.direct import DirectNode
 
 
 def get_parameter_value(*, string_value):
+    warnings.warn('get_parameter_value() is deprecated. '
+                  'Use rclpy.parameter.get_parameter_value instead')
     rclpy_get_parameter_value(string_value)
 
 
@@ -33,19 +36,18 @@ def get_value(*, parameter_value):
     try:
         value = parameter_value_to_python(parameter_value)
     except RuntimeError as e:
-        print(e)
-    # NOTE(ihasdapie): parameter_value_to_python raises an error if the type is not supported but 
-    # get_value would just return value=None
+        print(f'Runtime error {e} raised')
     return value
 
 
 def load_parameter_file(*, node, node_name, parameter_file, use_wildcard):
     # Remove leading slash and namespaces
     client = AsyncParameterClient(node, node_name)
-    (future, parameters) = client.load_parameter_file(parameter_file, use_wildcard, return_parameters = True)
+    future = client.load_parameter_file(parameter_file, use_wildcard)
+    parameters = list(parameter_dict_from_yaml_file(parameter_file, use_wildcard).values())
     rclpy.spin_until_future_complete(node, future)
     response = future.result()
-    assert len(response.results) == len(parameters), "Not all parameters set"
+    assert len(response.results) == len(parameters), 'Not all parameters set'
     for i in range(0, len(response.results)):
         result = response.results[i]
         param_name = parameters[i].name
@@ -70,10 +72,6 @@ def call_describe_parameters(*, node, node_name, parameter_names=None):
 
 
 def call_get_parameters(*, node, node_name, parameter_names):
-    """
-    :param node: node to create client on
-    :param node_name: name of node to set parameters on
-    """
     client = AsyncParameterClient(node, node_name)
     future = client.get_parameters(parameter_names)
     rclpy.spin_until_future_complete(node, future)
@@ -82,10 +80,6 @@ def call_get_parameters(*, node, node_name, parameter_names):
 
 
 def call_set_parameters(*, node, node_name, parameters):
-    """
-    :param node: node to create client on
-    :param node_name: name of node to set parameters on
-    """
     client = AsyncParameterClient(node, node_name)
     future = client.set_parameters(parameters)
     rclpy.spin_until_future_complete(node, future)
@@ -94,10 +88,6 @@ def call_set_parameters(*, node, node_name, parameters):
 
 
 def call_list_parameters(*, node, node_name, prefix=None):
-    """
-    :param node: node to create client on
-    :param node_name: name of node to set parameters on
-    """
     client = AsyncParameterClient(node, node_name)
     future = client.list_parameters()
     rclpy.spin_until_future_complete(node, future)
