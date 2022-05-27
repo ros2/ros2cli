@@ -54,9 +54,21 @@ class ClientVerb(VerbExtension):
         # pub_period[sec] = 8[b/Byte] * message_size[Byte] * 1[M]/10^6 / target_bandwidth[Mb/s]
         pub_period = 8 * args.message_size / 1e6 / args.target_bw
 
-        # run perf client
-        results = perf_tool.run_client(
-            args.message_size, pub_period, qos_profile.get_c_qos_profile(), args.duration)
+        runner = perf_tool.ClientRunner(
+            qos_profile.get_c_qos_profile(), args.duration, args.message_size, pub_period)
+        try:
+            with runner:
+                runner.wait_for_experiment_to_complete()
+        except KeyboardInterrupt:
+            pass
+        except:
+            print('here!!')
+            raise
+        try:
+            results = runner.get_results()
+        except:
+            print('here2')
+            raise
 
         # TODO(ivanpauno): Add some processing to be able to show better statistics
         print(results.message_ids)

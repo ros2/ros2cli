@@ -38,14 +38,16 @@ class ServerVerb(VerbExtension):
     def main(self, *, args):
         qos_profile = get_qos_profile_from_args(args)
 
+        runner = perf_tool.ServerRunner(
+            qos_profile.get_c_qos_profile(), args.duration)
         try:
-            # run perf client
-            results = perf_tool.run_server(
-                qos_profile.get_c_qos_profile(), args.duration)
+            with runner:
+                runner.wait_for_experiment_to_complete()
         except KeyboardInterrupt:
             pass
+        results = runner.get_results()
 
         # TODO(ivanpauno): Add some processing to be able to show better statistics
         print(results.message_ids)
-        print(results.message_published_times)
+        print(results.message_latencies)
         print(results.message_sizes)

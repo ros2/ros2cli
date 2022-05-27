@@ -15,6 +15,8 @@
 #include <chrono>
 #include <functional>
 #include <memory>
+#include <mutex>
+#include <thread>
 
 #include "perf_tool_msgs/msg/bytes.hpp"
 
@@ -98,49 +100,27 @@ public:
           std::chrono::nanoseconds{msg.timestamp}};
       latency = now - pub_timestamp;
     }
-    results_.message_ids.emplace_back(msg.id);
-    results_.message_latencies.emplace_back(latency);
-    results_.message_sizes.emplace_back(received_bytes);
+    {
+      std::lock_guard guard{results_mutex_};
+      results_.message_ids.emplace_back(msg.id);
+      results_.message_latencies.emplace_back(latency);
+      results_.message_sizes.emplace_back(received_bytes);
+    }
   }
 
   ServerResults
   get_results() const
   {
+    std::lock_guard guard{results_mutex_};
     return results_;
   }
 
 private:
   ServerResults results_;
+  mutable std::mutex results_mutex_;
   rclcpp::Subscription<perf_tool_msgs::msg::Bytes>::SharedPtr sub_;
   rclcpp::Serialization<perf_tool_msgs::msg::Bytes> deserializer_;
 };
-
-ServerResults
-run_server(rmw_qos_profile_t rmw_sub_qos, std::chrono::nanoseconds experiment_duration)
-{
-  if(!rclcpp::signal_handlers_installed()) {
-    rclcpp::install_signal_handlers();
-  }
-  auto context = std::make_shared<rclcpp::Context>();
-  context->init(0, nullptr);
-  rclcpp::NodeOptions no;
-  no.context(context);
-  rclcpp::QoS sub_qos{{rmw_sub_qos.history, rmw_sub_qos.depth}, rmw_sub_qos};
-  auto perf_server = std::make_shared<Server>(sub_qos, no);
-  rclcpp::ExecutorOptions eo;
-  eo.context = context;
-  rclcpp::executors::SingleThreadedExecutor ex{eo};
-  ex.add_node(perf_server);
-
-  auto start = std::chrono::system_clock::now();
-  auto now = start;
-  pybind11::gil_scoped_release gil_guard;
-  while (now < start + experiment_duration && context->is_valid()) {
-    ex.spin_once(start + experiment_duration - now);
-    now = std::chrono::system_clock::now();
-  }
-  return perf_server->get_results();
-}
 
 struct ClientResults
 {
@@ -180,14 +160,19 @@ public:
     pub_->publish(msg);
     // always keep the vector preallocated, to avoid delays when the timer is triggered
     bytes_.resize(array_size_);
-    results_.message_ids.emplace_back(msg.id);
-    results_.message_published_times.emplace_back(now);
-    results_.message_sizes.emplace_back(sent_bytes);
+    {
+      std::lock_guard guard{results_mutex_};
+      results_.message_ids.emplace_back(msg.id);
+      results_.message_published_times.emplace_back(now);
+      results_.message_sizes.emplace_back(sent_bytes);
+    }
     ++next_id;
   }
 
   ClientResults
-  get_results() {
+  get_results()
+  {
+    std::lock_guard guard{results_mutex_};
     return results_;
   }
 
@@ -198,48 +183,92 @@ private:
   std::shared_ptr<rclcpp::TimerBase> timer_;
   rclcpp::Publisher<perf_tool_msgs::msg::Bytes>::SharedPtr pub_;
   ClientResults results_;
+  mutable std::mutex results_mutex_;
   rclcpp::Serialization<perf_tool_msgs::msg::Bytes> serializer_;
 };
 
-ClientResults
-run_client(
-  size_t array_size,
-  std::chrono::nanoseconds target_pub_period,
-  rmw_qos_profile_t rmw_pub_qos,
-  std::chrono::nanoseconds experiment_duration)
-{
-  std::cout << "\tarray_size: " << array_size << "\n\ttarget_pub_period: " << target_pub_period.count()
-    << "\n\texperiment_duration: " << experiment_duration.count() << std::endl;
-  if(!rclcpp::signal_handlers_installed()) {
-    rclcpp::install_signal_handlers();
+template<typename NodeT>
+class NodeRunner {
+public:
+  NodeRunner()
+  {
+    if (!rclcpp::signal_handlers_installed()) {
+      rclcpp::install_signal_handlers();
+    }
+    context_ = std::make_shared<rclcpp::Context>();
+    context_->init(0, nullptr);
   }
-  auto context = std::make_shared<rclcpp::Context>();
-  context->init(0, nullptr);
-  rclcpp::NodeOptions no;
-  no.context(context);
-  auto start = std::chrono::system_clock::now();
-  rclcpp::QoS pub_qos{{rmw_pub_qos.history, rmw_pub_qos.depth}, rmw_pub_qos};
-  auto perf_client = std::make_shared<Client>(array_size, target_pub_period ,pub_qos, no);
-  rclcpp::ExecutorOptions eo;
-  eo.context = context;
-  rclcpp::executors::SingleThreadedExecutor ex{eo};
-  ex.add_node(perf_client);
 
-  auto now = start;
-  pybind11::gil_scoped_release gil_guard;
-  while (now < start + experiment_duration && context->is_valid()) {
-    ex.spin_once(start + experiment_duration - now);
-    now = std::chrono::system_clock::now();
+  template<typename... NodeArgs>
+  void
+  start(
+    rmw_qos_profile_t rmw_qos,
+    std::chrono::nanoseconds experiment_duration,
+    NodeArgs... args)
+  {
+    rclcpp::NodeOptions no;
+    no.context(context_);
+    rclcpp::QoS pub_qos{{rmw_qos.history, rmw_qos.depth}, rmw_qos};
+    node_ = std::make_shared<NodeT>(args... , pub_qos, no);
+
+    running_thread_ = std::thread([this, experiment_duration]() {
+      auto start = std::chrono::system_clock::now();
+      rclcpp::ExecutorOptions eo;
+      eo.context = context_;
+      rclcpp::executors::SingleThreadedExecutor ex{eo};
+      ex.add_node(node_);
+
+      auto now = start;
+      while (now < start + experiment_duration && context_->is_valid()) {
+        ex.spin_once(start + experiment_duration - now);
+        now = std::chrono::system_clock::now();
+      }
+    });
   }
-  return perf_client->get_results();
-}
+
+  void stop()
+  {
+    context_->shutdown("stopping perf node runner");
+  }
+
+  void join()
+  {
+    if (running_thread_.joinable()) {
+      running_thread_.join();
+    }
+  }
+
+  auto get_results()
+  {
+    return node_->get_results();
+  }
+
+private:
+  rclcpp::Context::SharedPtr context_;
+  std::shared_ptr<NodeT> node_;
+  std::thread running_thread_;
+};
 }  // namespace perf_tool
 
 PYBIND11_MODULE(perf_tool_impl, m) {
   m.doc() = "Python wrapper of perf tool implementation";
 
-  m.def("run_server", &perf_tool::run_server);
-  m.def("run_client", &perf_tool::run_client);
+  using ClientRunner = perf_tool::NodeRunner<perf_tool::Client>;
+  pybind11::class_<ClientRunner>(
+    m, "ClientRunner")
+    .def(pybind11::init<>())
+    .def("start", &ClientRunner::start<size_t, std::chrono::nanoseconds>)
+    .def("stop", &ClientRunner::stop)
+    .def("get_results", &ClientRunner::get_results)
+    .def("join", &ClientRunner::join);
+  using ServerRunner = perf_tool::NodeRunner<perf_tool::Server>;
+  pybind11::class_<ServerRunner>(
+    m, "ServerRunner")
+    .def(pybind11::init<>())
+    .def("start", &ServerRunner::start<>)
+    .def("stop", &ServerRunner::stop)
+    .def("get_results", &ServerRunner::get_results)
+    .def("join", &ServerRunner::join);
   pybind11::class_<perf_tool::ClientResults>(
     m, "ClientResults")
     .def_readwrite("message_ids", &perf_tool::ClientResults::message_ids)
