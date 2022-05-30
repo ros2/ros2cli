@@ -57,7 +57,13 @@ class ClientVerb(VerbExtension):
         runner = perf_tool.ClientRunner(
             qos_profile.get_c_qos_profile(), args.duration, args.message_size, pub_period)
         try:
-            with runner:
+            with runner as node:
+                print('---------------------------------------------------------')
+                print('Client running')
+                print(f'\ttopic: {node.get_topic_name()}')
+                print(f'\tpublisher gid: {node.get_stringified_pub_gid()}')
+                print(f'\tqos: {qos_profile}')
+                print('---------------------------------------------------------')
                 runner.wait_for_experiment_to_complete()
         except KeyboardInterrupt:
             pass
@@ -65,7 +71,7 @@ class ClientVerb(VerbExtension):
             print('here!!')
             raise
         try:
-            results = runner.get_results()
+            results = node.get_results()
         except:
             print('here2')
             raise

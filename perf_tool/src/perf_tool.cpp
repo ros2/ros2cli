@@ -16,6 +16,8 @@
 #include <functional>
 #include <memory>
 #include <mutex>
+#include <string>
+#include <sstream>
 #include <thread>
 
 #include "perf_tool_msgs/msg/bytes.hpp"
@@ -53,17 +55,17 @@ struct ServerResults
   std::vector<size_t> message_sizes;
 };
 
-class Server : public rclcpp::Node
+class ServerNode : public rclcpp::Node
 {
 public:
-  explicit Server(
+  explicit ServerNode(
     const rclcpp::QoS & sub_qos,
     const rclcpp::NodeOptions & options = rclcpp::NodeOptions{})
   : Node("perf_tool_server", options)
   {
     sub_ = this->create_subscription<perf_tool_msgs::msg::Bytes>(
       "perf_topic", sub_qos,
-      std::bind(&Server::handle_msg, this, std::placeholders::_1, std::placeholders::_2));
+      std::bind(&ServerNode::handle_msg, this, std::placeholders::_1, std::placeholders::_2));
   }
 
   void handle_msg(
@@ -115,6 +117,11 @@ public:
     return results_;
   }
 
+  std::string
+  get_topic_name()
+  {
+    return sub_->get_topic_name();
+  }
 private:
   ServerResults results_;
   mutable std::mutex results_mutex_;
@@ -129,10 +136,10 @@ struct ClientResults
   std::vector<size_t> message_sizes;
 };
 
-class Client : public rclcpp::Node
+class ClientNode : public rclcpp::Node
 {
 public:
-  explicit Client(
+  explicit ClientNode(
     size_t array_size,
     std::chrono::nanoseconds target_pub_period,
     const rclcpp::QoS & pub_qos,
@@ -142,7 +149,7 @@ public:
     pub_ = this->create_publisher<perf_tool_msgs::msg::Bytes>("perf_topic", pub_qos);
     timer_ = this->create_wall_timer(
       target_pub_period,
-      std::bind(&Client::pub_next_msg, this));
+      std::bind(&ClientNode::pub_next_msg, this));
     // always keep the vector preallocated, to avoid delays when the timer is triggered
     bytes_.resize(array_size);
   }
@@ -176,6 +183,26 @@ public:
     return results_;
   }
 
+  std::string
+  get_topic_name()
+  {
+    return pub_->get_topic_name();
+  }
+
+  std::string
+  get_stringified_pub_gid()
+  {
+    std::ostringstream oss;
+    oss << std::hex;
+    auto it = std::begin(pub_->get_gid().data);
+    const auto last_elem_it = std::end(pub_->get_gid().data) - 1;
+    for(; it != last_elem_it; ++it) {
+      // need to cast to integer type, to avoid trying to use utf8 encoding
+      oss << std::setw(2) << std::setfill('0') << static_cast<int>(*it) << ".";
+    }
+    oss << std::setw(2) << std::setfill('0') << static_cast<int>(*last_elem_it);
+    return oss.str();
+  }
 private:
   size_t array_size_;
   std::vector<unsigned char> bytes_;
@@ -238,11 +265,13 @@ public:
     }
   }
 
-  auto get_results()
+  auto get_node()
   {
-    return node_->get_results();
+    if (!node_) {
+      throw std::runtime_error{"perf node runner was not started"};
+    }
+    return node_;
   }
-
 private:
   rclcpp::Context::SharedPtr context_;
   std::shared_ptr<NodeT> node_;
@@ -253,22 +282,31 @@ private:
 PYBIND11_MODULE(perf_tool_impl, m) {
   m.doc() = "Python wrapper of perf tool implementation";
 
-  using ClientRunner = perf_tool::NodeRunner<perf_tool::Client>;
+  pybind11::class_<perf_tool::ClientNode, std::shared_ptr<perf_tool::ClientNode>>(
+    m, "ClientNode")
+    .def("get_topic_name", &perf_tool::ClientNode::get_topic_name)
+    .def("get_stringified_pub_gid", &perf_tool::ClientNode::get_stringified_pub_gid)
+    .def("get_results", &perf_tool::ClientNode::get_results);
+  pybind11::class_<perf_tool::ServerNode, std::shared_ptr<perf_tool::ServerNode>>(
+    m, "ServerNode")
+    .def("get_topic_name", &perf_tool::ServerNode::get_topic_name)
+    .def("get_results", &perf_tool::ServerNode::get_results);
+  using ClientRunner = perf_tool::NodeRunner<perf_tool::ClientNode>;
   pybind11::class_<ClientRunner>(
     m, "ClientRunner")
     .def(pybind11::init<>())
     .def("start", &ClientRunner::start<size_t, std::chrono::nanoseconds>)
     .def("stop", &ClientRunner::stop)
-    .def("get_results", &ClientRunner::get_results)
-    .def("join", &ClientRunner::join);
-  using ServerRunner = perf_tool::NodeRunner<perf_tool::Server>;
+    .def("join", &ClientRunner::join)
+    .def("get_node", &ClientRunner::get_node);
+  using ServerRunner = perf_tool::NodeRunner<perf_tool::ServerNode>;
   pybind11::class_<ServerRunner>(
     m, "ServerRunner")
     .def(pybind11::init<>())
     .def("start", &ServerRunner::start<>)
     .def("stop", &ServerRunner::stop)
-    .def("get_results", &ServerRunner::get_results)
-    .def("join", &ServerRunner::join);
+    .def("join", &ServerRunner::join)
+    .def("get_node", &ServerRunner::get_node);
   pybind11::class_<perf_tool::ClientResults>(
     m, "ClientResults")
     .def_readwrite("message_ids", &perf_tool::ClientResults::message_ids)

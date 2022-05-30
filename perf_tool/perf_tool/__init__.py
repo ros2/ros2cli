@@ -41,13 +41,10 @@ class RunnerImpl:
 
     def __enter__(self):
         self._impl.start(*self._start_args)
-        return self
+        return self._impl.get_node()
 
     def stop(self):
         self._impl.stop()
-
-    def get_results(self):
-        return self._impl.get_results()
 
     def wait_for_experiment_to_complete(self):
         self._impl.join()

@@ -41,11 +41,16 @@ class ServerVerb(VerbExtension):
         runner = perf_tool.ServerRunner(
             qos_profile.get_c_qos_profile(), args.duration)
         try:
-            with runner:
+            with runner as node:
+                print('---------------------------------------------------------')
+                print('Server running')
+                print(f'\ttopic: {node.get_topic_name()}')
+                print(f'\tqos: {qos_profile}')
+                print('---------------------------------------------------------')
                 runner.wait_for_experiment_to_complete()
         except KeyboardInterrupt:
             pass
-        results = runner.get_results()
+        results = node.get_results()
 
         # TODO(ivanpauno): Add some processing to be able to show better statistics
         print(results.message_ids)
