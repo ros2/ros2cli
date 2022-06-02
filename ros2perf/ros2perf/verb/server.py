@@ -50,9 +50,20 @@ class ServerVerb(VerbExtension):
                 runner.wait_for_experiment_to_complete()
         except KeyboardInterrupt:
             pass
-        results = node.get_results()
+        results_map = node.extract_results()
 
         # TODO(ivanpauno): Add some processing to be able to show better statistics
-        print(results.message_ids)
-        print(results.message_latencies)
-        print(results.message_sizes)
+        for gid, results in results_map.items():
+            print(gid)
+            print(results.statistics.latency_avg_ms)
+            print(results.statistics.latency_stdev_ms)
+            print(results.statistics.latency_min_ms)
+            print(results.statistics.latency_max_ms)
+            print(results.statistics.total_bytes)
+            print(results.statistics.experiment_duration_ns)
+            print(results.statistics.messages_lost)
+            print(results.statistics.messages_total)
+
+            print(results.collected_info.message_ids)
+            print(results.collected_info.message_latencies)
+            print(results.collected_info.message_sizes)

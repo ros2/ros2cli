@@ -71,12 +71,20 @@ class ClientVerb(VerbExtension):
             print('here!!')
             raise
         try:
-            results = node.get_results()
+            results = node.extract_results()
         except:
             print('here2')
             raise
 
         # TODO(ivanpauno): Add some processing to be able to show better statistics
-        print(results.message_ids)
-        print(results.message_published_times)
-        print(results.message_sizes)
+        print(results.statistics.latency_avg_ms)
+        print(results.statistics.latency_stdev_ms)
+        print(results.statistics.latency_min_ms)
+        print(results.statistics.latency_max_ms)
+        print(results.statistics.total_bytes)
+        print(results.statistics.experiment_duration_ns)
+        print(results.statistics.messages_lost)
+        print(results.statistics.messages_total)
+
+        print(results.collected_info.message_ids)
+        print(results.collected_info.message_sizes)

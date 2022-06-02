@@ -22,8 +22,6 @@ with add_dll_directories_from_env('PATH'):
     from perf_tool.perf_tool_impl import (
         ClientRunner as _ClientRunner,
         ServerRunner as _ServerRunner,
-        ClientResults,
-        ServerResults,
     )
 
 
@@ -63,8 +61,6 @@ class ServerRunner(RunnerImpl):
 
 
 __all__ = [
-    'ClientResults',
     'ClientRunner',
-    'ServerResults',
     'ServerRunner',
 ]

@@ -19,6 +19,7 @@ find_package(rosidl_default_generators REQUIRED)
 
 set(msg_files
   "msg/Bytes.msg"
+  "srv/GetResults.srv"
 )
 rosidl_generate_interfaces(${PROJECT_NAME}
   ${msg_files}

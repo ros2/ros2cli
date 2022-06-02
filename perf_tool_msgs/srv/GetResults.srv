@@ -1,0 +1,11 @@
+string publisher_gid
+uint64 messages_total
+---
+float64 latency_avg_ms
+float64 latency_stdev_ms
+float64 latency_min_ms
+float64 latency_max_ms
+uint64 total_bytes
+uint64 experiment_duration_ns
+uint64 messages_lost
+uint64 messages_total
