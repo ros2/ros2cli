@@ -47,23 +47,31 @@ class ServerVerb(VerbExtension):
                 print(f'\ttopic: {node.get_topic_name()}')
                 print(f'\tqos: {qos_profile}')
                 print('---------------------------------------------------------')
-                runner.wait_for_experiment_to_complete()
+                while True:
+                    # we wait for 1 second, so we can check for signals in the middle
+                    # as the blocking method used by wait_for_results_available()
+                    # isn't awaken by signals.
+                    node.wait_for_results_available(1.)
+                    results_map = node.extract_results()
+                    print_results(results_map)
         except KeyboardInterrupt:
             pass
         results_map = node.extract_results()
+        print_results(results_map)
 
-        # TODO(ivanpauno): Add some processing to be able to show better statistics
-        for gid, results in results_map.items():
-            print(gid)
-            print(results.statistics.latency_avg_ms)
-            print(results.statistics.latency_stdev_ms)
-            print(results.statistics.latency_min_ms)
-            print(results.statistics.latency_max_ms)
-            print(results.statistics.total_bytes)
-            print(results.statistics.experiment_duration_ns)
-            print(results.statistics.messages_lost)
-            print(results.statistics.messages_total)
+def print_results(results_map):
+    # TODO(ivanpauno): Add some processing to be able to show better statistics
+    for gid, results in results_map.items():
+        print(gid)
+        print(results.statistics.latency_avg_ms)
+        print(results.statistics.latency_stdev_ms)
+        print(results.statistics.latency_min_ms)
+        print(results.statistics.latency_max_ms)
+        print(results.statistics.total_bytes)
+        print(results.statistics.experiment_duration_ns)
+        print(results.statistics.messages_lost)
+        print(results.statistics.messages_total)
 
-            print(results.collected_info.message_ids)
-            print(results.collected_info.message_latencies)
-            print(results.collected_info.message_sizes)
+        print(results.collected_info.message_ids)
+        print(results.collected_info.message_latencies)
+        print(results.collected_info.message_sizes)

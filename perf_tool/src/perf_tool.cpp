@@ -200,10 +200,11 @@ public:
       std::lock_guard guard{pub_gid_to_results_map_mutex_};
       pub_gid_to_results_map_.try_emplace(req->publisher_gid, results);
     }
+    pub_gid_to_results_map_cv_.notify_one();
   }
 
   auto
-  extract_results() const
+  extract_results()
   {
     PubGidToResultsMap ret;
     {
@@ -213,11 +214,16 @@ public:
     return ret;
   }
 
-  bool
-  are_results_available()
+  void
+  wait_for_results_available(std::chrono::nanoseconds timeout)
   {
-    std::lock_guard guard{pub_gid_to_results_map_mutex_};
-    return pub_gid_to_results_map_.size() != 0u;
+    std::unique_lock guard{pub_gid_to_results_map_mutex_};
+    pub_gid_to_results_map_cv_.wait_for(
+      guard,
+      timeout,
+      [this]() {
+        return pub_gid_to_results_map_.size() != 0u;
+      });
   }
 
   std::string
@@ -237,6 +243,7 @@ private:
   using PubGidToResultsMap = std::unordered_map<std::string, ServerResults>;
   PubGidToResultsMap pub_gid_to_results_map_;
   mutable std::mutex pub_gid_to_results_map_mutex_;
+  mutable std::condition_variable pub_gid_to_results_map_cv_;
 
   rclcpp::Subscription<perf_tool_msgs::msg::Bytes>::SharedPtr sub_;
   rclcpp::Serialization<perf_tool_msgs::msg::Bytes> deserializer_;
@@ -508,7 +515,8 @@ PYBIND11_MODULE(perf_tool_impl, m) {
   pybind11::class_<ServerNode, std::shared_ptr<ServerNode>>(
     m, "ServerNode")
     .def("get_topic_name", &ServerNode::get_topic_name)
-    .def("extract_results", &ServerNode::extract_results);
+    .def("extract_results", &ServerNode::extract_results)
+    .def("wait_for_results_available", &ServerNode::wait_for_results_available);
   pybind11::class_<ClientRunner>(
     m, "ClientRunner")
     .def(pybind11::init<rmw_qos_profile_t, size_t, std::chrono::nanoseconds>())
