@@ -130,6 +130,9 @@ public:
     }
     {
       std::lock_guard guard{pub_gid_to_collected_info_map_mutex_};
+      RCLCPP_INFO_STREAM_ONCE(
+        this->get_logger(),
+        "Added one message with gid: " << stringify_gid(rmw_msg_info.publisher_gid));
       auto it_emplaced_pair = pub_gid_to_collected_info_map_.try_emplace(stringify_gid(rmw_msg_info.publisher_gid));
       auto & message_data = it_emplaced_pair.first->second;
       message_data.message_ids.emplace_back(msg.id);
@@ -144,17 +147,11 @@ public:
     perf_tool_msgs::srv::GetResults::Request::SharedPtr req,
     perf_tool_msgs::srv::GetResults::Response::SharedPtr rep)
   {
-    std::cout << "handling results request!!!" << std::endl;
     ServerCollectedInfo collected_info;
     {
       std::lock_guard guard{pub_gid_to_collected_info_map_mutex_};
       auto it = pub_gid_to_collected_info_map_.find(req->publisher_gid);
       if (it == pub_gid_to_collected_info_map_.end() || 0u == it->second.message_ids.size()) {
-        std::cout << "doing nothing !!!" << std::endl;
-        std::cout << "requested gid: " << req->publisher_gid << std::endl;
-        if (pub_gid_to_collected_info_map_.size()) {
-          std::cout << "map gid: " << pub_gid_to_collected_info_map_.begin()->first << std::endl;
-        }
         return;
       }
       collected_info = std::move(it->second);
@@ -200,7 +197,6 @@ public:
     results.collected_info = std::move(collected_info);
     results.statistics = *rep;
     {
-      std::cout << "results being stored in map!" << std::endl;
       std::lock_guard guard{pub_gid_to_results_map_mutex_};
       pub_gid_to_results_map_.try_emplace(req->publisher_gid, results);
     }
@@ -209,11 +205,9 @@ public:
   auto
   extract_results() const
   {
-    std::cout << "results being extraxted!" << std::endl;
     PubGidToResultsMap ret;
     {
       std::lock_guard guard{pub_gid_to_results_map_mutex_};
-      std::cout << "size of extracted results [" << pub_gid_to_results_map_.size() << "]" << std::endl;
       ret = std::move(pub_gid_to_results_map_);
     }
     return ret;
@@ -270,15 +264,92 @@ public:
     std::chrono::nanoseconds target_pub_period,
     const rclcpp::QoS & pub_qos,
     const rclcpp::NodeOptions & options = rclcpp::NodeOptions{})
-  : Node("client", "perf_tool", options), array_size_{array_size}
+  : Node("client", "perf_tool", options),
+    array_size_{array_size},
+    target_pub_period_{target_pub_period}
   {
     pub_ = this->create_publisher<perf_tool_msgs::msg::Bytes>("test_topic", pub_qos);
-    timer_ = this->create_wall_timer(
-      target_pub_period,
-      std::bind(&ClientNode::pub_next_msg, this));
     // always keep the vector preallocated, to avoid delays when the timer is triggered
     bytes_.resize(array_size);
     client_ = this->create_client<perf_tool_msgs::srv::GetResults>("get_results");
+  }
+
+  bool wait_for_server(std::chrono::nanoseconds timeout = 5s)
+  {
+    auto start = std::chrono::system_clock::now();
+    while (std::chrono::system_clock::now() < start + timeout) {
+      if (client_->service_is_ready()) {
+        return true;
+      }
+      RCLCPP_INFO(this->get_logger(), "perf server not available yet, waiting...");
+      std::this_thread::sleep_for(500ms);
+    }
+    RCLCPP_INFO_STREAM(
+      this->get_logger(),
+      "perf server not available after waiting ["
+      << std::chrono::duration_cast<std::chrono::seconds>(timeout).count() << "s]" << std::endl);
+    return false;
+  }
+
+  void start_publishing()
+  {
+    timer_ = this->create_wall_timer(
+      target_pub_period_,
+      std::bind(&ClientNode::pub_next_msg, this));
+  }
+
+  void
+  stop_publishing()
+  {
+    if (timer_) {
+      timer_->cancel();
+    }
+  }
+
+  void
+  sync_with_server(rclcpp::Executor & exec)
+  {
+    if (!pub_->wait_for_all_acked(5s)) {
+      RCLCPP_WARN(this->get_logger(), "Some messages were not acked by the perf server ...");
+    }
+    if (!client_->service_is_ready()) {
+      RCLCPP_ERROR(this->get_logger(), "Perf server is not available anymore, cannot get the results back");
+      return;
+    }
+    auto req = std::make_shared<perf_tool_msgs::srv::GetResults::Request>();
+    req->publisher_gid = this->get_stringified_pub_gid();
+    req->messages_total = this->collected_info_.message_ids.size();
+    auto future = client_->async_send_request(req);
+    exec.spin_until_future_complete(future);
+    statistics_ = future.get();
+  }
+
+  ClientResults
+  extract_results()
+  {
+    ClientResults results;
+    if (!statistics_) {
+      throw std::runtime_error{"you must first completely run the client before getting results"};
+    }
+    results.statistics = *statistics_;
+    statistics_.reset();
+    {
+      std::lock_guard guard{collected_info_mutex_};
+      results.collected_info = std::move(collected_info_);
+    }
+    return results;
+  }
+
+  std::string
+  get_topic_name()
+  {
+    return pub_->get_topic_name();
+  }
+
+  std::string
+  get_stringified_pub_gid()
+  {
+    return stringify_gid(pub_->get_gid());
   }
 
   void pub_next_msg()
@@ -303,52 +374,6 @@ public:
     ++next_id;
   }
 
-  ClientResults
-  extract_results()
-  {
-    ClientResults results;
-    if (!statistics_) {
-      throw std::runtime_error{"you must first completely run the client before getting results"};
-    }
-    results.statistics = *statistics_;
-    statistics_.reset();
-    {
-      std::lock_guard guard{collected_info_mutex_};
-      results.collected_info = std::move(collected_info_);
-    }
-    return results;
-  }
-
-  void
-  finalize_work(rclcpp::Executor & exec)
-  {
-    timer_->cancel();
-    if (!pub_->wait_for_all_acked(5s)) {
-      RCLCPP_WARN(this->get_logger(), "Some messages were not acked by the perf server ...");
-    }
-    if (!client_->service_is_ready()) {
-      RCLCPP_ERROR(this->get_logger(), "Perf server is not available anymore, cannot get the results back");
-      return;
-    }
-    auto req = std::make_shared<perf_tool_msgs::srv::GetResults::Request>();
-    req->publisher_gid = this->get_stringified_pub_gid();
-    req->messages_total = this->collected_info_.message_ids.size();
-    auto future = client_->async_send_request(req);
-    exec.spin_until_future_complete(future);
-    statistics_ = future.get();
-  }
-
-  std::string
-  get_topic_name()
-  {
-    return pub_->get_topic_name();
-  }
-
-  std::string
-  get_stringified_pub_gid()
-  {
-    return stringify_gid(pub_->get_gid());
-  }
 private:
   size_t array_size_;
   std::vector<unsigned char> bytes_;
@@ -360,53 +385,67 @@ private:
   mutable std::mutex collected_info_mutex_;
   rclcpp::Serialization<perf_tool_msgs::msg::Bytes> serializer_;
   perf_tool_msgs::srv::GetResults::Response::SharedPtr statistics_;
+  std::chrono::nanoseconds target_pub_period_;
 };
+
+auto
+create_and_init_context()
+{
+  if (!rclcpp::signal_handlers_installed()) {
+    rclcpp::install_signal_handlers();
+  }
+  auto context = std::make_shared<rclcpp::Context>();
+  context->init(0, nullptr);
+  return context;
+}
+
+auto
+executor_options_with_context(rclcpp::Context::SharedPtr context)
+{
+  rclcpp::ExecutorOptions eo;
+  eo.context = std::move(context);
+  return eo;
+}
 
 template<typename NodeT>
 class NodeRunner {
 public:
-  NodeRunner()
-  {
-    if (!rclcpp::signal_handlers_installed()) {
-      rclcpp::install_signal_handlers();
-    }
-    context_ = std::make_shared<rclcpp::Context>();
-    context_->init(0, nullptr);
-  }
-
   template<typename... NodeArgs>
-  void
-  start(
+  NodeRunner(
     rmw_qos_profile_t rmw_qos,
-    std::chrono::nanoseconds experiment_duration,
     NodeArgs... args)
+  : context_{create_and_init_context()},
+    exec_{executor_options_with_context(context_)}
   {
     rclcpp::NodeOptions no;
     no.context(context_);
     rclcpp::QoS pub_qos{{rmw_qos.history, rmw_qos.depth}, rmw_qos};
     node_ = std::make_shared<NodeT>(args... , pub_qos, no);
+    exec_.add_node(node_);
+  }
 
-    running_thread_ = std::thread([this, experiment_duration]() {
-      auto start = std::chrono::system_clock::now();
-      rclcpp::ExecutorOptions eo;
-      eo.context = context_;
-      rclcpp::executors::SingleThreadedExecutor ex{eo};
-      ex.add_node(node_);
-
-      auto now = start;
-      while (now < start + experiment_duration && context_->is_valid()) {
-        ex.spin_once(start + experiment_duration - now);
-        now = std::chrono::system_clock::now();
-      }
-      if (context_->is_valid()) {
-        node_->finalize_work(ex);
-      }
-    });
+  void
+  start(std::chrono::nanoseconds duration)
+  {
+    running_thread_ = std::thread([
+      this, duration, stop_token = thread_stop_promise_.get_future()]()
+      {
+        auto start = std::chrono::system_clock::now();
+        auto now = start;
+        while (
+          now < start + duration &&
+          stop_token.wait_for(0s) != std::future_status::ready &&
+          context_->is_valid())
+        {
+          exec_.spin_once(start + duration - now);
+          now = std::chrono::system_clock::now();
+        }
+      });
   }
 
   void stop()
   {
-    context_->shutdown("stopping perf node runner");
+    thread_stop_promise_.set_value();
   }
 
   void join()
@@ -424,61 +463,87 @@ public:
     }
     return node_;
   }
-private:
+protected:
   rclcpp::Context::SharedPtr context_;
   std::shared_ptr<NodeT> node_;
   std::thread running_thread_;
+  std::promise<void> thread_stop_promise_;
+  rclcpp::executors::SingleThreadedExecutor exec_;
+};
+
+class ClientRunner : public NodeRunner<ClientNode>
+{
+public:
+  using NodeRunner<ClientNode>::NodeRunner;
+  void start(std::chrono::nanoseconds duration)
+  {
+    if (node_->wait_for_server()) {
+      node_->start_publishing();
+      return NodeRunner<ClientNode>::start(duration);
+    }
+    throw std::runtime_error{"failed to connect to server"};
+  }
+
+  void join()
+  {
+    bool sync_needed = running_thread_.joinable();
+    NodeRunner<ClientNode>::join();
+    if (sync_needed) {
+      node_->stop_publishing();
+      node_->sync_with_server(exec_);
+    }
+  }
 };
 }  // namespace perf_tool
 
 PYBIND11_MODULE(perf_tool_impl, m) {
   m.doc() = "Python wrapper of perf tool implementation";
+  using namespace perf_tool;
 
-  pybind11::class_<perf_tool::ClientNode, std::shared_ptr<perf_tool::ClientNode>>(
+  pybind11::class_<ClientNode, std::shared_ptr<ClientNode>>(
     m, "ClientNode")
-    .def("get_topic_name", &perf_tool::ClientNode::get_topic_name)
-    .def("get_stringified_pub_gid", &perf_tool::ClientNode::get_stringified_pub_gid)
-    .def("extract_results", &perf_tool::ClientNode::extract_results);
-  pybind11::class_<perf_tool::ServerNode, std::shared_ptr<perf_tool::ServerNode>>(
+    .def("get_topic_name", &ClientNode::get_topic_name)
+    .def("get_stringified_pub_gid", &ClientNode::get_stringified_pub_gid)
+    .def("extract_results", &ClientNode::extract_results);
+  pybind11::class_<ServerNode, std::shared_ptr<ServerNode>>(
     m, "ServerNode")
-    .def("get_topic_name", &perf_tool::ServerNode::get_topic_name)
-    .def("extract_results", &perf_tool::ServerNode::extract_results);
-  using ClientRunner = perf_tool::NodeRunner<perf_tool::ClientNode>;
+    .def("get_topic_name", &ServerNode::get_topic_name)
+    .def("extract_results", &ServerNode::extract_results);
   pybind11::class_<ClientRunner>(
     m, "ClientRunner")
-    .def(pybind11::init<>())
-    .def("start", &ClientRunner::start<size_t, std::chrono::nanoseconds>)
+    .def(pybind11::init<rmw_qos_profile_t, size_t, std::chrono::nanoseconds>())
+    .def("start", &ClientRunner::start)
     .def("stop", &ClientRunner::stop)
     .def("join", &ClientRunner::join)
     .def("get_node", &ClientRunner::get_node);
-  using ServerRunner = perf_tool::NodeRunner<perf_tool::ServerNode>;
+  using ServerRunner = NodeRunner<ServerNode>;
   pybind11::class_<ServerRunner>(
     m, "ServerRunner")
-    .def(pybind11::init<>())
-    .def("start", &ServerRunner::start<>)
+    .def(pybind11::init<rmw_qos_profile_t>())
+    .def("start", &ServerRunner::start)
     .def("stop", &ServerRunner::stop)
     .def("join", &ServerRunner::join)
     .def("get_node", &ServerRunner::get_node);
-  pybind11::class_<perf_tool::ClientCollectedInfo>(
+  pybind11::class_<ClientCollectedInfo>(
     m, "ClientCollectedInfo")
-    .def_readwrite("message_ids", &perf_tool::ClientCollectedInfo::message_ids)
+    .def_readwrite("message_ids", &ClientCollectedInfo::message_ids)
     .def_readwrite(
       "message_published_times",
-      &perf_tool::ClientCollectedInfo::message_published_times)
-    .def_readwrite("message_sizes", &perf_tool::ClientCollectedInfo::message_sizes);
-  pybind11::class_<perf_tool::ServerCollectedInfo>(
+      &ClientCollectedInfo::message_published_times)
+    .def_readwrite("message_sizes", &ClientCollectedInfo::message_sizes);
+  pybind11::class_<ServerCollectedInfo>(
     m, "ServerCollectedInfo")
-    .def_readwrite("message_ids", &perf_tool::ServerCollectedInfo::message_ids)
-    .def_readwrite("message_latencies", &perf_tool::ServerCollectedInfo::message_latencies)
-    .def_readwrite("message_sizes", &perf_tool::ServerCollectedInfo::message_sizes);
-  pybind11::class_<perf_tool::ClientResults>(
+    .def_readwrite("message_ids", &ServerCollectedInfo::message_ids)
+    .def_readwrite("message_latencies", &ServerCollectedInfo::message_latencies)
+    .def_readwrite("message_sizes", &ServerCollectedInfo::message_sizes);
+  pybind11::class_<ClientResults>(
     m, "ClientResults")
-    .def_readwrite("collected_info", &perf_tool::ClientResults::collected_info)
-    .def_readwrite("statistics", &perf_tool::ClientResults::statistics);
-  pybind11::class_<perf_tool::ServerResults>(
+    .def_readwrite("collected_info", &ClientResults::collected_info)
+    .def_readwrite("statistics", &ClientResults::statistics);
+  pybind11::class_<ServerResults>(
     m, "ServerResults")
-    .def_readwrite("collected_info", &perf_tool::ServerResults::collected_info)
-    .def_readwrite("statistics", &perf_tool::ServerResults::statistics);
+    .def_readwrite("collected_info", &ServerResults::collected_info)
+    .def_readwrite("statistics", &ServerResults::statistics);
   using Statistics = perf_tool_msgs::srv::GetResults::Response;
   pybind11::class_<perf_tool_msgs::srv::GetResults::Response>(
     m, "Statistics")

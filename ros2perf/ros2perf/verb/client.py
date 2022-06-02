@@ -55,7 +55,7 @@ class ClientVerb(VerbExtension):
         pub_period = 8 * args.message_size / 1e6 / args.target_bw
 
         runner = perf_tool.ClientRunner(
-            qos_profile.get_c_qos_profile(), args.duration, args.message_size, pub_period)
+            args.duration, qos_profile.get_c_qos_profile(), args.message_size, pub_period)
         try:
             with runner as node:
                 print('---------------------------------------------------------')

@@ -30,15 +30,16 @@ class RunnerImpl:
 
     def __init__(
         self,
+        experiment_duration,
         *args
     ):
         if self._impl_cls is None or not isclass(self._impl_cls):
             raise RuntimeError('internal error')
-        self._impl = self._impl_cls()
-        self._start_args = args
+        self._impl = self._impl_cls(*args)
+        self._experiment_duration = experiment_duration
 
     def __enter__(self):
-        self._impl.start(*self._start_args)
+        self._impl.start(self._experiment_duration)
         return self._impl.get_node()
 
     def stop(self):

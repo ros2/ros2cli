@@ -39,7 +39,7 @@ class ServerVerb(VerbExtension):
         qos_profile = get_qos_profile_from_args(args)
 
         runner = perf_tool.ServerRunner(
-            qos_profile.get_c_qos_profile(), args.duration)
+            args.duration, qos_profile.get_c_qos_profile())
         try:
             with runner as node:
                 print('---------------------------------------------------------')
