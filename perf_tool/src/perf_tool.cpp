@@ -440,7 +440,7 @@ public:
         auto start = std::chrono::system_clock::now();
         auto now = start;
         while (
-          now < start + duration &&
+          (duration < 0ns || now <= start + duration) &&
           stop_token.wait_for(0s) != std::future_status::ready &&
           context_->is_valid())
         {

@@ -15,6 +15,8 @@
 from inspect import isclass
 from rpyutils import add_dll_directories_from_env
 
+import rclpy.qos
+
 # Since Python 3.8, on Windows we should ensure DLL directories are explicitly added
 # to the search path.
 # See https://docs.python.org/3/whatsnew/3.8.html#bpo-36085-whatsnew
@@ -30,12 +32,13 @@ class RunnerImpl:
 
     def __init__(
         self,
-        experiment_duration,
+        experiment_duration: float,
+        qos: rclpy.qos.QoSProfile,
         *args
     ):
         if self._impl_cls is None or not isclass(self._impl_cls):
             raise RuntimeError('internal error')
-        self._impl = self._impl_cls(*args)
+        self._impl = self._impl_cls(qos.get_c_qos_profile(), *args)
         self._experiment_duration = experiment_duration
 
     def __enter__(self):
@@ -56,9 +59,27 @@ class RunnerImpl:
 class ClientRunner(RunnerImpl):
     _impl_cls = _ClientRunner
 
+    def __init__(
+        self,
+        *,
+        experiment_duration_s: float,
+        qos: rclpy.qos.QoSProfile,
+        message_size_bytes: int,
+        target_pub_period_s: float
+    ):
+        super().__init__(
+            experiment_duration_s, qos, message_size_bytes, target_pub_period_s)
+
 
 class ServerRunner(RunnerImpl):
     _impl_cls = _ServerRunner
+
+    def __init__(
+        self,
+        *,
+        qos: rclpy.qos.QoSProfile
+    ):
+        super().__init__(-1e-9, qos)
 
 
 __all__ = [

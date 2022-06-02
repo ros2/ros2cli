@@ -55,7 +55,10 @@ class ClientVerb(VerbExtension):
         pub_period = 8 * args.message_size / 1e6 / args.target_bw
 
         runner = perf_tool.ClientRunner(
-            args.duration, qos_profile.get_c_qos_profile(), args.message_size, pub_period)
+            experiment_duration_s=args.duration,
+            qos=qos_profile,
+            message_size_bytes=args.message_size,
+            target_pub_period_s=pub_period)
         try:
             with runner as node:
                 print('---------------------------------------------------------')
@@ -68,12 +71,10 @@ class ClientVerb(VerbExtension):
         except KeyboardInterrupt:
             pass
         except:
-            print('here!!')
             raise
         try:
             results = node.extract_results()
         except:
-            print('here2')
             raise
 
         # TODO(ivanpauno): Add some processing to be able to show better statistics

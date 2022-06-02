@@ -26,20 +26,13 @@ class ServerVerb(VerbExtension):
     """Run server side of ros2 performance tester."""
 
     def add_arguments(self, parser, cli_name):
-        parser.add_argument(
-            '-d',
-            '--duration',
-            help='Duration of the experiment to be run in seconds.',
-            type=positive_float
-        )
         add_qos_arguments_to_parser(parser)
 
 
     def main(self, *, args):
         qos_profile = get_qos_profile_from_args(args)
 
-        runner = perf_tool.ServerRunner(
-            args.duration, qos_profile.get_c_qos_profile())
+        runner = perf_tool.ServerRunner(qos=qos_profile)
         try:
             with runner as node:
                 print('---------------------------------------------------------')
@@ -56,6 +49,7 @@ class ServerVerb(VerbExtension):
                     print_results(results_map)
         except KeyboardInterrupt:
             pass
+        # if there were more results available, print them
         results_map = node.extract_results()
         print_results(results_map)
 
