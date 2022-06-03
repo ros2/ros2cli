@@ -91,22 +91,6 @@ class DumpVerb(VerbExtension):
                 f"'{args.output_dir}' is not a valid directory.")
 
         with DirectNode(args) as node:
-            # create client
-            service_name = f'{absolute_node_name}/list_parameters'
-            client = node.create_client(ListParameters, service_name)
-            # TODO(ihasdapie): use api call
-
-            client.wait_for_service()
-
-            if not client.service_is_ready():
-                raise RuntimeError(f"Could not reach service '{service_name}'")
-
-            request = ListParameters.Request()
-            future = client.call_async(request)
-
-            # wait for response
-            rclpy.spin_until_future_complete(node, future)
-
             yaml_output = {node_name.full_name: {'ros__parameters': {}}}
 
             # retrieve values
