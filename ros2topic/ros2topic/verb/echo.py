@@ -36,6 +36,8 @@ from rosidl_runtime_py import message_to_csv
 from rosidl_runtime_py import message_to_yaml
 from rosidl_runtime_py.utilities import get_message
 
+import yaml
+
 DEFAULT_TRUNCATE_LENGTH = 128
 MsgType = TypeVar('MsgType')
 default_profile_str = 'sensor_data'
@@ -85,8 +87,14 @@ class EchoVerb(VerbExtension):
                  'Automatically match existing publishers )')
         parser.add_argument(
             '--csv', action='store_true',
-            help='Output all recursive fields separated by commas (e.g. for '
-                 'plotting)')
+            help=(
+                'Output all recursive fields separated by commas (e.g. for '
+                'plotting). '
+                'If --include-message-info is also passed, the following fields are prepended: '
+                'source_timestamp, received_timestamp, publication_sequence_number,'
+                ' reception_sequence_number.'
+            )
+        )
         parser.add_argument(
             '--field', type=str, default=None,
             help='Echo a selected field of a message. '
@@ -122,6 +130,9 @@ class EchoVerb(VerbExtension):
                                                  'as well as m (the message).')
         parser.add_argument(
             '--once', action='store_true', help='Print the first message received and then exit.')
+        parser.add_argument(
+            '--include-message-info', '-i', action='store_true',
+            help='Shows the associated message info.')
 
     def choose_qos(self, node, args):
 
@@ -189,11 +200,7 @@ class EchoVerb(VerbExtension):
                 "WARNING: '--lost-messages' is deprecated; lost messages are reported by default",
                 file=sys.stderr)
 
-        # Select print function
-        self.print_func = _print_yaml
         self.csv = args.csv
-        if self.csv:
-            self.print_func = _print_csv
 
         # Validate field selection
         self.field = args.field
@@ -214,6 +221,7 @@ class EchoVerb(VerbExtension):
         self.future = None
         if args.once:
             self.future = Future()
+        self.include_message_info = args.include_message_info
 
         with NodeStrategy(args) as node:
 
@@ -247,7 +255,7 @@ class EchoVerb(VerbExtension):
         message_type: MsgType,
         qos_profile: QoSProfile,
         no_report_lost_messages: bool,
-        raw: bool
+        raw: bool,
     ) -> Optional[str]:
         """Initialize a node with a single subscription and spin."""
         event_callbacks = None
@@ -277,7 +285,7 @@ class EchoVerb(VerbExtension):
         else:
             rclpy.spin(node)
 
-    def _subscriber_callback(self, msg):
+    def _subscriber_callback(self, msg, info):
         submsg = msg
         if self.field is not None:
             for field in self.field:
@@ -293,35 +301,39 @@ class EchoVerb(VerbExtension):
         if self.future is not None:
             self.future.set_result(True)
 
+        if not hasattr(submsg, '__slots__'):
+            # raw
+            if self.include_message_info:
+                print('---Got new message, message info:---')
+                print(info)
+                print('---Message data:---')
+            print(submsg, end='\n---\n')
+            return
+
         if self.csv:
-            self.print_func(submsg, self.truncate_length, self.no_arr, self.no_str)
-        else:
-            self.print_func(
-                submsg, self.truncate_length, self.no_arr, self.no_str, self.flow_style)
+            to_print = message_to_csv(
+                submsg,
+                truncate_length=self.truncate_length,
+                no_arr=self.no_arr,
+                no_str=self.no_str)
+            if self.include_message_info:
+                to_print = f'{",".join(str(x) for x in info.values())},{to_print}'
+            print(to_print)
+            return
+        # yaml
+        if self.include_message_info:
+            print(yaml.dump(info), end='---\n')
+        print(
+            message_to_yaml(
+                submsg, truncate_length=self.truncate_length,
+                no_arr=self.no_arr, no_str=self.no_str, flow_style=self.flow_style),
+            end='---\n')
 
 
 def _expr_eval(expr):
     def eval_fn(m):
         return eval(expr)
     return eval_fn
-
-
-def _print_yaml(msg, truncate_length, noarr, nostr, flowstyle):
-    if hasattr(msg, '__slots__'):
-        print(
-            message_to_yaml(
-                msg, truncate_length=truncate_length,
-                no_arr=noarr, no_str=nostr, flow_style=flowstyle),
-            end='---\n')
-    else:
-        print(msg, end='\n---\n')
-
-
-def _print_csv(msg, truncate_length, noarr, nostr):
-    if hasattr(msg, '__slots__'):
-        print(message_to_csv(msg, truncate_length=truncate_length, no_arr=noarr, no_str=nostr))
-    else:
-        print(msg)
 
 
 def _message_lost_event_callback(message_lost_status):

@@ -2,6 +2,15 @@
 Changelog for package ros2topic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.19.0 (2022-04-29)
+-------------------
+* update docs for bandwidth functions. (`#709 <https://github.com/ros2/ros2cli/issues/709>`_)
+* Split the bandwidth functions into a get and print. (`#708 <https://github.com/ros2/ros2cli/issues/708>`_)
+* Contributors: Chris Lalancette, Tomoya Fujita
+
+0.18.3 (2022-04-08)
+-------------------
+
 0.18.2 (2022-03-30)
 -------------------
 * Add timeout to kill hanging tests (`#701 <https://github.com/ros2/ros2cli/issues/701>`_)

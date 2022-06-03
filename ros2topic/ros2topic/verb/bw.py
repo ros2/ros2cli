@@ -101,7 +101,7 @@ class ROSTopicBandwidth(object):
                 t = time.monotonic()
                 self.times.append(t)
                 # TODO(yechun1): Subscribing to the msgs and calculate the length may be
-                # inefficiency. To optimize here if found better solution.
+                # inefficient. Optimize here if a better solution is found.
                 self.sizes.append(len(data))  # AnyMsg instance
                 assert(len(self.times) == len(self.sizes))
 
@@ -111,10 +111,10 @@ class ROSTopicBandwidth(object):
             except Exception:
                 traceback.print_exc()
 
-    def print_bw(self):
-        """Print the average publishing bw to screen."""
+    def get_bw(self):
+        """Get the average publishing bw."""
         if len(self.times) < 2:
-            return
+            return None, None, None, None, None
         with self.lock:
             n = len(self.times)
             tn = time.monotonic()
@@ -127,6 +127,14 @@ class ROSTopicBandwidth(object):
             # min and max
             max_s = max(self.sizes)
             min_s = min(self.sizes)
+
+        return bytes_per_s, n, mean, min_s, max_s
+
+    def print_bw(self):
+        """Print the average publishing bw to screen."""
+        (bytes_per_s, n, mean, min_s, max_s) = self.get_bw()
+        if bytes_per_s is None:
+            return
 
         # min/max and even mean are likely to be much smaller,
         # but for now I prefer unit consistency
