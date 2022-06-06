@@ -93,3 +93,22 @@ def get_qos_profile_from_args(args):
         qos_profile, args.qos_reliability, args.qos_durability,
         args.qos_depth, args.qos_history)
     return qos_profile
+
+
+def print_stats_header():
+    print(
+    '[ id] \tDuration\tTransfer\tBandwidth\t\tLost/Total\t\t'
+    'Latency avg/min/max/stdev')
+
+
+def print_results(stats, *, id):
+    total_MB = stats.total_bytes / 1024 / 1024
+    bw = float(total_MB) * 1e9 / float(stats.experiment_duration_ns)
+    lost_pct = 100 * float(stats.messages_lost) / float(stats.messages_total)
+    id_str = '' if id is None else f'[ {id}]\t'
+    print(
+        f'{id_str}{float(stats.experiment_duration_ns)/1e9:.2f} sec'
+        f'\t{total_MB:.2f} MBytes\t{bw:.4f} Mbits/sec\t{stats.messages_lost}/'
+        f'  {stats.messages_total} ({lost_pct:.2f}%)\t{stats.latency_avg_ms:.4f}/'
+        f' {stats.latency_min_ms:.4f}/ {stats.latency_max_ms:.4f}'
+        f' / {stats.latency_stdev_ms:.4f} ms')

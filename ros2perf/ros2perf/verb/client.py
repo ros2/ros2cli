@@ -19,6 +19,8 @@ from ros2perf.api import get_qos_profile_from_args
 from ros2perf.api import nonnegative_float
 from ros2perf.api import positive_float
 from ros2perf.api import positive_int
+from ros2perf.api import print_results
+from ros2perf.api import print_stats_header
 from ros2perf.verb import VerbExtension
 
 
@@ -77,15 +79,5 @@ class ClientVerb(VerbExtension):
         except:
             raise
 
-        # TODO(ivanpauno): Add some processing to be able to show better statistics
-        print(results.statistics.latency_avg_ms)
-        print(results.statistics.latency_stdev_ms)
-        print(results.statistics.latency_min_ms)
-        print(results.statistics.latency_max_ms)
-        print(results.statistics.total_bytes)
-        print(results.statistics.experiment_duration_ns)
-        print(results.statistics.messages_lost)
-        print(results.statistics.messages_total)
-
-        print(results.collected_info.message_ids)
-        print(results.collected_info.message_sizes)
+        print_stats_header()
+        print_results(results.statistics, id=0)

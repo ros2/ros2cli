@@ -16,14 +16,17 @@ import perf_tool
 
 from ros2perf.api import add_qos_arguments_to_parser
 from ros2perf.api import get_qos_profile_from_args
-from ros2perf.api import nonnegative_float
-from ros2perf.api import positive_float
-from ros2perf.api import positive_int
+from ros2perf.api import print_results
+from ros2perf.api import print_stats_header
 from ros2perf.verb import VerbExtension
 
 
 class ServerVerb(VerbExtension):
     """Run server side of ros2 performance tester."""
+
+    def __init__(self):
+        self.next_client_id_ = 0
+        self.gid_id_map_ = {}
 
     def add_arguments(self, parser, cli_name):
         add_qos_arguments_to_parser(parser)
@@ -44,28 +47,29 @@ class ServerVerb(VerbExtension):
                     # we wait for 1 second, so we can check for signals in the middle
                     # as the blocking method used by wait_for_results_available()
                     # isn't awaken by signals.
-                    node.wait_for_results_available(1.)
-                    results_map = node.extract_results()
-                    print_results(results_map)
+                    self.print_events_from_node(node)
         except KeyboardInterrupt:
             pass
         # if there were more results available, print them
+        self.print_events_from_node(node)
+
+
+    def print_events_from_node(self, node):
+        node.wait_for_results_available(1.)
+        clients_gids = node.extract_new_clients()
+        for client_gid in clients_gids:
+            self.gid_id_map_[client_gid] = self.next_client_id_
+            print(f'[ {self.next_client_id_}] Publisher with gid [{client_gid}] connected')
+            self.next_client_id_ = self.next_client_id_ + 1
         results_map = node.extract_results()
-        print_results(results_map)
+        self.print_results(results_map)
 
-def print_results(results_map):
-    # TODO(ivanpauno): Add some processing to be able to show better statistics
-    for gid, results in results_map.items():
-        print(gid)
-        print(results.statistics.latency_avg_ms)
-        print(results.statistics.latency_stdev_ms)
-        print(results.statistics.latency_min_ms)
-        print(results.statistics.latency_max_ms)
-        print(results.statistics.total_bytes)
-        print(results.statistics.experiment_duration_ns)
-        print(results.statistics.messages_lost)
-        print(results.statistics.messages_total)
 
-        print(results.collected_info.message_ids)
-        print(results.collected_info.message_latencies)
-        print(results.collected_info.message_sizes)
+    def print_results(self, results_map):
+        # TODO(ivanpauno): Add some processing to be able to show better statistics
+        if 0 == len(results_map):
+            return
+        print_stats_header()
+        for gid, results in results_map.items():
+            id = self.gid_id_map_[gid]
+            print_results(results.statistics, id=id)
