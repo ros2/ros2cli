@@ -39,8 +39,13 @@ find_package(pybind11 REQUIRED)
 ament_python_install_package(${PROJECT_NAME})
 
 pybind11_add_module(perf_tool_impl SHARED
+  src/client_node.cpp
+  src/node_runner.cpp
   src/perf_tool.cpp
+  src/server_node.cpp
+  src/utils.cpp
 )
+target_include_directories(perf_tool_impl PRIVATE src)
 target_link_libraries(perf_tool_impl PRIVATE
     rclcpp::rclcpp
     ${perf_tool_msgs_TARGETS})
