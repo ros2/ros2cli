@@ -128,17 +128,24 @@ public:
           std::chrono::nanoseconds{msg.timestamp}};
       latency = rec_timestamp - pub_timestamp;
     }
+    bool emplaced{false};
+    auto string_gid = stringify_gid(rmw_msg_info.publisher_gid);
     {
       std::lock_guard guard{pub_gid_to_collected_info_map_mutex_};
       RCLCPP_INFO_STREAM_ONCE(
         this->get_logger(),
-        "Added one message with gid: " << stringify_gid(rmw_msg_info.publisher_gid));
-      auto it_emplaced_pair = pub_gid_to_collected_info_map_.try_emplace(stringify_gid(rmw_msg_info.publisher_gid));
+        "Added one message with gid: " << string_gid);
+      auto it_emplaced_pair = pub_gid_to_collected_info_map_.try_emplace(string_gid);
       auto & message_data = it_emplaced_pair.first->second;
       message_data.message_ids.emplace_back(msg.id);
       message_data.message_latencies.emplace_back(latency);
       message_data.message_sizes.emplace_back(received_bytes);
       message_data.message_reception_time.emplace_back(rec_timestamp);
+      emplaced = it_emplaced_pair.second;
+    }
+    if (emplaced) {
+      std::lock_guard guard{new_clients_mutex_};
+      new_clients_.emplace_back(string_gid);
     }
   }
 
@@ -214,6 +221,17 @@ public:
     return ret;
   }
 
+  std::vector<std::string>
+  extract_new_clients()
+  {
+    std::vector<std::string> ret;
+    {
+      std::lock_guard guard{new_clients_mutex_};
+      ret = std::move(new_clients_);
+    }
+    return ret;
+  }
+
   void
   wait_for_results_available(std::chrono::nanoseconds timeout)
   {
@@ -243,7 +261,10 @@ private:
   using PubGidToResultsMap = std::unordered_map<std::string, ServerResults>;
   PubGidToResultsMap pub_gid_to_results_map_;
   mutable std::mutex pub_gid_to_results_map_mutex_;
-  mutable std::condition_variable pub_gid_to_results_map_cv_;
+  std::condition_variable pub_gid_to_results_map_cv_;
+
+  std::vector<std::string> new_clients_;
+  mutable std::mutex new_clients_mutex_;
 
   rclcpp::Subscription<perf_tool_msgs::msg::Bytes>::SharedPtr sub_;
   rclcpp::Serialization<perf_tool_msgs::msg::Bytes> deserializer_;
@@ -515,6 +536,7 @@ PYBIND11_MODULE(perf_tool_impl, m) {
   pybind11::class_<ServerNode, std::shared_ptr<ServerNode>>(
     m, "ServerNode")
     .def("get_topic_name", &ServerNode::get_topic_name)
+    .def("extract_new_clients", &ServerNode::extract_new_clients)
     .def("extract_results", &ServerNode::extract_results)
     .def("wait_for_results_available", &ServerNode::wait_for_results_available);
   pybind11::class_<ClientRunner>(
