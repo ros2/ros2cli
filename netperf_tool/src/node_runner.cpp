@@ -23,7 +23,7 @@
 
 #include "node_runner.hpp"
 
-namespace perf_tool
+namespace netperf_tool
 {
 
 rclcpp::Context::SharedPtr
@@ -65,4 +65,4 @@ ClientRunner::join()
     node_->sync_with_server(exec_);
   }
 }
-}  // namespace perf_tool
+}  // namespace netperf_tool

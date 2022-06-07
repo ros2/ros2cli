@@ -12,13 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import perf_tool
+import netperf_tool
 
-from ros2perf.api import add_qos_arguments_to_parser
-from ros2perf.api import get_qos_profile_from_args
-from ros2perf.api import print_results
-from ros2perf.api import print_stats_header
-from ros2perf.verb import VerbExtension
+from ros2netperf.api import add_qos_arguments_to_parser
+from ros2netperf.api import get_qos_profile_from_args
+from ros2netperf.api import print_results
+from ros2netperf.api import print_stats_header
+from ros2netperf.verb import VerbExtension
 
 
 class ServerVerb(VerbExtension):
@@ -35,7 +35,7 @@ class ServerVerb(VerbExtension):
     def main(self, *, args):
         qos_profile = get_qos_profile_from_args(args)
 
-        runner = perf_tool.ServerRunner(qos=qos_profile)
+        runner = netperf_tool.ServerRunner(qos=qos_profile)
         try:
             with runner as node:
                 print('---------------------------------------------------------')

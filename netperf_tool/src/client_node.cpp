@@ -24,8 +24,8 @@
 #include <vector>
 
 
-#include "perf_tool_msgs/msg/bytes.hpp"
-#include "perf_tool_msgs/srv/get_results.hpp"
+#include "netperf_tool_interfaces/msg/bytes.hpp"
+#include "netperf_tool_interfaces/srv/get_results.hpp"
 
 #include "rclcpp/executors.hpp"
 #include "rclcpp/node.hpp"
@@ -34,7 +34,7 @@
 
 #include "utils.hpp"
 
-namespace perf_tool
+namespace netperf_tool
 {
 
 using namespace std::chrono_literals;
@@ -44,14 +44,14 @@ ClientNode::ClientNode(
   std::chrono::nanoseconds target_pub_period,
   const rclcpp::QoS & pub_qos,
   const rclcpp::NodeOptions & options)
-: Node("client", "perf_tool", options),
+: Node("client", "netperf_tool", options),
   array_size_{array_size},
   target_pub_period_{target_pub_period}
 {
-  pub_ = this->create_publisher<perf_tool_msgs::msg::Bytes>("test_topic", pub_qos);
+  pub_ = this->create_publisher<netperf_tool_interfaces::msg::Bytes>("test_topic", pub_qos);
   // always keep the vector preallocated, to avoid delays when the timer is triggered
   bytes_.resize(array_size);
-  client_ = this->create_client<perf_tool_msgs::srv::GetResults>("get_results");
+  client_ = this->create_client<netperf_tool_interfaces::srv::GetResults>("get_results");
 }
 
 bool
@@ -99,7 +99,7 @@ ClientNode::sync_with_server(rclcpp::Executor & exec)
       this->get_logger(), "Perf server is not available anymore, cannot get the results back");
     return;
   }
-  auto req = std::make_shared<perf_tool_msgs::srv::GetResults::Request>();
+  auto req = std::make_shared<netperf_tool_interfaces::srv::GetResults::Request>();
   req->publisher_gid = this->get_stringified_pub_gid();
   req->messages_total = this->collected_info_.message_ids.size();
   auto future = client_->async_send_request(req);
@@ -138,7 +138,7 @@ ClientNode::get_stringified_pub_gid()
 void
 ClientNode::pub_next_msg()
 {
-  perf_tool_msgs::msg::Bytes msg;
+  netperf_tool_interfaces::msg::Bytes msg;
   rclcpp::SerializedMessage serialized_msg;
   msg.id = next_id;
   auto now = std::chrono::system_clock::now();
@@ -157,4 +157,4 @@ ClientNode::pub_next_msg()
   }
   ++next_id;
 }
-}  // namespace perf_tool
+}  // namespace netperf_tool

@@ -22,15 +22,15 @@
 #include <unordered_map>
 #include <vector>
 
-#include "perf_tool_msgs/msg/bytes.hpp"
-#include "perf_tool_msgs/srv/get_results.hpp"
+#include "netperf_tool_interfaces/msg/bytes.hpp"
+#include "netperf_tool_interfaces/srv/get_results.hpp"
 
 #include "rclcpp/executors.hpp"
 #include "rclcpp/node.hpp"
 #include "rclcpp/serialization.hpp"
 #include "rclcpp/serialized_message.hpp"
 
-namespace perf_tool
+namespace netperf_tool
 {
 struct ClientCollectedInfo
 {
@@ -41,7 +41,7 @@ struct ClientCollectedInfo
 
 struct ClientResults
 {
-  perf_tool_msgs::srv::GetResults::Response statistics;
+  netperf_tool_interfaces::srv::GetResults::Response statistics;
   ClientCollectedInfo collected_info;
 };
 
@@ -83,13 +83,13 @@ private:
   std::vector<unsigned char> bytes_;
   uint64_t next_id{};
   std::shared_ptr<rclcpp::TimerBase> timer_;
-  rclcpp::Publisher<perf_tool_msgs::msg::Bytes>::SharedPtr pub_;
-  rclcpp::Client<perf_tool_msgs::srv::GetResults>::SharedPtr client_;
+  rclcpp::Publisher<netperf_tool_interfaces::msg::Bytes>::SharedPtr pub_;
+  rclcpp::Client<netperf_tool_interfaces::srv::GetResults>::SharedPtr client_;
   ClientCollectedInfo collected_info_;
   mutable std::mutex collected_info_mutex_;
-  rclcpp::Serialization<perf_tool_msgs::msg::Bytes> serializer_;
-  perf_tool_msgs::srv::GetResults::Response::SharedPtr statistics_;
+  rclcpp::Serialization<netperf_tool_interfaces::msg::Bytes> serializer_;
+  netperf_tool_interfaces::srv::GetResults::Response::SharedPtr statistics_;
   std::chrono::nanoseconds target_pub_period_;
 };
-}  // namespace perf_tool
+}  // namespace netperf_tool
 #endif  // CLIENT_NODE_HPP_

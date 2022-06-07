@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(perf_tool_msgs)
+project(netperf_tool_interfaces)
 
 # Default to C++14
 if(NOT CMAKE_CXX_STANDARD)

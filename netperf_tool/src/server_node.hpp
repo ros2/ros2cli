@@ -23,8 +23,8 @@
 #include <unordered_map>
 #include <vector>
 
-#include "perf_tool_msgs/msg/bytes.hpp"
-#include "perf_tool_msgs/srv/get_results.hpp"
+#include "netperf_tool_interfaces/msg/bytes.hpp"
+#include "netperf_tool_interfaces/srv/get_results.hpp"
 
 #include "rclcpp/executors.hpp"
 #include "rclcpp/node.hpp"
@@ -32,7 +32,7 @@
 #include "rclcpp/serialized_message.hpp"
 #include "rclcpp/subscription.hpp"
 
-namespace perf_tool
+namespace netperf_tool
 {
 
 struct ServerCollectedInfo
@@ -45,7 +45,7 @@ struct ServerCollectedInfo
 
 struct ServerResults
 {
-  perf_tool_msgs::srv::GetResults::Response statistics;
+  netperf_tool_interfaces::srv::GetResults::Response statistics;
   ServerCollectedInfo collected_info;
 };
 
@@ -62,8 +62,8 @@ public:
 
   void
   handle_get_results_request(
-    perf_tool_msgs::srv::GetResults::Request::SharedPtr req,
-    perf_tool_msgs::srv::GetResults::Response::SharedPtr rep);
+    netperf_tool_interfaces::srv::GetResults::Request::SharedPtr req,
+    netperf_tool_interfaces::srv::GetResults::Response::SharedPtr rep);
 
   using PubGidToResultsMap = std::unordered_map<std::string, ServerResults>;
 
@@ -97,9 +97,9 @@ private:
   mutable std::mutex notify_mutex_;
   std::condition_variable notify_cv_;
 
-  rclcpp::Subscription<perf_tool_msgs::msg::Bytes>::SharedPtr sub_;
-  rclcpp::Serialization<perf_tool_msgs::msg::Bytes> deserializer_;
+  rclcpp::Subscription<netperf_tool_interfaces::msg::Bytes>::SharedPtr sub_;
+  rclcpp::Serialization<netperf_tool_interfaces::msg::Bytes> deserializer_;
   rclcpp::ServiceBase::SharedPtr srv_;
 };
-}  // namespace perf_tool
+}  // namespace netperf_tool
 #endif  // SERVER_NODE_HPP_

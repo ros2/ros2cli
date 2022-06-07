@@ -21,7 +21,7 @@ from rpyutils import add_dll_directories_from_env
 # to the search path.
 # See https://docs.python.org/3/whatsnew/3.8.html#bpo-36085-whatsnew
 with add_dll_directories_from_env('PATH'):
-    from perf_tool.perf_tool_impl import (
+    from netperf_tool.netperf_tool_impl import (
         ClientRunner as _ClientRunner,
         ServerRunner as _ServerRunner,
     )

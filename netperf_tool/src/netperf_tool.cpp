@@ -20,8 +20,8 @@
 #include <sstream>
 #include <thread>
 
-#include "perf_tool_msgs/msg/bytes.hpp"
-#include "perf_tool_msgs/srv/get_results.hpp"
+#include "netperf_tool_interfaces/msg/bytes.hpp"
+#include "netperf_tool_interfaces/srv/get_results.hpp"
 
 #include "rclcpp/executors.hpp"
 #include "rclcpp/logging.hpp"
@@ -51,17 +51,17 @@
 
 using namespace std::chrono_literals;
 
-PYBIND11_MODULE(perf_tool_impl, m) {
+PYBIND11_MODULE(netperf_tool_impl, m) {
   m.doc() = "Python wrapper of perf tool implementation";
-  using ClientNode = perf_tool::ClientNode;
-  using ServerNode = perf_tool::ServerNode;
-  using ClientRunner = perf_tool::ClientRunner;
-  using ServerRunner = perf_tool::NodeRunner<ServerNode>;
-  using ClientCollectedInfo = perf_tool::ClientCollectedInfo;
-  using ServerCollectedInfo = perf_tool::ServerCollectedInfo;
-  using ClientResults = perf_tool::ClientResults;
-  using ServerResults = perf_tool::ServerResults;
-  using Statistics = perf_tool_msgs::srv::GetResults::Response;
+  using ClientNode = netperf_tool::ClientNode;
+  using ServerNode = netperf_tool::ServerNode;
+  using ClientRunner = netperf_tool::ClientRunner;
+  using ServerRunner = netperf_tool::NodeRunner<ServerNode>;
+  using ClientCollectedInfo = netperf_tool::ClientCollectedInfo;
+  using ServerCollectedInfo = netperf_tool::ServerCollectedInfo;
+  using ClientResults = netperf_tool::ClientResults;
+  using ServerResults = netperf_tool::ServerResults;
+  using Statistics = netperf_tool_interfaces::srv::GetResults::Response;
 
   pybind11::class_<ClientNode, std::shared_ptr<ClientNode>>(
     m, "ClientNode")
@@ -108,7 +108,7 @@ PYBIND11_MODULE(perf_tool_impl, m) {
     m, "ServerResults")
   .def_readwrite("collected_info", &ServerResults::collected_info)
   .def_readwrite("statistics", &ServerResults::statistics);
-  pybind11::class_<perf_tool_msgs::srv::GetResults::Response>(
+  pybind11::class_<netperf_tool_interfaces::srv::GetResults::Response>(
     m, "Statistics")
   .def_readwrite("latency_avg_ms", &Statistics::latency_avg_ms)
   .def_readwrite("latency_stdev_ms", &Statistics::latency_stdev_ms)

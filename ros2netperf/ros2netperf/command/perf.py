@@ -23,7 +23,7 @@ class PerfCommand(CommandExtension):
         self._subparser = parser
         # add arguments and sub-commands of verbs
         add_subparsers_on_demand(
-            parser, cli_name, '_verb', 'ros2perf.verb', required=False)
+            parser, cli_name, '_verb', 'ros2netperf.verb', required=False)
 
     def main(self, *, parser, args):
         if not hasattr(args, '_verb'):

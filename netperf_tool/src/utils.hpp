@@ -19,7 +19,7 @@
 
 #include "rmw/types.h"
 
-namespace perf_tool
+namespace netperf_tool
 {
 std::string
 stringify_gid(const rmw_gid_t & rmw_gid);

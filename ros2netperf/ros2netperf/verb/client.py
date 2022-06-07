@@ -12,16 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import perf_tool
+import netperf_tool
 
-from ros2perf.api import add_qos_arguments_to_parser
-from ros2perf.api import get_qos_profile_from_args
-from ros2perf.api import nonnegative_float
-from ros2perf.api import positive_float
-from ros2perf.api import positive_int
-from ros2perf.api import print_results
-from ros2perf.api import print_stats_header
-from ros2perf.verb import VerbExtension
+from ros2netperf.api import add_qos_arguments_to_parser
+from ros2netperf.api import get_qos_profile_from_args
+from ros2netperf.api import nonnegative_float
+from ros2netperf.api import positive_float
+from ros2netperf.api import positive_int
+from ros2netperf.api import print_results
+from ros2netperf.api import print_stats_header
+from ros2netperf.verb import VerbExtension
 
 
 class ClientVerb(VerbExtension):
@@ -56,7 +56,7 @@ class ClientVerb(VerbExtension):
         # pub_period[sec] = 8[b/Byte] * message_size[Byte] * 1[M]/10^6 / target_bandwidth[Mb/s]
         pub_period = 8 * args.message_size / 1e6 / args.target_bw
 
-        runner = perf_tool.ClientRunner(
+        runner = netperf_tool.ClientRunner(
             experiment_duration_s=args.duration,
             qos=qos_profile,
             message_size_bytes=args.message_size,

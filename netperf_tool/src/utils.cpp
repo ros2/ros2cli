@@ -18,7 +18,7 @@
 #include <sstream>
 #include <string>
 
-namespace perf_tool
+namespace netperf_tool
 {
 
 std::string
@@ -35,4 +35,4 @@ stringify_gid(const rmw_gid_t & rmw_gid)
   oss << std::setw(2) << std::setfill('0') << static_cast<int>(*last_elem_it);
   return oss.str();
 }
-}  // namespace perf_tool
+}  // namespace netperf_tool

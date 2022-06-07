@@ -1,7 +1,7 @@
 from setuptools import find_packages
 from setuptools import setup
 
-package_name = 'ros2perf'
+package_name = 'ros2netperf'
 
 setup(
     name=package_name,
@@ -34,14 +34,14 @@ The package provides the perf command for the ROS 2 command line tools.""",
     tests_require=['pytest'],
     entry_points={
         'ros2cli.command': [
-            'perf = ros2perf.command.perf:PerfCommand',
+            'perf = ros2netperf.command.perf:PerfCommand',
         ],
         'ros2cli.extension_point': [
-            'ros2perf.verb = ros2perf.verb:VerbExtension',
+            'ros2netperf.verb = ros2netperf.verb:VerbExtension',
         ],
-        'ros2perf.verb': [
-            'client = ros2perf.verb.client:ClientVerb',
-            'server = ros2perf.verb.server:ServerVerb',
+        'ros2netperf.verb': [
+            'client = ros2netperf.verb.client:ClientVerb',
+            'server = ros2netperf.verb.server:ServerVerb',
         ],
     }
 )

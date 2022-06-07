@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="2">
-  <name>ros2perf</name>
+  <name>ros2netperf</name>
   <version>0.19.0</version>
   <description>
     The perf command for ROS 2 command line tools.
@@ -16,8 +16,8 @@
   <author email="ivanpauno@ekumenlabs.com">Ivan Paunovic</author>
 
   <depend>ros2cli</depend>
-  <depend>perf_tool</depend>
-  <depend>perf_tool_msgs</depend>
+  <depend>netperf_tool</depend>
+  <depend>netperf_tool_interfaces</depend>
 
   <exec_depend>python3-numpy</exec_depend>
   <exec_depend>ros2topic</exec_depend>

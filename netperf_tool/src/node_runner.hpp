@@ -27,7 +27,7 @@
 #include "client_node.hpp"
 #include "server_node.hpp"
 
-namespace perf_tool
+namespace netperf_tool
 {
 
 rclcpp::Context::SharedPtr
@@ -57,8 +57,6 @@ public:
   void
   start(std::chrono::nanoseconds duration)
   {
-    using s = std::chrono_literals::s;
-    using ns = std::chrono_literals::ns;
     running_thread_ = std::thread(
       [
         this, duration, stop_token = thread_stop_promise_.get_future()]()
@@ -66,8 +64,8 @@ public:
         auto start = std::chrono::system_clock::now();
         auto now = start;
         while (
-          (duration < 0ns || now <= start + duration) &&
-          stop_token.wait_for(0s) != std::future_status::ready &&
+          (duration < std::chrono::nanoseconds{0} || now <= start + duration) &&
+          stop_token.wait_for(std::chrono::seconds{0}) != std::future_status::ready &&
           context_->is_valid())
         {
           exec_.spin_once(start + duration - now);
@@ -112,6 +110,6 @@ public:
   void start(std::chrono::nanoseconds duration);
   void join();
 };
-}  // namespace perf_tool
+}  // namespace netperf_tool
 
 #endif  // NODE_RUNNER_HPP_

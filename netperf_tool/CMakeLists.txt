@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(perf_tool)
+project(netperf_tool)
 
 # Default to C++14
 if(NOT CMAKE_CXX_STANDARD)
@@ -28,7 +28,7 @@ find_package(ament_cmake_python REQUIRED)
 _ament_cmake_python_get_python_install_dir()
 find_package(ament_cmake_ros REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(perf_tool_msgs REQUIRED)
+find_package(netperf_tool_interfaces REQUIRED)
 
 # Find python before pybind11
 find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
@@ -38,21 +38,21 @@ find_package(pybind11 REQUIRED)
 
 ament_python_install_package(${PROJECT_NAME})
 
-pybind11_add_module(perf_tool_impl SHARED
+pybind11_add_module(netperf_tool_impl SHARED
   src/client_node.cpp
   src/node_runner.cpp
-  src/perf_tool.cpp
+  src/netperf_tool.cpp
   src/server_node.cpp
   src/utils.cpp
 )
-target_include_directories(perf_tool_impl PRIVATE src)
-target_link_libraries(perf_tool_impl PRIVATE
+target_include_directories(netperf_tool_impl PRIVATE src)
+target_link_libraries(netperf_tool_impl PRIVATE
     rclcpp::rclcpp
-    ${perf_tool_msgs_TARGETS})
+    ${netperf_tool_interfaces_TARGETS})
 
 # Install cython modules as sub-modules of the project
 install(
-  TARGETS perf_tool_impl
+  TARGETS netperf_tool_impl
   DESTINATION "${PYTHON_INSTALL_DIR}/${PROJECT_NAME}"
 )
 

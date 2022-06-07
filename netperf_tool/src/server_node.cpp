@@ -28,18 +28,18 @@
 
 #include "utils.hpp"
 
-namespace perf_tool
+namespace netperf_tool
 {
 
 ServerNode::ServerNode(
   const rclcpp::QoS & sub_qos,
   const rclcpp::NodeOptions & options)
-: Node("server", "perf_tool", options)
+: Node("server", "netperf_tool", options)
 {
-  sub_ = this->create_subscription<perf_tool_msgs::msg::Bytes>(
+  sub_ = this->create_subscription<netperf_tool_interfaces::msg::Bytes>(
     "test_topic", sub_qos,
     std::bind(&ServerNode::handle_msg, this, std::placeholders::_1, std::placeholders::_2));
-  srv_ = this->create_service<perf_tool_msgs::srv::GetResults>(
+  srv_ = this->create_service<netperf_tool_interfaces::srv::GetResults>(
     "get_results",
     std::bind(
       &ServerNode::handle_get_results_request,
@@ -56,7 +56,7 @@ ServerNode::handle_msg(
   auto rec_timestamp = std::chrono::system_clock::now();
   std::chrono::nanoseconds latency;
   size_t received_bytes = serialized_msg.size();
-  perf_tool_msgs::msg::Bytes msg;
+  netperf_tool_interfaces::msg::Bytes msg;
   deserializer_.deserialize_message(&serialized_msg, &msg);
   const auto & rmw_msg_info = msg_info.get_rmw_message_info();
   if (rmw_msg_info.source_timestamp != 0 && rmw_msg_info.received_timestamp != 0) {
@@ -109,8 +109,8 @@ ServerNode::handle_msg(
 
 void
 ServerNode::handle_get_results_request(
-  perf_tool_msgs::srv::GetResults::Request::SharedPtr req,
-  perf_tool_msgs::srv::GetResults::Response::SharedPtr rep)
+  netperf_tool_interfaces::srv::GetResults::Request::SharedPtr req,
+  netperf_tool_interfaces::srv::GetResults::Response::SharedPtr rep)
 {
   ServerCollectedInfo collected_info;
   {
@@ -212,4 +212,4 @@ ServerNode::get_topic_name()
 void
 ServerNode::finalize_work(rclcpp::Executor &)
 {}
-}  // namespace perf_tool
+}  // namespace netperf_tool
