@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef PERF_TOOL__CLIENT_NODE_HPP_
-#define PERF_TOOL__CLIENT_NODE_HPP_
+#ifndef CLIENT_NODE_HPP_
+#define CLIENT_NODE_HPP_
 
 #include <chrono>
 #include <memory>
@@ -92,4 +92,4 @@ private:
   std::chrono::nanoseconds target_pub_period_;
 };
 }  // namespace perf_tool
-#endif  // PERF_TOOL__CLIENT_NODE_HPP_
+#endif  // CLIENT_NODE_HPP_

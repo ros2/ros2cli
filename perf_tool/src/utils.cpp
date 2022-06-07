@@ -28,7 +28,7 @@ stringify_gid(const rmw_gid_t & rmw_gid)
   oss << std::hex;
   auto it = std::begin(rmw_gid.data);
   const auto last_elem_it = std::end(rmw_gid.data) - 1;
-  for(; it != last_elem_it; ++it) {
+  for (; it != last_elem_it; ++it) {
     // need to cast to integer type, to avoid trying to use utf8 encoding
     oss << std::setw(2) << std::setfill('0') << static_cast<int>(*it) << ".";
   }

@@ -24,12 +24,8 @@
   <depend>rclcpp</depend>
   <depend>rpyutils</depend>
 
-  <test_depend>ament_cppcheck</test_depend>
-  <test_depend>ament_cpplint</test_depend>
-  <test_depend>ament_copyright</test_depend>
   <test_depend>ament_lint_auto</test_depend>
-  <test_depend>ament_uncrustify</test_depend>
-  <test_depend>ament_xmllint</test_depend>
+  <test_depend>ament_lint_common</test_depend>
 
   <export>
     <build_type>ament_cmake</build_type>

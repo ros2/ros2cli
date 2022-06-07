@@ -21,6 +21,7 @@
 #include <mutex>
 #include <string>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 #include "rclcpp/logging.hpp"
@@ -40,7 +41,11 @@ ServerNode::ServerNode(
     std::bind(&ServerNode::handle_msg, this, std::placeholders::_1, std::placeholders::_2));
   srv_ = this->create_service<perf_tool_msgs::srv::GetResults>(
     "get_results",
-    std::bind(&ServerNode::handle_get_results_request, this, std::placeholders::_1, std::placeholders::_2));
+    std::bind(
+      &ServerNode::handle_get_results_request,
+      this,
+      std::placeholders::_1,
+      std::placeholders::_2));
 }
 
 void
@@ -64,7 +69,7 @@ ServerNode::handle_msg(
       std::chrono::nanoseconds{rmw_msg_info.source_timestamp}};
     rec_timestamp =
       std::chrono::time_point<std::chrono::system_clock>{
-        std::chrono::nanoseconds{rmw_msg_info.received_timestamp}};
+      std::chrono::nanoseconds{rmw_msg_info.received_timestamp}};
     latency = rec_timestamp - pub_timestamp;
   } else {
     // TODO(ivanpauno): Maybe it's worth to always calculate this latency (?)
@@ -73,9 +78,9 @@ ServerNode::handle_msg(
       this->get_logger(),
       "either source or received timestamp are not supported,"
       "using timestamps added to the message to calculate latency");
-    auto pub_timestamp = 
+    auto pub_timestamp =
       std::chrono::time_point<std::chrono::system_clock>{
-        std::chrono::nanoseconds{msg.timestamp}};
+      std::chrono::nanoseconds{msg.timestamp}};
     latency = rec_timestamp - pub_timestamp;
   }
   bool emplaced{false};
@@ -142,7 +147,8 @@ ServerNode::handle_get_results_request(
   rep->latency_max_ms = static_cast<double>(latency_min_max_its.second->count()) / 1e6;
 
   // calculate total bytes transferred
-  rep->total_bytes = std::accumulate(collected_info.message_sizes.begin(), collected_info.message_sizes.end(), 0);
+  rep->total_bytes = std::accumulate(
+    collected_info.message_sizes.begin(), collected_info.message_sizes.end(), 0);
 
   // messages lost and lost
   rep->messages_total = req->messages_total;

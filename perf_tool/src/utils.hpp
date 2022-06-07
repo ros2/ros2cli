@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef PERF_TOOL__UTILS_HPP_
-#define PERF_TOOL__UTILS_HPP_
+#ifndef UTILS_HPP_
+#define UTILS_HPP_
 
 #include <string>
 
@@ -25,4 +25,4 @@ std::string
 stringify_gid(const rmw_gid_t & rmw_gid);
 }
 
-#endif  // PERF_TOOL__UTILS_HPP_
+#endif  // UTILS_HPP_

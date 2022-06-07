@@ -53,63 +53,69 @@ using namespace std::chrono_literals;
 
 PYBIND11_MODULE(perf_tool_impl, m) {
   m.doc() = "Python wrapper of perf tool implementation";
-  using namespace perf_tool;
+  using ClientNode = perf_tool::ClientNode;
+  using ServerNode = perf_tool::ServerNode;
+  using ClientRunner = perf_tool::ClientRunner;
+  using ServerRunner = perf_tool::NodeRunner<ServerNode>;
+  using ClientCollectedInfo = perf_tool::ClientCollectedInfo;
+  using ServerCollectedInfo = perf_tool::ServerCollectedInfo;
+  using ClientResults = perf_tool::ClientResults;
+  using ServerResults = perf_tool::ServerResults;
+  using Statistics = perf_tool_msgs::srv::GetResults::Response;
 
   pybind11::class_<ClientNode, std::shared_ptr<ClientNode>>(
     m, "ClientNode")
-    .def("get_topic_name", &ClientNode::get_topic_name)
-    .def("get_stringified_pub_gid", &ClientNode::get_stringified_pub_gid)
-    .def("extract_results", &ClientNode::extract_results);
+  .def("get_topic_name", &ClientNode::get_topic_name)
+  .def("get_stringified_pub_gid", &ClientNode::get_stringified_pub_gid)
+  .def("extract_results", &ClientNode::extract_results);
   pybind11::class_<ServerNode, std::shared_ptr<ServerNode>>(
     m, "ServerNode")
-    .def("get_topic_name", &ServerNode::get_topic_name)
-    .def("extract_new_clients", &ServerNode::extract_new_clients)
-    .def("extract_results", &ServerNode::extract_results)
-    .def("wait_for_results_available", &ServerNode::wait_for_results_available);
+  .def("get_topic_name", &ServerNode::get_topic_name)
+  .def("extract_new_clients", &ServerNode::extract_new_clients)
+  .def("extract_results", &ServerNode::extract_results)
+  .def("wait_for_results_available", &ServerNode::wait_for_results_available);
   pybind11::class_<ClientRunner>(
     m, "ClientRunner")
-    .def(pybind11::init<rmw_qos_profile_t, size_t, std::chrono::nanoseconds>())
-    .def("start", &ClientRunner::start)
-    .def("stop", &ClientRunner::stop)
-    .def("join", &ClientRunner::join)
-    .def("get_node", &ClientRunner::get_node);
-  using ServerRunner = NodeRunner<ServerNode>;
+  .def(pybind11::init<rmw_qos_profile_t, size_t, std::chrono::nanoseconds>())
+  .def("start", &ClientRunner::start)
+  .def("stop", &ClientRunner::stop)
+  .def("join", &ClientRunner::join)
+  .def("get_node", &ClientRunner::get_node);
   pybind11::class_<ServerRunner>(
     m, "ServerRunner")
-    .def(pybind11::init<rmw_qos_profile_t>())
-    .def("start", &ServerRunner::start)
-    .def("stop", &ServerRunner::stop)
-    .def("join", &ServerRunner::join)
-    .def("get_node", &ServerRunner::get_node);
+  .def(pybind11::init<rmw_qos_profile_t>())
+  .def("start", &ServerRunner::start)
+  .def("stop", &ServerRunner::stop)
+  .def("join", &ServerRunner::join)
+  .def("get_node", &ServerRunner::get_node);
   pybind11::class_<ClientCollectedInfo>(
     m, "ClientCollectedInfo")
-    .def_readwrite("message_ids", &ClientCollectedInfo::message_ids)
-    .def_readwrite(
-      "message_published_times",
-      &ClientCollectedInfo::message_published_times)
-    .def_readwrite("message_sizes", &ClientCollectedInfo::message_sizes);
+  .def_readwrite("message_ids", &ClientCollectedInfo::message_ids)
+  .def_readwrite(
+    "message_published_times",
+    &ClientCollectedInfo::message_published_times)
+  .def_readwrite("message_sizes", &ClientCollectedInfo::message_sizes);
   pybind11::class_<ServerCollectedInfo>(
     m, "ServerCollectedInfo")
-    .def_readwrite("message_ids", &ServerCollectedInfo::message_ids)
-    .def_readwrite("message_latencies", &ServerCollectedInfo::message_latencies)
-    .def_readwrite("message_sizes", &ServerCollectedInfo::message_sizes);
+  .def_readwrite("message_ids", &ServerCollectedInfo::message_ids)
+  .def_readwrite("message_latencies", &ServerCollectedInfo::message_latencies)
+  .def_readwrite("message_sizes", &ServerCollectedInfo::message_sizes);
   pybind11::class_<ClientResults>(
     m, "ClientResults")
-    .def_readwrite("collected_info", &ClientResults::collected_info)
-    .def_readwrite("statistics", &ClientResults::statistics);
+  .def_readwrite("collected_info", &ClientResults::collected_info)
+  .def_readwrite("statistics", &ClientResults::statistics);
   pybind11::class_<ServerResults>(
     m, "ServerResults")
-    .def_readwrite("collected_info", &ServerResults::collected_info)
-    .def_readwrite("statistics", &ServerResults::statistics);
-  using Statistics = perf_tool_msgs::srv::GetResults::Response;
+  .def_readwrite("collected_info", &ServerResults::collected_info)
+  .def_readwrite("statistics", &ServerResults::statistics);
   pybind11::class_<perf_tool_msgs::srv::GetResults::Response>(
     m, "Statistics")
-    .def_readwrite("latency_avg_ms", &Statistics::latency_avg_ms)
-    .def_readwrite("latency_stdev_ms", &Statistics::latency_stdev_ms)
-    .def_readwrite("latency_min_ms", &Statistics::latency_min_ms)
-    .def_readwrite("latency_max_ms", &Statistics::latency_max_ms)
-    .def_readwrite("total_bytes", &Statistics::total_bytes)
-    .def_readwrite("experiment_duration_ns", &Statistics::experiment_duration_ns)
-    .def_readwrite("messages_lost", &Statistics::messages_lost)
-    .def_readwrite("messages_total", &Statistics::messages_total);
+  .def_readwrite("latency_avg_ms", &Statistics::latency_avg_ms)
+  .def_readwrite("latency_stdev_ms", &Statistics::latency_stdev_ms)
+  .def_readwrite("latency_min_ms", &Statistics::latency_min_ms)
+  .def_readwrite("latency_max_ms", &Statistics::latency_max_ms)
+  .def_readwrite("total_bytes", &Statistics::total_bytes)
+  .def_readwrite("experiment_duration_ns", &Statistics::experiment_duration_ns)
+  .def_readwrite("messages_lost", &Statistics::messages_lost)
+  .def_readwrite("messages_total", &Statistics::messages_total);
 }

@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef PERF_TOOL__SERVER_NODE_HPP_
-#define PERF_TOOL__SERVER_NODE_HPP_
+#ifndef SERVER_NODE_HPP_
+#define SERVER_NODE_HPP_
 
 #include <chrono>
 #include <condition_variable>
@@ -102,4 +102,4 @@ private:
   rclcpp::ServiceBase::SharedPtr srv_;
 };
 }  // namespace perf_tool
-#endif  // PERF_TOOL__SERVER_NODE_HPP_
+#endif  // SERVER_NODE_HPP_

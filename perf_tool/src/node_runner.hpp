@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef PERF_TOOL__NODE_RUNNER_HPP_
-#define PERF_TOOL__NODE_RUNNER_HPP_
+#ifndef NODE_RUNNER_HPP_
+#define NODE_RUNNER_HPP_
 
 #include <chrono>
 #include <future>
@@ -37,9 +37,10 @@ rclcpp::ExecutorOptions
 executor_options_with_context(rclcpp::Context::SharedPtr context);
 
 template<typename NodeT>
-class NodeRunner {
+class NodeRunner
+{
 public:
-  template<typename... NodeArgs>
+  template<typename ... NodeArgs>
   NodeRunner(
     rmw_qos_profile_t rmw_qos,
     NodeArgs... args)
@@ -49,16 +50,18 @@ public:
     rclcpp::NodeOptions no;
     no.context(context_);
     rclcpp::QoS pub_qos{{rmw_qos.history, rmw_qos.depth}, rmw_qos};
-    node_ = std::make_shared<NodeT>(args... , pub_qos, no);
+    node_ = std::make_shared<NodeT>(args ..., pub_qos, no);
     exec_.add_node(node_);
   }
 
   void
   start(std::chrono::nanoseconds duration)
   {
-    using namespace ::std::chrono_literals;
-    running_thread_ = std::thread([
-      this, duration, stop_token = thread_stop_promise_.get_future()]()
+    using s = std::chrono_literals::s;
+    using ns = std::chrono_literals::ns;
+    running_thread_ = std::thread(
+      [
+        this, duration, stop_token = thread_stop_promise_.get_future()]()
       {
         auto start = std::chrono::system_clock::now();
         auto now = start;
@@ -93,6 +96,7 @@ public:
     }
     return node_;
   }
+
 protected:
   rclcpp::Context::SharedPtr context_;
   std::shared_ptr<NodeT> node_;
@@ -110,4 +114,4 @@ public:
 };
 }  // namespace perf_tool
 
-#endif  // PERF_TOOL__NODE_RUNNER_HPP_
+#endif  // NODE_RUNNER_HPP_

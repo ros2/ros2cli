@@ -20,6 +20,7 @@
 #include <mutex>
 #include <string>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 
@@ -67,7 +68,7 @@ ClientNode::wait_for_server(std::chrono::nanoseconds timeout)
   RCLCPP_INFO_STREAM(
     this->get_logger(),
     "perf server not available after waiting ["
-    << std::chrono::duration_cast<std::chrono::seconds>(timeout).count() << "s]" << std::endl);
+      << std::chrono::duration_cast<std::chrono::seconds>(timeout).count() << "s]" << std::endl);
   return false;
 }
 
@@ -94,7 +95,8 @@ ClientNode::sync_with_server(rclcpp::Executor & exec)
     RCLCPP_WARN(this->get_logger(), "Some messages were not acked by the perf server ...");
   }
   if (!client_->service_is_ready()) {
-    RCLCPP_ERROR(this->get_logger(), "Perf server is not available anymore, cannot get the results back");
+    RCLCPP_ERROR(
+      this->get_logger(), "Perf server is not available anymore, cannot get the results back");
     return;
   }
   auto req = std::make_shared<perf_tool_msgs::srv::GetResults::Request>();

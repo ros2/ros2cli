@@ -13,9 +13,9 @@
 # limitations under the License.
 
 from inspect import isclass
-from rpyutils import add_dll_directories_from_env
 
 import rclpy.qos
+from rpyutils import add_dll_directories_from_env
 
 # Since Python 3.8, on Windows we should ensure DLL directories are explicitly added
 # to the search path.
@@ -51,7 +51,7 @@ class RunnerImpl:
     def wait_for_experiment_to_complete(self):
         self._impl.join()
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(self, _, _1, _2):
         self._impl.stop()
         self._impl.join()
 
