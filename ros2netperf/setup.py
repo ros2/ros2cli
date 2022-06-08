@@ -27,14 +27,14 @@ setup(
         'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python',
     ],
-    description='The perf command for ROS 2 command line tools.',
+    description='The netperf command for ROS 2 command line tools.',
     long_description="""\
-The package provides the perf command for the ROS 2 command line tools.""",
+The package provides the netperf command for the ROS 2 command line tools.""",
     license='Apache License, Version 2.0',
     tests_require=['pytest'],
     entry_points={
         'ros2cli.command': [
-            'perf = ros2netperf.command.perf:PerfCommand',
+            'netperf = ros2netperf.command.netperf:NetperfCommand',
         ],
         'ros2cli.extension_point': [
             'ros2netperf.verb = ros2netperf.verb:VerbExtension',

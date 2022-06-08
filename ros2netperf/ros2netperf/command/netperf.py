@@ -16,7 +16,7 @@ from ros2cli.command import add_subparsers_on_demand
 from ros2cli.command import CommandExtension
 
 
-class PerfCommand(CommandExtension):
+class NetperfCommand(CommandExtension):
     """Tool to run minimal performance related tests."""
 
     def add_arguments(self, parser, cli_name):

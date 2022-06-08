@@ -22,7 +22,7 @@ from ros2netperf.verb import VerbExtension
 
 
 class ServerVerb(VerbExtension):
-    """Run server side of ros2 performance tester."""
+    """Run server side of ros2 network performance tester."""
 
     def __init__(self):
         self.next_client_id_ = 0

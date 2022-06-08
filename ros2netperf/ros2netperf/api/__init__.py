@@ -103,7 +103,7 @@ def print_stats_header():
 
 def print_results(stats, *, id):
     total_MB = stats.total_bytes / 1024 / 1024
-    bw = float(total_MB) * 1e9 / float(stats.experiment_duration_ns)
+    bw = float(stats.total_bytes) * 8. * 1e3 / float(stats.experiment_duration_ns)
     lost_pct = 100 * float(stats.messages_lost) / float(stats.messages_total)
     id_str = '' if id is None else f'[ {id}]\t'
     print(

@@ -18,7 +18,7 @@ from ros2cli.plugin_system import satisfies_version
 
 class VerbExtension:
     """
-    The extension point for 'perf' verb extensions.
+    The extension point for 'netperf' verb extensions.
 
     The following properties must be defined:
     * `NAME` (will be set to the entry point name)

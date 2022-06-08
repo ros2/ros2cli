@@ -25,7 +25,7 @@ from ros2netperf.verb import VerbExtension
 
 
 class ClientVerb(VerbExtension):
-    """Run client side of ros2 performace tester."""
+    """Run client side of ros2 network performace tester."""
 
     def add_arguments(self, parser, cli_name):
         parser.add_argument(
