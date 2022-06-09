@@ -83,15 +83,13 @@ public:
   pub_next_msg();
 
 private:
-  size_t array_size_;
-  std::vector<unsigned char> bytes_;
-  uint64_t next_id{};
+  netperf_tool_interfaces::msg::Bytes msg_to_publish_;
+  size_t serialized_msg_size_;
   std::shared_ptr<rclcpp::TimerBase> timer_;
   rclcpp::Publisher<netperf_tool_interfaces::msg::Bytes>::SharedPtr pub_;
   rclcpp::Client<netperf_tool_interfaces::srv::GetResults>::SharedPtr client_;
   ClientCollectedInfo collected_info_;
   mutable std::mutex collected_info_mutex_;
-  rclcpp::Serialization<netperf_tool_interfaces::msg::Bytes> serializer_;
   netperf_tool_interfaces::srv::GetResults::Response::SharedPtr statistics_;
   std::chrono::nanoseconds target_pub_period_;
   std::chrono::nanoseconds server_timeout_;

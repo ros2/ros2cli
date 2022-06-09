@@ -45,13 +45,17 @@ ClientNode::ClientNode(
   std::chrono::nanoseconds target_pub_period,
   std::chrono::nanoseconds server_timeout)
 : Node("client", "netperf_tool", options),
-  array_size_{array_size},
   target_pub_period_{target_pub_period},
   server_timeout_{server_timeout}
 {
   pub_ = this->create_publisher<netperf_tool_interfaces::msg::Bytes>("test_topic", pub_qos);
-  // always keep the vector preallocated, to avoid delays when the timer is triggered
-  bytes_.resize(array_size);
+  // always keep a message with the data preallocated
+  msg_to_publish_.data.resize(array_size);
+  msg_to_publish_.id = 0;
+  rclcpp::SerializedMessage serialized_msg;
+  rclcpp::Serialization<netperf_tool_interfaces::msg::Bytes> serializer;
+  serializer.serialize_message(&msg_to_publish_, &serialized_msg);
+  serialized_msg_size_ = serialized_msg.size();
   client_ = this->create_client<netperf_tool_interfaces::srv::GetResults>("get_results");
 }
 
@@ -127,23 +131,16 @@ ClientNode::get_stringified_pub_gid()
 void
 ClientNode::pub_next_msg()
 {
-  netperf_tool_interfaces::msg::Bytes msg;
-  rclcpp::SerializedMessage serialized_msg;
-  msg.id = next_id;
   auto now = std::chrono::system_clock::now();
-  msg.timestamp = now.time_since_epoch().count();
-  msg.data = std::move(bytes_);
-  serializer_.serialize_message(&msg, &serialized_msg);
-  auto sent_bytes = serialized_msg.size();
-  pub_->publish(msg);
+  msg_to_publish_.timestamp = now.time_since_epoch().count();
+  pub_->publish(msg_to_publish_);
   // always keep the vector preallocated, to avoid delays when the timer is triggered
-  bytes_.resize(array_size_);
   {
     std::lock_guard guard{collected_info_mutex_};
-    collected_info_.message_ids.emplace_back(msg.id);
+    collected_info_.message_ids.emplace_back(msg_to_publish_.id);
     collected_info_.message_published_times.emplace_back(now);
-    collected_info_.message_sizes.emplace_back(sent_bytes);
+    collected_info_.message_sizes.emplace_back(serialized_msg_size_);
   }
-  ++next_id;
+  ++msg_to_publish_.id;
 }
 }  // namespace netperf_tool
