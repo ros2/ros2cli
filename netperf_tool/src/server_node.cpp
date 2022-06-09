@@ -32,8 +32,8 @@ namespace netperf_tool
 {
 
 ServerNode::ServerNode(
-  const rclcpp::QoS & sub_qos,
-  const rclcpp::NodeOptions & options)
+  const rclcpp::NodeOptions & options,
+  const rclcpp::QoS & sub_qos)
 : Node("server", "netperf_tool", options)
 {
   sub_ = this->create_subscription<netperf_tool_interfaces::msg::Bytes>(

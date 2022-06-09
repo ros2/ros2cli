@@ -39,13 +39,15 @@ namespace netperf_tool
 using namespace std::chrono_literals;
 
 ClientNode::ClientNode(
+  const rclcpp::NodeOptions & options,
+  const rclcpp::QoS & pub_qos,
   size_t array_size,
   std::chrono::nanoseconds target_pub_period,
-  const rclcpp::QoS & pub_qos,
-  const rclcpp::NodeOptions & options)
+  std::chrono::nanoseconds server_timeout)
 : Node("client", "netperf_tool", options),
   array_size_{array_size},
-  target_pub_period_{target_pub_period}
+  target_pub_period_{target_pub_period},
+  server_timeout_{server_timeout}
 {
   pub_ = this->create_publisher<netperf_tool_interfaces::msg::Bytes>("test_topic", pub_qos);
   // always keep the vector preallocated, to avoid delays when the timer is triggered
@@ -54,9 +56,9 @@ ClientNode::ClientNode(
 }
 
 bool
-ClientNode::wait_for_server(std::chrono::nanoseconds timeout)
+ClientNode::wait_for_server()
 {
-  return client_->wait_for_service(timeout);
+  return client_->wait_for_service(server_timeout_);
 }
 
 void
@@ -78,7 +80,7 @@ ClientNode::stop_publishing()
 void
 ClientNode::sync_with_server(rclcpp::Executor & exec)
 {
-  if (!pub_->wait_for_all_acked(5s)) {
+  if (!pub_->wait_for_all_acked(server_timeout_)) {
     RCLCPP_WARN(this->get_logger(), "Some messages were not acknowledged by the netperf server ...");
   }
   if (!client_->service_is_ready()) {

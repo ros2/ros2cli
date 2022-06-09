@@ -49,13 +49,17 @@ class ClientNode : public rclcpp::Node
 {
 public:
   explicit ClientNode(
+    const rclcpp::NodeOptions & options,
+    const rclcpp::QoS & pub_qos,
     size_t array_size,
     std::chrono::nanoseconds target_pub_period,
-    const rclcpp::QoS & pub_qos,
-    const rclcpp::NodeOptions & options = rclcpp::NodeOptions{});
+    std::chrono::nanoseconds server_timeout = std::chrono::nanoseconds{5});
 
   bool
-  wait_for_server(std::chrono::nanoseconds timeout = std::chrono::seconds{5});
+  wait_for_server();
+
+  bool
+  wait_for_server(std::chrono::nanoseconds timeout);
 
   void
   start_publishing();
@@ -90,6 +94,7 @@ private:
   rclcpp::Serialization<netperf_tool_interfaces::msg::Bytes> serializer_;
   netperf_tool_interfaces::srv::GetResults::Response::SharedPtr statistics_;
   std::chrono::nanoseconds target_pub_period_;
+  std::chrono::nanoseconds server_timeout_;
 };
 }  // namespace netperf_tool
 #endif  // CLIENT_NODE_HPP_

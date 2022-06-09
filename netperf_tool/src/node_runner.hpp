@@ -49,8 +49,8 @@ public:
   {
     rclcpp::NodeOptions no;
     no.context(context_);
-    rclcpp::QoS pub_qos{{rmw_qos.history, rmw_qos.depth}, rmw_qos};
-    node_ = std::make_shared<NodeT>(args ..., pub_qos, no);
+    rclcpp::QoS qos{{rmw_qos.history, rmw_qos.depth}, rmw_qos};
+    node_ = std::make_shared<NodeT>(no, qos, args ...);
     exec_.add_node(node_);
   }
 

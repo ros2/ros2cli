@@ -53,8 +53,8 @@ class ServerNode : public rclcpp::Node
 {
 public:
   explicit ServerNode(
-    const rclcpp::QoS & sub_qos,
-    const rclcpp::NodeOptions & options = rclcpp::NodeOptions{});
+    const rclcpp::NodeOptions & options,
+    const rclcpp::QoS & sub_qos);
 
   void handle_msg(
     const rclcpp::SerializedMessage & serialized_msg,
