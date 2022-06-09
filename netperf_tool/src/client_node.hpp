@@ -53,7 +53,7 @@ public:
     const rclcpp::QoS & pub_qos,
     size_t array_size,
     std::chrono::nanoseconds target_pub_period,
-    std::chrono::nanoseconds server_timeout = std::chrono::nanoseconds{5});
+    std::chrono::nanoseconds server_timeout);
 
   bool
   wait_for_server();

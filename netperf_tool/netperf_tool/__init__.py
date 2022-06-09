@@ -63,10 +63,11 @@ class ClientRunner(RunnerImpl):
         experiment_duration_s: float,
         qos: rclpy.qos.QoSProfile,
         message_size_bytes: int,
-        target_pub_period_s: float
+        target_pub_period_s: float,
+        server_timeout_s: float,
     ):
         super().__init__(
-            experiment_duration_s, qos, message_size_bytes, target_pub_period_s)
+            experiment_duration_s, qos, message_size_bytes, target_pub_period_s, server_timeout_s)
 
 
 class ServerRunner(RunnerImpl):

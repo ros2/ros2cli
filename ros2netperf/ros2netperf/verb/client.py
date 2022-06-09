@@ -32,7 +32,7 @@ class ClientVerb(VerbExtension):
             '-s',
             '--message-size',
             help='Message size to be used in bytes',
-            type=positive_int
+            type=positive_int,
         )
         parser.add_argument(
             '-b',
@@ -40,13 +40,19 @@ class ClientVerb(VerbExtension):
             help='Target bandwidth in Mbps. The client will use a publishing rate '
             'to achieve the desired bandwidth utilization. '
             'If zero (0), the client will publish as fast as possible.',
-            type=nonnegative_float
+            type=nonnegative_float,
         )
         parser.add_argument(
             '-d',
             '--duration',
             help='Duration of the experiment to be run in seconds.',
-            type=positive_float
+            type=positive_float,
+        )
+        parser.add_argument(
+            '--server-timeout',
+            help='Timeout to wait for a netperf server to be available, in seconds.',
+            type=positive_float,
+            default=5.0,
         )
         add_qos_arguments_to_parser(parser)
 
@@ -60,7 +66,8 @@ class ClientVerb(VerbExtension):
             experiment_duration_s=args.duration,
             qos=qos_profile,
             message_size_bytes=args.message_size,
-            target_pub_period_s=pub_period)
+            target_pub_period_s=pub_period,
+            server_timeout_s=args.server_timeout)
         try:
             with runner as node:
                 print('---------------------------------------------------------')
