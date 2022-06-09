@@ -91,7 +91,7 @@ void
 ClientNode::sync_with_server(rclcpp::Executor & exec)
 {
   if (!pub_->wait_for_all_acked(5s)) {
-    RCLCPP_WARN(this->get_logger(), "Some messages were not acked by the perf server ...");
+    RCLCPP_WARN(this->get_logger(), "Some messages were not acknowledged by the netperf server ...");
   }
   if (!client_->service_is_ready()) {
     RCLCPP_ERROR(
