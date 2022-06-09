@@ -23,7 +23,6 @@
 #include <utility>
 #include <vector>
 
-
 #include "netperf_tool_interfaces/msg/bytes.hpp"
 #include "netperf_tool_interfaces/srv/get_results.hpp"
 
