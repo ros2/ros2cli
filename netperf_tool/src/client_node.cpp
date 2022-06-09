@@ -56,19 +56,7 @@ ClientNode::ClientNode(
 bool
 ClientNode::wait_for_server(std::chrono::nanoseconds timeout)
 {
-  auto start = std::chrono::system_clock::now();
-  while (std::chrono::system_clock::now() < start + timeout) {
-    if (client_->service_is_ready()) {
-      return true;
-    }
-    RCLCPP_INFO(this->get_logger(), "perf server not available yet, waiting...");
-    std::this_thread::sleep_for(500ms);
-  }
-  RCLCPP_INFO_STREAM(
-    this->get_logger(),
-    "perf server not available after waiting ["
-      << std::chrono::duration_cast<std::chrono::seconds>(timeout).count() << "s]" << std::endl);
-  return false;
+  return client_->wait_for_service(timeout);
 }
 
 void
