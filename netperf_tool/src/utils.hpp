@@ -21,6 +21,7 @@
 
 namespace netperf_tool
 {
+/// Get an string version of the gid.
 std::string
 stringify_gid(const rmw_gid_t & rmw_gid);
 }

@@ -30,16 +30,28 @@
 namespace netperf_tool
 {
 
+/// Create a rclcpp::Context and init it.
 rclcpp::Context::SharedPtr
 create_and_init_context();
 
+/// Return a rclcpp::ExecutorOptions using the provided context.
 rclcpp::ExecutorOptions
 executor_options_with_context(rclcpp::Context::SharedPtr context);
 
+/// Class that allow easily spinning a node in an executor asynchronously.
+/**
+ * \tparam NodeT Class extending rclcpp::Node.
+ */
 template<typename NodeT>
 class NodeRunner
 {
 public:
+  /// Construct.
+  /**
+   * \param[in] rmw_qos Publisher or subscription qos profile, that will be
+   *  passed to the node constructor.
+   * \param[in] args Extra arguments required by NodeT constructor.
+   */
   template<typename ... NodeArgs>
   NodeRunner(
     rmw_qos_profile_t rmw_qos,
@@ -54,6 +66,10 @@ public:
     exec_.add_node(node_);
   }
 
+  /// Start to spin asynchronously.
+  /**
+   * \param[in] duration Total time to spin.
+   */
   void
   start(std::chrono::nanoseconds duration)
   {
@@ -74,11 +90,17 @@ public:
       });
   }
 
+  /// Signal the spinning thread to stop.
+  /**
+   * The spinning thread will not stop immediately.
+   * Use NodeT::join() after to guarantee the spinning thread has finished.
+   */
   void stop()
   {
     thread_stop_promise_.set_value();
   }
 
+  /// Join the spinning thread.
   void join()
   {
     if (running_thread_.joinable()) {
@@ -86,6 +108,7 @@ public:
     }
   }
 
+  /// Get the created NodeT.
   auto
   get_node()
   {
@@ -96,13 +119,19 @@ public:
   }
 
 protected:
+  /// Context used to create the node and executor.
   rclcpp::Context::SharedPtr context_;
+  /// The node being spinned.
   std::shared_ptr<NodeT> node_;
+  /// Spinning thread.
   std::thread running_thread_;
+  /// Promise used to indicate the spinning thread to stop running.
   std::promise<void> thread_stop_promise_;
+  /// Executor used to spin.
   rclcpp::executors::SingleThreadedExecutor exec_;
 };
 
+/// Extension of NodeRunner for ClientNode.
 class ClientRunner : public NodeRunner<ClientNode>
 {
 public:

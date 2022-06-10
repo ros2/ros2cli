@@ -76,8 +76,9 @@ PYBIND11_MODULE(netperf_tool_impl, m) {
   .def("wait_for_results_available", &ServerNode::wait_for_results_available);
   pybind11::class_<ClientRunner>(
     m, "ClientRunner")
-  .def(pybind11::init<
-    rmw_qos_profile_t, size_t, std::chrono::nanoseconds, std::chrono::nanoseconds>())
+  .def(
+    pybind11::init<
+      rmw_qos_profile_t, size_t, std::chrono::nanoseconds, std::chrono::nanoseconds>())
   .def("start", &ClientRunner::start)
   .def("stop", &ClientRunner::stop)
   .def("join", &ClientRunner::join)

@@ -208,8 +208,4 @@ ServerNode::get_topic_name()
 {
   return sub_->get_topic_name();
 }
-
-void
-ServerNode::finalize_work(rclcpp::Executor &)
-{}
 }  // namespace netperf_tool

@@ -34,71 +34,109 @@
 
 namespace netperf_tool
 {
-
+/// Raw data with info about received messages.
 struct ServerCollectedInfo
 {
+  /// Timestamp of when the message was received.
   std::vector<std::chrono::time_point<std::chrono::system_clock>> message_reception_time;
+  /// Message ids.
   std::vector<size_t> message_ids;
+  /// Single trip latency of the message.
   std::vector<std::chrono::nanoseconds> message_latencies;
+  /// Serialized message size.
   std::vector<size_t> message_sizes;
 };
 
+/// The results of an experiment.
 struct ServerResults
 {
+  /// Statistics, calculated when client makes a request.
   netperf_tool_interfaces::srv::GetResults::Response statistics;
+  /// Raw message data collected from the received messages.
   ServerCollectedInfo collected_info;
 };
 
+/// Node used as server side of a ros2 netperf experiment.
 class ServerNode : public rclcpp::Node
 {
 public:
+  /// Construct.
+  /**
+   * \param[in] options Node options used to construct the node.
+   * \param[in] sub_qos Qos profile to create the publisher used in the experiment.
+   */
   explicit ServerNode(
     const rclcpp::NodeOptions & options,
     const rclcpp::QoS & sub_qos);
 
+  /// Callback executed when a message is received.
+  /**
+   * \param[in] serialized_msg Serialized message received from client.
+   * \param[in] msg_info Message info provided by the middleware.
+   */
   void handle_msg(
     const rclcpp::SerializedMessage & serialized_msg,
     const rclcpp::MessageInfo & msg_info);
 
+  /// Callback executed when client requests experiment results.
+  /**
+   * \param[in] req Request made by client.
+   * \param[in] rep Response sent to client.
+   */
   void
   handle_get_results_request(
     netperf_tool_interfaces::srv::GetResults::Request::SharedPtr req,
     netperf_tool_interfaces::srv::GetResults::Response::SharedPtr rep);
 
+  /// Map from publisher gid to results.
   using PubGidToResultsMap = std::unordered_map<std::string, ServerResults>;
 
+  /// Extract available results of experiments.
+  /**
+   * This method will clear the currently stored results, so calling it twice in a row
+   * will result in empty results the second time.
+   */
   PubGidToResultsMap
   extract_results();
 
+  /// Extract publishers gids of new clients found.
+  /**
+   * This method will clear the currently stored gid, so calling it twice in a row
+   * will result in empty results the second time.
+   */
   std::vector<std::string>
   extract_new_clients();
 
+  /// Extract until results of an experiment are available or a new client is found.
   void
   wait_for_results_available(std::chrono::nanoseconds timeout);
 
+  /// Get publisher topic name.
   std::string
   get_topic_name();
 
-  void
-  finalize_work(rclcpp::Executor &);
-
 private:
+  /// Map fro publisher gid to raw message data collected.
   using PubGidToMessageData = std::unordered_map<std::string, ServerCollectedInfo>;
-  // received messages info, agrouped by publisher gid
+  /// Received messages info, agrouped by publisher gid.
   PubGidToMessageData pub_gid_to_collected_info_map_;
+  /// Mutex protecting pub_gid_to_collected_info_map_.
   mutable std::mutex pub_gid_to_collected_info_map_mutex_;
 
-  // when client ask for results, they are stored here together with the raw
+  // When client ask for results, they are stored here together with the raw
   // message info.
   PubGidToResultsMap pub_gid_to_results_map_;
-  // when a new client is detected, it's added here.
+  // When a new client is detected, it's added here.
   std::vector<std::string> new_clients_;
-  // mutex and cv to notify when new clients or results are available.
+  // Mutex and cv to notify when new clients or results are available.
   mutable std::mutex notify_mutex_;
   std::condition_variable notify_cv_;
 
+  /// Subscription that receives messages from the netperf client.
   rclcpp::Subscription<netperf_tool_interfaces::msg::Bytes>::SharedPtr sub_;
+  /// Used to deserialize received messages.
   rclcpp::Serialization<netperf_tool_interfaces::msg::Bytes> deserializer_;
+  /// Service used to make experiment statistics available to netperf clients.
   rclcpp::ServiceBase::SharedPtr srv_;
 };
 }  // namespace netperf_tool
