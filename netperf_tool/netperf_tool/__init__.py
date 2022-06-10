@@ -25,8 +25,9 @@ with add_dll_directories_from_env('PATH'):
     from netperf_tool.netperf_tool_impl import ServerRunner as _ServerRunner
 
 
-class RunnerImpl:
+class _RunnerImpl:
     _impl_cls = None
+    _BLOCK_FOREVER = -1.0
 
     def __init__(
         self,
@@ -54,7 +55,7 @@ class RunnerImpl:
         self._impl.join()
 
 
-class ClientRunner(RunnerImpl):
+class ClientRunner(_RunnerImpl):
     _impl_cls = _ClientRunner
 
     def __init__(
@@ -70,7 +71,7 @@ class ClientRunner(RunnerImpl):
             experiment_duration_s, qos, message_size_bytes, target_pub_period_s, server_timeout_s)
 
 
-class ServerRunner(RunnerImpl):
+class ServerRunner(_RunnerImpl):
     _impl_cls = _ServerRunner
 
     def __init__(
@@ -78,7 +79,7 @@ class ServerRunner(RunnerImpl):
         *,
         qos: rclpy.qos.QoSProfile
     ):
-        super().__init__(-1e-9, qos)
+        super().__init__(self._BLOCK_FOREVER, qos)
 
 
 __all__ = [
