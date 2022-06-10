@@ -134,7 +134,7 @@ void
 ClientNode::pub_next_msg()
 {
   auto now = std::chrono::system_clock::now();
-  msg_to_publish_.timestamp = now.time_since_epoch().count();
+  msg_to_publish_.timestamp = static_cast<size_t>(now.time_since_epoch().count());
   pub_->publish(msg_to_publish_);
   // always keep the vector preallocated, to avoid delays when the timer is triggered
   {

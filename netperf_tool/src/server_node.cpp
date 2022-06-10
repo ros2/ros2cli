@@ -148,16 +148,19 @@ ServerNode::handle_get_results_request(
 
   // calculate total bytes transferred
   rep->total_bytes = std::accumulate(
-    collected_info.message_sizes.begin(), collected_info.message_sizes.end(), 0);
+    collected_info.message_sizes.begin(), collected_info.message_sizes.end(), 0u);
 
   // messages lost and lost
   rep->messages_total = req->messages_total;
   rep->messages_lost = req->messages_total - collected_info.message_ids.size();
 
   // total experiment duration
-  rep->experiment_duration_ns = (
-    collected_info.message_reception_time.back() -
-    collected_info.message_reception_time.front()).count();
+  rep->experiment_duration_ns = static_cast<size_t>(
+    (
+      collected_info.message_reception_time.back() -
+      collected_info.message_reception_time.front()
+    ).count()
+  );
 
   ServerResults results;
   results.collected_info = std::move(collected_info);
