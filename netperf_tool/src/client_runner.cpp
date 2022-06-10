@@ -12,35 +12,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "client_runner.hpp"
+
 #include <chrono>
-#include <memory>
-#include <utility>
-
-#include "rclcpp/context.hpp"
-#include "rclcpp/executors.hpp"
-#include "rclcpp/utilities.hpp"
-
-#include "node_runner.hpp"
+#include <stdexcept>
 
 namespace netperf_tool
 {
-
-rclcpp::Context::SharedPtr
-create_and_init_context()
+void
+ClientRunner::start(std::chrono::nanoseconds duration)
 {
-  if (!rclcpp::signal_handlers_installed()) {
-    rclcpp::install_signal_handlers();
+  if (node_->wait_for_server()) {
+    node_->start_publishing();
+    return NodeRunner<ClientNode>::start(duration);
   }
-  auto context = std::make_shared<rclcpp::Context>();
-  context->init(0, nullptr);
-  return context;
+  throw std::runtime_error{"failed to connect to server"};
 }
 
-rclcpp::ExecutorOptions
-executor_options_with_context(rclcpp::Context::SharedPtr context)
+void
+ClientRunner::join()
 {
-  rclcpp::ExecutorOptions eo;
-  eo.context = std::move(context);
-  return eo;
+  bool sync_needed = running_thread_.joinable();
+  NodeRunner<ClientNode>::join();
+  if (sync_needed) {
+    node_->stop_publishing();
+    node_->sync_with_server(exec_);
+  }
 }
 }  // namespace netperf_tool

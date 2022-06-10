@@ -12,35 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#ifndef CLIENT_RUNNER_HPP_
+#define CLIENT_RUNNER_HPP_
+
 #include <chrono>
-#include <memory>
-#include <utility>
 
-#include "rclcpp/context.hpp"
-#include "rclcpp/executors.hpp"
-#include "rclcpp/utilities.hpp"
-
+#include "client_node.hpp"
 #include "node_runner.hpp"
 
 namespace netperf_tool
 {
 
-rclcpp::Context::SharedPtr
-create_and_init_context()
+/// Extension of NodeRunner for ClientNode.
+class ClientRunner : public NodeRunner<ClientNode>
 {
-  if (!rclcpp::signal_handlers_installed()) {
-    rclcpp::install_signal_handlers();
-  }
-  auto context = std::make_shared<rclcpp::Context>();
-  context->init(0, nullptr);
-  return context;
-}
-
-rclcpp::ExecutorOptions
-executor_options_with_context(rclcpp::Context::SharedPtr context)
-{
-  rclcpp::ExecutorOptions eo;
-  eo.context = std::move(context);
-  return eo;
-}
+public:
+  using NodeRunner<ClientNode>::NodeRunner;
+  void start(std::chrono::nanoseconds duration);
+  void join();
+};
 }  // namespace netperf_tool
+
+#endif  // CLIENT_RUNNER_HPP_

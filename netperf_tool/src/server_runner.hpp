@@ -12,35 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <chrono>
-#include <memory>
-#include <utility>
+#ifndef SERVER_RUNNER_HPP_
+#define SERVER_RUNNER_HPP_
 
-#include "rclcpp/context.hpp"
-#include "rclcpp/executors.hpp"
-#include "rclcpp/utilities.hpp"
-
+#include "server_node.hpp"
 #include "node_runner.hpp"
 
 namespace netperf_tool
 {
-
-rclcpp::Context::SharedPtr
-create_and_init_context()
-{
-  if (!rclcpp::signal_handlers_installed()) {
-    rclcpp::install_signal_handlers();
-  }
-  auto context = std::make_shared<rclcpp::Context>();
-  context->init(0, nullptr);
-  return context;
-}
-
-rclcpp::ExecutorOptions
-executor_options_with_context(rclcpp::Context::SharedPtr context)
-{
-  rclcpp::ExecutorOptions eo;
-  eo.context = std::move(context);
-  return eo;
-}
+/// NodeRunner instance for ServerNode.
+using ServerRunner = netperf_tool::NodeRunner<ServerNode>;
 }  // namespace netperf_tool
+
+#endif  // SERVER_RUNNER_HPP_

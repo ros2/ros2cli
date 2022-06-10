@@ -130,15 +130,6 @@ protected:
   /// Executor used to spin.
   rclcpp::executors::SingleThreadedExecutor exec_;
 };
-
-/// Extension of NodeRunner for ClientNode.
-class ClientRunner : public NodeRunner<ClientNode>
-{
-public:
-  using NodeRunner<ClientNode>::NodeRunner;
-  void start(std::chrono::nanoseconds duration);
-  void join();
-};
 }  // namespace netperf_tool
 
 #endif  // NODE_RUNNER_HPP_

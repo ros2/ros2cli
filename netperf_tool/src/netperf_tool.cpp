@@ -32,8 +32,10 @@
 #include "rclcpp/utilities.hpp"
 
 #include "client_node.hpp"
+#include "client_runner.hpp"
 #include "node_runner.hpp"
 #include "server_node.hpp"
+#include "server_runner.hpp"
 #include "utils.hpp"
 
 // Ignore -Wunused-value for clang.
@@ -56,7 +58,7 @@ PYBIND11_MODULE(netperf_tool_impl, m) {
   using ClientNode = netperf_tool::ClientNode;
   using ServerNode = netperf_tool::ServerNode;
   using ClientRunner = netperf_tool::ClientRunner;
-  using ServerRunner = netperf_tool::NodeRunner<ServerNode>;
+  using ServerRunner = netperf_tool::ServerRunner;
   using ClientCollectedInfo = netperf_tool::ClientCollectedInfo;
   using ServerCollectedInfo = netperf_tool::ServerCollectedInfo;
   using ClientResults = netperf_tool::ClientResults;
