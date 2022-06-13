@@ -95,37 +95,37 @@ PYBIND11_MODULE(netperf_tool_impl, m) {
   .def("get_node", &ServerRunner::get_node);
   pybind11::class_<ClientCollectedInfo>(
     m, "ClientCollectedInfo")
-  .def_readwrite(
+  .def_readonly(
     "number_of_messages_published", &ClientCollectedInfo::number_of_messages_published)
-  .def_readwrite(
+  .def_readonly(
     "message_published_times",
     &ClientCollectedInfo::message_published_times)
-  .def_readwrite("serialized_message_size", &ClientCollectedInfo::serialized_message_size);
+  .def_readonly("serialized_message_size", &ClientCollectedInfo::serialized_message_size);
   pybind11::class_<ServerCollectedInfo>(
     m, "ServerCollectedInfo")
-  .def_readwrite("message_infos", &ServerCollectedInfo::message_infos);
+  .def_readonly("message_infos", &ServerCollectedInfo::message_infos);
   pybind11::class_<ServerMessageInfo>(
     m, "ServerMessageInfo")
-  .def_readwrite("reception_time", &ServerMessageInfo::reception_time)
-  .def_readwrite("id", &ServerMessageInfo::id)
-  .def_readwrite("latency", &ServerMessageInfo::latency)
-  .def_readwrite("serialized_size", &ServerMessageInfo::serialized_size);
+  .def_readonly("reception_time", &ServerMessageInfo::reception_time)
+  .def_readonly("id", &ServerMessageInfo::id)
+  .def_readonly("latency", &ServerMessageInfo::latency)
+  .def_readonly("serialized_size", &ServerMessageInfo::serialized_size);
   pybind11::class_<ClientResults>(
     m, "ClientResults")
-  .def_readwrite("collected_info", &ClientResults::collected_info)
-  .def_readwrite("statistics", &ClientResults::statistics);
+  .def_readonly("collected_info", &ClientResults::collected_info)
+  .def_readonly("statistics", &ClientResults::statistics);
   pybind11::class_<ServerResults>(
     m, "ServerResults")
-  .def_readwrite("collected_info", &ServerResults::collected_info)
-  .def_readwrite("statistics", &ServerResults::statistics);
+  .def_readonly("collected_info", &ServerResults::collected_info)
+  .def_readonly("statistics", &ServerResults::statistics);
   pybind11::class_<netperf_tool_interfaces::srv::GetResults::Response>(
     m, "Statistics")
-  .def_readwrite("latency_avg_ms", &Statistics::latency_avg_ms)
-  .def_readwrite("latency_stdev_ms", &Statistics::latency_stdev_ms)
-  .def_readwrite("latency_min_ms", &Statistics::latency_min_ms)
-  .def_readwrite("latency_max_ms", &Statistics::latency_max_ms)
-  .def_readwrite("total_bytes", &Statistics::total_bytes)
-  .def_readwrite("experiment_duration_ns", &Statistics::experiment_duration_ns)
-  .def_readwrite("messages_lost", &Statistics::messages_lost)
-  .def_readwrite("messages_total", &Statistics::messages_total);
+  .def_readonly("latency_avg_ms", &Statistics::latency_avg_ms)
+  .def_readonly("latency_stdev_ms", &Statistics::latency_stdev_ms)
+  .def_readonly("latency_min_ms", &Statistics::latency_min_ms)
+  .def_readonly("latency_max_ms", &Statistics::latency_max_ms)
+  .def_readonly("total_bytes", &Statistics::total_bytes)
+  .def_readonly("experiment_duration_ns", &Statistics::experiment_duration_ns)
+  .def_readonly("messages_lost", &Statistics::messages_lost)
+  .def_readonly("messages_total", &Statistics::messages_total);
 }
