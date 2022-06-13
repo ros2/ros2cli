@@ -34,17 +34,23 @@
 
 namespace netperf_tool
 {
+struct ServerMessageInfo
+{
+  /// Timestamp of when the message was received.
+  std::chrono::time_point<std::chrono::system_clock> reception_time;
+  /// Message ids.
+  size_t id;
+  /// Single trip latency of the message.
+  std::chrono::nanoseconds latency;
+  /// Serialized message size.
+  size_t serialized_size;
+};
+
 /// Raw data with info about received messages.
 struct ServerCollectedInfo
 {
-  /// Timestamp of when the message was received.
-  std::vector<std::chrono::time_point<std::chrono::system_clock>> message_reception_time;
-  /// Message ids.
-  std::vector<size_t> message_ids;
-  /// Single trip latency of the message.
-  std::vector<std::chrono::nanoseconds> message_latencies;
-  /// Serialized message size.
-  std::vector<size_t> message_sizes;
+  /// Collected info of each message.
+  std::vector<ServerMessageInfo> message_infos;
 };
 
 /// The results of an experiment.

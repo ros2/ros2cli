@@ -61,6 +61,7 @@ PYBIND11_MODULE(netperf_tool_impl, m) {
   using ServerRunner = netperf_tool::ServerRunner;
   using ClientCollectedInfo = netperf_tool::ClientCollectedInfo;
   using ServerCollectedInfo = netperf_tool::ServerCollectedInfo;
+  using ServerMessageInfo = netperf_tool::ServerMessageInfo;
   using ClientResults = netperf_tool::ClientResults;
   using ServerResults = netperf_tool::ServerResults;
   using Statistics = netperf_tool_interfaces::srv::GetResults::Response;
@@ -102,9 +103,13 @@ PYBIND11_MODULE(netperf_tool_impl, m) {
   .def_readwrite("serialized_message_size", &ClientCollectedInfo::serialized_message_size);
   pybind11::class_<ServerCollectedInfo>(
     m, "ServerCollectedInfo")
-  .def_readwrite("message_ids", &ServerCollectedInfo::message_ids)
-  .def_readwrite("message_latencies", &ServerCollectedInfo::message_latencies)
-  .def_readwrite("message_sizes", &ServerCollectedInfo::message_sizes);
+  .def_readwrite("message_infos", &ServerCollectedInfo::message_infos);
+  pybind11::class_<ServerMessageInfo>(
+    m, "ServerMessageInfo")
+  .def_readwrite("reception_time", &ServerMessageInfo::reception_time)
+  .def_readwrite("id", &ServerMessageInfo::id)
+  .def_readwrite("latency", &ServerMessageInfo::latency)
+  .def_readwrite("serialized_size", &ServerMessageInfo::serialized_size);
   pybind11::class_<ClientResults>(
     m, "ClientResults")
   .def_readwrite("collected_info", &ClientResults::collected_info)

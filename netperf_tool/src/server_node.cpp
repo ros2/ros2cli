@@ -92,11 +92,13 @@ ServerNode::handle_msg(
       this->get_logger(),
       "Added one message with gid: " << string_gid);
     auto it_emplaced_pair = pub_gid_to_collected_info_map_.try_emplace(string_gid);
-    auto & message_data = it_emplaced_pair.first->second;
-    message_data.message_ids.emplace_back(msg.id);
-    message_data.message_latencies.emplace_back(latency);
-    message_data.message_sizes.emplace_back(received_bytes);
-    message_data.message_reception_time.emplace_back(rec_timestamp);
+    auto & collected_info = it_emplaced_pair.first->second;
+    ServerMessageInfo info;
+    info.id = msg.id;
+    info.latency = latency;
+    info.serialized_size = received_bytes;
+    info.reception_time = rec_timestamp;
+    collected_info.message_infos.emplace_back(info);
     emplaced = it_emplaced_pair.second;
   }
   if (emplaced) {
@@ -116,7 +118,7 @@ ServerNode::handle_get_results_request(
   {
     std::lock_guard guard{pub_gid_to_collected_info_map_mutex_};
     auto it = pub_gid_to_collected_info_map_.find(req->publisher_gid);
-    if (it == pub_gid_to_collected_info_map_.end() || 0u == it->second.message_ids.size()) {
+    if (it == pub_gid_to_collected_info_map_.end() || 0u == it->second.message_infos.size()) {
       return;
     }
     collected_info = std::move(it->second);
@@ -124,41 +126,50 @@ ServerNode::handle_get_results_request(
     pub_gid_to_collected_info_map_.erase(it);
   }
   // calculate latency statistics
-  const auto & latencies = collected_info.message_latencies;
   auto latency_avg_ms = std::accumulate(
-    latencies.begin(),
-    latencies.end(),
+    collected_info.message_infos.begin(),
+    collected_info.message_infos.end(),
     0.0,
-    [n_items = static_cast<double>(latencies.size())](auto lhs, auto rhs) {
-      return lhs + static_cast<double>(rhs.count()) / 1e6 / n_items;
+    [n_items = static_cast<double>(collected_info.message_infos.size())](auto lhs, auto rhs) {
+      return lhs + static_cast<double>(rhs.latency.count()) / 1e6 / n_items;
     });
   auto latency_var_ms2 = std::accumulate(
-    latencies.begin(),
-    latencies.end(),
+    collected_info.message_infos.begin(),
+    collected_info.message_infos.end(),
     0.0,
-    [latency_avg_ms, div = static_cast<double>(latencies.size() - 1)](auto lhs, auto rhs) {
-      auto diff = static_cast<double>(rhs.count()) / 1e6 - latency_avg_ms;
+    [latency_avg_ms, div = static_cast<double>(collected_info.message_infos.size() - 1)](auto lhs, auto rhs) {
+      auto diff = static_cast<double>(rhs.latency.count()) / 1e6 - latency_avg_ms;
       return lhs + diff * diff / div;
     });
-  auto latency_min_max_its = std::minmax_element(latencies.begin(), latencies.end());
+  auto latency_min_max_its = std::minmax_element(
+    collected_info.message_infos.begin(),
+    collected_info.message_infos.end(),
+    [](auto lhs, auto rhs) {
+      return lhs.latency < rhs.latency;
+    });
   rep->latency_avg_ms = latency_avg_ms;
   rep->latency_stdev_ms = std::sqrt(latency_var_ms2);
-  rep->latency_min_ms = static_cast<double>(latency_min_max_its.first->count()) / 1e6;
-  rep->latency_max_ms = static_cast<double>(latency_min_max_its.second->count()) / 1e6;
+  rep->latency_min_ms = static_cast<double>(latency_min_max_its.first->latency.count()) / 1e6;
+  rep->latency_max_ms = static_cast<double>(latency_min_max_its.second->latency.count()) / 1e6;
 
   // calculate total bytes transferred
   rep->total_bytes = std::accumulate(
-    collected_info.message_sizes.begin(), collected_info.message_sizes.end(), 0u);
+    collected_info.message_infos.begin(),
+    collected_info.message_infos.end(),
+    0u,
+    [](auto lhs, auto rhs) {
+      return lhs + rhs.serialized_size;
+    });
 
   // messages lost and lost
   rep->messages_total = req->messages_total;
-  rep->messages_lost = req->messages_total - collected_info.message_ids.size();
+  rep->messages_lost = req->messages_total - collected_info.message_infos.size();
 
   // total experiment duration
   rep->experiment_duration_ns = static_cast<size_t>(
     (
-      collected_info.message_reception_time.back() -
-      collected_info.message_reception_time.front()
+      collected_info.message_infos.back().reception_time -
+      collected_info.message_infos.front().reception_time
     ).count()
   );
 
