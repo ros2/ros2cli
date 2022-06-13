@@ -94,11 +94,12 @@ PYBIND11_MODULE(netperf_tool_impl, m) {
   .def("get_node", &ServerRunner::get_node);
   pybind11::class_<ClientCollectedInfo>(
     m, "ClientCollectedInfo")
-  .def_readwrite("message_ids", &ClientCollectedInfo::message_ids)
+  .def_readwrite(
+    "number_of_messages_published", &ClientCollectedInfo::number_of_messages_published)
   .def_readwrite(
     "message_published_times",
     &ClientCollectedInfo::message_published_times)
-  .def_readwrite("message_sizes", &ClientCollectedInfo::message_sizes);
+  .def_readwrite("serialized_message_size", &ClientCollectedInfo::serialized_message_size);
   pybind11::class_<ServerCollectedInfo>(
     m, "ServerCollectedInfo")
   .def_readwrite("message_ids", &ServerCollectedInfo::message_ids)

@@ -35,12 +35,12 @@ namespace netperf_tool
 /// Raw data with info about sent messages.
 struct ClientCollectedInfo
 {
-  /// Message ids.
-  std::vector<size_t> message_ids;
-  /// Time when the message was published.
+  /// The total number of messages published.
+  size_t number_of_messages_published;
+  /// The serialized message size.
+  size_t serialized_message_size;
+  /// Times when the messages were published.
   std::vector<std::chrono::time_point<std::chrono::system_clock>> message_published_times;
-  /// Serialized message size.
-  std::vector<size_t> message_sizes;
 };
 
 /// The results of an experiment.
@@ -139,8 +139,6 @@ public:
 private:
   /// Cached message, which is published each time.
   netperf_tool_interfaces::msg::Bytes msg_to_publish_;
-  /// Serialized message size.
-  size_t serialized_msg_size_;
   /// Timer, used to publish messages periodically.
   std::shared_ptr<rclcpp::TimerBase> timer_;
   /// Publisher, used to send messages to the netperf server to complete the experiment.

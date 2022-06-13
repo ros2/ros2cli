@@ -56,7 +56,8 @@ ClientNode::ClientNode(
   rclcpp::SerializedMessage serialized_msg;
   rclcpp::Serialization<netperf_tool_interfaces::msg::Bytes> serializer;
   serializer.serialize_message(&msg_to_publish_, &serialized_msg);
-  serialized_msg_size_ = serialized_msg.size();
+  collected_info_.number_of_messages_published = 0u;
+  collected_info_.serialized_message_size = serialized_msg.size();
   client_ = this->create_client<netperf_tool_interfaces::srv::GetResults>("get_results");
 }
 
@@ -96,7 +97,7 @@ ClientNode::sync_with_server(rclcpp::Executor & exec)
   }
   auto req = std::make_shared<netperf_tool_interfaces::srv::GetResults::Request>();
   req->publisher_gid = this->get_stringified_pub_gid();
-  req->messages_total = this->collected_info_.message_ids.size();
+  req->messages_total = collected_info_.number_of_messages_published;
   auto future = client_->async_send_request(req);
   exec.spin_until_future_complete(future);
   statistics_ = future.get();
@@ -139,9 +140,8 @@ ClientNode::pub_next_msg()
   // always keep the vector preallocated, to avoid delays when the timer is triggered
   {
     std::lock_guard guard{collected_info_mutex_};
-    collected_info_.message_ids.emplace_back(msg_to_publish_.id);
+    ++collected_info_.number_of_messages_published;
     collected_info_.message_published_times.emplace_back(now);
-    collected_info_.message_sizes.emplace_back(serialized_msg_size_);
   }
   ++msg_to_publish_.id;
 }
