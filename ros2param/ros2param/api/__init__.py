@@ -69,7 +69,7 @@ def load_parameter_file(*, node, node_name, parameter_file, use_wildcard):
 
 def call_describe_parameters(*, node, node_name, parameter_names=None):
     client = AsyncParameterClient(node, node_name)
-    client.wait_for_services(5.0)
+    client.wait_for_services(timeout_sec=5.0)
     if not client.services_are_ready():
         raise RuntimeError('Could not reach parameter services')
     future = client.describe_parameters(parameter_names)
@@ -106,7 +106,7 @@ def call_list_parameters(*, node, node_name):
     if not client.services_are_ready():
         raise RuntimeError('Could not reach parameter services')
     future = client.list_parameters()
-    rclpy.spin_until_future_complete(node, future)
+    rclpy.spin_until_future_complete(node, future)  # This is hanging..
     response = future.result()
     return response.result.names
 
