@@ -43,7 +43,7 @@ def get_value(*, parameter_value):
 def load_parameter_file(*, node, node_name, parameter_file, use_wildcard):
     # Remove leading slash and namespaces
     client = AsyncParameterClient(node, node_name)
-    client.wait_for_services(30)
+    client.wait_for_services(timeout_sec=5.0)
     if not client.services_are_ready():
         raise RuntimeError('Could not reach parameter services')
 
@@ -69,7 +69,7 @@ def load_parameter_file(*, node, node_name, parameter_file, use_wildcard):
 
 def call_describe_parameters(*, node, node_name, parameter_names=None):
     client = AsyncParameterClient(node, node_name)
-    client.wait_for_services(30)
+    client.wait_for_services(5.0)
     if not client.services_are_ready():
         raise RuntimeError('Could not reach parameter services')
     future = client.describe_parameters(parameter_names)
@@ -80,7 +80,7 @@ def call_describe_parameters(*, node, node_name, parameter_names=None):
 
 def call_get_parameters(*, node, node_name, parameter_names):
     client = AsyncParameterClient(node, node_name)
-    client.wait_for_services(30)
+    client.wait_for_services(timeout_sec=5.0)
     if not client.services_are_ready():
         raise RuntimeError('Could not reach parameter services')
     future = client.get_parameters(parameter_names)
@@ -91,7 +91,7 @@ def call_get_parameters(*, node, node_name, parameter_names):
 
 def call_set_parameters(*, node, node_name, parameters):
     client = AsyncParameterClient(node, node_name)
-    client.wait_for_services(30)
+    client.wait_for_services(timeout_sec=5.0)
     if not client.services_are_ready():
         raise RuntimeError('Could not reach parameter services')
     future = client.set_parameters(parameters)
@@ -102,7 +102,7 @@ def call_set_parameters(*, node, node_name, parameters):
 
 def call_list_parameters(*, node, node_name):
     client = AsyncParameterClient(node, node_name)
-    client.wait_for_services(30)
+    client.wait_for_services(timeout_sec=5.0)
     if not client.services_are_ready():
         raise RuntimeError('Could not reach parameter services')
     future = client.list_parameters()

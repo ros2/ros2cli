@@ -15,6 +15,7 @@
 import re
 import sys
 
+import rclpy
 from ros2cli.node.direct import DirectNode
 from ros2cli.node.strategy import add_arguments
 from ros2cli.node.strategy import NodeStrategy
@@ -22,11 +23,14 @@ from ros2node.api import get_absolute_node_name
 from ros2node.api import get_node_names
 from ros2node.api import NodeNameCompleter
 
+from rcl_interfaces.srv import ListParameters
+
 from ros2param.api import call_describe_parameters
 from ros2param.api import call_list_parameters
 from ros2param.api import get_parameter_type_string
 from ros2param.verb import VerbExtension
 
+from ros2service.api import get_service_names
 
 class ListVerb(VerbExtension):
     """Output a list of available parameters."""
