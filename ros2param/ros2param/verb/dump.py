@@ -15,8 +15,6 @@
 import os
 import sys
 
-from rcl_interfaces.srv import ListParameters
-import rclpy
 from rclpy.parameter import PARAMETER_SEPARATOR_STRING
 from ros2cli.node.direct import DirectNode
 from ros2cli.node.strategy import add_arguments
@@ -96,16 +94,10 @@ class DumpVerb(VerbExtension):
             # retrieve values
             response = call_list_parameters(node=node, node_name=absolute_node_name)
 
-            if response is not None:
-                for param_name in sorted(response):
-                    pval = self.get_parameter_value(node, absolute_node_name, param_name)
-                    self.insert_dict(
-                        yaml_output[node_name.full_name]['ros__parameters'], param_name, pval)
-            else:
-                e = future.exception()
-                raise RuntimeError(
-                    'Exception while calling service of node '
-                    f"'{node_name.full_name}': {e}")
+            for param_name in sorted(response):
+                pval = self.get_parameter_value(node, absolute_node_name, param_name)
+                self.insert_dict(
+                    yaml_output[node_name.full_name]['ros__parameters'], param_name, pval)
 
             if args.print:
                 print(
