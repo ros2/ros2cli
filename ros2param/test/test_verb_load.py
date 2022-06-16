@@ -42,7 +42,7 @@ import yaml
 TEST_NODE = 'test_node'
 TEST_NAMESPACE = '/foo'
 
-TEST_TIMEOUT = 20.0
+TEST_TIMEOUT = 30.0
 
 INPUT_PARAMETER_FILE = (
     f'{TEST_NAMESPACE}/{TEST_NODE}:\n'
