@@ -52,17 +52,17 @@ class DumpVerb(VerbExtension):
             help='DEPRECATED: Does nothing.')
 
     @staticmethod
-    def get_parameter_value(node, node_name, param):
+    def get_parameter_values(node, node_name, params):
         response = call_get_parameters(
             node=node, node_name=node_name,
-            parameter_names=[param])
+            parameter_names=params)
 
         # requested parameter not set
         if not response.values:
             return '# Parameter not set'
 
         # extract type specific value
-        return get_value(parameter_value=response.values[0])
+        return [get_value(parameter_value=i) for i in response.values]
 
     def insert_dict(self, dictionary, key, value):
         split = key.split(PARAMETER_SEPARATOR_STRING, 1)
@@ -93,9 +93,10 @@ class DumpVerb(VerbExtension):
 
             # retrieve values
             response = call_list_parameters(node=node, node_name=absolute_node_name)
+            response = sorted(response)
+            parameter_values = self.get_parameter_values(node, absolute_node_name, response)
 
-            for param_name in sorted(response):
-                pval = self.get_parameter_value(node, absolute_node_name, param_name)
+            for param_name, pval in zip(response, parameter_values):
                 self.insert_dict(
                     yaml_output[node_name.full_name]['ros__parameters'], param_name, pval)
 
