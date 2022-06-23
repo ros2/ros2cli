@@ -24,6 +24,7 @@ from ros2node.api import get_node_names
 from ros2node.api import NodeNameCompleter
 
 from ros2param.api import call_set_parameters
+from ros2param.api import call_set_parameters_atomically
 from ros2param.api import ParameterNameCompleter
 from ros2param.verb import VerbExtension
 
@@ -46,6 +47,10 @@ class SetVerb(VerbExtension):
         parser.add_argument(
             '--include-hidden-nodes', action='store_true',
             help='Consider hidden nodes as well')
+
+        parser.add_argument(
+            '--atomic', action='store_true',
+            help='Set parameters atomically')
 
     def build_parameters(self, params):
         parameters = []
@@ -72,9 +77,14 @@ class SetVerb(VerbExtension):
 
         with DirectNode(args) as node:
             parameters = self.build_parameters(args.parameters)
-            response = call_set_parameters(
-                node=node, node_name=args.node_name, parameters=parameters)
-            results = response.results
+            if args.atomic:
+                response = call_set_parameters_atomically(node=node, node_name=args.node_name,
+                                                          parameters=parameters)
+                results = [response.result]
+            else:
+                response = call_set_parameters(node=node, node_name=args.node_name,
+                                               parameters=parameters)
+                results = response.results
 
             for result in results:
                 if result.successful:
