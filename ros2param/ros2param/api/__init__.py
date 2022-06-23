@@ -42,7 +42,9 @@ def get_value(*, parameter_value):
 
 def load_parameter_file(*, node, node_name, parameter_file, use_wildcard):
     client = AsyncParameterClient(node, node_name)
-    client.wait_for_services(timeout_sec=5.0)
+    ready = client.wait_for_services(timeout_sec=5.0)
+    if not ready:
+        raise RuntimeError('Wait for service timed out')
     future = client.load_parameter_file(parameter_file, use_wildcard)
     parameters = list(parameter_dict_from_yaml_file(parameter_file, use_wildcard).values())
     rclpy.spin_until_future_complete(node, future)
@@ -65,7 +67,9 @@ def load_parameter_file(*, node, node_name, parameter_file, use_wildcard):
 
 def call_describe_parameters(*, node, node_name, parameter_names=None):
     client = AsyncParameterClient(node, node_name)
-    client.wait_for_services(timeout_sec=5.0)
+    ready = client.wait_for_services(timeout_sec=5.0)
+    if not ready:
+        raise RuntimeError('Wait for service timed out')
     future = client.describe_parameters(parameter_names)
     rclpy.spin_until_future_complete(node, future)
     response = future.result()
@@ -77,7 +81,9 @@ def call_describe_parameters(*, node, node_name, parameter_names=None):
 
 def call_get_parameters(*, node, node_name, parameter_names):
     client = AsyncParameterClient(node, node_name)
-    client.wait_for_services(timeout_sec=5.0)
+    ready = client.wait_for_services(timeout_sec=5.0)
+    if not ready:
+        raise RuntimeError('Wait for service timed out')
     future = client.get_parameters(parameter_names)
     rclpy.spin_until_future_complete(node, future)
     response = future.result()
@@ -89,7 +95,9 @@ def call_get_parameters(*, node, node_name, parameter_names):
 
 def call_set_parameters(*, node, node_name, parameters):
     client = AsyncParameterClient(node, node_name)
-    client.wait_for_services(timeout_sec=5.0)
+    ready = client.wait_for_services(timeout_sec=5.0)
+    if not ready:
+        raise RuntimeError('Wait for service timed out')
     future = client.set_parameters(parameters)
     rclpy.spin_until_future_complete(node, future)
     response = future.result()
@@ -101,7 +109,9 @@ def call_set_parameters(*, node, node_name, parameters):
 
 def call_list_parameters(*, node, node_name, prefixes=None):
     client = AsyncParameterClient(node, node_name)
-    client.wait_for_services(timeout_sec=5.0)
+    ready = client.wait_for_services(timeout_sec=5.0)
+    if not ready:
+        raise RuntimeError('Wait for service timed out')
     future = client.list_parameters(prefixes=prefixes)
     rclpy.spin_until_future_complete(node, future)
     response = future.result()
