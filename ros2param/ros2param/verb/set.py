@@ -37,14 +37,29 @@ class SetVerb(VerbExtension):
             'node_name', help='Name of the ROS node')
         arg.completer = NodeNameCompleter(
             include_hidden_nodes_key='include_hidden_nodes')
+
+        arg = parser.add_argument(
+            'parameters', nargs='*',
+            help='List of parameter name and value pairs i.e. "int_param 1 str_param hello_world"')
+        arg.completer = ParameterNameCompleter()
+
         parser.add_argument(
             '--include-hidden-nodes', action='store_true',
             help='Consider hidden nodes as well')
-        arg = parser.add_argument(
-            'parameter_name', help='Name of the parameter')
-        arg.completer = ParameterNameCompleter()
-        parser.add_argument(
-            'value', help='Value of the parameter')
+
+    def build_parameters(self, params):
+        parameters = []
+        if len(params) % 2:
+            raise RuntimeError('Must pass list of parameter name and value pairs')
+
+        params = [(params[i], params[i+1]) for i in range(0, len(params), 2)]
+        for param_str in params:
+            parameter = Parameter()
+            parameter.name = param_str[0]
+            parameter.value = get_parameter_value(string_value=param_str[1])
+            parameters.append(parameter)
+
+        return parameters
 
     def main(self, *, args):  # noqa: D102
         with NodeStrategy(args) as node:
@@ -56,23 +71,19 @@ class SetVerb(VerbExtension):
             return 'Node not found'
 
         with DirectNode(args) as node:
-            parameter = Parameter()
-            Parameter.name = args.parameter_name
-            parameter.value = get_parameter_value(string_value=args.value)
-
+            parameters = self.build_parameters(args.parameters)
             response = call_set_parameters(
-                node=node, node_name=args.node_name, parameters=[parameter])
+                node=node, node_name=args.node_name, parameters=parameters)
+            results = response.results
 
-            # output response
-            assert len(response.results) == 1
-            result = response.results[0]
-            if result.successful:
-                msg = 'Set parameter successful'
-                if result.reason:
-                    msg += ': ' + result.reason
-                print(msg)
-            else:
-                msg = 'Setting parameter failed'
-                if result.reason:
-                    msg += ': ' + result.reason
-                print(msg, file=sys.stderr)
+            for result in results:
+                if result.successful:
+                    msg = 'Set parameter successful'
+                    if result.reason:
+                        msg += ': ' + result.reason
+                    print(msg)
+                else:
+                    msg = 'Setting parameter failed'
+                    if result.reason:
+                        msg += ': ' + result.reason
+                    print(msg, file=sys.stderr)
