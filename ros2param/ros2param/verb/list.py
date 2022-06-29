@@ -21,7 +21,6 @@ from ros2cli.node.strategy import NodeStrategy
 from ros2node.api import get_absolute_node_name
 from ros2node.api import get_node_names
 from ros2node.api import NodeNameCompleter
-
 from ros2param.api import call_describe_parameters
 from ros2param.api import call_list_parameters
 from ros2param.api import get_parameter_type_string
@@ -71,9 +70,10 @@ class ListVerb(VerbExtension):
         with DirectNode(args) as node:
             responses = {}
             for node_name in node_names:
-                responses[node_name] = call_list_parameters(node=node,
-                                                            node_name=node_name.full_name,
-                                                            prefixes=args.param_prefixes)
+                responses[node_name] = call_list_parameters(
+                    node=node,
+                    node_name=node_name.full_name,
+                    prefixes=args.param_prefixes)
             # print responses
             for node_name in sorted(responses.keys()):
                 response = responses[node_name]
