@@ -114,16 +114,13 @@ def call_set_parameters(*, node, node_name, parameters):
 def call_list_parameters(*, node, node_name, prefixes=None):
     client = AsyncParameterClient(node, node_name)
     ready = client.wait_for_services(timeout_sec=5.0)
+    # return None on exception cases so that ros2 param list still
+    # prints parameters for nodes that are working
     if not ready:
-        raise RuntimeError('Wait for service timed out waiting for '
-                           f'parameter services for node {node_name}')
+        return None
     future = client.list_parameters(prefixes=prefixes)
     rclpy.spin_until_future_complete(node, future)
-    response = future.result()
-    if response is None:
-        raise RuntimeError('Exception while calling service of node '
-                           f'{node_name}: {future.exception()}')
-    return response.result.names
+    return future
 
 
 def get_parameter_type_string(parameter_type):

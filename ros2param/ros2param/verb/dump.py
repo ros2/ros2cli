@@ -93,6 +93,17 @@ class DumpVerb(VerbExtension):
 
             # retrieve values
             response = call_list_parameters(node=node, node_name=absolute_node_name)
+            if response is None:
+                raise RuntimeError(
+                    'Wait for service timed out waiting for '
+                    f'parameter services for node {node_name}')
+            elif response.result() is None:
+                e = response.exception()
+                raise RuntimeError(
+                    'Exception while calling service of node '
+                    f"'{node_name.full_name}': {e}")
+
+            response = response.result().result.names
             response = sorted(response)
             parameter_values = self.get_parameter_values(node, absolute_node_name, response)
 

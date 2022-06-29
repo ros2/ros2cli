@@ -78,11 +78,17 @@ class ListVerb(VerbExtension):
             for node_name in sorted(responses.keys()):
                 response = responses[node_name]
                 if response is None:
+                    print(
+                        'Wait for service timed out waiting for '
+                        f'parameter services for node {node_name}')
+                    continue
+                elif response.result() is None:
                     e = response.exception()
                     print(
                         'Exception while calling service of node '
                         f"'{node_name.full_name}': {e}", file=sys.stderr)
                     continue
+                response = response.result().result.names
                 sorted_names = sorted(response)
                 if regex_filter is not None:
                     sorted_names = [name for name in sorted_names if regex_filter.match(name)]
