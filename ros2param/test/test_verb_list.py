@@ -39,7 +39,7 @@ from ros2cli.node.strategy import NodeStrategy
 TEST_NODE = 'test_node'
 TEST_NAMESPACE = '/foo'
 
-TEST_TIMEOUT = 30.0
+TEST_TIMEOUT = 20.0
 
 # Skip cli tests on Windows while they exhibit pathological behavior
 # https://github.com/ros2/build_farmer/issues/248
