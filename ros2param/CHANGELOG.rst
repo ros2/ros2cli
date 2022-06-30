@@ -2,8 +2,8 @@
 Changelog for package ros2param
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.13.4 (2022-06-30)
+-------------------
 * Skip None Result (`#646 <https://github.com/ros2/ros2cli/issues/646>`_) (`#723 <https://github.com/ros2/ros2cli/issues/723>`_)
 * :man_farmer: Mark known flaky tests as xfail (`#726 <https://github.com/ros2/ros2cli/issues/726>`_)
 * Contributors: Jorge Perez, mergify[bot]
