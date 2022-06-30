@@ -113,6 +113,7 @@ class ListVerb(VerbExtension):
                     print(
                         'Exception while calling service of node '
                         f"'{node_name.full_name}': {e}", file=sys.stderr)
+                    continue
                 response = future.result()
                 sorted_names = sorted(response.result.names)
                 if regex_filter is not None:
