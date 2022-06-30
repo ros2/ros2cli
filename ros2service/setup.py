@@ -44,6 +44,7 @@ The package provides the service command for the ROS 2 command line tools.""",
             'find = ros2service.verb.find:FindVerb',
             'list = ros2service.verb.list:ListVerb',
             'type = ros2service.verb.type:TypeVerb',
+            'echo = ros2service.verb.echo:EchoVerb',
         ],
     }
 )
