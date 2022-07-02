@@ -33,6 +33,9 @@ def get_service_names(*, node, include_hidden_services=False):
         node=node, include_hidden_services=include_hidden_services)
     return [n for (n, t) in service_names_and_types]
 
+def get_service_type(*, node, service, include_hidden_services=False):
+    pass
+
 
 def service_type_completer(**kwargs):
     """Callable returning a list of service types."""

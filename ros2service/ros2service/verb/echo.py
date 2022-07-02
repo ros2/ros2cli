@@ -27,7 +27,7 @@ from rcl_interfaces.msg import ServiceEvent
 
 from ros2topic.api import unsigned_int
 
-from ros2service.api import ServiceNameCompleter
+from ros2service.api import ServiceNameCompleter, get_service_names_and_types
 from ros2service.api import ServiceTypeCompleter
 from ros2service.verb import VerbExtension
 from rosidl_runtime_py.utilities import get_message
@@ -45,13 +45,14 @@ class EchoVerb(VerbExtension):
 
     def __init__(self):
         super().__init__()
-        self.srv_module = None
-        self.topic_name = None
         self.no_str = None
         self.no_arr = None
         self.truncate_length = None
         self.flow_style = None
         self.csv = None
+        self.srv_module = None
+        self.srv_type = None
+        self.topic_name = None
         self.include_message_info = None
         self.hidden_topic_suffix = "/_service_event"
         self.message_type = get_message("rcl_interfaces/msg/ServiceEvent")
@@ -103,8 +104,33 @@ class EchoVerb(VerbExtension):
         self.csv = args.csv
         self.include_message_info = args.include_message_info
 
+        if args.service_type is None:
+            with NodeStrategy(args) as node:
+                service_names_and_types = get_service_names_and_types(
+                    node=node,
+                    include_hidden_services=True)
+
+            for (service_name, service_types) in service_names_and_types:
+                if args.service_name == service_name:
+                    if len(service_types) is not 1:
+                        raise RuntimeError(
+                            'Found multiple types for the same service, try specifying '
+                            'the type using service_type positional argument')
+                    for service_type in service_types:
+                        self.srv_type = service_type
+            if self.srv_type is None:
+                raise RuntimeError(
+                    'Could not find running instance the service')
+        else:
+            self.srv_type = args.service_type
+
+        if self.srv_type is None:
+            raise RuntimeError(
+                'Could not determine the type for the passed service')
+
+        # load the service reqeust and response module
         try:
-            parts = args.service_type.split('/')
+            parts = self.srv_type.split('/')
             if len(parts) == 2:
                 parts = [parts[0], 'srv', parts[1]]
             package_name = parts[0]
@@ -152,7 +178,8 @@ class EchoVerb(VerbExtension):
         elif service_event_type is ServiceEventType.RESPONSE_RECEIVED or \
                 service_event_type is ServiceEventType.RESPONSE_SENT:
             serialize_msg_type = self.srv_module.Response
-        else:  # TODO remove this else condition later once event enum is correct
+        else:  # TODO remove this once event enum is correct
+            print("Returning invalid service event type")
             return
 
         # csv

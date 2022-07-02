@@ -230,9 +230,15 @@ class EchoVerb(VerbExtension):
             if args.message_type is None:
                 message_type = get_msg_class(
                     node, args.topic_name, include_hidden_topics=True)
+                print("Debug 1")
+                print(message_type)
+                print(type(message_type))
             else:
+                print("Debug 2")
                 try:
                     message_type = get_message(args.message_type)
+                    print(message_type)
+                    print(type(message_type))
                 except (AttributeError, ModuleNotFoundError, ValueError):
                     raise RuntimeError('The passed message type is invalid')
 
