@@ -152,17 +152,18 @@ class EchoVerb(VerbExtension):
         elif service_event_type is ServiceEventType.RESPONSE_RECEIVED or \
                 service_event_type is ServiceEventType.RESPONSE_SENT:
             serialize_msg_type = self.srv_module.Response
-        else:  # TODO remove this else condition later
-            print("# Invalid Type")
+        else:  # TODO remove this else condition later once event enum is correct
             return
 
-        # csv: TODO
+        # csv
         if self.csv:
             to_print = message_to_csv(
                 msg,
                 truncate_length=self.truncate_length,
                 no_arr=self.no_arr,
-                no_str=self.no_str)
+                no_str=self.no_str,
+                serialize_msg_type=serialize_msg_type
+            )
             if self.include_message_info:
                 to_print = f'{",".join(str(x) for x in info.values())},{to_print}'
             print(to_print)
@@ -173,7 +174,10 @@ class EchoVerb(VerbExtension):
             print(yaml.dump(info), end='---\n')
         print(
             message_to_yaml(
-                msg, truncate_length=self.truncate_length,
-                no_arr=self.no_arr, no_str=self.no_str, flow_style=self.flow_style,
+                msg,
+                truncate_length=self.truncate_length,
+                no_arr=self.no_arr,
+                no_str=self.no_str,
+                flow_style=self.flow_style,
                 serialize_msg_type=serialize_msg_type),
             end='---\n')
