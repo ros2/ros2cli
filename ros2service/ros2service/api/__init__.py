@@ -12,11 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from time import sleep
 from rclpy.topic_or_service_is_hidden import topic_or_service_is_hidden
 from ros2cli.node.strategy import NodeStrategy
 from rosidl_runtime_py import get_service_interfaces
 from rosidl_runtime_py import message_to_yaml
 from rosidl_runtime_py.utilities import get_service
+
+import rclpy
 
 
 def get_service_names_and_types(*, node, include_hidden_services=False):
@@ -33,8 +36,47 @@ def get_service_names(*, node, include_hidden_services=False):
         node=node, include_hidden_services=include_hidden_services)
     return [n for (n, t) in service_names_and_types]
 
-def get_service_type(*, node, service, include_hidden_services=False):
-    pass
+
+def get_service_class(node, service, blocking=False, include_hidden_services=False):
+    srv_class = _get_service_class(node, service, include_hidden_services)
+    if srv_class:
+        return srv_class
+    elif blocking:
+        print('WARNING: service [%s] does not appear to be started yet' % service)
+        while rclpy.ok():
+            srv_class = _get_service_class(node, service, include_hidden_services)
+            if srv_class:
+                return srv_class
+            else:
+                sleep(0.1)
+    else:
+        print('WARNING: service [%s] does not appear to be started yet' % service)
+    return None
+
+
+def _get_service_class(node, service, include_hidden_services):
+    service_names_and_types = get_service_names_and_types(
+        node=node,
+        include_hidden_services=include_hidden_services)
+
+    service_type = None
+    for (service_name, service_types) in service_names_and_types:
+        if service == service_name:
+            if len(service_types) > 1:
+                raise RuntimeError(
+                    "Cannot echo service '%s', as it contains more than one type: [%s]" %
+                    (service, ', '.join(service_types))
+                )
+        service_type = service_types[0]
+        break
+
+    if service_type is None:
+        return None
+
+    try:
+        return get_service(service_type)
+    except (AttributeError, ModuleNotFoundError, ValueError):
+        raise RuntimeError("The service type '%s' is invalid" % service_type)
 
 
 def service_type_completer(**kwargs):

@@ -27,10 +27,10 @@ from rcl_interfaces.msg import ServiceEvent
 
 from ros2topic.api import unsigned_int
 
-from ros2service.api import ServiceNameCompleter, get_service_names_and_types
+from ros2service.api import ServiceNameCompleter, get_service_names_and_types, get_service_class
 from ros2service.api import ServiceTypeCompleter
 from ros2service.verb import VerbExtension
-from rosidl_runtime_py.utilities import get_message
+from rosidl_runtime_py.utilities import get_message, get_service
 from ros2cli.node.strategy import NodeStrategy
 
 from rosidl_runtime_py import message_to_yaml, message_to_csv
@@ -51,11 +51,8 @@ class EchoVerb(VerbExtension):
         self.flow_style = None
         self.csv = None
         self.srv_module = None
-        self.srv_type = None
-        self.topic_name = None
         self.include_message_info = None
-        self.hidden_topic_suffix = "/_service_event"
-        self.message_type = get_message("rcl_interfaces/msg/ServiceEvent")
+        self.event_msg_type = get_message("rcl_interfaces/msg/ServiceEvent")
         self.qos_profile = QoSPresetProfiles.get_from_short_key("services_default")
 
     def add_arguments(self, parser, cli_name):
@@ -97,7 +94,6 @@ class EchoVerb(VerbExtension):
             help='Shows the associated message info.')
 
     def main(self, *, args):
-        self.topic_name = args.service_name + self.hidden_topic_suffix
         self.truncate_length = args.truncate_length if not args.full_length else None
         self.no_arr = args.no_arr
         self.no_str = args.no_str
@@ -106,63 +102,38 @@ class EchoVerb(VerbExtension):
 
         if args.service_type is None:
             with NodeStrategy(args) as node:
-                service_names_and_types = get_service_names_and_types(
-                    node=node,
-                    include_hidden_services=True)
-
-            for (service_name, service_types) in service_names_and_types:
-                if args.service_name == service_name:
-                    if len(service_types) is not 1:
-                        raise RuntimeError(
-                            'Found multiple types for the same service, try specifying '
-                            'the type using service_type positional argument')
-                    for service_type in service_types:
-                        self.srv_type = service_type
-            if self.srv_type is None:
-                raise RuntimeError(
-                    'Could not find running instance the service')
+                self.srv_module = get_service_class(
+                    node, args.service_name, blocking=False, include_hidden_services=True)
         else:
-            self.srv_type = args.service_type
+            try:
+                self.srv_module = get_service(args.service_type)
+            except (AttributeError, ModuleNotFoundError, ValueError):
+                raise RuntimeError("The service type '%s' is invalid" % args.service_type)
 
-        if self.srv_type is None:
+        if self.srv_module is None:
             raise RuntimeError(
-                'Could not determine the type for the passed service')
+                'Could not load the type for the passed service')
 
-        # load the service reqeust and response module
-        try:
-            parts = self.srv_type.split('/')
-            if len(parts) == 2:
-                parts = [parts[0], 'srv', parts[1]]
-            package_name = parts[0]
-            module = importlib.import_module('.'.join(parts[:-1]))
-            srv_name = parts[-1]
-            self.srv_module = getattr(module, srv_name)
-        except (AttributeError, ModuleNotFoundError, ValueError):
-            raise RuntimeError('The passed service type is invalid')
-        try:
-            var = self.srv_module.Request
-            var = self.srv_module.Response
-        except AttributeError:
-            raise RuntimeError('The passed type is not a service')
+        event_topic_name = args.service_name + "/_service_event"
 
         with NodeStrategy(args) as node:
             self.subscribe_and_spin(
                 node,
-                self.topic_name,
-                self.message_type
+                event_topic_name,
+                self.event_msg_type
             )
 
     def subscribe_and_spin(
             self,
             node: Node,
-            topic_name: str,
-            message_type: MsgType,
+            event_topic_name: str,
+            event_msg_type: MsgType,
     ) -> Optional[str]:
         """Initialize a node with a single subscription and spin."""
 
         node.create_subscription(
-            message_type,
-            topic_name,
+            event_msg_type,
+            event_topic_name,
             self._subscriber_callback,
             self.qos_profile)
 
