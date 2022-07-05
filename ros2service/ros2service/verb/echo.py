@@ -47,11 +47,13 @@ class EchoVerb(VerbExtension):
         super().__init__()
         self.no_str = None
         self.no_arr = None
-        self.truncate_length = None
-        self.flow_style = None
         self.csv = None
-        self.srv_module = None
+        self.flow_style = None
+        self.client = None
+        self.server = None
+        self.truncate_length = None
         self.include_message_info = None
+        self.srv_module = None
         self.event_msg_type = get_message("rcl_interfaces/msg/ServiceEvent")
         self.qos_profile = QoSPresetProfiles.get_from_short_key("services_default")
 
@@ -92,6 +94,10 @@ class EchoVerb(VerbExtension):
         parser.add_argument(
             '--include-message-info', '-i', action='store_true',
             help='Shows the associated message info.')
+        parser.add_argument(
+            '--client', action='store_true', help="Echo only request sent or response received by service client")
+        parser.add_argument(
+            '--server', action='store_true', help="Echo only request received or response sent by service server")
 
     def main(self, *, args):
         self.truncate_length = args.truncate_length if not args.full_length else None
@@ -99,6 +105,8 @@ class EchoVerb(VerbExtension):
         self.no_str = args.no_str
         self.csv = args.csv
         self.include_message_info = args.include_message_info
+        self.client = args.client
+        self.server = args.server
 
         if args.service_type is None:
             with NodeStrategy(args) as node:
@@ -140,14 +148,24 @@ class EchoVerb(VerbExtension):
         rclpy.spin(node)
 
     def _subscriber_callback(self, msg, info):
-        service_event_type = msg.info.event_type
         serialize_msg_type = None
+        event_enum = msg.info.event_type
 
-        if service_event_type is ServiceEventType.REQUEST_RECEIVED or \
-                service_event_type is ServiceEventType.REQUEST_SENT:
+        if self.client:
+            if event_enum is ServiceEventType.REQUEST_RECEIVED or \
+                    event_enum is ServiceEventType.RESPONSE_SENT:
+                return
+
+        if self.server:
+            if event_enum is ServiceEventType.REQUEST_SENT or \
+                    event_enum is ServiceEventType.RESPONSE_RECEIVED:
+                return
+
+        if event_enum is ServiceEventType.REQUEST_RECEIVED or \
+                event_enum is ServiceEventType.REQUEST_SENT:
             serialize_msg_type = self.srv_module.Request
-        elif service_event_type is ServiceEventType.RESPONSE_RECEIVED or \
-                service_event_type is ServiceEventType.RESPONSE_SENT:
+        elif event_enum is ServiceEventType.RESPONSE_RECEIVED or \
+                event_enum is ServiceEventType.RESPONSE_SENT:
             serialize_msg_type = self.srv_module.Response
         else:  # TODO remove this once event enum is correct
             print("Returning invalid service event type")
