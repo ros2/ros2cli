@@ -29,13 +29,20 @@ from ros2service.api import ServiceNameCompleter, get_service_class
 from ros2service.api import ServiceTypeCompleter
 from ros2service.verb import VerbExtension
 
-from rosidl_runtime_py import message_to_yaml, message_to_csv, message_to_ordereddict
+from rosidl_runtime_py import message_to_csv, message_to_ordereddict
 from rosidl_runtime_py.utilities import get_message, get_service
 
 import yaml
 
 DEFAULT_TRUNCATE_LENGTH = 128
 MsgType = TypeVar('MsgType')
+
+
+def represent_ordereddict(dumper, data):
+    items = []
+    for k, v in data.items():
+        items.append((dumper.represent_data(k), dumper.represent_data(v)))
+    return yaml.nodes.MappingNode(u'tag:yaml.org,2002:map', items)
 
 
 class EchoVerb(VerbExtension):
@@ -55,6 +62,7 @@ class EchoVerb(VerbExtension):
         self.event_enum = None
         self.event_msg_type = get_message("rcl_interfaces/msg/ServiceEvent")
         self.qos_profile = QoSPresetProfiles.get_from_short_key("services_default")
+        self.__yaml_representer_registered = False
 
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
@@ -196,12 +204,18 @@ class EchoVerb(VerbExtension):
 
     def format_output(self, dict_service_event: OrderedDict):
         dict_output = OrderedDict()
-        dict_output['event_type'] = dict_service_event['info']['event_name']
+        dict_output['stamp'] = dict_service_event['info']['stamp']
+        dict_output['client_id'] = dict_service_event['info']['client_id']
+        dict_output['sequence_number'] = dict_service_event['info']['sequence_number']
 
-        # dict_output = {'event_type': dict_service_event['info']['event_name'],
-        #                'stamp': dict_service_event['info']['stamp'],
-        #                'client_id': dict_service_event['info']['client_id'],
-        #                'sequence_number': dict_service_event['info']['sequence_number']}
+        if self.event_enum is ServiceEventType.REQUEST_SENT:
+            dict_output['event_type'] = 'CLIENT_REQUEST_SENT'
+        elif self.event_enum is ServiceEventType.RESPONSE_RECEIVED:
+            dict_output['event_type'] = 'CLIENT_RESPONSE_RECEIVED'
+        elif self.event_enum is ServiceEventType.REQUEST_RECEIVED:
+            dict_output['event_type'] = 'SERVER_REQUEST_RECEIVED'
+        elif self.event_enum is ServiceEventType.RESPONSE_SENT:
+            dict_output['event_type'] = 'SERVER_RESPONSE_SENT'
 
         if self.event_enum is ServiceEventType.REQUEST_RECEIVED or \
                 self.event_enum is ServiceEventType.REQUEST_SENT:
@@ -210,6 +224,13 @@ class EchoVerb(VerbExtension):
                 self.event_enum is ServiceEventType.RESPONSE_SENT:
             dict_output['response'] = dict_service_event['serialized_event']
 
+        # Register custom representer for YAML output
+        if not self.__yaml_representer_registered:
+            yaml.add_representer(OrderedDict, represent_ordereddict)
+            self.__yaml_representer_registered = True
+
         return yaml.dump(dict_output,
-                         allow_unicode=True, width=sys.maxsize, default_flow_style=self.flow_style,
+                         allow_unicode=True,
+                         width=sys.maxsize,
+                         default_flow_style=self.flow_style,
                          )
