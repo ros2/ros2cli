@@ -11,9 +11,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import sys
 from typing import Optional
 from typing import TypeVar
+
+from collections import OrderedDict
 
 import rclpy
 from rclpy.node import Node
@@ -27,7 +29,7 @@ from ros2service.api import ServiceNameCompleter, get_service_class
 from ros2service.api import ServiceTypeCompleter
 from ros2service.verb import VerbExtension
 
-from rosidl_runtime_py import message_to_yaml, message_to_csv
+from rosidl_runtime_py import message_to_yaml, message_to_csv, message_to_ordereddict
 from rosidl_runtime_py.utilities import get_message, get_service
 
 import yaml
@@ -50,6 +52,7 @@ class EchoVerb(VerbExtension):
         self.truncate_length = None
         self.include_message_info = None
         self.srv_module = None
+        self.event_enum = None
         self.event_msg_type = get_message("rcl_interfaces/msg/ServiceEvent")
         self.qos_profile = QoSPresetProfiles.get_from_short_key("services_default")
 
@@ -145,24 +148,24 @@ class EchoVerb(VerbExtension):
 
     def _subscriber_callback(self, msg, info):
         serialize_msg_type = None
-        event_enum = msg.info.event_type
+        self.event_enum = msg.info.event_type
 
         if self.client and self.server:
             pass
         elif self.client:
-            if event_enum is ServiceEventType.REQUEST_RECEIVED or \
-                    event_enum is ServiceEventType.RESPONSE_SENT:
+            if self.event_enum is ServiceEventType.REQUEST_RECEIVED or \
+                    self.event_enum is ServiceEventType.RESPONSE_SENT:
                 return
         elif self.server:
-            if event_enum is ServiceEventType.REQUEST_SENT or \
-                    event_enum is ServiceEventType.RESPONSE_RECEIVED:
+            if self.event_enum is ServiceEventType.REQUEST_SENT or \
+                    self.event_enum is ServiceEventType.RESPONSE_RECEIVED:
                 return
 
-        if event_enum is ServiceEventType.REQUEST_RECEIVED or \
-                event_enum is ServiceEventType.REQUEST_SENT:
+        if self.event_enum is ServiceEventType.REQUEST_RECEIVED or \
+                self.event_enum is ServiceEventType.REQUEST_SENT:
             serialize_msg_type = self.srv_module.Request
-        elif event_enum is ServiceEventType.RESPONSE_RECEIVED or \
-                event_enum is ServiceEventType.RESPONSE_SENT:
+        elif self.event_enum is ServiceEventType.RESPONSE_RECEIVED or \
+                self.event_enum is ServiceEventType.RESPONSE_SENT:
             serialize_msg_type = self.srv_module.Response
         else:  # TODO remove this once event enum is correct
             print("Returning invalid service event type")
@@ -186,11 +189,27 @@ class EchoVerb(VerbExtension):
         if self.include_message_info:
             print(yaml.dump(info), end='---\n')
         print(
-            message_to_yaml(
-                msg,
-                truncate_length=self.truncate_length,
-                no_arr=self.no_arr,
-                no_str=self.no_str,
-                flow_style=self.flow_style,
-                serialize_msg_type=serialize_msg_type),
-            end='---\n')
+            self.format_output(message_to_ordereddict(
+                msg, truncate_length=self.truncate_length,
+                no_arr=self.no_arr, no_str=self.no_str, serialize_msg_type=serialize_msg_type)),
+            end='---------------------------\n')
+
+    def format_output(self, dict_service_event: OrderedDict):
+        dict_output = OrderedDict()
+        dict_output['event_type'] = dict_service_event['info']['event_name']
+
+        # dict_output = {'event_type': dict_service_event['info']['event_name'],
+        #                'stamp': dict_service_event['info']['stamp'],
+        #                'client_id': dict_service_event['info']['client_id'],
+        #                'sequence_number': dict_service_event['info']['sequence_number']}
+
+        if self.event_enum is ServiceEventType.REQUEST_RECEIVED or \
+                self.event_enum is ServiceEventType.REQUEST_SENT:
+            dict_output['request'] = dict_service_event['serialized_event']
+        elif self.event_enum is ServiceEventType.RESPONSE_RECEIVED or \
+                self.event_enum is ServiceEventType.RESPONSE_SENT:
+            dict_output['response'] = dict_service_event['serialized_event']
+
+        return yaml.dump(dict_output,
+                         allow_unicode=True, width=sys.maxsize, default_flow_style=self.flow_style,
+                         )
