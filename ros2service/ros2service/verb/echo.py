@@ -11,30 +11,25 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import importlib
 
 from typing import Optional
 from typing import TypeVar
 
 import rclpy
 from rclpy.node import Node
-from rclpy.qos import QoSDurabilityPolicy
 from rclpy.qos import QoSPresetProfiles
-from rclpy.qos import QoSProfile
-from rclpy.serialization import deserialize_message
 
-from rcl_interfaces.msg import ServiceEventType
-from rcl_interfaces.msg import ServiceEvent
-
+from ros2cli.node.strategy import NodeStrategy
 from ros2topic.api import unsigned_int
+from rcl_interfaces.msg import ServiceEventType
 
-from ros2service.api import ServiceNameCompleter, get_service_names_and_types, get_service_class
+from ros2service.api import ServiceNameCompleter, get_service_class
 from ros2service.api import ServiceTypeCompleter
 from ros2service.verb import VerbExtension
-from rosidl_runtime_py.utilities import get_message, get_service
-from ros2cli.node.strategy import NodeStrategy
 
 from rosidl_runtime_py import message_to_yaml, message_to_csv
+from rosidl_runtime_py.utilities import get_message, get_service
+
 import yaml
 
 DEFAULT_TRUNCATE_LENGTH = 128
