@@ -155,7 +155,7 @@ class EchoVerb(VerbExtension):
         rclpy.spin(node)
 
     def _subscriber_callback(self, msg, info):
-        serialize_msg_type = None
+        deserialize_msg_type = None
         self.event_enum = msg.info.event_type
 
         if self.client and self.server:
@@ -171,10 +171,10 @@ class EchoVerb(VerbExtension):
 
         if self.event_enum is ServiceEventType.REQUEST_RECEIVED or \
                 self.event_enum is ServiceEventType.REQUEST_SENT:
-            serialize_msg_type = self.srv_module.Request
+            deserialize_msg_type = self.srv_module.Request
         elif self.event_enum is ServiceEventType.RESPONSE_RECEIVED or \
                 self.event_enum is ServiceEventType.RESPONSE_SENT:
-            serialize_msg_type = self.srv_module.Response
+            deserialize_msg_type = self.srv_module.Response
         else:  # TODO remove this once event enum is correct
             print("Returning invalid service event type")
             return
@@ -186,7 +186,7 @@ class EchoVerb(VerbExtension):
                 truncate_length=self.truncate_length,
                 no_arr=self.no_arr,
                 no_str=self.no_str,
-                serialize_msg_type=serialize_msg_type
+                deserialize_msg_type=deserialize_msg_type
             )
             if self.include_message_info:
                 to_print = f'{",".join(str(x) for x in info.values())},{to_print}'
@@ -199,7 +199,7 @@ class EchoVerb(VerbExtension):
         print(
             self.format_output(message_to_ordereddict(
                 msg, truncate_length=self.truncate_length,
-                no_arr=self.no_arr, no_str=self.no_str, serialize_msg_type=serialize_msg_type)),
+                no_arr=self.no_arr, no_str=self.no_str, deserialize_msg_type=deserialize_msg_type)),
             end='---------------------------\n')
 
     def format_output(self, dict_service_event: OrderedDict):
