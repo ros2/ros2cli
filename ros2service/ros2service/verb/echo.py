@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import importlib
+
 from typing import Optional
 from typing import TypeVar
 
@@ -151,12 +152,13 @@ class EchoVerb(VerbExtension):
         serialize_msg_type = None
         event_enum = msg.info.event_type
 
-        if self.client:
+        if self.client and self.server:
+            pass
+        elif self.client:
             if event_enum is ServiceEventType.REQUEST_RECEIVED or \
                     event_enum is ServiceEventType.RESPONSE_SENT:
                 return
-
-        if self.server:
+        elif self.server:
             if event_enum is ServiceEventType.REQUEST_SENT or \
                     event_enum is ServiceEventType.RESPONSE_RECEIVED:
                 return
