@@ -107,7 +107,7 @@ class DumpVerb(VerbExtension):
             future = client.call_async(request)
 
             # wait for response
-            rclpy.spin_until_future_complete(node, future)
+            rclpy.spin_until_complete(node, future)
 
             yaml_output = {node_name.full_name: {'ros__parameters': {}}}
 

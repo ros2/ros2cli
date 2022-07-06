@@ -174,7 +174,7 @@ def get_components_in_containers(*, node, remote_containers_node_names):
 
     timer = node.create_timer(timer_period_sec=0.1, callback=resume)
     try:
-        rclpy.spin_until_future_complete(node, future, timeout_sec=5.0)
+        rclpy.spin_until_complete(node, future, timeout_sec=5.0)
         if not future.done():
             resume(to_completion=True)
         return dict(future.result())
@@ -244,7 +244,7 @@ def load_component_into_container(
                 arg_msg.name = name
                 request.extra_arguments.append(arg_msg)
         future = load_node_client.call_async(request)
-        rclpy.spin_until_future_complete(node, future)
+        rclpy.spin_until_complete(node, future)
         response = future.result()
         if not response.success:
             raise RuntimeError('Failed to load component: ' + response.error_message.capitalize())
@@ -274,7 +274,7 @@ def unload_component_from_container(*, node, remote_container_node_name, compone
             request = composition_interfaces.srv.UnloadNode.Request()
             request.unique_id = uid
             future = unload_node_client.call_async(request)
-            rclpy.spin_until_future_complete(node, future)
+            rclpy.spin_until_complete(node, future)
             response = future.result()
             yield uid, not response.success, response.error_message
     finally:

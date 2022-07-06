@@ -102,8 +102,8 @@ def parse_parameter_dict(*, namespace, parameter_dict):
         # Unroll nested parameters
         if type(param_value) == dict:
             parameters += parse_parameter_dict(
-                    namespace=full_param_name + PARAMETER_SEPARATOR_STRING,
-                    parameter_dict=param_value)
+                namespace=full_param_name + PARAMETER_SEPARATOR_STRING,
+                parameter_dict=param_value)
         else:
             parameter = Parameter()
             parameter.name = full_param_name
@@ -173,7 +173,7 @@ def call_describe_parameters(*, node, node_name, parameter_names=None):
     if parameter_names:
         request.names = parameter_names
     future = client.call_async(request)
-    rclpy.spin_until_future_complete(node, future)
+    rclpy.spin_until_complete(node, future)
 
     # handle response
     response = future.result()
@@ -192,7 +192,7 @@ def call_get_parameters(*, node, node_name, parameter_names):
     request = GetParameters.Request()
     request.names = parameter_names
     future = client.call_async(request)
-    rclpy.spin_until_future_complete(node, future)
+    rclpy.spin_until_complete(node, future)
 
     # handle response
     response = future.result()
@@ -211,7 +211,7 @@ def call_set_parameters(*, node, node_name, parameters):
     request = SetParameters.Request()
     request.parameters = parameters
     future = client.call_async(request)
-    rclpy.spin_until_future_complete(node, future)
+    rclpy.spin_until_complete(node, future)
 
     # handle response
     response = future.result()
@@ -229,7 +229,7 @@ def call_list_parameters(*, node, node_name, prefix=None):
 
     request = ListParameters.Request()
     future = client.call_async(request)
-    rclpy.spin_until_future_complete(node, future)
+    rclpy.spin_until_complete(node, future)
 
     # handle response
     response = future.result()
