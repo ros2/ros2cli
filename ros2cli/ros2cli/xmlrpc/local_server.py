@@ -15,11 +15,24 @@
 from xmlrpc.server import SimpleXMLRPCRequestHandler
 from xmlrpc.server import SimpleXMLRPCServer
 
+import netifaces
+
+
+def get_local_ipaddrs():
+    iplist = []
+    interfaces = netifaces.interfaces()
+    for interface in interfaces:
+        addrs = netifaces.ifaddresses(interface)
+        if netifaces.AF_INET in addrs.keys():
+            for value in addrs[netifaces.AF_INET]:
+                iplist.append(value['addr'])
+    return iplist
+
 
 class LocalXMLRPCServer(SimpleXMLRPCServer):
 
     def verify_request(self, request, client_address):
-        if client_address[0] != '127.0.0.1':
+        if client_address[0] not in get_local_ipaddrs():
             return False
         return super(LocalXMLRPCServer, self).verify_request(request, client_address)
 
