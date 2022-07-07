@@ -96,7 +96,7 @@ class DumpVerb(VerbExtension):
             if response is None:
                 raise RuntimeError(
                     'Wait for service timed out waiting for '
-                    f'parameter services for node {node_name}')
+                    f'parameter services for node {node_name.full_name}')
             elif response.result() is None:
                 e = response.exception()
                 raise RuntimeError(
