@@ -53,8 +53,7 @@ class _RunnerImpl:
         :param qos: Qos profile used to create the publisher or subscription.
         :param *args: Other arguments required to construct the node.
         """
-        if self._impl_cls is None or not isclass(self._impl_cls):
-            raise RuntimeError('internal error')
+        assert self._impl_cls is not None and isclass(self._impl_cls)
         self._impl = self._impl_cls(qos.get_c_qos_profile(), *args)
         self._experiment_duration = experiment_duration
 
