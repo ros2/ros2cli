@@ -41,21 +41,21 @@ class _RunnerImpl:
 
     def __init__(
         self,
-        experiment_duration: float,
+        run_duration: float,
         qos: rclpy.qos.QoSProfile,
         *args
     ):
         """
         Construct.
 
-        :param experiment_duration: Total time to be spinning the node.
+        :param run_duration: Total time to be spinning the node.
             A negative number can be used to spin for ever, e.g. `cls._BLOCK_FOREVER`.
         :param qos: Qos profile used to create the publisher or subscription.
         :param *args: Other arguments required to construct the node.
         """
         assert self._impl_cls is not None and isclass(self._impl_cls)
         self._impl = self._impl_cls(qos.get_c_qos_profile(), *args)
-        self._experiment_duration = experiment_duration
+        self._run_duration = run_duration
 
     def __enter__(self):
         """
@@ -64,7 +64,7 @@ class _RunnerImpl:
         Asynchronously spinning is started and a reference to the
         spinning node is returned.
         """
-        self._impl.start(self._experiment_duration)
+        self._impl.start(self._run_duration)
         return self._impl.get_node()
 
     def __exit__(self, _, _1, _2):
@@ -80,8 +80,8 @@ class _RunnerImpl:
         """Signal the spinning thread to stop."""
         self._impl.stop()
 
-    def wait_for_experiment_to_complete(self):
-        """Wait until experiment duration expires."""
+    def wait_runner_to_complete(self):
+        """Wait until run duration expires."""
         self._impl.join()
 
 
@@ -93,7 +93,7 @@ class ClientRunner(_RunnerImpl):
     def __init__(
         self,
         *,
-        experiment_duration_s: float,
+        run_duration_s: float,
         qos: rclpy.qos.QoSProfile,
         message_size_bytes: int,
         target_pub_period_s: float,
@@ -102,7 +102,7 @@ class ClientRunner(_RunnerImpl):
         """
         Construct.
 
-        :param experiment_duration_s: Total time to be spinning.
+        :param run_duration_s: Total time to be spinning.
         :param qos: Qos profile to be used when creating the publisher.
         :param message_size_bytes: Size of the message to be used.
             The total serialized message size will be a bit bigger, because of some extra metadata
@@ -110,7 +110,7 @@ class ClientRunner(_RunnerImpl):
         :param server_timeout_s: Timeout used to wait for a netperf server.
         """
         super().__init__(
-            experiment_duration_s, qos, message_size_bytes, target_pub_period_s, server_timeout_s)
+            run_duration_s, qos, message_size_bytes, target_pub_period_s, server_timeout_s)
 
 
 class ServerRunner(_RunnerImpl):

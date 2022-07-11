@@ -63,7 +63,7 @@ class ClientVerb(VerbExtension):
         pub_period = 8 * args.message_size / 1e6 / args.target_bw
 
         runner = netperf_tool.ClientRunner(
-            experiment_duration_s=args.duration,
+            run_duration_s=args.duration,
             qos=qos_profile,
             message_size_bytes=args.message_size,
             target_pub_period_s=pub_period,
@@ -76,7 +76,7 @@ class ClientVerb(VerbExtension):
                 print(f'    publisher gid: {node.get_stringified_pub_gid()}')
                 print(f'    qos: {qos_profile}')
                 print('---------------------------------------------------------')
-                runner.wait_for_experiment_to_complete()
+                runner.wait_runner_to_complete()
         except KeyboardInterrupt:
             pass
         except:
