@@ -40,8 +40,8 @@ class ServerVerb(VerbExtension):
             with runner as node:
                 print('---------------------------------------------------------')
                 print('Server running')
-                print(f'\ttopic: {node.get_topic_name()}')
-                print(f'\tqos: {qos_profile}')
+                print(f'    topic: {node.get_topic_name()}')
+                print(f'    qos: {qos_profile}')
                 print('---------------------------------------------------------')
                 while True:
                     # we wait for 1 second, so we can check for signals in the middle
