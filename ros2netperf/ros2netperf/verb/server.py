@@ -66,7 +66,6 @@ class ServerVerb(VerbExtension):
 
 
     def print_results(self, results_map):
-        # TODO(ivanpauno): Add some processing to be able to show better statistics
         if 0 == len(results_map):
             return
         print_stats_header()
