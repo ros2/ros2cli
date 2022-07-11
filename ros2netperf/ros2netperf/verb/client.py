@@ -72,9 +72,9 @@ class ClientVerb(VerbExtension):
             with runner as node:
                 print('---------------------------------------------------------')
                 print('Client running')
-                print(f'\ttopic: {node.get_topic_name()}')
-                print(f'\tpublisher gid: {node.get_stringified_pub_gid()}')
-                print(f'\tqos: {qos_profile}')
+                print(f'    topic: {node.get_topic_name()}')
+                print(f'    publisher gid: {node.get_stringified_pub_gid()}')
+                print(f'    qos: {qos_profile}')
                 print('---------------------------------------------------------')
                 runner.wait_for_experiment_to_complete()
         except KeyboardInterrupt:
