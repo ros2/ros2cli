@@ -132,7 +132,9 @@ ServerNode::handle_get_results_request(
     collected_info.message_infos.begin(),
     collected_info.message_infos.end(),
     0.0,
-    [latency_avg_ms, div = static_cast<double>(collected_info.message_infos.size() - 1)](auto lhs, auto rhs) {
+    [latency_avg_ms, div = static_cast<double>(collected_info.message_infos.size() - 1)](
+      auto lhs, auto rhs)
+    {
       auto diff = static_cast<double>(rhs.latency.count()) / 1e6 - latency_avg_ms;
       return lhs + diff * diff / div;
     });
