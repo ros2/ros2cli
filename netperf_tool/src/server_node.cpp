@@ -69,8 +69,6 @@ ServerNode::handle_msg(
     rec_timestamp = rclcpp::Time{rmw_msg_info.received_timestamp};
     latency = std::chrono::nanoseconds{(rec_timestamp - pub_timestamp).nanoseconds()};
   } else {
-    // TODO(ivanpauno): Maybe it's worth to always calculate this latency (?)
-    // as it takes in account the executor overhead.
     RCLCPP_INFO_ONCE(
       this->get_logger(),
       "either source or received timestamp are not supported,"
