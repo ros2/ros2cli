@@ -40,7 +40,7 @@ struct ClientCollectedInfo
   /// The serialized message size.
   size_t serialized_message_size;
   /// Times when the messages were published.
-  std::vector<std::chrono::time_point<std::chrono::system_clock>> message_published_times;
+  std::vector<rclcpp::Time> message_published_times;
 };
 
 /// The results of an experiment.
@@ -155,6 +155,8 @@ private:
   std::chrono::nanoseconds target_pub_period_;
   /// Timeout used when waiting for a netperf server to be available.
   std::chrono::nanoseconds server_timeout_;
+  /// Clock used to get timestamps.
+  rclcpp::Clock system_time_clock_{RCL_SYSTEM_TIME};
 };
 }  // namespace netperf_tool
 #endif  // CLIENT_NODE_HPP_

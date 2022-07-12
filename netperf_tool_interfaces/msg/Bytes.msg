@@ -1,3 +1,3 @@
-uint64  timestamp
+builtin_interfaces/Time  timestamp
 uint64  id
 byte[]  data

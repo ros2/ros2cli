@@ -37,7 +37,7 @@ namespace netperf_tool
 struct ServerMessageInfo
 {
   /// Timestamp of when the message was received.
-  std::chrono::time_point<std::chrono::system_clock> reception_time;
+  rclcpp::Time reception_time;
   /// Message ids.
   size_t id;
   /// Single trip latency of the message.
@@ -144,6 +144,8 @@ private:
   rclcpp::Serialization<netperf_tool_interfaces::msg::Bytes> deserializer_;
   /// Service used to make experiment statistics available to netperf clients.
   rclcpp::ServiceBase::SharedPtr srv_;
+  /// Clock used to get timestamps.
+  rclcpp::Clock system_time_clock_{RCL_SYSTEM_TIME};
 };
 }  // namespace netperf_tool
 #endif  // SERVER_NODE_HPP_

@@ -134,8 +134,8 @@ ClientNode::get_stringified_pub_gid()
 void
 ClientNode::pub_next_msg()
 {
-  auto now = std::chrono::system_clock::now();
-  msg_to_publish_.timestamp = static_cast<size_t>(now.time_since_epoch().count());
+  auto now = system_time_clock_.now();
+  msg_to_publish_.timestamp = now;
   pub_->publish(msg_to_publish_);
   // always keep the vector preallocated, to avoid delays when the timer is triggered
   {

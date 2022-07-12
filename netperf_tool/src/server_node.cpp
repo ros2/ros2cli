@@ -53,7 +53,7 @@ ServerNode::handle_msg(
   const rclcpp::SerializedMessage & serialized_msg,
   const rclcpp::MessageInfo & msg_info)
 {
-  auto rec_timestamp = std::chrono::system_clock::now();
+  auto rec_timestamp = system_time_clock_.now();
   std::chrono::nanoseconds latency;
   size_t received_bytes = serialized_msg.size();
   netperf_tool_interfaces::msg::Bytes msg;
@@ -65,12 +65,9 @@ ServerNode::handle_msg(
     RCLCPP_INFO_ONCE(
       this->get_logger(),
       "source and received timestamp supported, using them to calculate latency!");
-    auto pub_timestamp = std::chrono::time_point<std::chrono::system_clock>{
-      std::chrono::nanoseconds{rmw_msg_info.source_timestamp}};
-    rec_timestamp =
-      std::chrono::time_point<std::chrono::system_clock>{
-      std::chrono::nanoseconds{rmw_msg_info.received_timestamp}};
-    latency = rec_timestamp - pub_timestamp;
+    auto pub_timestamp = rclcpp::Time{rmw_msg_info.source_timestamp};
+    rec_timestamp = rclcpp::Time{rmw_msg_info.received_timestamp};
+    latency = std::chrono::nanoseconds{(rec_timestamp - pub_timestamp).nanoseconds()};
   } else {
     // TODO(ivanpauno): Maybe it's worth to always calculate this latency (?)
     // as it takes in account the executor overhead.
@@ -78,10 +75,8 @@ ServerNode::handle_msg(
       this->get_logger(),
       "either source or received timestamp are not supported,"
       "using timestamps added to the message to calculate latency");
-    auto pub_timestamp =
-      std::chrono::time_point<std::chrono::system_clock>{
-      std::chrono::nanoseconds{msg.timestamp}};
-    latency = rec_timestamp - pub_timestamp;
+    rclcpp::Time pub_timestamp = msg.timestamp;
+    latency = std::chrono::nanoseconds{(rec_timestamp - pub_timestamp).nanoseconds()};
   }
   bool emplaced{false};
   auto string_gid = stringify_gid(rmw_msg_info.publisher_gid);
@@ -170,7 +165,7 @@ ServerNode::handle_get_results_request(
     (
       collected_info.message_infos.back().reception_time -
       collected_info.message_infos.front().reception_time
-    ).count()
+    ).nanoseconds()
   );
 
   ServerResults results;
