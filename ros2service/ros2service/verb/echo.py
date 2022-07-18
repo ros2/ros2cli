@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import sys
-from typing import Optional
 from typing import TypeVar
 
 from collections import OrderedDict
@@ -59,31 +58,29 @@ class EchoVerb(VerbExtension):
         self.truncate_length = None
         self.include_message_info = None
         self.srv_module = None
-        self.event_enum = None
-        self.event_msg_type = get_message("rcl_interfaces/msg/ServiceEvent")
-        self.qos_profile = QoSPresetProfiles.get_from_short_key("services_default")
+        self.event_msg_type = get_message('rcl_interfaces/msg/ServiceEvent')
+        self.qos_profile = QoSPresetProfiles.get_from_short_key('services_default')
         self.__yaml_representer_registered = False
 
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
             'service_name',
-            help="Name of the ROS service to echo from (e.g. '/add_two_ints')")
+            help="Name of the ROS service to echo (e.g. '/add_two_ints')")
         arg.completer = ServiceNameCompleter(
             include_hidden_services_key='include_hidden_services')
         arg = parser.add_argument(
             'service_type', nargs='?',
-            help="Type of the ROS service (e.g. 'std_srvs/srv/Empty')")
-        arg.completer = ServiceTypeCompleter(
-            service_name_key='service_name')
+            help="Type of the ROS service (e.g. 'example_interfaces/srv/AddTwoInts')")
+        arg.completer = ServiceTypeCompleter(service_name_key='service_name')
         parser.add_argument(
             '--full-length', '-f', action='store_true',
             help='Output all elements for arrays, bytes, and string with a '
                  "length > '--truncate-length', by default they are truncated "
-                 "after '--truncate-length' elements with '...''")
+                 "after '--truncate-length' elements with '...'")
         parser.add_argument(
             '--truncate-length', '-l', type=unsigned_int, default=DEFAULT_TRUNCATE_LENGTH,
             help='The length to truncate arrays, bytes, and string to '
-                 '(default: %d)' % DEFAULT_TRUNCATE_LENGTH)
+                 f'(default: {DEFAULT_TRUNCATE_LENGTH})')
         parser.add_argument(
             '--no-arr', action='store_true', help="Don't print array fields of messages")
         parser.add_argument(
@@ -102,9 +99,11 @@ class EchoVerb(VerbExtension):
             '--include-message-info', '-i', action='store_true',
             help='Shows the associated message info.')
         parser.add_argument(
-            '--client', action='store_true', help="Echo only request sent or response received by service client")
+            '--client-only', action='store_true',
+            help="Echo only request sent or response received messages from service clients.")
         parser.add_argument(
-            '--server', action='store_true', help="Echo only request received or response sent by service server")
+            '--server-only', action='store_true',
+            help="Echo only request received or response sent messages from service servers.")
 
     def main(self, *, args):
         self.truncate_length = args.truncate_length if not args.full_length else None
@@ -123,7 +122,7 @@ class EchoVerb(VerbExtension):
             try:
                 self.srv_module = get_service(args.service_type)
             except (AttributeError, ModuleNotFoundError, ValueError):
-                raise RuntimeError("The service type '%s' is invalid" % args.service_type)
+                raise RuntimeError(f"The service type '{args.service_type}' is invalid")
 
         if self.srv_module is None:
             raise RuntimeError(
@@ -143,9 +142,8 @@ class EchoVerb(VerbExtension):
             node: Node,
             event_topic_name: str,
             event_msg_type: MsgType,
-    ) -> Optional[str]:
+    ) -> None:
         """Initialize a node with a single subscription and spin."""
-
         node.create_subscription(
             event_msg_type,
             event_topic_name,
@@ -156,28 +154,27 @@ class EchoVerb(VerbExtension):
 
     def _subscriber_callback(self, msg, info):
         deserialize_msg_type = None
-        self.event_enum = msg.info.event_type
+        event_enum = msg.info.event_type
 
         if self.client and self.server:
             pass
         elif self.client:
-            if self.event_enum is ServiceEventType.REQUEST_RECEIVED or \
-                    self.event_enum is ServiceEventType.RESPONSE_SENT:
+            if event_enum is ServiceEventType.REQUEST_RECEIVED or \
+                    event_enum is ServiceEventType.RESPONSE_SENT:
                 return
         elif self.server:
-            if self.event_enum is ServiceEventType.REQUEST_SENT or \
-                    self.event_enum is ServiceEventType.RESPONSE_RECEIVED:
+            if event_enum is ServiceEventType.REQUEST_SENT or \
+                    event_enum is ServiceEventType.RESPONSE_RECEIVED:
                 return
 
-        if self.event_enum is ServiceEventType.REQUEST_RECEIVED or \
-                self.event_enum is ServiceEventType.REQUEST_SENT:
+        if event_enum is ServiceEventType.REQUEST_RECEIVED or \
+                event_enum is ServiceEventType.REQUEST_SENT:
             deserialize_msg_type = self.srv_module.Request
-        elif self.event_enum is ServiceEventType.RESPONSE_RECEIVED or \
-                self.event_enum is ServiceEventType.RESPONSE_SENT:
+        elif event_enum is ServiceEventType.RESPONSE_RECEIVED or \
+                event_enum is ServiceEventType.RESPONSE_SENT:
             deserialize_msg_type = self.srv_module.Response
-        else:  # TODO remove this once event enum is correct
-            print("Returning invalid service event type")
-            return
+        else:
+            raise ValueError(f'received unexpected service event type {event_enum}')
 
         # csv
         if self.csv:
@@ -199,29 +196,30 @@ class EchoVerb(VerbExtension):
         print(
             self.format_output(message_to_ordereddict(
                 msg, truncate_length=self.truncate_length,
-                no_arr=self.no_arr, no_str=self.no_str, deserialize_msg_type=deserialize_msg_type)),
+                no_arr=self.no_arr, no_str=self.no_str, deserialize_msg_type=deserialize_msg_type),
+                event_enum),
             end='---------------------------\n')
 
-    def format_output(self, dict_service_event: OrderedDict):
+    def format_output(self, dict_service_event: OrderedDict, event_enum):
         dict_output = OrderedDict()
         dict_output['stamp'] = dict_service_event['info']['stamp']
         dict_output['client_id'] = dict_service_event['info']['client_id']
         dict_output['sequence_number'] = dict_service_event['info']['sequence_number']
 
-        if self.event_enum is ServiceEventType.REQUEST_SENT:
+        if event_enum is ServiceEventType.REQUEST_SENT:
             dict_output['event_type'] = 'CLIENT_REQUEST_SENT'
-        elif self.event_enum is ServiceEventType.RESPONSE_RECEIVED:
+        elif event_enum is ServiceEventType.RESPONSE_RECEIVED:
             dict_output['event_type'] = 'CLIENT_RESPONSE_RECEIVED'
-        elif self.event_enum is ServiceEventType.REQUEST_RECEIVED:
+        elif event_enum is ServiceEventType.REQUEST_RECEIVED:
             dict_output['event_type'] = 'SERVER_REQUEST_RECEIVED'
-        elif self.event_enum is ServiceEventType.RESPONSE_SENT:
+        elif event_enum is ServiceEventType.RESPONSE_SENT:
             dict_output['event_type'] = 'SERVER_RESPONSE_SENT'
 
-        if self.event_enum is ServiceEventType.REQUEST_RECEIVED or \
-                self.event_enum is ServiceEventType.REQUEST_SENT:
+        if event_enum is ServiceEventType.REQUEST_RECEIVED or \
+                event_enum is ServiceEventType.REQUEST_SENT:
             dict_output['request'] = dict_service_event['serialized_event']
-        elif self.event_enum is ServiceEventType.RESPONSE_RECEIVED or \
-                self.event_enum is ServiceEventType.RESPONSE_SENT:
+        elif event_enum is ServiceEventType.RESPONSE_RECEIVED or \
+                event_enum is ServiceEventType.RESPONSE_SENT:
             dict_output['response'] = dict_service_event['serialized_event']
 
         # Register custom representer for YAML output

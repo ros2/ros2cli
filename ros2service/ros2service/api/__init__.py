@@ -38,19 +38,29 @@ def get_service_names(*, node, include_hidden_services=False):
 
 
 def get_service_class(node, service, blocking=False, include_hidden_services=False):
+    """
+    Load service type module for the given service.
+
+    The service should be running for this function to find the service type.
+    :param node: The node object of rclpy Node class.
+    :param service: The name of the service.
+    :param blocking: If blocking is True this function will wait for the service to start.
+    :param include_hidden_services: Whether to include hidden services while finding the
+    list of currently running services.
+    :return:
+    """
     srv_class = _get_service_class(node, service, include_hidden_services)
-    if srv_class:
+    if srv_class is not None:
         return srv_class
     elif blocking:
-        print('WARNING: service [%s] does not appear to be started yet' % service)
+        print(f'WARNING: service [{service}] does not appear to be started yet')
         while rclpy.ok():
             srv_class = _get_service_class(node, service, include_hidden_services)
-            if srv_class:
+            if srv_class is not None:
                 return srv_class
-            else:
-                sleep(0.1)
+            sleep(0.1)
     else:
-        print('WARNING: service [%s] does not appear to be started yet' % service)
+        print(f'WARNING: service [{service}] does not appear to be started yet')
     return None
 
 
@@ -64,9 +74,8 @@ def _get_service_class(node, service, include_hidden_services):
         if service == service_name:
             if len(service_types) > 1:
                 raise RuntimeError(
-                    "Cannot echo service '%s', as it contains more than one type: [%s]" %
-                    (service, ', '.join(service_types))
-                )
+                    f"Cannot echo service '{service}', as it contains more than one "
+                    f"type: [{', '.join(service_types)}]")
         service_type = service_types[0]
         break
 
@@ -76,7 +85,7 @@ def _get_service_class(node, service, include_hidden_services):
     try:
         return get_service(service_type)
     except (AttributeError, ModuleNotFoundError, ValueError):
-        raise RuntimeError("The service type '%s' is invalid" % service_type)
+        raise RuntimeError(f"The service type '{service_type}' is invalid")
 
 
 def service_type_completer(**kwargs):
