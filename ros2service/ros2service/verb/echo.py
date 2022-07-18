@@ -111,8 +111,8 @@ class EchoVerb(VerbExtension):
         self.no_str = args.no_str
         self.csv = args.csv
         self.include_message_info = args.include_message_info
-        self.client = args.client
-        self.server = args.server
+        self.client = args.client_only
+        self.server = args.server_only
 
         if args.service_type is None:
             with NodeStrategy(args) as node:
