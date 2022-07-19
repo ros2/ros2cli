@@ -69,7 +69,7 @@ def generate_test_description(rmw_implementation):
     path_to_echo_server_script = os.path.join(path_to_fixtures, 'echo_server.py')
     path_to_echo_client_script = os.path.join(path_to_fixtures, 'echo_client.py')
 
-    additional_env = {'RMW_IMPLEMENTATION': rmw_implementation, 'PYTHONUNBUFFERED': '1'}
+    additional_env = {'RMW_IMPLEMENTATION': rmw_implementation}
 
     echo_service_server_action = Node(
         executable=sys.executable,
@@ -161,16 +161,13 @@ class TestROS2ServiceCLI(unittest.TestCase):
                     proc_info, proc_output
             ) as client_node:
                 assert client_node.wait_for_shutdown(10)
-            assert client_node.exit_code == launch_testing.asserts.EXIT_OK
 
-        print("")
-        print("")
-        print("############### HERE START #####################")
-        service_command.wait_for_output(timeout=10)
-        print(service_command.output)
-        print("")
-        # assert service_command.wait_for_shutdown(timeout=10)
-        print("############### HERE END #######################")
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_echo_service_not_running(self):
+        with self.launch_service_command(
+            arguments=['echo', '/service_not_running']
+        ) as service_command:
+            assert service_command.wait_for_output(timeout=20)
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_list_services(self):
@@ -248,6 +245,7 @@ class TestROS2ServiceCLI(unittest.TestCase):
             text=service_command.output,
             strict=True
         )
+
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_find_hidden(self):
