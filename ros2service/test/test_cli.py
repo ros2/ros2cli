@@ -65,10 +65,29 @@ def get_echo_call_output(**kwargs):
 @pytest.mark.rostest
 @launch_testing.parametrize('rmw_implementation', get_available_rmw_implementations())
 def generate_test_description(rmw_implementation):
-    path_to_echo_server_script = os.path.join(
-        os.path.dirname(__file__), 'fixtures', 'echo_server.py'
+    path_to_fixtures = os.path.join(os.path.dirname(__file__), 'fixtures')
+    path_to_echo_server_script = os.path.join(path_to_fixtures, 'echo_server.py')
+    path_to_echo_client_script = os.path.join(path_to_fixtures, 'echo_client.py')
+
+    additional_env = {'RMW_IMPLEMENTATION': rmw_implementation, 'PYTHONUNBUFFERED': '1'}
+
+    echo_service_server_action = Node(
+        executable=sys.executable,
+        arguments=[path_to_echo_server_script],
+        name='echo_server',
+        namespace='my_ns',
+        additional_env=additional_env
     )
-    additional_env = {'RMW_IMPLEMENTATION': rmw_implementation}
+
+    echo_hidden_service_server_action = Node(
+        executable=sys.executable,
+        arguments=[path_to_echo_server_script],
+        name='_hidden_echo_server',
+        namespace='my_ns',
+        remappings=[('echo', '_echo')],
+        additional_env=additional_env,
+    )
+
     return LaunchDescription([
         # Always restart daemon to isolate tests.
         ExecuteProcess(
@@ -80,28 +99,15 @@ def generate_test_description(rmw_implementation):
                     name='daemon-start',
                     on_exit=[
                         # Add test fixture actions.
-                        Node(
-                            executable=sys.executable,
-                            arguments=[path_to_echo_server_script],
-                            name='echo_server',
-                            namespace='my_ns',
-                            additional_env=additional_env,
-                        ),
-                        Node(
-                            executable=sys.executable,
-                            arguments=[path_to_echo_server_script],
-                            name='_hidden_echo_server',
-                            namespace='my_ns',
-                            remappings=[('echo', '_echo')],
-                            additional_env=additional_env,
-                        ),
+                        echo_service_server_action,
+                        echo_hidden_service_server_action,
                         launch_testing.actions.ReadyToTest()
                     ],
                     additional_env=additional_env
                 )
             ]
         ),
-    ])
+    ]), locals()
 
 
 class TestROS2ServiceCLI(unittest.TestCase):
@@ -137,6 +143,34 @@ class TestROS2ServiceCLI(unittest.TestCase):
             ) as service_command:
                 yield service_command
         cls.launch_service_command = launch_service_command
+
+    def test_service_echo(self, launch_service, proc_info, proc_output, path_to_echo_client_script, additional_env):
+        echo_service_client_action = Node(
+            executable=sys.executable,
+            arguments=[path_to_echo_client_script],
+            name='echo_client',
+            namespace='my_ns',
+            additional_env=additional_env
+        )
+
+        with self.launch_service_command(
+                arguments=['echo', '/my_ns/echo']
+        ) as service_command:
+            with launch_testing.tools.launch_process(
+                    launch_service, echo_service_client_action,
+                    proc_info, proc_output
+            ) as client_node:
+                assert client_node.wait_for_shutdown(10)
+            assert client_node.exit_code == launch_testing.asserts.EXIT_OK
+
+        print("")
+        print("")
+        print("############### HERE START #####################")
+        service_command.wait_for_output(timeout=10)
+        print(service_command.output)
+        print("")
+        # assert service_command.wait_for_shutdown(timeout=10)
+        print("############### HERE END #######################")
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_list_services(self):
