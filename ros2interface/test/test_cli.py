@@ -132,7 +132,8 @@ class TestROS2InterfaceCLI(unittest.TestCase):
             strict=False
         )
 
-    def test_list_services(self):
+    def \
+            test_list_services(self):
         with self.launch_interface_command(arguments=['list', '-s']) as interface_command:
             assert interface_command.wait_for_shutdown(timeout=2)
         assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
