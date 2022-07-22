@@ -15,24 +15,19 @@
 import os
 import sys
 
-from rcl_interfaces.srv import ListParameters
-
-import rclpy
 from rclpy.parameter import PARAMETER_SEPARATOR_STRING
-
 from ros2cli.node.direct import DirectNode
 from ros2cli.node.strategy import add_arguments
 from ros2cli.node.strategy import NodeStrategy
-
 from ros2node.api import get_absolute_node_name
 from ros2node.api import get_node_names
 from ros2node.api import NodeNameCompleter
 from ros2node.api import parse_node_name
 
 from ros2param.api import call_get_parameters
+from ros2param.api import call_list_parameters
 from ros2param.api import get_value
 from ros2param.verb import VerbExtension
-
 import yaml
 
 
@@ -57,17 +52,17 @@ class DumpVerb(VerbExtension):
             help='DEPRECATED: Does nothing.')
 
     @staticmethod
-    def get_parameter_value(node, node_name, param):
+    def get_parameter_values(node, node_name, params):
         response = call_get_parameters(
             node=node, node_name=node_name,
-            parameter_names=[param])
+            parameter_names=params)
 
         # requested parameter not set
         if not response.values:
             return '# Parameter not set'
 
         # extract type specific value
-        return get_value(parameter_value=response.values[0])
+        return [get_value(parameter_value=i) for i in response.values]
 
     def insert_dict(self, dictionary, key, value):
         split = key.split(PARAMETER_SEPARATOR_STRING, 1)
@@ -94,35 +89,27 @@ class DumpVerb(VerbExtension):
                 f"'{args.output_dir}' is not a valid directory.")
 
         with DirectNode(args) as node:
-            # create client
-            service_name = f'{absolute_node_name}/list_parameters'
-            client = node.create_client(ListParameters, service_name)
-
-            client.wait_for_service()
-
-            if not client.service_is_ready():
-                raise RuntimeError(f"Could not reach service '{service_name}'")
-
-            request = ListParameters.Request()
-            future = client.call_async(request)
-
-            # wait for response
-            rclpy.spin_until_future_complete(node, future)
-
             yaml_output = {node_name.full_name: {'ros__parameters': {}}}
 
             # retrieve values
-            if future.result() is not None:
-                response = future.result()
-                for param_name in sorted(response.result.names):
-                    pval = self.get_parameter_value(node, absolute_node_name, param_name)
-                    self.insert_dict(
-                        yaml_output[node_name.full_name]['ros__parameters'], param_name, pval)
-            else:
-                e = future.exception()
+            response = call_list_parameters(node=node, node_name=absolute_node_name)
+            if response is None:
+                raise RuntimeError(
+                    'Wait for service timed out waiting for '
+                    f'parameter services for node {node_name.full_name}')
+            elif response.result() is None:
+                e = response.exception()
                 raise RuntimeError(
                     'Exception while calling service of node '
                     f"'{node_name.full_name}': {e}")
+
+            response = response.result().result.names
+            response = sorted(response)
+            parameter_values = self.get_parameter_values(node, absolute_node_name, response)
+
+            for param_name, pval in zip(response, parameter_values):
+                self.insert_dict(
+                    yaml_output[node_name.full_name]['ros__parameters'], param_name, pval)
 
             if args.print:
                 print(
