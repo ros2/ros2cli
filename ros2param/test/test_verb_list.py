@@ -30,6 +30,8 @@ import launch_testing.tools
 import launch_testing_ros.tools
 
 import pytest
+# Flaky on Galactic: https://github.com/ros2/ros2cli/issues/630
+pytestmark = pytest.mark.xfail
 
 import rclpy
 from rclpy.utilities import get_available_rmw_implementations
@@ -85,8 +87,6 @@ def generate_test_description(rmw_implementation):
     ])
 
 
-# Flaky on Galactic: https://github.com/ros2/ros2cli/issues/630
-@pytest.mark.xfail
 class TestVerbList(unittest.TestCase):
 
     @classmethod
