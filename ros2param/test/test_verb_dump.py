@@ -31,13 +31,13 @@ import launch_testing.tools
 import launch_testing_ros.tools
 
 import pytest
-# Flaky on Galactic: https://github.com/ros2/ros2cli/issues/630
-pytestmark = pytest.mark.xfail
-
 import rclpy
 from rclpy.utilities import get_available_rmw_implementations
 
 from ros2cli.node.strategy import NodeStrategy
+
+# Flaky module on Galactic: https://github.com/ros2/ros2cli/issues/630
+pytestmark = pytest.mark.xfail
 
 TEST_NODE = 'test_node'
 TEST_NAMESPACE = '/foo'
