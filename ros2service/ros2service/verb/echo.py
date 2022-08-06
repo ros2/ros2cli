@@ -18,6 +18,7 @@ from collections import OrderedDict
 import sys
 from typing import Optional, TypeVar
 
+import uuid
 import rclpy
 from rclpy.impl.implementation_singleton import rclpy_implementation as _rclpy
 from rclpy.qos import QoSPresetProfiles
@@ -60,7 +61,8 @@ class EchoVerb(VerbExtension):
         self.event_enum = None
         self.qos_profile = QoSPresetProfiles.get_from_short_key("services_default")
         self.__yaml_representer_registered = False
-        self.event_type_map = dict((v, k) for k, v in ServiceEventInfo._Metaclass_ServiceEventInfo__constants.items())
+        self.event_type_map = dict(
+            (v, k) for k, v in ServiceEventInfo._Metaclass_ServiceEventInfo__constants.items())
 
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
@@ -93,9 +95,12 @@ class EchoVerb(VerbExtension):
         parser.add_argument(
             '--exclude-message-info', action='store_true', help='Hide associated message info.')
         parser.add_argument(
-            '--client-only', action='store_true', help="Echo only request sent or response received by service client")
+            '--client-only', action='store_true', help='Echo only request sent or response received by service client')
         parser.add_argument(
-            '--server-only', action='store_true', help="Echo only request received or response sent by service server")
+            '--server-only', action='store_true', help='Echo only request received or response sent by service server')
+        parser.add_argument(
+            '--uuid-list',
+            action='store_true', help='Print client_id as uint8 list UUID instead of string UUID')
 
     def main(self, *, args):
         self.truncate_length = args.truncate_length if not args.full_length else None
@@ -105,6 +110,7 @@ class EchoVerb(VerbExtension):
         self.exclude_message_info = args.exclude_message_info
         self.client_only = args.client_only
         self.server_only = args.server_only
+        self.uuid_list = args.uuid_list
         event_topic_name = args.service_name + \
             _rclpy.service_introspection.RCL_SERVICE_INTROSPECTION_TOPIC_POSTFIX
 
@@ -172,6 +178,10 @@ class EchoVerb(VerbExtension):
 
         event_dict['info']['event_type'] = \
             self.event_type_map[event_dict['info']['event_type']]
+        
+        if not self.uuid_list:
+            uuid_hex_str = "".join([f'{i:02x}' for i in event_dict['info']['client_id']['uuid']])
+            event_dict['info']['client_id']['uuid'] = str(uuid.UUID(uuid_hex_str))
 
         if self.exclude_message_info:
             del event_dict['info']
