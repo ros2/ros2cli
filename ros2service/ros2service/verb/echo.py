@@ -11,6 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import sys
+from typing import TypeVar
+
 from collections import OrderedDict
 import sys
 from typing import Optional, TypeVar
@@ -62,23 +65,22 @@ class EchoVerb(VerbExtension):
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
             'service_name',
-            help="Name of the ROS service to echo from (e.g. '/add_two_ints')")
+            help="Name of the ROS service to echo (e.g. '/add_two_ints')")
         arg.completer = ServiceNameCompleter(
             include_hidden_services_key='include_hidden_services')
         arg = parser.add_argument(
             'service_type', nargs='?',
-            help="Type of the ROS service (e.g. 'std_srvs/srv/Empty')")
-        arg.completer = ServiceTypeCompleter(
-            service_name_key='service_name')
+            help="Type of the ROS service (e.g. 'example_interfaces/srv/AddTwoInts')")
+        arg.completer = ServiceTypeCompleter(service_name_key='service_name')
         parser.add_argument(
             '--full-length', '-f', action='store_true',
             help='Output all elements for arrays, bytes, and string with a '
                  "length > '--truncate-length', by default they are truncated "
-                 "after '--truncate-length' elements with '...''")
+                 "after '--truncate-length' elements with '...'")
         parser.add_argument(
             '--truncate-length', '-l', type=unsigned_int, default=DEFAULT_TRUNCATE_LENGTH,
             help='The length to truncate arrays, bytes, and string to '
-                 '(default: %d)' % DEFAULT_TRUNCATE_LENGTH)
+                 f'(default: {DEFAULT_TRUNCATE_LENGTH})')
         parser.add_argument(
             '--no-arr', action='store_true', help="Don't print array fields of messages")
         parser.add_argument(
@@ -122,7 +124,7 @@ class EchoVerb(VerbExtension):
                 self.srv_module = get_service(args.service_type)
                 self.event_msg_type = self.srv_module.Event
             except (AttributeError, ModuleNotFoundError, ValueError):
-                raise RuntimeError("The service type '%s' is invalid" % args.service_type)
+                raise RuntimeError(f"The service type '{args.service_type}' is invalid")
 
         if self.srv_module is None:
             raise RuntimeError('Could not load the type for the passed service')
