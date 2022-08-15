@@ -12,8 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-autoload -U +X compinit && compinit
-autoload -U +X bashcompinit && bashcompinit
+if ! type complete > /dev/null 2>&1; then
+  autoload -U +X compinit && compinit
+  autoload -U +X bashcompinit && bashcompinit
+fi
 
 # Get this scripts directory
 __ros2cli_completion_dir=${0:a:h}
