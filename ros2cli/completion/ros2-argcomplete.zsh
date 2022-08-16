@@ -12,8 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-if ! type complete > /dev/null 2>&1; then
+if ! type compdef > /dev/null 2>&1; then
   autoload -U +X compinit && compinit
+fi
+
+if ! type complete > /dev/null 2>&1; then
   autoload -U +X bashcompinit && bashcompinit
 fi
 
