@@ -252,23 +252,25 @@ def publisher(
         times_since_last_log = (times_since_last_log + 1) % 10
         time.sleep(0.1)
 
-    msg = msg_module()
-    try:
-        set_message_fields_expanded(node, msg, values_dictionary)
-    except Exception as e:
-        return 'Failed to populate field: {0}'.format(e)
-
     print('publisher: beginning loop')
     count = 0
 
+    msg = msg_module()
+
     def timer_callback():
+        set_message_fields_expanded(node, msg, values_dictionary)
+
         nonlocal count
         count += 1
         if print_nth and count % print_nth == 0:
             print('publishing #%d: %r\n' % (count, msg))
         pub.publish(msg)
 
-    timer_callback()
+    try:
+        timer_callback()
+    except Exception as e:
+        return 'Failed to populate field: {0}'.format(e)
+
     if times != 1:
         timer = node.create_timer(period, timer_callback)
         while times == 0 or count < times:
