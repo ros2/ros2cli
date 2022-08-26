@@ -46,10 +46,15 @@ def set_message_fields_expanded(node: Node, msg: Any, values: Dict[str, str]) ->
     """
     Set the fields of a ROS message.
 
+    This function is copied from :py:func:`rosidl_runtime_py.set_message_fields`, but with a
+    'Node' parameter, required for obtaining the current time.
     :param msg: The ROS message to populate.
     :param values: The values to set in the ROS message. The keys of the dictionary represent
-        fields of the message. If 'auto' is passed as a value to a 'std_msgs.msg.Header' field,
-        an empty Header will be instantiated with its 'stamp' field set to the current time.
+        fields of the message.
+        If 'auto' is passed as a value to a 'std_msgs.msg.Header' field, an empty Header will be
+        instantiated with its 'stamp' field set to the current time.
+        If 'now' is passed as a value to a 'builtin_interfaces.msg.Time' field, its value will be
+        expanded to the current time.
     :raises AttributeError: If the message does not have a field provided in the input dictionary.
     :raises TypeError: If a message value does not match its field type.
     """
@@ -69,9 +74,13 @@ def set_message_fields_expanded(node: Node, msg: Any, values: Dict[str, str]) ->
             value = numpy.array(field_value, dtype=field.dtype)
         elif type(field_value) is field_type:
             value = field_value
+        # We can't import these types directly, so we use the qualified class name to distinguish
+        # them from other fields
         elif qualified_class_name == 'std_msgs.msg._header.Header' and field_value == 'auto':
             stamp_now = node.get_clock().now().to_msg()
             value = field_type(stamp=stamp_now, frame_id='')
+        elif qualified_class_name == 'builtin_interfaces.msg._time.Time' and field_value == 'now':
+            value = node.get_clock().now().to_msg()
         else:
             try:
                 value = field_type(field_value)
