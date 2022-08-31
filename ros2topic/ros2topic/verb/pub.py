@@ -13,9 +13,12 @@
 # limitations under the License.
 
 import array
+from collections import defaultdict
+from functools import partial
 import time
 from typing import Any
 from typing import Dict
+from typing import List
 from typing import Optional
 from typing import TypeVar
 
@@ -42,7 +45,7 @@ import yaml
 MsgType = TypeVar('MsgType')
 
 
-def set_message_fields_expanded(node: Node, msg: Any, values: Dict[str, str]) -> None:
+def set_message_fields_expanded(node: Node, msg: Any, values: Dict[str, str]) -> List[Any]:
     """
     Set the fields of a ROS message.
 
@@ -58,45 +61,51 @@ def set_message_fields_expanded(node: Node, msg: Any, values: Dict[str, str]) ->
     :raises AttributeError: If the message does not have a field provided in the input dictionary.
     :raises TypeError: If a message value does not match its field type.
     """
-    try:
-        items = values.items()
-    except AttributeError:
-        raise TypeError(
-            "Value '%s' is expected to be a dictionary but is a %s" %
-            (values, type(values).__name__))
-    for field_name, field_value in items:
-        field = getattr(msg, field_name)
-        field_type = type(field)
-        qualified_class_name = '{}.{}'.format(field_type.__module__, field_type.__name__)
-        if field_type is array.array:
-            value = field_type(field.typecode, field_value)
-        elif field_type is numpy.ndarray:
-            value = numpy.array(field_value, dtype=field.dtype)
-        elif type(field_value) is field_type:
-            value = field_value
-        # We can't import these types directly, so we use the qualified class name to distinguish
-        # them from other fields
-        elif qualified_class_name == 'std_msgs.msg._header.Header' and field_value == 'auto':
-            stamp_now = node.get_clock().now().to_msg()
-            value = field_type(stamp=stamp_now, frame_id='')
-        elif qualified_class_name == 'builtin_interfaces.msg._time.Time' and field_value == 'now':
-            value = node.get_clock().now().to_msg()
-        else:
-            try:
-                value = field_type(field_value)
-            except TypeError:
-                value = field_type()
-                set_message_fields_expanded(node, value, field_value)
-        rosidl_type = get_message_slot_types(msg)[field_name]
-        # Check if field is an array of ROS messages
-        if isinstance(rosidl_type, AbstractNestedType):
-            if isinstance(rosidl_type.value_type, NamespacedType):
-                field_elem_type = import_message_from_namespaced_type(rosidl_type.value_type)
-                for n in range(len(value)):
-                    submsg = field_elem_type()
-                    set_message_fields_expanded(node, submsg, value[n])
-                    value[n] = submsg
-        setattr(msg, field_name, value)
+    timestamp_fields = []
+    def set_message_fields_expanded_internal(node: Node, msg: Any, values: Dict[str, str], timestamp_fields: List[Any]) -> List[Any]:
+        try:
+            items = values.items()
+        except AttributeError:
+            raise TypeError(
+                "Value '%s' is expected to be a dictionary but is a %s" %
+                (values, type(values).__name__))
+        for field_name, field_value in items:
+            field = getattr(msg, field_name)
+            field_type = type(field)
+            qualified_class_name = '{}.{}'.format(field_type.__module__, field_type.__name__)
+            if field_type is array.array:
+                value = field_type(field.typecode, field_value)
+            elif field_type is numpy.ndarray:
+                value = numpy.array(field_value, dtype=field.dtype)
+            elif type(field_value) is field_type:
+                value = field_value
+            # We can't import these types directly, so we use the qualified class name to distinguish
+            # them from other fields
+            elif qualified_class_name == 'std_msgs.msg._header.Header' and field_value == 'auto':
+                stamp_now = node.get_clock().now().to_msg()
+                value = field_type(stamp=stamp_now, frame_id='')
+                timestamp_fields.append(partial(setattr, value, 'stamp'))
+            elif qualified_class_name == 'builtin_interfaces.msg._time.Time' and field_value == 'now':
+                value = node.get_clock().now().to_msg()
+                timestamp_fields.append(partial(setattr, msg, field_name))
+            else:
+                try:
+                    value = field_type(field_value)
+                except TypeError:
+                    value = field_type()
+                    set_message_fields_expanded_internal(node, value, field_value, timestamp_fields)
+            rosidl_type = get_message_slot_types(msg)[field_name]
+            # Check if field is an array of ROS messages
+            if isinstance(rosidl_type, AbstractNestedType):
+                if isinstance(rosidl_type.value_type, NamespacedType):
+                    field_elem_type = import_message_from_namespaced_type(rosidl_type.value_type)
+                    for n in range(len(value)):
+                        submsg = field_elem_type()
+                        set_message_fields_expanded_internal(node, submsg, value[n], timestamp_fields)
+                        value[n] = submsg
+            setattr(msg, field_name, value)
+    set_message_fields_expanded_internal(node, msg, values, timestamp_fields)
+    return timestamp_fields
 
 
 def nonnegative_int(inval):
@@ -261,25 +270,25 @@ def publisher(
         times_since_last_log = (times_since_last_log + 1) % 10
         time.sleep(0.1)
 
+    msg = msg_module()
+    try:
+        timestamp_fields = set_message_fields_expanded(node, msg, values_dictionary)
+    except Exception as e:
+        return 'Failed to populate field: {0}'.format(e)
     print('publisher: beginning loop')
     count = 0
 
-    msg = msg_module()
-
     def timer_callback():
-        set_message_fields_expanded(node, msg, values_dictionary)
-
+        stamp_now = node.get_clock().now().to_msg()
+        for field_setter in timestamp_fields:
+            field_setter(stamp_now)
         nonlocal count
         count += 1
         if print_nth and count % print_nth == 0:
             print('publishing #%d: %r\n' % (count, msg))
         pub.publish(msg)
 
-    try:
-        timer_callback()
-    except Exception as e:
-        return 'Failed to populate field: {0}'.format(e)
-
+    timer_callback()
     if times != 1:
         timer = node.create_timer(period, timer_callback)
         while times == 0 or count < times:
