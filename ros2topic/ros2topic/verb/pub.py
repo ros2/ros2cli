@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import array
-from collections import defaultdict
 from functools import partial
 import time
 from typing import Any
@@ -62,7 +61,10 @@ def set_message_fields_expanded(node: Node, msg: Any, values: Dict[str, str]) ->
     :raises TypeError: If a message value does not match its field type.
     """
     timestamp_fields = []
-    def set_message_fields_expanded_internal(node: Node, msg: Any, values: Dict[str, str], timestamp_fields: List[Any]) -> List[Any]:
+
+    def set_message_fields_expanded_internal(
+            node: Node, msg: Any, values: Dict[str, str],
+            timestamp_fields: List[Any]) -> List[Any]:
         try:
             items = values.items()
         except AttributeError:
@@ -79,13 +81,14 @@ def set_message_fields_expanded(node: Node, msg: Any, values: Dict[str, str]) ->
                 value = numpy.array(field_value, dtype=field.dtype)
             elif type(field_value) is field_type:
                 value = field_value
-            # We can't import these types directly, so we use the qualified class name to distinguish
-            # them from other fields
+            # We can't import these types directly, so we use the qualified class name to
+            # distinguish them from other fields
             elif qualified_class_name == 'std_msgs.msg._header.Header' and field_value == 'auto':
                 stamp_now = node.get_clock().now().to_msg()
                 value = field_type(stamp=stamp_now, frame_id='')
                 timestamp_fields.append(partial(setattr, value, 'stamp'))
-            elif qualified_class_name == 'builtin_interfaces.msg._time.Time' and field_value == 'now':
+            elif qualified_class_name == 'builtin_interfaces.msg._time.Time' and \
+                    field_value == 'now':
                 value = node.get_clock().now().to_msg()
                 timestamp_fields.append(partial(setattr, msg, field_name))
             else:
@@ -93,7 +96,8 @@ def set_message_fields_expanded(node: Node, msg: Any, values: Dict[str, str]) ->
                     value = field_type(field_value)
                 except TypeError:
                     value = field_type()
-                    set_message_fields_expanded_internal(node, value, field_value, timestamp_fields)
+                    set_message_fields_expanded_internal(
+                        node, value, field_value, timestamp_fields)
             rosidl_type = get_message_slot_types(msg)[field_name]
             # Check if field is an array of ROS messages
             if isinstance(rosidl_type, AbstractNestedType):
@@ -101,7 +105,8 @@ def set_message_fields_expanded(node: Node, msg: Any, values: Dict[str, str]) ->
                     field_elem_type = import_message_from_namespaced_type(rosidl_type.value_type)
                     for n in range(len(value)):
                         submsg = field_elem_type()
-                        set_message_fields_expanded_internal(node, submsg, value[n], timestamp_fields)
+                        set_message_fields_expanded_internal(
+                            node, submsg, value[n], timestamp_fields)
                         value[n] = submsg
             setattr(msg, field_name, value)
     set_message_fields_expanded_internal(node, msg, values, timestamp_fields)
