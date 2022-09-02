@@ -44,26 +44,32 @@ import yaml
 MsgType = TypeVar('MsgType')
 
 
-def set_message_fields_expanded(node: Node, msg: Any, values: Dict[str, str]) -> List[Any]:
+def set_message_fields_expanded(
+        msg: Any, values: Dict[str, str], expand_header_auto: bool = False,
+        expand_time_now: bool = False) -> List[Any]:
     """
     Set the fields of a ROS message.
 
-    This function is copied from :py:func:`rosidl_runtime_py.set_message_fields`, but with a
-    'Node' parameter, required for obtaining the current time.
     :param msg: The ROS message to populate.
     :param values: The values to set in the ROS message. The keys of the dictionary represent
         fields of the message.
-        If 'auto' is passed as a value to a 'std_msgs.msg.Header' field, an empty Header will be
-        instantiated with its 'stamp' field set to the current time.
-        If 'now' is passed as a value to a 'builtin_interfaces.msg.Time' field, its value will be
-        expanded to the current time.
+    :param expand_header_auto: If enabled and 'auto' is passed as a value to a
+        'std_msgs.msg.Header' field, an empty Header will be instantiated and a setter function
+        will be returned so that its 'stamp' field can be set to the current time.
+    :param expand_time_now: If enabled and 'now' is passed as a value to a
+        'builtin_interfaces.msg.Time' field, a setter function will be returned so that
+        its value can be set to the current time.
+    :returns: A list of setter functions that can be used to update 'builtin_interfaces.msg.Time'
+        fields, useful for setting them to the current time. The list will be empty if the message
+        does not have any 'builtin_interfaces.msg.Time' fields, or if expand_header_auto and
+        expand_time_now are false.
     :raises AttributeError: If the message does not have a field provided in the input dictionary.
     :raises TypeError: If a message value does not match its field type.
     """
     timestamp_fields = []
 
     def set_message_fields_expanded_internal(
-            node: Node, msg: Any, values: Dict[str, str],
+            msg: Any, values: Dict[str, str],
             timestamp_fields: List[Any]) -> List[Any]:
         try:
             items = values.items()
@@ -83,21 +89,21 @@ def set_message_fields_expanded(node: Node, msg: Any, values: Dict[str, str]) ->
                 value = field_value
             # We can't import these types directly, so we use the qualified class name to
             # distinguish them from other fields
-            elif qualified_class_name == 'std_msgs.msg._header.Header' and field_value == 'auto':
-                stamp_now = node.get_clock().now().to_msg()
-                value = field_type(stamp=stamp_now, frame_id='')
-                timestamp_fields.append(partial(setattr, value, 'stamp'))
+            elif qualified_class_name == 'std_msgs.msg._header.Header' and \
+                    field_value == 'auto' and expand_header_auto:
+                timestamp_fields.append(partial(setattr, field, 'stamp'))
+                continue
             elif qualified_class_name == 'builtin_interfaces.msg._time.Time' and \
-                    field_value == 'now':
-                value = node.get_clock().now().to_msg()
+                    field_value == 'now' and expand_time_now:
                 timestamp_fields.append(partial(setattr, msg, field_name))
+                continue
             else:
                 try:
                     value = field_type(field_value)
                 except TypeError:
                     value = field_type()
                     set_message_fields_expanded_internal(
-                        node, value, field_value, timestamp_fields)
+                        value, field_value, timestamp_fields)
             rosidl_type = get_message_slot_types(msg)[field_name]
             # Check if field is an array of ROS messages
             if isinstance(rosidl_type, AbstractNestedType):
@@ -106,10 +112,10 @@ def set_message_fields_expanded(node: Node, msg: Any, values: Dict[str, str]) ->
                     for n in range(len(value)):
                         submsg = field_elem_type()
                         set_message_fields_expanded_internal(
-                            node, submsg, value[n], timestamp_fields)
+                            submsg, value[n], timestamp_fields)
                         value[n] = submsg
             setattr(msg, field_name, value)
-    set_message_fields_expanded_internal(node, msg, values, timestamp_fields)
+    set_message_fields_expanded_internal(msg, values, timestamp_fields)
     return timestamp_fields
 
 
@@ -277,7 +283,8 @@ def publisher(
 
     msg = msg_module()
     try:
-        timestamp_fields = set_message_fields_expanded(node, msg, values_dictionary)
+        timestamp_fields = set_message_fields_expanded(
+            msg, values_dictionary, expand_header_auto=True, expand_time_now=True)
     except Exception as e:
         return 'Failed to populate field: {0}'.format(e)
     print('publisher: beginning loop')

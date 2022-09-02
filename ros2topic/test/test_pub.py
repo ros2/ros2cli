@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ros2cli.node.direct import DirectNode
 from ros2topic.verb.pub import set_message_fields_expanded
 
 import builtins
@@ -88,46 +87,58 @@ class MockMessageWithStampFields:
 def test_set_message_fields_expanded_header_auto():
     msg = MockMessageStamped()
     values = {'header': 'auto'}
-    with DirectNode(None, node_name="test_node_name") as node:
-        assert msg.header.stamp.sec == 0 and msg.header.stamp.nanosec == 0
-        assert msg.header.frame_id == ''
-        timestamp_fields = set_message_fields_expanded(node.node, msg, values)
-        assert timestamp_fields is not None
-        assert msg.header.stamp.sec != 0 and msg.header.stamp.nanosec != 0
-        assert msg.header.frame_id == ''
+    assert msg.header.stamp.sec == 0 and msg.header.stamp.nanosec == 0
+    assert msg.header.frame_id == ''
+    timestamp_fields = set_message_fields_expanded(
+        msg, values, expand_header_auto=True, expand_time_now=True)
+    assert timestamp_fields is not None
+    for field_setter in timestamp_fields:
+        stamp = Time(sec=1, nanosec=2)
+        field_setter(stamp)
+    assert msg.header.stamp.sec == 1 and msg.header.stamp.nanosec == 2
+    assert msg.header.frame_id == ''
 
 
 def test_set_message_fields_expanded_stamp_now():
     msg = MockMessageStamped()
     values = {'header': {'stamp': 'now'}}
-    with DirectNode(None, node_name="test_node_name") as node:
-        assert msg.header.stamp.sec == 0 and msg.header.stamp.nanosec == 0
-        assert msg.header.frame_id == ''
-        timestamp_fields = set_message_fields_expanded(node.node, msg, values)
-        assert timestamp_fields is not None
-        assert msg.header.stamp.sec != 0 and msg.header.stamp.nanosec != 0
-        assert msg.header.frame_id == ''
+    assert msg.header.stamp.sec == 0 and msg.header.stamp.nanosec == 0
+    assert msg.header.frame_id == ''
+    timestamp_fields = set_message_fields_expanded(
+        msg, values, expand_header_auto=True, expand_time_now=True)
+    assert timestamp_fields is not None
+    for field_setter in timestamp_fields:
+        stamp = Time(sec=1, nanosec=2)
+        field_setter(stamp)
+    assert msg.header.stamp.sec == 1 and msg.header.stamp.nanosec == 2
+    assert msg.header.frame_id == ''
 
 
 def test_set_message_fields_expanded_stamp_now_with_frame_id():
     msg = MockMessageStamped()
     values = {'header': {'stamp': 'now', 'frame_id': 'hello'}}
-    with DirectNode(None, node_name="test_node_name") as node:
-        assert msg.header.stamp.sec == 0 and msg.header.stamp.nanosec == 0
-        assert msg.header.frame_id == ''
-        timestamp_fields = set_message_fields_expanded(node.node, msg, values)
-        assert timestamp_fields is not None
-        assert msg.header.stamp.sec != 0 and msg.header.stamp.nanosec != 0
-        assert msg.header.frame_id == 'hello'
+    assert msg.header.stamp.sec == 0 and msg.header.stamp.nanosec == 0
+    assert msg.header.frame_id == ''
+    timestamp_fields = set_message_fields_expanded(
+        msg, values, expand_header_auto=True, expand_time_now=True)
+    assert timestamp_fields is not None
+    for field_setter in timestamp_fields:
+        stamp = Time(sec=1, nanosec=2)
+        field_setter(stamp)
+    assert msg.header.stamp.sec == 1 and msg.header.stamp.nanosec == 2
+    assert msg.header.frame_id == 'hello'
 
 
 def test_set_message_fields_expanded_stamp_now_with_timestamp_fields():
     msg = MockMessageWithStampFields()
     values = {'timestamp1': 'now', 'timestamp2': 'now'}
-    with DirectNode(None, node_name="test_node_name") as node:
-        assert msg.timestamp1.sec == 0 and msg.timestamp1.nanosec == 0
-        assert msg.timestamp2.sec == 0 and msg.timestamp2.nanosec == 0
-        timestamp_fields = set_message_fields_expanded(node.node, msg, values)
-        assert timestamp_fields is not None
-        assert msg.timestamp1.sec != 0 and msg.timestamp1.nanosec != 0
-        assert msg.timestamp2.sec != 0 and msg.timestamp2.nanosec != 0
+    assert msg.timestamp1.sec == 0 and msg.timestamp1.nanosec == 0
+    assert msg.timestamp2.sec == 0 and msg.timestamp2.nanosec == 0
+    timestamp_fields = set_message_fields_expanded(
+        msg, values, expand_header_auto=True, expand_time_now=True)
+    assert timestamp_fields is not None
+    for field_setter in timestamp_fields:
+        stamp = Time(sec=1, nanosec=2)
+        field_setter(stamp)
+    assert msg.timestamp1.sec == 1 and msg.timestamp1.nanosec == 2
+    assert msg.timestamp2.sec == 1 and msg.timestamp2.nanosec == 2
