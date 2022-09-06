@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ros2topic.verb.pub import set_message_fields_expanded
-
 import builtins
+
 from builtin_interfaces.msg import Time
-from std_msgs.msg import Header
+from ros2topic.verb.pub import set_message_fields_expanded
 import rosidl_parser.definition
+from std_msgs.msg import Header
 
 
 class MockMessageStamped:
