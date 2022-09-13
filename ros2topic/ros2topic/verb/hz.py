@@ -179,7 +179,7 @@ class ROSTopicHz(object):
         with self.lock:
             # Uses ROS time as the default time source and Walltime only if requested
             curr_rostime = self._clock.now() if not self.use_wtime else \
-                Clock(clock_type=ClockType.SYSTEM_TIME).now()
+                Clock(clock_type=ClockType.STEADY_TIME).now()
 
             # time reset
             if curr_rostime.nanoseconds == 0:

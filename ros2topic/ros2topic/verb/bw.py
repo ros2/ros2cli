@@ -31,10 +31,11 @@
 
 from argparse import ArgumentTypeError
 import threading
-import time
 import traceback
 
 import rclpy
+from rclpy.clock import Clock
+from rclpy.clock import ClockType
 from rclpy.qos import qos_profile_sensor_data
 from ros2cli.node.direct import add_arguments as add_direct_node_arguments
 from ros2cli.node.direct import DirectNode
@@ -84,29 +85,31 @@ class BwVerb(VerbExtension):
 
     def main(self, *, args):
         with DirectNode(args) as node:
-            _rostopic_bw(node.node, args.topic, window_size=args.window,
-                         use_sim_time=args.use_sim_time)
+            _rostopic_bw(node.node, args.topic, window_size=args.window)
 
 
 class ROSTopicBandwidth(object):
 
-    def __init__(self, node, window_size, use_sim_time=False):
+    def __init__(self, node, window_size):
         self.lock = threading.Lock()
         self.last_printed_tn = 0
         self.sizes = []
         self.times = []
         self.window_size = window_size
-        self._clock = node.get_clock()
-        self.use_sim_time = use_sim_time
+        self.use_sim_time = False
+        if node.has_parameter('use_sim_time'):
+            self.use_sim_time = node.get_parameter('use_sim_time')
+        if self.use_sim_time:
+            self.clock = node.get_clock()
 
     def callback(self, data):
         """Execute ros sub callback."""
         with self.lock:
             try:
                 if self.use_sim_time:
-                    t = self._clock.now().nanoseconds * 1.e-9
+                    t = self.clock.now().nanoseconds * 1.e-9
                 else:
-                    t = time.monotonic()
+                    t = Clock(clock_type=ClockType.STEADY_TIME).now()
                 self.times.append(t)
                 # TODO(yechun1): Subscribing to the msgs and calculate the length may be
                 # inefficient. Optimize here if a better solution is found.
@@ -126,14 +129,15 @@ class ROSTopicBandwidth(object):
         with self.lock:
             n = len(self.times)
             if self.use_sim_time:
-                tn = self._clock.now().nanoseconds * 1.e-9
+                tn = self.clock.now().nanoseconds * 1.e-9
             else:
-                tn = time.monotonic()
+                tn = Clock(clock_type=ClockType.STEADY_TIME).now()
             t0 = self.times[0]
-            if tn <= t0:
-                self.times = []
-                self.sizes = []
-                return None, None, None, None, None
+            if self.use_sim_time:
+                if tn <= t0:
+                    self.times = []
+                    self.sizes = []
+                    return None, None, None, None, None
 
             total = sum(self.sizes)
             bytes_per_s = total / (tn - t0)
@@ -166,7 +170,7 @@ class ROSTopicBandwidth(object):
         print(f'{bw} from {n} messages\n\tMessage size mean: {mean} min: {min_s} max: {max_s}')
 
 
-def _rostopic_bw(node, topic, window_size=DEFAULT_WINDOW_SIZE, use_sim_time=False):
+def _rostopic_bw(node, topic, window_size=DEFAULT_WINDOW_SIZE):
     """Periodically print the received bandwidth of a topic to console until shutdown."""
     # pause bw until topic is published
     msg_class = get_msg_class(node, topic, blocking=True, include_hidden_topics=True)
@@ -174,7 +178,7 @@ def _rostopic_bw(node, topic, window_size=DEFAULT_WINDOW_SIZE, use_sim_time=Fals
         node.destroy_node()
         return
 
-    rt = ROSTopicBandwidth(node, window_size, use_sim_time)
+    rt = ROSTopicBandwidth(node, window_size)
     node.create_subscription(
         msg_class,
         topic,
