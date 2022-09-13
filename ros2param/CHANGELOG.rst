@@ -2,6 +2,11 @@
 Changelog for package ros2param
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* refactor: make ros2param use rclpy.parameter_client (`#716 <https://github.com/ros2/ros2cli/issues/716>`_)
+* Contributors: Brian
+
 0.19.0 (2022-04-29)
 -------------------
 
