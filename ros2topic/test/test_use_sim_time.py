@@ -1,4 +1,4 @@
-# Copyright 2022 Sony Corporation.
+# Copyright 2022 Sony Group Corporation.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -121,7 +121,7 @@ class TestROS2TopicUseSimTime(unittest.TestCase):
                 self.executor.spin_until_future_complete(
                     rclpy.task.Future(), timeout_sec=3
                 )
-                assert command.wait_for_shutdown(timeout=5)
+                assert command.wait_for_shutdown(timeout=1)
             assert launch_testing.tools.expect_output(
                 expected_lines=[
                     'publisher: beginning loop',

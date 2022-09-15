@@ -96,20 +96,19 @@ class ROSTopicBandwidth(object):
         self.sizes = []
         self.times = []
         self.window_size = window_size
-        self.use_sim_time = False
-        if node.has_parameter('use_sim_time'):
-            self.use_sim_time = node.get_parameter('use_sim_time')
+        self.use_sim_time = node.get_parameter_or(
+            'use_sim_time',
+            rclpy.Parameter('use_sim_time', rclpy.Parameter.Type.BOOL, False)).value
         if self.use_sim_time:
             self.clock = node.get_clock()
+        else:
+            self.clock = Clock(clock_type=ClockType.STEADY_TIME)
 
     def callback(self, data):
         """Execute ros sub callback."""
         with self.lock:
             try:
-                if self.use_sim_time:
-                    t = self.clock.now().nanoseconds * 1.e-9
-                else:
-                    t = Clock(clock_type=ClockType.STEADY_TIME).now()
+                t = self.clock.now()
                 self.times.append(t)
                 # TODO(yechun1): Subscribing to the msgs and calculate the length may be
                 # inefficient. Optimize here if a better solution is found.
@@ -128,10 +127,7 @@ class ROSTopicBandwidth(object):
             return None, None, None, None, None
         with self.lock:
             n = len(self.times)
-            if self.use_sim_time:
-                tn = self.clock.now().nanoseconds * 1.e-9
-            else:
-                tn = Clock(clock_type=ClockType.STEADY_TIME).now()
+            tn = self.clock.now()
             t0 = self.times[0]
             if self.use_sim_time:
                 if tn <= t0:
@@ -140,7 +136,7 @@ class ROSTopicBandwidth(object):
                     return None, None, None, None, None
 
             total = sum(self.sizes)
-            bytes_per_s = total / (tn - t0)
+            bytes_per_s = total / ((tn.nanoseconds - t0.nanoseconds) * 1.e-9)
             mean = total / n
 
             # min and max
