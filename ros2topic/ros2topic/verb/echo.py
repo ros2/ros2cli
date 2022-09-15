@@ -27,6 +27,7 @@ from rclpy.qos_event import UnsupportedEventTypeError
 from rclpy.task import Future
 from ros2cli.node.strategy import add_arguments as add_strategy_node_arguments
 from ros2cli.node.strategy import NodeStrategy
+from ros2topic.api import duration_ns
 from ros2topic.api import get_msg_class
 from ros2topic.api import qos_profile_from_short_keys
 from ros2topic.api import TopicNameCompleter
@@ -86,6 +87,15 @@ class EchoVerb(VerbExtension):
                  '(overrides durability value of --qos-profile option, default: '
                  'Automatically match existing publishers )')
         parser.add_argument(
+            '--qos-liveliness',
+            choices=rclpy.qos.LivelinessPolicy.short_keys(),
+            help='Quality of service liveliness setting to subscribe with '
+                 '(overrides liveliness value of --qos-profile option, default: {})'
+                 .format(default_profile.liveliness.short_key))
+        parser.add_argument(
+            '--qos-liveliness-lease-duration', metavar='N', type=duration_ns,
+            help='Quality of service liveliness lease duration in nanoseconds')
+        parser.add_argument(
             '--csv', action='store_true',
             help=(
                 'Output all recursive fields separated by commas (e.g. for '
@@ -140,15 +150,20 @@ class EchoVerb(VerbExtension):
                 args.qos_reliability is not None or
                 args.qos_durability is not None or
                 args.qos_depth is not None or
-                args.qos_history is not None):
+                args.qos_history is not None or
+                args.qos_liveliness is not None or
+                args.qos_liveliness_lease_duration is not None):
 
             if args.qos_profile is None:
                 args.qos_profile = default_profile_str
-            return qos_profile_from_short_keys(args.qos_profile,
-                                               reliability=args.qos_reliability,
-                                               durability=args.qos_durability,
-                                               depth=args.qos_depth,
-                                               history=args.qos_history)
+            return qos_profile_from_short_keys(
+                args.qos_profile,
+                reliability=args.qos_reliability,
+                durability=args.qos_durability,
+                depth=args.qos_depth,
+                history=args.qos_history,
+                liveliness=args.qos_liveliness,
+                liveliness_lease_duration=args.qos_liveliness_lease_duration)
 
         qos_profile = QoSPresetProfiles.get_from_short_key(default_profile_str)
         reliability_reliable_endpoints_count = 0
