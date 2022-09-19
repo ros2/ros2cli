@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import re
 import functools
+import re
 import sys
 import unittest
 
@@ -33,8 +33,8 @@ import rclpy
 from rclpy.executors import SingleThreadedExecutor
 from rclpy.utilities import get_rmw_implementation_identifier
 
-from std_msgs.msg import String
 from rosgraph_msgs.msg import Clock
+from std_msgs.msg import String
 
 
 # Skip cli tests on Windows while they exhibit pathological behavior

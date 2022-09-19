@@ -29,8 +29,8 @@
 # This file is originally from:
 # https://github.com/ros/ros_comm/blob/6e5016f4b2266d8a60c9a1e163c4928b8fc7115e/tools/rostopic/src/rostopic/__init__.py
 
-import sys
 from argparse import ArgumentTypeError
+import sys
 import threading
 import traceback
 
@@ -132,7 +132,7 @@ class ROSTopicBandwidth(object):
             t0 = self.times[0]
             if self.use_sim_time:
                 if tn <= t0:
-                    print("WARNING: simulate time is reset!", file=sys.stderr)
+                    print('WARNING: simulate time is reset!', file=sys.stderr)
                     self.times = []
                     self.sizes = []
                     return None, None, None, None, None
