@@ -35,8 +35,6 @@ import threading
 import traceback
 
 import rclpy
-from rclpy.clock import Clock
-from rclpy.clock import ClockType
 from rclpy.qos import qos_profile_sensor_data
 from ros2cli.node.direct import add_arguments as add_direct_node_arguments
 from ros2cli.node.direct import DirectNode
@@ -97,13 +95,8 @@ class ROSTopicBandwidth(object):
         self.sizes = []
         self.times = []
         self.window_size = window_size
-        self.use_sim_time = node.get_parameter_or(
-            'use_sim_time',
-            rclpy.Parameter('use_sim_time', rclpy.Parameter.Type.BOOL, False)).value
-        if self.use_sim_time:
-            self.clock = node.get_clock()
-        else:
-            self.clock = Clock(clock_type=ClockType.STEADY_TIME)
+        self.use_sim_time = node.get_parameter('use_sim_time').value
+        self.clock = node.get_clock()
 
     def callback(self, data):
         """Execute ros sub callback."""
@@ -130,12 +123,11 @@ class ROSTopicBandwidth(object):
             n = len(self.times)
             tn = self.clock.now()
             t0 = self.times[0]
-            if self.use_sim_time:
-                if tn <= t0:
-                    print('WARNING: simulate time is reset!', file=sys.stderr)
-                    self.times = []
-                    self.sizes = []
-                    return None, None, None, None, None
+            if tn <= t0:
+                print('WARNING: time is reset!', file=sys.stderr)
+                self.times = []
+                self.sizes = []
+                return None, None, None, None, None
 
             total = sum(self.sizes)
             bytes_per_s = total / ((tn.nanoseconds - t0.nanoseconds) * 1.e-9)
