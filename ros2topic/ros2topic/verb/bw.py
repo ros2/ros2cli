@@ -30,12 +30,13 @@
 # https://github.com/ros/ros_comm/blob/6e5016f4b2266d8a60c9a1e163c4928b8fc7115e/tools/rostopic/src/rostopic/__init__.py
 
 from argparse import ArgumentTypeError
+import sys
 import threading
-import time
 import traceback
 
 import rclpy
 from rclpy.qos import qos_profile_sensor_data
+from ros2cli.node.direct import add_arguments as add_direct_node_arguments
 from ros2cli.node.direct import DirectNode
 from ros2topic.api import get_msg_class
 from ros2topic.api import TopicNameCompleter
@@ -79,6 +80,7 @@ class BwVerb(VerbExtension):
             '--window', '-w', type=positive_int, default=DEFAULT_WINDOW_SIZE,
             help='maximum window size, in # of messages, for calculating rate '
                  f'(default: {DEFAULT_WINDOW_SIZE})', metavar='WINDOW')
+        add_direct_node_arguments(parser)
 
     def main(self, *, args):
         with DirectNode(args) as node:
@@ -93,12 +95,14 @@ class ROSTopicBandwidth(object):
         self.sizes = []
         self.times = []
         self.window_size = window_size
+        self.use_sim_time = node.get_parameter('use_sim_time').value
+        self.clock = node.get_clock()
 
     def callback(self, data):
         """Execute ros sub callback."""
         with self.lock:
             try:
-                t = time.monotonic()
+                t = self.clock.now()
                 self.times.append(t)
                 # TODO(yechun1): Subscribing to the msgs and calculate the length may be
                 # inefficient. Optimize here if a better solution is found.
@@ -117,11 +121,16 @@ class ROSTopicBandwidth(object):
             return None, None, None, None, None
         with self.lock:
             n = len(self.times)
-            tn = time.monotonic()
+            tn = self.clock.now()
             t0 = self.times[0]
+            if tn <= t0:
+                print('WARNING: time is reset!', file=sys.stderr)
+                self.times = []
+                self.sizes = []
+                return None, None, None, None, None
 
             total = sum(self.sizes)
-            bytes_per_s = total / (tn - t0)
+            bytes_per_s = total / ((tn.nanoseconds - t0.nanoseconds) * 1.e-9)
             mean = total / n
 
             # min and max

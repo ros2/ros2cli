@@ -41,6 +41,7 @@ import rclpy
 from rclpy.clock import Clock
 from rclpy.clock import ClockType
 from rclpy.qos import qos_profile_sensor_data
+from ros2cli.node.direct import add_arguments as add_direct_node_arguments
 from ros2cli.node.direct import DirectNode
 from ros2topic.api import get_msg_class
 from ros2topic.api import TopicNameCompleter
@@ -82,6 +83,7 @@ class HzVerb(VerbExtension):
             dest='use_wtime', default=False, action='store_true',
             help='calculates rate using wall time which can be helpful'
                  ' when clock is not published during simulation')
+        add_direct_node_arguments(parser)
 
     def main(self, *, args):
         return main(args)
