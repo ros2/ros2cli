@@ -30,7 +30,7 @@ class LoadVerb(VerbExtension):
     def add_arguments(self, parser, cli_name):
         add_arguments(parser)
         argument = parser.add_argument(
-            'container_node_name', help='Container node name to unload component from'
+            'container_node_name', help='Container node name to load component into'
         )
         argument.completer = container_node_name_completer
         add_component_arguments(parser)
