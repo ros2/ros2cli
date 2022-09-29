@@ -217,3 +217,7 @@ def add_qos_arguments_to_argument_parser(
         help='Quality of service durability setting to {} with '
              '(overrides durability value of --qos-profile option, default: {})'
              .format(verb, default_profile.durability.short_key))
+    parser.add_argument(
+        '--latched',
+        action='store_true',
+        help='Sets "latching" behavior. Essentially an alias of "--qos-profile services_default --qos-durability transient_local".')

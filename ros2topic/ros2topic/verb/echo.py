@@ -99,12 +99,20 @@ class EchoVerb(VerbExtension):
         self.no_arr = args.no_arr
         self.no_str = args.no_str
 
-        qos_profile = qos_profile_from_short_keys(
-            args.qos_profile,
-            reliability=args.qos_reliability,
-            durability=args.qos_durability,
-            depth=args.qos_depth,
-            history=args.qos_history)
+        if args.latched:
+            qos_profile = qos_profile_from_short_keys(
+                'services_default',
+                reliability=args.qos_reliability,
+                durability='transient_local',
+                depth=args.qos_depth,
+                history=args.qos_history)
+        else:
+            qos_profile = qos_profile_from_short_keys(
+                args.qos_profile,
+                reliability=args.qos_reliability,
+                durability=args.qos_durability,
+                depth=args.qos_depth,
+                history=args.qos_history)
 
         with NodeStrategy(args) as node:
             if args.message_type is None:
