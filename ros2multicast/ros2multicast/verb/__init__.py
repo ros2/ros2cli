@@ -15,6 +15,30 @@
 from ros2cli.plugin_system import PLUGIN_SYSTEM_VERSION
 from ros2cli.plugin_system import satisfies_version
 
+from ros2multicast.api import DEFAULT_GROUP
+from ros2multicast.api import DEFAULT_PORT
+
+def positive_int(string):
+    try:
+        value = int(string)
+    except ValueError:
+        value = -1
+    if value <= 0:
+        raise ArgumentTypeError('value must be a positive integer')
+    return value
+
+
+def add_group_argument(parser):
+    parser.add_argument(
+        '--group', type=str, default=DEFAULT_GROUP,
+        help='The multicast group address')
+
+
+def add_port_argument(parser):
+    parser.add_argument(
+        '--port', type=positive_int, default=DEFAULT_PORT,
+        help='The multicast port')
+
 
 class VerbExtension:
     """
