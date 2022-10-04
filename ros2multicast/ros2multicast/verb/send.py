@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from argparse import ArgumentTypeError
-
 from ros2multicast.api import send
 from ros2multicast.verb import add_group_argument
 from ros2multicast.verb import add_port_argument
