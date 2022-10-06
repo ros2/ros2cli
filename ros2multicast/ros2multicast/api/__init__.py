@@ -47,6 +47,13 @@ def receive(*, group=DEFAULT_GROUP, port=DEFAULT_PORT, timeout=None):
         s.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
         try:
             data, sender_addr = s.recvfrom(4096)
+        except socket.timeout:
+            if socket.timeout == TimeoutError:
+                # Python >= 3.10
+                raise
+            else:
+                # Python < 3.10
+                raise TimeoutError
         finally:
             s.setsockopt(socket.IPPROTO_IP, socket.IP_DROP_MEMBERSHIP, mreq)
     finally:
