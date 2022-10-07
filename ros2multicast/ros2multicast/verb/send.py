@@ -12,30 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from argparse import ArgumentTypeError
-
 from ros2multicast.api import send
+from ros2multicast.verb import add_group_argument
+from ros2multicast.verb import add_port_argument
+from ros2multicast.verb import positive_int
 from ros2multicast.verb import VerbExtension
-
-
-def positive_int(string):
-    try:
-        value = int(string)
-    except ValueError:
-        value = -1
-    if value <= 0:
-        raise ArgumentTypeError('value must be a positive integer')
-    return value
 
 
 class SendVerb(VerbExtension):
     """Send a single UDP multicast packet."""
 
     def add_arguments(self, parser, cli_name):
+        add_group_argument(parser)
+        add_port_argument(parser)
         parser.add_argument(
             '--ttl', type=positive_int,
             help='The multicast TTL')
 
     def main(self, *, args):
         print('Sending one UDP multicast datagram...')
-        send(b'Hello World!', ttl=args.ttl)
+        send(b'Hello World!', group=args.group, port=args.port, ttl=args.ttl)
