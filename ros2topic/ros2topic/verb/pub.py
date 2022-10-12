@@ -16,8 +16,7 @@ import hashlib
 import os
 import tempfile
 import time
-from typing import Optional
-from typing import TypeVar
+from typing import List, Optional, Tuple, TypeVar
 
 from prompt_toolkit import prompt
 from prompt_toolkit.formatted_text import HTML
@@ -165,27 +164,26 @@ def main(args) -> Optional[str]:
 
     if args.interactive:
         print('Interactive mode...')
-        # Read last message that was send if it exists in temp
+        # Read last message that was sent if it exists in temp
         content = get_last_message_content(args.message_type)
         # Show the tui
-        content = show_interactive_tui(
-            message_to_yaml(parse_msg(args.message_type, content)),
-            message_to_yaml(parse_msg(args.message_type)))
-        # Load msg YAML just to be sure it does not fail and we store a broken message
-        parse_msg(args.message_type, content)
+        orig_msg, orig_timestamp_fields = parse_msg(args.message_type, content)
+        default_msg, default_timestamp_fields = parse_msg(args.message_type)
+        content = show_interactive_tui(message_to_yaml(orig_msg), message_to_yaml(default_msg))
+        # Load msg YAML now to be sure it does not fail and we store a broken message
+        msg, timestamp_fields = parse_msg(args.message_type, content)
         # Store the user input so we are able to load it the next time
         store_message_content(args.message_type, content)
     else:
-        content = args.values
-
-    # Parse the yaml string and get a message ofbject of the desired type
-    msg = parse_msg(args.message_type, content)
+        # Parse the yaml string and get a message object of the desired type
+        msg, timestamp_fields = parse_msg(args.message_type, content)
 
     with DirectNode(args, node_name=args.node_name) as node:
         return publisher(
             node.node,
             args.topic_name,
             msg,
+            timestamp_fields,
             1. / args.rate,
             args.print,
             times,
@@ -215,7 +213,7 @@ def get_history_file(msg_type: str) -> str:
 
 def get_last_message_content(msg_type: str) -> str:
     """
-    Retrive the last message of the given type that was send using the tui if it exists.
+    Retrieve the last message of the given type that was sent using the tui if it exists.
 
     :param msg_type: Name of the message type
     :returns: The YAML representation containing the last message or an empty dict
@@ -255,9 +253,9 @@ def show_interactive_tui(msg_str: str, default_msg_str: Optional[str] = None) ->
     """
     Show a tui to edit a given message yaml.
 
-    :param msg_str: Mesage yaml string which is initially presented to the user
-    :param default_msg_str: Mesage yaml string with default values for the given message
-    :return: The mesage yaml string edited by the user
+    :param msg_str: Message yaml string which is initially presented to the user
+    :param default_msg_str: Message yaml string with default values for the given message
+    :return: The message yaml string edited by the user
     """
     # Create the bottom bar to pressent the options to the user
     def bottom_toolbar():
@@ -282,7 +280,7 @@ def show_interactive_tui(msg_str: str, default_msg_str: Optional[str] = None) ->
         key_bindings=bindings)
 
 
-def parse_msg(msg_type: str, yaml_values: Optional[str] = None) -> MsgType:
+def parse_msg(msg_type: str, yaml_values: Optional[str] = None) -> Tuple[MsgType, List]:
     """
     Parse the name and contents of a given message.
 
@@ -297,6 +295,7 @@ def parse_msg(msg_type: str, yaml_values: Optional[str] = None) -> MsgType:
         raise RuntimeError('The passed message type is invalid')
     # Create a default instance of the message with the given name
     msg = msg_module()
+    timestamp_fields = []
     # Check if we want to add values to the message
     if yaml_values is not None:
         # Load the user provided fields of the message
@@ -305,17 +304,18 @@ def parse_msg(msg_type: str, yaml_values: Optional[str] = None) -> MsgType:
             raise RuntimeError('The passed value needs to be a dictionary in YAML format')
         # Set all fields in the message to the provided values
         try:
-            set_message_fields(
+            timestamp_fields = set_message_fields(
                 msg, values_dictionary, expand_header_auto=True, expand_time_now=True)
         except Exception as e:
             raise RuntimeError('Failed to populate field: {0}'.format(e))
-    return msg
+    return msg, timestamp_fields
 
 
 def publisher(
     node: Node,
     topic_name: str,
     msg: MsgType,
+    timestamp_fields: list,
     period: float,
     print_nth: int,
     times: int,
@@ -326,29 +326,27 @@ def publisher(
     """
     Initialize a node with a single publisher and run its publish loop (maybe only once).
 
-    :param node: The given node used for publishing the given message
+    :param node: The node used for publishing the given message
     :param topic_name: The topic on which the the message is published
-    :param msg: The message that is published
+    :param msg: The message to be published
+    :param timestamp_fields: Any timestamp fields that need to be populated
     :param period: Period after which the msg is published again
     :param print_nth: Interval in which the message is printed
     :param times: Number of times the message is published
     :param wait_matching_subscriptions: Wait until there is a certain number of subscribtions
-    :param qos_profile: QOS profile
-    :param keep_alive: Time the node is kept alive after the message was send
+    :param qos_profile: QoS profile
+    :param keep_alive: Time the node is kept alive after the message was sent
     """
     pub = node.create_publisher(type(msg), topic_name, qos_profile)
 
     times_since_last_log = 0
     while pub.get_subscription_count() < wait_matching_subscriptions:
-        # Print a message reporting we're waiting each 1s, check condition each 100ms.
+        # Print a message reporting we're waiting 1s, but check the condition every 100ms.
         if not times_since_last_log:
             print(
                 f'Waiting for at least {wait_matching_subscriptions} matching subscription(s)...')
         times_since_last_log = (times_since_last_log + 1) % 10
         time.sleep(0.1)
-
-    # TODO(clalancette): This is broken because the msg that is passed in doesn't have timestamp_fields anymore,
-    # so updating the fields in the message won't work.
 
     print('publisher: beginning loop')
     count = 0
@@ -368,9 +366,7 @@ def publisher(
         timer = node.create_timer(period, timer_callback)
         while times == 0 or count < times:
             rclpy.spin_once(node)
-        # give some time for the messages to reach the wire before exiting
-        time.sleep(keep_alive)
         node.destroy_timer(timer)
-    else:
-        # give some time for the messages to reach the wire before exiting
-        time.sleep(keep_alive)
+
+    # give some time for the messages to reach the wire before exiting
+    time.sleep(keep_alive)
