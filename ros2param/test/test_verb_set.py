@@ -167,7 +167,7 @@ class TestVerbSet(unittest.TestCase):
             assert param_load_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
         assert param_load_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
-            expected_lines=['Set parameter int_param successful'],
+            expected_lines=["Set parameter 'int_param' successful"],
             text=param_load_command.output,
             strict=True)
 
@@ -184,9 +184,9 @@ class TestVerbSet(unittest.TestCase):
         assert param_load_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
-                'Set parameter int_param successful',
-                'Set parameter str_param successful',
-                'Set parameter bool_param successful'],
+                "Set parameter 'int_param' successful",
+                "Set parameter 'str_param' successful",
+                "Set parameter 'bool_param' successful"],
             text=param_load_command.output,
             strict=True)
 
@@ -220,7 +220,3 @@ class TestVerbSet(unittest.TestCase):
             expected_lines=['Node not found'],
             text=param_load_command.output,
             strict=True)
-
-
-if __name__ == '__main__':
-    unittest.main()
