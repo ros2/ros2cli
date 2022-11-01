@@ -271,6 +271,8 @@ class TestVerbDump(unittest.TestCase):
             strict=False
         )
 
+    # Flaky on Galactic: https://github.com/ros2/ros2cli/issues/630
+    @pytest.mark.xfail
     def test_verb_load(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             filepath = self._write_param_file(tmpdir, 'params.yaml')
