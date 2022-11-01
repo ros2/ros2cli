@@ -18,7 +18,7 @@ from ros2cli.node.strategy import add_arguments
 from ros2cli.node.strategy import NodeStrategy
 from ros2node.api import get_action_client_info
 from ros2node.api import get_action_server_info
-from ros2node.api import get_node_names
+from ros2node.api import get_node_names_with_enclaves
 from ros2node.api import get_publisher_info
 from ros2node.api import get_service_client_info
 from ros2node.api import get_service_server_info
@@ -26,6 +26,10 @@ from ros2node.api import get_subscriber_info
 from ros2node.api import INFO_NONUNIQUE_WARNING_TEMPLATE
 from ros2node.api import NodeNameCompleter
 from ros2node.verb import VerbExtension
+
+
+def print_enclaves(enclaves):
+    print(*[2 * '    {}'.format(e) for e in enclaves if e != '/'], sep='\n')
 
 
 def print_names_and_types(names_and_types):
@@ -47,8 +51,10 @@ class InfoVerb(VerbExtension):
 
     def main(self, *, args):
         with NodeStrategy(args) as node:
-            node_names = get_node_names(node=node, include_hidden_nodes=args.include_hidden)
-            count = [n.full_name for n in node_names].count(args.node_name)
+            node_names_with_enclaves = get_node_names_with_enclaves(
+                node=node,
+                include_hidden_nodes=args.include_hidden)
+            count = [n.name.full_name for n in node_names_with_enclaves].count(args.node_name)
             if count > 1:
                 print(
                     INFO_NONUNIQUE_WARNING_TEMPLATE.format(
@@ -80,5 +86,9 @@ class InfoVerb(VerbExtension):
                     node=node, remote_node_name=args.node_name, include_hidden=args.include_hidden)
                 print('  Action Clients:')
                 print_names_and_types(actions_clients)
+                print('  Enclaves:')
+                print_enclaves([n.enclave for n in node_names_with_enclaves
+                    if n.name.full_name == args.node_name])
+
             else:
                 return "Unable to find node '" + args.node_name + "'"

@@ -25,6 +25,7 @@ INFO_NONUNIQUE_WARNING_TEMPLATE = (
 )
 
 NodeName = namedtuple('NodeName', ('name', 'namespace', 'full_name'))
+NodeNameEnclave = namedtuple('NodeNameEnclave', ('name', 'enclave'))
 TopicInfo = namedtuple('Topic', ('name', 'types'))
 
 
@@ -64,6 +65,23 @@ def get_node_names(*, node, include_hidden_nodes=False):
             namespace=t[1],
             full_name=t[1] + ('' if t[1].endswith('/') else '/') + t[0])
         for t in node_names_and_namespaces
+        if (
+            include_hidden_nodes or
+            (t[0] and not t[0].startswith(HIDDEN_NODE_PREFIX))
+        )
+    ]
+
+
+def get_node_names_with_enclaves(*, node, include_hidden_nodes=False):
+    node_names_and_namespaces_with_enclaves = node.get_node_names_and_namespaces_with_enclaves()
+    return [
+        NodeNameEnclave(
+            name=NodeName(
+                name=t[0],
+                namespace=t[1],
+                full_name=t[1] + ('' if t[1].endswith('/') else '/') + t[0]),
+            enclave=t[2])
+        for t in node_names_and_namespaces_with_enclaves
         if (
             include_hidden_nodes or
             (t[0] and not t[0].startswith(HIDDEN_NODE_PREFIX))
