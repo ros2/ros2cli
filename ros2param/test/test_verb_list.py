@@ -85,8 +85,6 @@ def generate_test_description(rmw_implementation):
     ])
 
 
-# Flaky on Galactic: https://github.com/ros2/ros2cli/issues/630
-@pytest.mark.xfail
 class TestVerbList(unittest.TestCase):
 
     @classmethod
@@ -165,6 +163,8 @@ class TestVerbList(unittest.TestCase):
             strict=True
         )
 
+    # Flaky on Galactic: https://github.com/ros2/ros2cli/issues/630
+    @pytest.mark.xfail
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_verb_list(self):
         with self.launch_param_list_command(

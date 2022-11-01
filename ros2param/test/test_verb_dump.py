@@ -116,8 +116,6 @@ def generate_test_description(rmw_implementation):
     ])
 
 
-# Flaky on Galactic: https://github.com/ros2/ros2cli/issues/630
-@pytest.mark.xfail
 class TestVerbDump(unittest.TestCase):
 
     @classmethod
@@ -211,6 +209,8 @@ class TestVerbDump(unittest.TestCase):
             strict=True
         )
 
+    # Flaky on Galactic: https://github.com/ros2/ros2cli/issues/630
+    @pytest.mark.xfail
     def test_verb_dump(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             with self.launch_param_dump_command(
