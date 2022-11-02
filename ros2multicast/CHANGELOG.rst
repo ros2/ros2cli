@@ -2,8 +2,8 @@
 Changelog for package ros2multicast
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.21.0 (2022-11-02)
+-------------------
 * Add --group and --port options to ros2 multicast (`#770 <https://github.com/ros2/ros2cli/issues/770>`_)
 * Contributors: Shane Loretz
 
