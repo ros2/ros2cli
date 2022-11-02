@@ -84,7 +84,8 @@ def generate_test_description(rmw_implementation):
         ),
     ])
 
-
+# Flaky on Galactic: https://github.com/ros2/ros2cli/issues/630
+@pytest.mark.xfail
 class TestVerbList(unittest.TestCase):
 
     @classmethod
