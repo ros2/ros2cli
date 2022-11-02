@@ -2,6 +2,9 @@
 Changelog for package ros2cli_test_interfaces
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.20.0 (2022-09-13)
 -------------------
 * Remove action_msgs dependency (`#743 <https://github.com/ros2/ros2cli/issues/743>`_)

@@ -2,6 +2,12 @@
 Changelog for package ros2topic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add support use_sim_time for ros2 topic hz/bw/pub. (`#754 <https://github.com/ros2/ros2cli/issues/754>`_)
+* Use set_message_fields from rosidl_runtime_py (`#761 <https://github.com/ros2/ros2cli/issues/761>`_)
+* Contributors: Esteve Fernandez, Lei Liu
+
 0.20.0 (2022-09-13)
 -------------------
 * Expand auto to the current time when passed to a Header field (`#749 <https://github.com/ros2/ros2cli/issues/749>`_)
