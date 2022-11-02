@@ -203,7 +203,7 @@ class ROSTopicHz(object):
 
     def get_hz(self, topic=None):
         """
-        Calculate the average publising rate.
+        Calculate the average publishing rate.
 
         :param topic: topic name, ``list`` of ``str``
         :returns: tuple of stat results
