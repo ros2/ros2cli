@@ -129,7 +129,7 @@ class ROSTopicDelay(object):
 
     def get_delay(self):
         """
-        Calculate the average publising delay.
+        Calculate the average publishing delay.
 
         :returns: tuple of stat results
             (rate, min_delta, max_delta, standard deviation, window number)
