@@ -2,6 +2,19 @@
 Changelog for package ros2topic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.18.4 (2022-11-07)
+-------------------
+* [humble] Backport. Expand auto to the current time when passed to a Header field (`#751 <https://github.com/ros2/ros2cli/issues/751>`_)
+  * Expand auto to the current time when passed to a Header field
+  * Make sure that the stamp field is updated every time the message is published
+  * Added support for passing 'now' as a value to a 'builtin_interfaces.msg.Time'. Added comments and expand docstring
+  * Only update timestamp fields that have been passed 'now' as a value
+  * Fix lint errors
+  * Added tests
+  * Remove node argument from set_message_fields_expanded
+  * Fix flake8 errors
+* Contributors: Esteve Fernandez
+
 0.18.3 (2022-04-08)
 -------------------
 

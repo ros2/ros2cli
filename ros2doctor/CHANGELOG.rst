@@ -2,6 +2,9 @@
 Changelog for package ros2doctor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.18.4 (2022-11-07)
+-------------------
+
 0.18.3 (2022-04-08)
 -------------------
 * Fix importlib_metadata warning on Python 3.10. (`#706 <https://github.com/ros2/ros2cli/issues/706>`_)
