@@ -43,5 +43,5 @@ class ListVerb(VerbExtension):
             sorted_names = sorted(n.full_name for n in node_names)
             if has_duplicates(sorted_names):
                 print('WARNING: Be aware that there are nodes in the graph that share an exact '
-                      'name, this can have unintended side effects.', file=sys.stderr)
+                      'name, which can have unintended side effects.', file=sys.stderr)
             print(*sorted_names, sep='\n')
