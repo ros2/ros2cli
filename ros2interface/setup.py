@@ -16,8 +16,8 @@ setup(
     zip_safe=True,
     author='Siddharth Kucheria, Jacob Perron',
     author_email='kucheria@osrfoundation.org, jacob@osrfoundation.org',
-    maintainer='Aditya Pande, Audrow Nash, Michael Jeronimo',
-    maintainer_email='aditya.pande@openrobotics.org, audrow@openrobotics.org, michael.jeronimo@openrobotics.org',  # noqa: E501
+    maintainer='Audrow Nash, Geoffrey Biggs',
+    maintainer_email='audrow@openrobotics.org, geoff@openrobotics.org',
     url='https://github.com/ros2/ros2cli/tree/master/ros2interface',
     download_url='https://github.com/ros2/ros2cli/releases',
     keywords=[],

@@ -7,14 +7,15 @@
     The node command for ROS 2 command line tools.
   </description>
 
-  <maintainer email="aditya.pande@openrobotics.org">Aditya Pande</maintainer>
   <maintainer email="audrow@openrobotics.org">Audrow Nash</maintainer>
-  <maintainer email="michael.jeronimo@openrobotics.org">Michael Jeronimo</maintainer>
+  <maintainer email="geoff@openrobotics.org">Geoffrey Biggs</maintainer>
 
   <license>Apache License 2.0</license>
 
+  <author email="aditya.pande@openrobotics.org">Aditya Pande</author>
   <author email="dthomas@osrfoundation.org">Dirk Thomas</author>
   <author email="mabel@openrobotics.org">Mabel Zhang</author>
+  <author email="michael.jeronimo@openrobotics.org">Michael Jeronimo</author>
 
   <depend>ros2cli</depend>
 
