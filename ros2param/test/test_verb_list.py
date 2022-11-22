@@ -51,6 +51,7 @@ if sys.platform.startswith('win'):
 
 @pytest.mark.rostest
 @launch_testing.parametrize('rmw_implementation', get_available_rmw_implementations())
+@pytest.mark.xfail(reason="Flaky on Galactic: https://github.com/ros2/ros2cli/issues/630")
 def generate_test_description(rmw_implementation):
     path_to_fixtures = Path(__file__).parent / 'fixtures'
     additional_env = {'RMW_IMPLEMENTATION': rmw_implementation}
@@ -84,8 +85,6 @@ def generate_test_description(rmw_implementation):
         ),
     ])
 
-# Flaky on Galactic: https://github.com/ros2/ros2cli/issues/630
-@pytest.mark.xfail
 class TestVerbList(unittest.TestCase):
 
     @classmethod
@@ -164,8 +163,6 @@ class TestVerbList(unittest.TestCase):
             strict=True
         )
 
-    # Flaky on Galactic: https://github.com/ros2/ros2cli/issues/630
-    @pytest.mark.xfail
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_verb_list(self):
         with self.launch_param_list_command(
