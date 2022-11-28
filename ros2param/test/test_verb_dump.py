@@ -116,6 +116,7 @@ def generate_test_description(rmw_implementation):
         ),
     ])
 
+
 class TestVerbDump(unittest.TestCase):
 
     @classmethod
