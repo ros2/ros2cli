@@ -95,7 +95,7 @@ if sys.platform.startswith('win'):
 
 @pytest.mark.rostest
 @launch_testing.parametrize('rmw_implementation', get_available_rmw_implementations())
-@pytest.mark.xfail(reason="Flaky on Galactic: https://github.com/ros2/ros2cli/issues/630")
+@pytest.mark.xfail(reason='Flaky on Galactic: https://github.com/ros2/ros2cli/issues/630')
 def generate_test_description(rmw_implementation):
     path_to_fixtures = os.path.join(os.path.dirname(__file__), 'fixtures')
     additional_env = {'RMW_IMPLEMENTATION': rmw_implementation}
