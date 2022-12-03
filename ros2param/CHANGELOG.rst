@@ -2,6 +2,11 @@
 Changelog for package ros2param
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.13.5 (2022-12-02)
+-------------------
+* Mark test verb load, list and dump as xfail (`#773 <https://github.com/ros2/ros2cli/issues/773>`_)
+* Contributors: Cristóbal Arroyo
+
 0.13.4 (2022-06-30)
 -------------------
 * Skip None Result (`#646 <https://github.com/ros2/ros2cli/issues/646>`_) (`#723 <https://github.com/ros2/ros2cli/issues/723>`_)
