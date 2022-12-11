@@ -33,10 +33,10 @@ class InfoVerb(VerbExtension):
     def main(self, *, args):
         with NodeStrategy(args) as node:
             service_names_and_types = get_service_names_and_types(
-                node=node, 
+                node=node,
                 include_hidden_services=args.include_hidden_services)
             service_name = args.service_name
-            
+
             for (s_name, s_types) in service_names_and_types:
                 if s_name == service_name:
                     service_types = s_types
@@ -49,7 +49,6 @@ class InfoVerb(VerbExtension):
 
             print('Clients count: %d' %
                   node.count_clients(service_name), end='\n')
-      
+
             print('Services count: %d' %
                   node.count_services(service_name), end='\n')
-
