@@ -27,6 +27,7 @@ from catkin_pkg.package import Person
 
 from ros2pkg.api.create import create_package_environment
 from ros2pkg.api.create import populate_ament_cmake
+from ros2pkg.api.create import populate_ament_cmake_auto
 from ros2pkg.api.create import populate_ament_python
 from ros2pkg.api.create import populate_cmake
 from ros2pkg.api.create import populate_cpp_library
@@ -68,7 +69,7 @@ class CreateVerb(VerbExtension):
         parser.add_argument(
             '--build-type',
             default='ament_cmake',
-            choices=['cmake', 'ament_cmake', 'ament_python'],
+            choices=['cmake', 'ament_cmake', 'ament_cmake_auto', 'ament_python'],
             help='The build type to process the package with')
         parser.add_argument(
             '--dependencies',
@@ -132,9 +133,11 @@ class CreateVerb(VerbExtension):
                 buildtool_depends = ['ament_cmake_ros']
             else:
                 buildtool_depends = ['ament_cmake']
+        elif args.build_type == 'ament_cmake_auto':
+            buildtool_depends = ['ament_cmake_auto']
 
         test_dependencies = []
-        if args.build_type == 'ament_cmake':
+        if args.build_type == 'ament_cmake' or args.build_type == 'ament_cmake_auto':
             test_dependencies = ['ament_lint_auto', 'ament_lint_common']
         if args.build_type == 'ament_python':
             test_dependencies = ['ament_copyright', 'ament_flake8', 'ament_pep257',
@@ -147,6 +150,11 @@ class CreateVerb(VerbExtension):
             return "Aborted since 'ament_python' packages can't be named 'test'. Please " + \
                 'choose a different package name.'
 
+        if args.build_type == 'ament_cmake_auto':
+            export_type = 'ament_cmake'
+        else:
+            export_type = args.build_type
+
         package = Package(
             package_format=args.package_format,
             name=args.package_name,
@@ -157,7 +165,7 @@ class CreateVerb(VerbExtension):
             buildtool_depends=[Dependency(dep) for dep in buildtool_depends],
             build_depends=[Dependency(dep) for dep in args.dependencies],
             test_depends=[Dependency(dep) for dep in test_dependencies],
-            exports=[Export('build_type', content=args.build_type)]
+            exports=[Export('build_type', content=export_type)]
         )
 
         package_path = os.path.join(args.destination_directory, package.name)
@@ -191,6 +199,9 @@ class CreateVerb(VerbExtension):
         if args.build_type == 'ament_cmake':
             populate_ament_cmake(package, package_directory, node_name, library_name)
 
+        if args.build_type == 'ament_cmake_auto':
+            populate_ament_cmake_auto(package, package_directory, node_name, library_name)
+
         if args.build_type == 'ament_python':
             if not source_directory:
                 return 'unable to create source folder in ' + args.destination_directory
@@ -200,7 +211,8 @@ class CreateVerb(VerbExtension):
             if library_name:
                 populate_python_libary(package, source_directory, library_name)
 
-        if args.build_type == 'ament_cmake' or args.build_type == 'cmake':
+        if args.build_type == 'ament_cmake' or args.build_type == 'cmake' or \
+                args.build_type == 'ament_cmake_auto':
             if node_name:
                 if not source_directory:
                     return 'unable to create source folder in ' + args.destination_directory

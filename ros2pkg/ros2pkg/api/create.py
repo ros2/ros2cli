@@ -105,7 +105,8 @@ def create_package_environment(package, destination_directory):
 
     source_directory = None
     include_directory = None
-    if package.get_build_type() == 'cmake' or package.get_build_type() == 'ament_cmake':
+    if package.get_build_type() == 'cmake' or package.get_build_type() == 'ament_cmake' \
+            or package.get_build_type() == 'ament_cmake_python':
         print('creating source and include folder')
         source_directory = _create_folder('src', package_directory)
         include_directory = _create_folder(package.name, package_directory + os.sep + 'include')
@@ -122,7 +123,7 @@ def populate_ament_python(package, package_directory, source_directory, python_n
         'maintainer_email': package.maintainers[0].email,
         'maintainer_name': package.maintainers[0].name,
         'package_license': package.licenses[0],
-        'node_name': python_node_name,
+        'node_name': python_create_folder_node_name,
         'test_dependencies': package.test_depends,
         'package_description': package.description
     }
@@ -237,6 +238,21 @@ def populate_ament_cmake(package, package_directory, cpp_node_name, cpp_library_
     }
     _create_template_file(
         'ament_cmake',
+        'CMakeLists.txt.em',
+        package_directory,
+        'CMakeLists.txt',
+        cmakelists_config)
+
+
+def populate_ament_cmake_auto(package, package_directory, cpp_node_name, cpp_library_name):
+    cmakelists_config = {
+        'project_name': package.name,
+        'dependencies': [str(dep) for dep in package.build_depends],
+        'cpp_node_name': cpp_node_name,
+        'cpp_library_name': cpp_library_name,
+    }
+    _create_template_file(
+        'ament_cmake_auto',
         'CMakeLists.txt.em',
         package_directory,
         'CMakeLists.txt',
