@@ -228,8 +228,9 @@ def populate_cmake(package, package_directory, cpp_node_name, cpp_library_name):
         version_config)
 
 
-def populate_ament_cmake(package, package_directory, cpp_node_name, cpp_library_name, \
-        ament_auto=False):
+def populate_ament_cmake(
+    package, package_directory, cpp_node_name, cpp_library_name, ament_auto=False
+):
     cmakelists_config = {
         'project_name': package.name,
         'dependencies': [str(dep) for dep in package.build_depends],
