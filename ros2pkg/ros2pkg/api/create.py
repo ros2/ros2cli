@@ -123,7 +123,7 @@ def populate_ament_python(package, package_directory, source_directory, python_n
         'maintainer_email': package.maintainers[0].email,
         'maintainer_name': package.maintainers[0].name,
         'package_license': package.licenses[0],
-        'node_name': python_create_folder_node_name,
+        'node_name': python_node_name,
         'test_dependencies': package.test_depends,
         'package_description': package.description
     }
@@ -229,30 +229,16 @@ def populate_cmake(package, package_directory, cpp_node_name, cpp_library_name):
         version_config)
 
 
-def populate_ament_cmake(package, package_directory, cpp_node_name, cpp_library_name):
+def populate_ament_cmake(package, package_directory, cpp_node_name, cpp_library_name, ament_auto=False):
     cmakelists_config = {
         'project_name': package.name,
         'dependencies': [str(dep) for dep in package.build_depends],
         'cpp_node_name': cpp_node_name,
         'cpp_library_name': cpp_library_name,
+        'ament_auto': ament_auto,
     }
     _create_template_file(
         'ament_cmake',
-        'CMakeLists.txt.em',
-        package_directory,
-        'CMakeLists.txt',
-        cmakelists_config)
-
-
-def populate_ament_cmake_auto(package, package_directory, cpp_node_name, cpp_library_name):
-    cmakelists_config = {
-        'project_name': package.name,
-        'dependencies': [str(dep) for dep in package.build_depends],
-        'cpp_node_name': cpp_node_name,
-        'cpp_library_name': cpp_library_name,
-    }
-    _create_template_file(
-        'ament_cmake_auto',
         'CMakeLists.txt.em',
         package_directory,
         'CMakeLists.txt',

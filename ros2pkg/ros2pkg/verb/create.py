@@ -27,7 +27,6 @@ from catkin_pkg.package import Person
 
 from ros2pkg.api.create import create_package_environment
 from ros2pkg.api.create import populate_ament_cmake
-from ros2pkg.api.create import populate_ament_cmake_auto
 from ros2pkg.api.create import populate_ament_python
 from ros2pkg.api.create import populate_cmake
 from ros2pkg.api.create import populate_cpp_library
@@ -69,7 +68,7 @@ class CreateVerb(VerbExtension):
         parser.add_argument(
             '--build-type',
             default='ament_cmake',
-            choices=['cmake', 'ament_cmake', 'ament_cmake_auto', 'ament_python'],
+            choices=['cmake', 'ament_cmake', 'ament_python'],
             help='The build type to process the package with')
         parser.add_argument(
             '--dependencies',
@@ -89,6 +88,11 @@ class CreateVerb(VerbExtension):
             '--library-name',
             help='name of the empty library')
 
+        parser.add_argument(
+            '--ament-auto',
+            action='store_true',
+            help='use ament_cmake_auto to build the package')
+
     def main(self, *, args):
         available_licenses = {}
         for shortname, entry in ament_copyright.get_licenses().items():
@@ -97,6 +101,10 @@ class CreateVerb(VerbExtension):
         if args.license == '?':
             print('Supported licenses:\n%s' % ('\n'.join(available_licenses)))
             sys.exit(0)
+
+        if args.ament_auto and args.build_type != 'ament_cmake':
+            print('[ERROR] ament_auto can only be used with ament_cmake packages', file=sys.stderr)
+            sys.exit(1)
 
         maintainer = Person(args.maintainer_name)
 
@@ -129,15 +137,15 @@ class CreateVerb(VerbExtension):
 
         buildtool_depends = []
         if args.build_type == 'ament_cmake':
-            if args.library_name:
+            if args.ament_auto:
+                buildtool_depends = ['ament_cmake_auto']
+            elif args.library_name:
                 buildtool_depends = ['ament_cmake_ros']
             else:
                 buildtool_depends = ['ament_cmake']
-        elif args.build_type == 'ament_cmake_auto':
-            buildtool_depends = ['ament_cmake_auto']
 
         test_dependencies = []
-        if args.build_type == 'ament_cmake' or args.build_type == 'ament_cmake_auto':
+        if args.build_type == 'ament_cmake':
             test_dependencies = ['ament_lint_auto', 'ament_lint_common']
         if args.build_type == 'ament_python':
             test_dependencies = ['ament_copyright', 'ament_flake8', 'ament_pep257',
@@ -150,7 +158,7 @@ class CreateVerb(VerbExtension):
             return "Aborted since 'ament_python' packages can't be named 'test'. Please " + \
                 'choose a different package name.'
 
-        if args.build_type == 'ament_cmake_auto':
+        if args.ament_auto == 'ament_cmake_auto':
             export_type = 'ament_cmake'
         else:
             export_type = args.build_type
@@ -197,10 +205,7 @@ class CreateVerb(VerbExtension):
             populate_cmake(package, package_directory, node_name, library_name)
 
         if args.build_type == 'ament_cmake':
-            populate_ament_cmake(package, package_directory, node_name, library_name)
-
-        if args.build_type == 'ament_cmake_auto':
-            populate_ament_cmake_auto(package, package_directory, node_name, library_name)
+            populate_ament_cmake(package, package_directory, node_name, library_name, args.ament_auto)
 
         if args.build_type == 'ament_python':
             if not source_directory:
@@ -211,8 +216,7 @@ class CreateVerb(VerbExtension):
             if library_name:
                 populate_python_libary(package, source_directory, library_name)
 
-        if args.build_type == 'ament_cmake' or args.build_type == 'cmake' or \
-                args.build_type == 'ament_cmake_auto':
+        if args.build_type == 'ament_cmake' or args.build_type == 'cmake':
             if node_name:
                 if not source_directory:
                     return 'unable to create source folder in ' + args.destination_directory
