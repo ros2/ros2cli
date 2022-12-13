@@ -205,7 +205,8 @@ class CreateVerb(VerbExtension):
             populate_cmake(package, package_directory, node_name, library_name)
 
         if args.build_type == 'ament_cmake':
-            populate_ament_cmake(package, package_directory, node_name, library_name, args.ament_auto)
+            populate_ament_cmake(package, package_directory, node_name, library_name, \
+                args.ament_auto)
 
         if args.build_type == 'ament_python':
             if not source_directory:
