@@ -121,7 +121,7 @@ class TestROS2TopicUseSimTime(unittest.TestCase):
                 self.executor.spin_until_future_complete(
                     rclpy.task.Future(), timeout_sec=3
                 )
-                assert command.wait_for_shutdown(timeout=1)
+                assert command.wait_for_shutdown(timeout=5)
             assert launch_testing.tools.expect_output(
                 expected_lines=[
                     'publisher: beginning loop',
