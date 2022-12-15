@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from collections import defaultdict
 import functools
 import inspect
 
@@ -22,18 +23,12 @@ from ros2cli.node.direct import DirectNode
 
 
 def get_interfaces_ip_addresses():
-    addresses_by_interfaces = {}
-    for (kind, info_list) in netifaces.gateways().items():
-        if kind not in (netifaces.AF_INET, netifaces.AF_INET6):
-            continue
-        print('Interface kind: {}, info: {}'.format(kind, info_list))
-        addresses_by_interfaces[kind] = {}
-        for info in info_list:
-            interface_name = info[1]
-            addresses_by_interfaces[kind][interface_name] = (
-                netifaces.ifaddresses(interface_name)[kind][0]['addr']
-            )
-    print('Addresses by interfaces: {}'.format(addresses_by_interfaces))
+    addresses_by_interfaces = defaultdict(functools.partial(defaultdict, set))
+    for interface_name in netifaces.interfaces():
+        for kind, info_list in netifaces.ifaddresses(interface_name).items():
+            for info in info_list:
+                addresses_by_interfaces[kind][interface_name].add(info['addr'])
+    print(f'Addresses by interfaces: {addresses_by_interfaces}')
     return addresses_by_interfaces
 
 
@@ -76,4 +71,4 @@ class NetworkAwareNode:
             rclpy.shutdown()
             self.node = DirectNode(self.args)
             self.node.__enter__()
-            print('Daemon node was reset')
+            print('Network interfaces changed, daemon node was reset!')
