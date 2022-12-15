@@ -12,12 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import functools
 import inspect
 
 import netifaces
 import rclpy
-
-from ros2cli.helpers import before_invocation
 
 from ros2cli.node.direct import DirectNode
 
@@ -56,8 +55,13 @@ class NetworkAwareNode:
         attr = getattr(self.node, name)
 
         if inspect.ismethod(attr):
-            return before_invocation(
-                attr, self.reset_if_addresses_changed)
+            @functools.wraps(attr)
+            def wrapper(*args, **kwargs):
+                self.reset_if_addresses_changed()
+                # The attribute has to be get here again, in case self.node changed
+                return getattr(self.node, name)(*args, **kwargs)
+            wrapper.__signature__ = inspect.signature(attr)
+            return wrapper
         self.reset_if_addresses_changed()
         return attr
 
