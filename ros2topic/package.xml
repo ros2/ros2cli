@@ -21,6 +21,8 @@
   <depend>ros2cli</depend>
 
   <exec_depend>python3-numpy</exec_depend>
+  <exec_depend>python3-prompt-toolkit</exec_depend>
+  <exec_depend>python3-pygments</exec_depend>
   <exec_depend>python3-yaml</exec_depend>
   <exec_depend>rclpy</exec_depend>
   <exec_depend>rosidl_runtime_py</exec_depend>
