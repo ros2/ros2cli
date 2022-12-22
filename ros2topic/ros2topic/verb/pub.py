@@ -23,6 +23,7 @@ from rclpy.qos import QoSProfile
 from rclpy.qos import QoSReliabilityPolicy
 from ros2cli.node.direct import add_arguments as add_direct_node_arguments
 from ros2cli.node.direct import DirectNode
+from ros2topic.api import add_qos_arguments
 from ros2topic.api import profile_configure_short_keys
 from ros2topic.api import TopicMessagePrototypeCompleter
 from ros2topic.api import TopicNameCompleter
@@ -104,33 +105,7 @@ class PubVerb(VerbExtension):
         parser.add_argument(
             '-n', '--node-name',
             help='Name of the created publishing node')
-        parser.add_argument(
-            '--qos-profile',
-            choices=rclpy.qos.QoSPresetProfiles.short_keys(),
-            help='Quality of service preset profile to publish)')
-        default_profile = get_pub_qos_profile()
-        parser.add_argument(
-            '--qos-depth', metavar='N', type=int, default=-1,
-            help='Queue size setting to publish with '
-                 '(overrides depth value of --qos-profile option)')
-        parser.add_argument(
-            '--qos-history',
-            choices=rclpy.qos.QoSHistoryPolicy.short_keys(),
-            help='History of samples setting to publish with '
-                 '(overrides history value of --qos-profile option, default: {})'
-                 .format(default_profile.history.short_key))
-        parser.add_argument(
-            '--qos-reliability',
-            choices=rclpy.qos.QoSReliabilityPolicy.short_keys(),
-            help='Quality of service reliability setting to publish with '
-                 '(overrides reliability value of --qos-profile option, default: {})'
-                 .format(default_profile.reliability.short_key))
-        parser.add_argument(
-            '--qos-durability',
-            choices=rclpy.qos.QoSDurabilityPolicy.short_keys(),
-            help='Quality of service durability setting to publish with '
-                 '(overrides durability value of --qos-profile option, default: {})'
-                 .format(default_profile.durability.short_key))
+        add_qos_arguments(parser)
         add_direct_node_arguments(parser)
 
     def main(self, *, args):
@@ -145,7 +120,8 @@ def main(args):
         qos_profile = rclpy.qos.QoSPresetProfiles.get_from_short_key(qos_profile_name)
     profile_configure_short_keys(
         qos_profile, args.qos_reliability, args.qos_durability,
-        args.qos_depth, args.qos_history)
+        args.qos_depth, args.qos_history, args.qos_liveliness,
+        args.qos_liveliness_lease_duration_seconds)
 
     times = args.times
     if args.once:
