@@ -18,9 +18,7 @@ from typing import TypeVar
 
 import rclpy
 from rclpy.node import Node
-from rclpy.qos import QoSDurabilityPolicy
 from rclpy.qos import QoSProfile
-from rclpy.qos import QoSReliabilityPolicy
 from ros2cli.node.direct import add_arguments as add_direct_node_arguments
 from ros2cli.node.direct import DirectNode
 from ros2topic.api import add_qos_arguments
@@ -50,13 +48,6 @@ def positive_float(inval):
         # The error message here gets completely swallowed by argparse
         raise ValueError('Value must be positive')
     return ret
-
-
-def get_pub_qos_profile():
-    return QoSProfile(
-        reliability=QoSReliabilityPolicy.RELIABLE,
-        durability=QoSDurabilityPolicy.TRANSIENT_LOCAL,
-        depth=1)
 
 
 class PubVerb(VerbExtension):
@@ -105,7 +96,7 @@ class PubVerb(VerbExtension):
         parser.add_argument(
             '-n', '--node-name',
             help='Name of the created publishing node')
-        add_qos_arguments(parser)
+        add_qos_arguments(parser, 'publish', 'default')
         add_direct_node_arguments(parser)
 
     def main(self, *, args):
@@ -113,11 +104,8 @@ class PubVerb(VerbExtension):
 
 
 def main(args):
-    qos_profile = get_pub_qos_profile()
-
     qos_profile_name = args.qos_profile
-    if qos_profile_name:
-        qos_profile = rclpy.qos.QoSPresetProfiles.get_from_short_key(qos_profile_name)
+    qos_profile = rclpy.qos.QoSPresetProfiles.get_from_short_key(qos_profile_name)
     profile_configure_short_keys(
         qos_profile, args.qos_reliability, args.qos_durability,
         args.qos_depth, args.qos_history, args.qos_liveliness,

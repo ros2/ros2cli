@@ -42,6 +42,7 @@ import yaml
 DEFAULT_TRUNCATE_LENGTH = 128
 MsgType = TypeVar('MsgType')
 
+
 class EchoVerb(VerbExtension):
     """Output messages from a topic."""
 
@@ -56,7 +57,7 @@ class EchoVerb(VerbExtension):
         parser.add_argument(
             'message_type', nargs='?',
             help="Type of the ROS message (e.g. 'std_msgs/msg/String')")
-        add_qos_arguments(parser)
+        add_qos_arguments(parser, 'subscribe', 'sensor_data')
         parser.add_argument(
             '--csv', action='store_true',
             help=(
@@ -113,7 +114,7 @@ class EchoVerb(VerbExtension):
                 args.qos_depth is not None or
                 args.qos_history is not None or
                 args.qos_liveliness is not None or
-                args.qos_liveliness_duration is not None):
+                args.qos_liveliness_lease_duration_seconds is not None):
 
             return qos_profile_from_short_keys(
                 args.qos_profile,
@@ -122,7 +123,7 @@ class EchoVerb(VerbExtension):
                 depth=args.qos_depth,
                 history=args.qos_history,
                 liveliness=args.qos_liveliness,
-                qos_liveliness_duration=args.qos_liveliness_lease_duration_seconds)
+                liveliness_lease_duration_s=args.qos_liveliness_lease_duration_seconds)
 
         qos_profile = QoSPresetProfiles.get_from_short_key(args.qos_profile)
         reliability_reliable_endpoints_count = 0
