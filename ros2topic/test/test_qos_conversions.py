@@ -28,5 +28,4 @@ def test_profile_conversion():
     assert profile.depth == 10
     assert profile.history == rclpy.qos.QoSHistoryPolicy.KEEP_LAST
     assert profile.liveliness == rclpy.qos.QoSLivelinessPolicy.MANUAL_BY_TOPIC
-    assert profile.liveliness == rclpy.qos.QoSLivelinessPolicy.MANUAL_BY_TOPIC
     assert profile.liveliness_lease_duration == Duration(seconds=10.3)
