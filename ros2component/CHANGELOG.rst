@@ -2,6 +2,9 @@
 Changelog for package ros2component
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.18.5 (2023-01-10)
+-------------------
+
 0.18.4 (2022-11-07)
 -------------------
 * Fix the component load help to mention load, not unload. (`#756 <https://github.com/ros2/ros2cli/issues/756>`_) (`#757 <https://github.com/ros2/ros2cli/issues/757>`_)

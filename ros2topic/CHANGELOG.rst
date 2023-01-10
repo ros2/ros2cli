@@ -2,6 +2,12 @@
 Changelog for package ros2topic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.18.5 (2023-01-10)
+-------------------
+* Extend timeout to shutdown the command line process. (`#783 <https://github.com/ros2/ros2cli/issues/783>`_) (`#784 <https://github.com/ros2/ros2cli/issues/784>`_)
+* Add support use_sim_time for ros2 topic hz/bw/pub. (`#754 <https://github.com/ros2/ros2cli/issues/754>`_) (`#777 <https://github.com/ros2/ros2cli/issues/777>`_)
+* Contributors: Tomoya Fujita, mergify[bot]
+
 0.18.4 (2022-11-07)
 -------------------
 * [humble] Backport. Expand auto to the current time when passed to a Header field (`#751 <https://github.com/ros2/ros2cli/issues/751>`_)

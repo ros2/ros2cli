@@ -2,6 +2,11 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.18.5 (2023-01-10)
+-------------------
+* Fix network aware node issue (`#785 <https://github.com/ros2/ros2cli/issues/785>`_) (`#786 <https://github.com/ros2/ros2cli/issues/786>`_)
+* Contributors: mergify[bot]
+
 0.18.4 (2022-11-07)
 -------------------
 * XMLRPC server accepts request from all local IP addresses. (`#729 <https://github.com/ros2/ros2cli/issues/729>`_) (`#733 <https://github.com/ros2/ros2cli/issues/733>`_)
