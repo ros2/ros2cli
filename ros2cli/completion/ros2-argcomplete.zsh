@@ -12,7 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-autoload -U +X compinit && compinit
+if (( ! ${+_comps} )); then
+  autoload -U +X compinit && compinit
+fi
 autoload -U +X bashcompinit && bashcompinit
 
 # Get this scripts directory
