@@ -29,7 +29,6 @@
 # This file is originally from:
 # https://github.com/ros/ros_comm/blob/6e5016f4b2266d8a60c9a1e163c4928b8fc7115e/tools/rostopic/src/rostopic/__init__.py
 
-from argparse import ArgumentTypeError
 import sys
 import threading
 import traceback

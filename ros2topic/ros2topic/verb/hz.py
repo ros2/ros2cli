@@ -29,7 +29,6 @@
 # This file is originally from:
 # https://github.com/ros/ros_comm/blob/6e5016f4b2266d8a60c9a1e163c4928b8fc7115e/tools/rostopic/src/rostopic/__init__.py
 
-from argparse import ArgumentTypeError
 from collections import defaultdict
 
 import functools
@@ -49,6 +48,7 @@ from ros2topic.api import TopicNameCompleter
 from ros2topic.verb import VerbExtension
 
 DEFAULT_WINDOW_SIZE = 10000
+
 
 class HzVerb(VerbExtension):
     """Print the average publishing rate to screen."""
