@@ -38,6 +38,21 @@ def unsigned_int(string):
         raise ArgumentTypeError('value must be non-negative integer')
     return value
 
+def positive_int(string):
+    try:
+        value = int(string)
+    except ValueError:
+        value = -1
+    if value <= 0:
+        raise ArgumentTypeError('value must be a positive integer')
+    return value
+
+def positive_float(inval):
+    ret = float(inval)
+    if ret <= 0.0:
+        # The error message here gets completely swallowed by argparse
+        raise ValueError('Value must be positive')
+    return ret
 
 def get_topic_names_and_types(*, node, include_hidden_topics=False):
     topic_names_and_types = node.get_topic_names_and_types()
