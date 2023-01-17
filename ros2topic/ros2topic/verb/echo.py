@@ -220,7 +220,7 @@ class EchoVerb(VerbExtension):
             if message_type is None:
                 raise RuntimeError(
                     'Could not determine the type for the passed topic')
-            
+
             if args.time_out:
                 self.timer = node.create_timer(args.time_out, self._timed_out)
 
