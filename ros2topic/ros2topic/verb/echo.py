@@ -105,7 +105,7 @@ class EchoVerb(VerbExtension):
         parser.add_argument(
             '--once', action='store_true', help='Print the first message received and then exit.')
         parser.add_argument(
-            '--time-out', type=positive_float, help='Set a timeout for waiting')
+            '--timeout', metavar='N', type=positive_float, help='Set a timeout in seconds for waiting')
         parser.add_argument(
             '--include-message-info', '-i', action='store_true',
             help='Shows the associated message info.')
@@ -197,9 +197,11 @@ class EchoVerb(VerbExtension):
             self.filter_fn = _expr_eval(args.filter_expr)
 
         self.future = None
+        if args.timeout or args.once:
+            self.future = Future()
+
         self.once = False
         if args.once:
-            self.future = Future()
             self.once = True
 
         self.include_message_info = args.include_message_info
@@ -221,8 +223,8 @@ class EchoVerb(VerbExtension):
                 raise RuntimeError(
                     'Could not determine the type for the passed topic')
 
-            if args.time_out:
-                self.timer = node.create_timer(args.time_out, self._timed_out)
+            if args.timeout:
+                self.timer = node.create_timer(args.timeout, self._timed_out)
 
             self.subscribe_and_spin(
                 node,
