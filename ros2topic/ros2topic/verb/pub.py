@@ -22,6 +22,7 @@ from rclpy.qos import QoSProfile
 from ros2cli.node.direct import add_arguments as add_direct_node_arguments
 from ros2cli.node.direct import DirectNode
 from ros2topic.api import add_qos_arguments
+from ros2topic.api import positive_float
 from ros2topic.api import profile_configure_short_keys
 from ros2topic.api import TopicMessagePrototypeCompleter
 from ros2topic.api import TopicNameCompleter
@@ -39,14 +40,6 @@ def nonnegative_int(inval):
     if ret < 0:
         # The error message here gets completely swallowed by argparse
         raise ValueError('Value must be positive or zero')
-    return ret
-
-
-def positive_float(inval):
-    ret = float(inval)
-    if ret <= 0.0:
-        # The error message here gets completely swallowed by argparse
-        raise ValueError('Value must be positive')
     return ret
 
 

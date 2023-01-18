@@ -29,7 +29,6 @@
 # This file is originally from:
 # https://github.com/ros/ros_comm/blob/6e5016f4b2266d8a60c9a1e163c4928b8fc7115e/tools/rostopic/src/rostopic/__init__.py
 
-from argparse import ArgumentTypeError
 import math
 
 import rclpy
@@ -39,20 +38,11 @@ from rclpy.time import Time
 from ros2cli.node.direct import add_arguments as add_direct_node_arguments
 from ros2cli.node.direct import DirectNode
 from ros2topic.api import get_msg_class
+from ros2topic.api import positive_int
 from ros2topic.api import TopicNameCompleter
 from ros2topic.verb import VerbExtension
 
 DEFAULT_WINDOW_SIZE = 10000
-
-
-def positive_int(string):
-    try:
-        value = int(string)
-    except ValueError:
-        value = -1
-    if value <= 0:
-        raise ArgumentTypeError('value must be a positive integer')
-    return value
 
 
 class DelayVerb(VerbExtension):
