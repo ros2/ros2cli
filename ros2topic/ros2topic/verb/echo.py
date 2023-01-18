@@ -105,7 +105,7 @@ class EchoVerb(VerbExtension):
         parser.add_argument(
             '--once', action='store_true', help='Print the first message received and then exit.')
         parser.add_argument(
-            '--timeout', metavar='N', type=positive_float, help='Set a timeout in seconds for waiting')
+            '--timeout', metavar='N', type=positive_float, help='Set a timeout in seconds for waiting', default=-1)
         parser.add_argument(
             '--include-message-info', '-i', action='store_true',
             help='Shows the associated message info.')
