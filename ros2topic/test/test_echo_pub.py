@@ -456,9 +456,4 @@ class TestROS2TopicEchoPub(unittest.TestCase):
             # penalty in terms of time taken to set up and tear down a test
             time.sleep(10)
             assert command.terminated
-            
-        assert launch_testing.tools.expect_output(
-            expected_lines=[""],
-            text=command.output,
-            strict=True
-        )
+            assert command.output == ""
