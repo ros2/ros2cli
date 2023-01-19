@@ -191,6 +191,7 @@ class EchoVerb(VerbExtension):
         self.no_arr = args.no_arr
         self.no_str = args.no_str
         self.flow_style = args.flow_style
+        self.once = args.once
 
         self.filter_fn = None
         if args.filter_expr:
@@ -199,10 +200,6 @@ class EchoVerb(VerbExtension):
         self.future = None
         if args.timeout or args.once:
             self.future = Future()
-
-        self.once = False
-        if args.once:
-            self.once = True
 
         self.include_message_info = args.include_message_info
 

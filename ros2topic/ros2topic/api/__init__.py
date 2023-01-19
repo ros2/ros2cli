@@ -52,12 +52,11 @@ def positive_int(string):
 def positive_float(inval):
     try:
         ret = float(inval)
-        if ret <= 0.0:
-            raise ArgumentTypeError('Value must be positive')
-    except:
+    except ValueError:
         raise ArgumentTypeError('Expects a floating point number')
+    if ret <= 0.0:
+        raise ArgumentTypeError('Value must be positive')
     return ret
-
 
 def get_topic_names_and_types(*, node, include_hidden_topics=False):
     topic_names_and_types = node.get_topic_names_and_types()
