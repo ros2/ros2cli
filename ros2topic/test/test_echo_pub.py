@@ -14,6 +14,7 @@
 
 import functools
 import sys
+import time
 import unittest
 
 from launch import LaunchDescription
@@ -433,3 +434,31 @@ class TestROS2TopicEchoPub(unittest.TestCase):
             # Cleanup
             self.node.destroy_timer(publish_timer)
             self.node.destroy_publisher(publisher)
+
+    @launch_testing.markers.retry_on_failure(times=5)
+    def test_echo_timeout(self, launch_service, proc_info, proc_output):
+        topic = '/clitest/topic/echo_timeout'
+
+        command_action = ExecuteProcess(
+            cmd=['ros2', 'topic', 'echo', '--timeout', '5', topic, 'std_msgs/msg/String'],
+            additional_env={
+                'PYTHONUNBUFFERED': '1'
+            },
+            output='screen'
+        )
+        with launch_testing.tools.launch_process(
+            launch_service, command_action, proc_info, proc_output,
+            output_filter=launch_testing_ros.tools.basic_output_filter(
+                filtered_rmw_implementation=get_rmw_implementation_identifier()
+            )
+        ) as command:
+            # despite length of timeout being 5, there is additional
+            # penalty in terms of time taken to set up and tear down a test
+            time.sleep(10)
+            assert command.terminated
+            
+        assert launch_testing.tools.expect_output(
+            expected_lines=[""],
+            text=command.output,
+            strict=True
+        )
