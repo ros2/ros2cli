@@ -14,7 +14,6 @@
 
 import functools
 import sys
-import time
 import unittest
 
 from launch import LaunchDescription
