@@ -452,8 +452,6 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                 filtered_rmw_implementation=get_rmw_implementation_identifier()
             )
         ) as command:
-            # despite length of timeout being 5, there is additional
-            # penalty in terms of time taken to set up and tear down a test
-            time.sleep(10)
-            assert command.terminated
+            # wait for command to shutdown on its own
+            assert command.wait_for_shutdown()
             assert command.output == ""
