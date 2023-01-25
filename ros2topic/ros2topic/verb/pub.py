@@ -83,6 +83,10 @@ class PubVerb(VerbExtension):
                 'Wait until finding the specified number of matching subscriptions. '
                 'Defaults to 1 when using "-1"/"--once"/"--times", otherwise defaults to 0.'))
         parser.add_argument(
+            '--max-wait-time', type=positive_float, default=None,
+            help=(
+                'This sets the maximum wait time if --wait-until-matching-subscriptions is set'))
+        parser.add_argument(
             '--keep-alive', metavar='N', type=positive_float, default=0.1,
             help='Keep publishing node alive for N seconds after the last msg '
                  '(default: 0.1)')
@@ -119,6 +123,7 @@ def main(args):
             times,
             args.wait_matching_subscriptions
             if args.wait_matching_subscriptions is not None else int(times != 0),
+            args.max_wait_time,
             qos_profile,
             args.keep_alive)
 
@@ -132,6 +137,7 @@ def publisher(
     print_nth: int,
     times: int,
     wait_matching_subscriptions: int,
+    max_wait_time: float | None,
     qos_profile: QoSProfile,
     keep_alive: float,
 ) -> Optional[str]:
@@ -147,13 +153,18 @@ def publisher(
     pub = node.create_publisher(msg_module, topic_name, qos_profile)
 
     times_since_last_log = 0
+    total_wait_time = 0
     while pub.get_subscription_count() < wait_matching_subscriptions:
         # Print a message reporting we're waiting each 1s, check condition each 100ms.
         if not times_since_last_log:
             print(
                 f'Waiting for at least {wait_matching_subscriptions} matching subscription(s)...')
         times_since_last_log = (times_since_last_log + 1) % 10
-        time.sleep(0.1)
+        WAIT_TIME = 0.1
+        total_wait_time += WAIT_TIME
+        if max_wait_time is not None and max_wait_time < total_wait_time:
+            return 'Timed out waiting for subscribers'
+        time.sleep(WAIT_TIME)
 
     msg = msg_module()
     try:
