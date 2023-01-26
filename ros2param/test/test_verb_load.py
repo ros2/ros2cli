@@ -294,6 +294,31 @@ class TestVerbLoad(unittest.TestCase):
                 strict=True
             )
 
+    def test_verb_load_atomic(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            filepath = self._write_param_file(tmpdir, 'params.yaml')
+            with self.launch_param_load_command(
+                arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}', filepath, '--atomic']
+            ) as param_load_command:
+                assert param_load_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
+            assert param_load_command.exit_code == launch_testing.asserts.EXIT_OK
+            assert launch_testing.tools.expect_output(
+                expected_lines=[''],
+                text=param_load_command.output,
+                strict=True
+            )
+            # Dump with ros2 param dump and compare that output matches input file
+            with self.launch_param_dump_command(
+                arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}']
+            ) as param_dump_command:
+                assert param_dump_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
+            assert param_dump_command.exit_code == launch_testing.asserts.EXIT_OK
+            assert launch_testing.tools.expect_output(
+                expected_text=INPUT_PARAMETER_FILE + '\n',
+                text=param_dump_command.output,
+                strict=True
+            )
+
     def test_verb_load_wildcard(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             # Try param file with only wildcard

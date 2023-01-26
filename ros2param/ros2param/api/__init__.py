@@ -50,6 +50,10 @@ def load_parameter_file(*, node, node_name, parameter_file, use_wildcard):
     parameters = list(parameter_dict_from_yaml_file(parameter_file, use_wildcard).values())
     rclpy.spin_until_future_complete(node, future)
     response = future.result()
+    if response is None:
+        raise RuntimeError('Exception while calling service of node '
+                           f'{node_name}: {future.exception()}')
+
     assert len(response.results) == len(parameters), 'Not all parameters set'
     for i in range(0, len(response.results)):
         result = response.results[i]
@@ -64,6 +68,26 @@ def load_parameter_file(*, node, node_name, parameter_file, use_wildcard):
             if result.reason:
                 msg += ': ' + result.reason
             print(msg, file=sys.stderr)
+
+
+def load_parameter_file_atomically(*, node, node_name, parameter_file, use_wildcard):
+    client = AsyncParameterClient(node, node_name)
+    ready = client.wait_for_services(timeout_sec=5.0)
+    if not ready:
+        raise RuntimeError('Wait for service timed out')
+    future = client.load_parameter_file_atomically(parameter_file, use_wildcard)
+    parameters = list(parameter_dict_from_yaml_file(parameter_file, use_wildcard).values())
+    rclpy.spin_until_future_complete(node, future)
+    response = future.result()
+    if response is None:
+        raise RuntimeError('Exception while calling service of node '
+                           f'{node_name}: {future.exception()}')
+
+    if response.result.successful:
+        msg = 'Set parameters {} successful'.format(' '.join([i.name for i in parameters]))
+        if response.result.reason:
+            msg += ': ' + response.result.reason
+        print(msg)
 
 
 def call_describe_parameters(*, node, node_name, parameter_names=None):
@@ -88,6 +112,18 @@ def call_get_parameters(*, node, node_name, parameter_names):
         raise RuntimeError('Wait for service timed out waiting for '
                            f'parameter services for node {node_name}')
     future = client.get_parameters(parameter_names)
+    rclpy.spin_until_future_complete(node, future)
+    response = future.result()
+    if response is None:
+        raise RuntimeError('Exception while calling service of node '
+                           f'{node_name}: {future.exception()}')
+    return response
+
+
+def call_set_parameters_atomically(*, node, node_name, parameters):
+    client = AsyncParameterClient(node, node_name)
+    client.wait_for_services(timeout_sec=5.0)
+    future = client.set_parameters_atomically(parameters)
     rclpy.spin_until_future_complete(node, future)
     response = future.result()
     if response is None:

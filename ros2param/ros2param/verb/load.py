@@ -19,6 +19,7 @@ from ros2node.api import get_absolute_node_name
 from ros2node.api import get_node_names
 from ros2node.api import NodeNameCompleter
 from ros2param.api import load_parameter_file
+from ros2param.api import load_parameter_file_atomically
 from ros2param.verb import VerbExtension
 
 
@@ -39,6 +40,9 @@ class LoadVerb(VerbExtension):
         parser.add_argument(
             '--no-use-wildcard', action='store_true',
             help="Do not load parameters in the '/**' namespace into the node")
+        parser.add_argument(
+            '--atomic', action='store_true',
+            help='Load parameters atomically')
 
     def main(self, *, args):  # noqa: D102
         with NodeStrategy(args) as node:
@@ -50,5 +54,11 @@ class LoadVerb(VerbExtension):
             return 'Node not found'
 
         with DirectNode(args) as node:
-            load_parameter_file(node=node, node_name=node_name, parameter_file=args.parameter_file,
-                                use_wildcard=not args.no_use_wildcard)
+            if args.atomic:
+                load_parameter_file_atomically(node=node, node_name=node_name,
+                                               parameter_file=args.parameter_file,
+                                               use_wildcard=not args.no_use_wildcard)
+            else:
+                load_parameter_file(node=node, node_name=node_name,
+                                    parameter_file=args.parameter_file,
+                                    use_wildcard=not args.no_use_wildcard)
