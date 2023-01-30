@@ -111,6 +111,10 @@ def daemon_node():
         assert shutdown_daemon(args=[], timeout=5.0)
     assert spawn_daemon(args=[], timeout=5.0)
     with DaemonNode(args=[]) as node:
+        if not node.connected:
+            pytest.fail(
+                f'failed to connect daemon {TEST_NODE_NAMESPACE}/{TEST_NODE_NAME}'
+            )
         attempts = 3
         delay_between_attempts = 2  # seconds
         for _ in range(attempts):
