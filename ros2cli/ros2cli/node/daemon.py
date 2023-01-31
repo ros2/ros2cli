@@ -39,18 +39,18 @@ class DaemonNode:
     @property
     def connected(self):
         try:
-            self._proxy.system.listMethods()
+            self._methods = [
+                method
+                for method in self._proxy.system.listMethods()
+                if not method.startswith('system.')
+            ]
         except ConnectionRefusedError:
             return False
         return True
 
     @property
     def methods(self):
-        return [
-            method
-            for method in self._proxy.system.listMethods()
-            if not method.startswith('system.')
-        ]
+        return self._methods
 
     def __enter__(self):
         self._proxy.__enter__()

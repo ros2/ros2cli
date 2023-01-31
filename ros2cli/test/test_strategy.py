@@ -45,6 +45,16 @@ def test_with_daemon_running(enforce_daemon_is_running):
         assert direct is not None
 
 
+def test_with_daemon_spawn(enforce_no_daemon_is_running):
+    with NodeStrategy(args=[]) as node:
+        assert node._daemon_node is None
+        assert node._direct_node is not None
+    # Daemon should be spawned by NodeStrategy call above
+    with NodeStrategy(args=[]) as node:
+        assert node._daemon_node is not None
+        assert node._direct_node is None
+
+
 def test_with_no_daemon_running(enforce_no_daemon_is_running):
     with NodeStrategy(args=[]) as node:
         assert node._daemon_node is None
