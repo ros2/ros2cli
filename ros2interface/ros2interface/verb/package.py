@@ -11,10 +11,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import collections
 from ros2interface.api import package_name_completer
 from ros2interface.verb import VerbExtension
-from rosidl_runtime_py import get_interfaces
+from rosidl_runtime_py import get_action_interfaces, get_interfaces
+from rosidl_runtime_py import get_message_interfaces, get_service_interfaces
 
 
 class PackageVerb(VerbExtension):
@@ -39,23 +40,25 @@ class PackageVerb(VerbExtension):
         arg.completer = package_name_completer
 
     def main(self, *, args):
-        types_to_filter = []
-        if args.only_msgs or args.only_srvs or args.only_actions:
-            if not args.only_msgs:
-                types_to_filter.append('msg')
-            if not args.only_srvs:
-                types_to_filter.append('srv')
-            if not args.only_actions:
-                types_to_filter.append('action')
-
+        interfaces = collections.defaultdict(list)
         try:
-            interfaces = get_interfaces([args.package_name])
+            if not args.only_msgs and not args.only_srvs and not args.only_actions:
+                interfaces = get_interfaces([args.package_name])
+            else:
+                get_commands = []
+                if args.only_msgs:
+                    get_commands.append(get_message_interfaces)
+                if args.only_srvs:
+                    get_commands.append(get_service_interfaces)
+                if args.only_actions:
+                    get_commands.append(get_action_interfaces)
+
+                for get_interface_cmd in get_commands:
+                    pkg_interfaces = get_interface_cmd([args.package_name])
+                    for package_name, interface_names in pkg_interfaces.items():
+                        interfaces[package_name] += interface_names
         except LookupError as e:
             return str(e)
         for package_name in sorted(interfaces):
             for interface_name in interfaces[package_name]:
-                if types_to_filter:
-                    interface_type = interface_name[:interface_name.index('/')]
-                    if interface_type in types_to_filter:
-                        continue
                 print(f'{package_name}/{interface_name}')
