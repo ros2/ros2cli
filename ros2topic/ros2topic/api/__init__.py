@@ -58,6 +58,7 @@ def positive_float(inval):
         raise ArgumentTypeError('Value must be positive')
     return ret
 
+
 def get_topic_names_and_types(*, node, include_hidden_topics=False):
     topic_names_and_types = node.get_topic_names_and_types()
     if not include_hidden_topics:
