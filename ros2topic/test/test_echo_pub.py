@@ -439,7 +439,7 @@ class TestROS2TopicEchoPub(unittest.TestCase):
         topic = '/clitest/topic/echo_timeout'
 
         command_action = ExecuteProcess(
-            cmd=['ros2', 'topic', 'echo', '--timeout', '5', topic, 'std_msgs/msg/String'],
+            cmd=['ros2', 'topic', 'echo', '--timeout', '1', topic, 'std_msgs/msg/String'],
             additional_env={
                 'PYTHONUNBUFFERED': '1'
             },
@@ -452,5 +452,5 @@ class TestROS2TopicEchoPub(unittest.TestCase):
             )
         ) as command:
             # wait for command to shutdown on its own
-            assert command.wait_for_shutdown()
+            assert command.wait_for_shutdown(timeout=5)
             assert command.output == ""
