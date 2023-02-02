@@ -433,3 +433,24 @@ class TestROS2TopicEchoPub(unittest.TestCase):
             # Cleanup
             self.node.destroy_timer(publish_timer)
             self.node.destroy_publisher(publisher)
+
+    @launch_testing.markers.retry_on_failure(times=5)
+    def test_echo_timeout(self, launch_service, proc_info, proc_output):
+        topic = '/clitest/topic/echo_timeout'
+
+        command_action = ExecuteProcess(
+            cmd=['ros2', 'topic', 'echo', '--timeout', '1', topic, 'std_msgs/msg/String'],
+            additional_env={
+                'PYTHONUNBUFFERED': '1'
+            },
+            output='screen'
+        )
+        with launch_testing.tools.launch_process(
+            launch_service, command_action, proc_info, proc_output,
+            output_filter=launch_testing_ros.tools.basic_output_filter(
+                filtered_rmw_implementation=get_rmw_implementation_identifier()
+            )
+        ) as command:
+            # wait for command to shutdown on its own
+            assert command.wait_for_shutdown(timeout=5)
+            assert command.output == ""

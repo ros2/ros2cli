@@ -50,9 +50,11 @@ def positive_int(string):
 
 
 def positive_float(inval):
-    ret = float(inval)
+    try:
+        ret = float(inval)
+    except ValueError:
+        raise ArgumentTypeError('Expects a floating point number')
     if ret <= 0.0:
-        # The error message here gets completely swallowed by argparse
         raise ArgumentTypeError('Value must be positive')
     return ret
 
