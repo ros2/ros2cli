@@ -159,13 +159,13 @@ def publisher(
         if not times_since_last_log:
             print(
                 f'Waiting for at least {wait_matching_subscriptions} matching subscription(s)...')
+        if max_wait_time is not None and max_wait_time < total_wait_time:
+            return 'Timed out waiting for subscribers'       
         times_since_last_log = (times_since_last_log + 1) % 10
         WAIT_TIME = 0.1
-        total_wait_time += WAIT_TIME
-        if max_wait_time is not None and max_wait_time < total_wait_time:
-            return 'Timed out waiting for subscribers'
         time.sleep(WAIT_TIME)
-
+        total_wait_time += WAIT_TIME
+        
     msg = msg_module()
     try:
         timestamp_fields = set_message_fields(
