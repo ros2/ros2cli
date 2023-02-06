@@ -114,9 +114,6 @@ def main(args):
     if args.once:
         times = 1
 
-    if args.wait_matching_subscriptions is None and args.max_wait_time_secs is not None:
-        return '--max-wait-time-secs option is only effective with --wait-matching-subscriptions'
-
     with DirectNode(args, node_name=args.node_name) as node:
         return publisher(
             node.node,
@@ -156,6 +153,9 @@ def publisher(
         return 'The passed value needs to be a dictionary in YAML format'
 
     pub = node.create_publisher(msg_module, topic_name, qos_profile)
+
+    if wait_matching_subscriptions is None and max_wait_time is not None:
+        return '--max-wait-time-secs option is only effective with --wait-matching-subscriptions, --once or --times'
 
     times_since_last_log = 0
     total_wait_time = 0
