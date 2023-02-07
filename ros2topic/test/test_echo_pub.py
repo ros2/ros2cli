@@ -257,7 +257,7 @@ class TestROS2TopicEchoPub(unittest.TestCase):
         ) as command:
             self.executor.spin_until_future_complete(future, timeout_sec=10)
             assert command.wait_for_shutdown(timeout=20)
-        assert self.recv_msg_count == 1
+        assert received_message_count == 1
 
     @launch_testing.markers.retry_on_failure(times=5)
     def test_pub_times(self, launch_service, proc_info, proc_output):
