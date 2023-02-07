@@ -154,7 +154,7 @@ def publisher(
 
     pub = node.create_publisher(msg_module, topic_name, qos_profile)
 
-    if wait_matching_subscriptions is None and max_wait_time is not None:
+    if wait_matching_subscriptions == 0 and max_wait_time is not None:
         return '--max-wait-time-secs option is only effective with --wait-matching-subscriptions, --once or --times'
 
     times_since_last_log = 0

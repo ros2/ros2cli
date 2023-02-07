@@ -178,7 +178,7 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                     self.node.destroy_subscription(subscription)
     
     @launch_testing.markers.retry_on_failure(times=5)
-    def test_pub_basic(self, launch_service, proc_info, proc_output):
+    def test_pub_maxwait_no_subscribers(self, launch_service, proc_info, proc_output):
         command_action = ExecuteProcess(
             cmd=(['ros2', 'topic', 'pub', '-t', '5', '--max-wait-time-secs', '1', '/clitest/topic/pub_times',
                   'std_msgs/String', 'data: hello']),
@@ -197,11 +197,67 @@ class TestROS2TopicEchoPub(unittest.TestCase):
         assert launch_testing.tools.expect_output(
             expected_lines=[
                 'Waiting for at least 1 matching subscription(s)...',
-                'Waiting for at least 1 matching subscription(s)...'
+                'Waiting for at least 1 matching subscription(s)...',
                 'Timed out waiting for subscribers: Expected 1 subcribers but only got 0 subscribers'
             ],
             text=command.output,
             strict=True)
+
+    @launch_testing.markers.retry_on_failure(times=5)
+    def test_pub_maxwait_malformed_arguments(self, launch_service, proc_info, proc_output):
+        command_action = ExecuteProcess(
+            cmd=(['ros2', 'topic', 'pub', '--max-wait-time-secs', '1', '/clitest/topic/pub_times',
+                  'std_msgs/String', 'data: hello']),
+            additional_env={
+                'PYTHONUNBUFFERED': '1'
+            },
+            output='screen'
+        )
+        with launch_testing.tools.launch_process(
+            launch_service, command_action, proc_info, proc_output,
+            output_filter=launch_testing_ros.tools.basic_output_filter(
+                filtered_rmw_implementation=get_rmw_implementation_identifier()
+            )
+        ) as command:
+            assert command.wait_for_shutdown(timeout=5)
+        assert launch_testing.tools.expect_output(
+            expected_lines=[
+                '--max-wait-time-secs option is only effective with --wait-matching-subscriptions, --once or --times'
+            ],
+            text=command.output,
+            strict=True)
+
+    @launch_testing.markers.retry_on_failure(times=5)
+    def test_pub_maxwait_yields(self, launch_service, proc_info, proc_output):
+        topic = '/clitest/topic/pub/max_wait_timeout'
+        command_action = ExecuteProcess(
+            cmd=(['ros2', 'topic', 'pub', '-t', '1', '--max-wait-time-secs', '20', topic,
+                  'std_msgs/String', 'data: hello']),
+            additional_env={
+                'PYTHONUNBUFFERED': '1'
+            },
+            output='screen'
+        )
+
+        future = rclpy.task.Future()
+        received_message_count = 0
+
+        def message_callback(msg):
+            """If we receive one message, the test has succeeded."""
+            nonlocal received_message_count
+            received_message_count += 1
+            future.set_result(True)
+
+        self.node.create_subscription(String, topic, message_callback, 1)
+        with launch_testing.tools.launch_process(
+            launch_service, command_action, proc_info, proc_output,
+            output_filter=launch_testing_ros.tools.basic_output_filter(
+                filtered_rmw_implementation=get_rmw_implementation_identifier()
+            )
+        ) as command:
+            self.executor.spin_until_future_complete(future, timeout_sec=10)
+            assert command.wait_for_shutdown(timeout=20)
+        assert self.recv_msg_count == 1
 
     @launch_testing.markers.retry_on_failure(times=5)
     def test_pub_times(self, launch_service, proc_info, proc_output):
