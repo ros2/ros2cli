@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import time
+
 from collections import namedtuple
 from typing import Any
 from typing import List
@@ -69,6 +71,18 @@ def get_node_names(*, node, include_hidden_nodes=False):
             (t[0] and not t[0].startswith(HIDDEN_NODE_PREFIX))
         )
     ]
+
+
+def wait_for_node(node, node_name, include_hidden_nodes=False, timeout=1.0) -> bool:
+    start = time.time()
+    found = False
+    while time.time() - start < timeout and not found:
+        node_names = get_node_names(
+            node=node, include_hidden_nodes=include_hidden_nodes)
+        if node_name in {n.full_name for n in node_names}:
+            found = True
+        time.sleep(0.1)
+    return found
 
 
 def get_topics(remote_node_name, func, *, include_hidden_topics=False):
