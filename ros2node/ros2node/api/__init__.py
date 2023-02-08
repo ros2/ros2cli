@@ -19,6 +19,7 @@ from typing import Any
 from typing import List
 
 from rclpy.node import HIDDEN_NODE_PREFIX
+from ros2cli.helpers import wait_for
 from ros2cli.node.strategy import NodeStrategy
 
 INFO_NONUNIQUE_WARNING_TEMPLATE = (
@@ -74,15 +75,12 @@ def get_node_names(*, node, include_hidden_nodes=False):
 
 
 def wait_for_node(node, node_name, include_hidden_nodes=False, timeout=1.0) -> bool:
-    start = time.time()
-    found = False
-    while time.time() - start < timeout and not found:
+    def node_available():
         node_names = get_node_names(
             node=node, include_hidden_nodes=include_hidden_nodes)
-        if node_name in {n.full_name for n in node_names}:
-            found = True
-        time.sleep(0.1)
-    return found
+        return True if node_name in {n.full_name for n in node_names} else False
+
+    return wait_for(node_available, timeout)
 
 
 def get_topics(remote_node_name, func, *, include_hidden_topics=False):
