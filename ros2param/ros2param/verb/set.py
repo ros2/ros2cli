@@ -57,7 +57,7 @@ class SetVerb(VerbExtension):
 
         with DirectNode(args) as node:
             parameter = Parameter()
-            Parameter.name = args.parameter_name
+            parameter.name = args.parameter_name
             parameter.value = get_parameter_value(string_value=args.value)
 
             response = call_set_parameters(
