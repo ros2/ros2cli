@@ -85,10 +85,10 @@ class GetVerb(VerbExtension):
                 value = pvalue.bool_array_value
             elif pvalue.type == ParameterType.PARAMETER_INTEGER_ARRAY:
                 label = 'Integer values are:'
-                value = pvalue.integer_array_value
+                value = pvalue.integer_array_value.tolist()
             elif pvalue.type == ParameterType.PARAMETER_DOUBLE_ARRAY:
                 label = 'Double values are:'
-                value = pvalue.double_array_value
+                value = pvalue.double_array_value.tolist()
             elif pvalue.type == ParameterType.PARAMETER_STRING_ARRAY:
                 label = 'String values are:'
                 value = pvalue.string_array_value
