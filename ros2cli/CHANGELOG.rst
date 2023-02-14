@@ -2,8 +2,8 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.22.0 (2023-02-14)
+-------------------
 * Save method list via connection check to XMLRPC server. (`#796 <https://github.com/ros2/ros2cli/issues/796>`_)
 * ZSH argcomplete: call compinit only if needed (`#750 <https://github.com/ros2/ros2cli/issues/750>`_)
 * Fix network aware node issue (`#785 <https://github.com/ros2/ros2cli/issues/785>`_)

@@ -2,8 +2,8 @@
 Changelog for package ros2topic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.22.0 (2023-02-14)
+-------------------
 * Fix some flake8 warnings related to style. (`#805 <https://github.com/ros2/ros2cli/issues/805>`_)
 * Adds a timeout feature to rostopic echo (`#792 <https://github.com/ros2/ros2cli/issues/792>`_)
 * Refactor common types (`#791 <https://github.com/ros2/ros2cli/issues/791>`_)

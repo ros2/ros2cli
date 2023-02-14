@@ -2,8 +2,8 @@
 Changelog for package ros2node
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.22.0 (2023-02-14)
+-------------------
 * [rolling] Update maintainers - 2022-11-07 (`#776 <https://github.com/ros2/ros2cli/issues/776>`_)
 * Updated wording in list.py (`#775 <https://github.com/ros2/ros2cli/issues/775>`_)
 * Contributors: Audrow Nash, Michael Wrock
