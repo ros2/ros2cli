@@ -2,6 +2,14 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Save method list via connection check to XMLRPC server. (`#796 <https://github.com/ros2/ros2cli/issues/796>`_)
+* ZSH argcomplete: call compinit only if needed (`#750 <https://github.com/ros2/ros2cli/issues/750>`_)
+* Fix network aware node issue (`#785 <https://github.com/ros2/ros2cli/issues/785>`_)
+* [rolling] Update maintainers - 2022-11-07 (`#776 <https://github.com/ros2/ros2cli/issues/776>`_)
+* Contributors: Audrow Nash, Ivan Santiago Paunovic, Tomoya Fujita, mjbogusz
+
 0.21.0 (2022-11-02)
 -------------------
 

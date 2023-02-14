@@ -2,6 +2,12 @@
 Changelog for package ros2param
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix printing of integer and double arrays. (`#804 <https://github.com/ros2/ros2cli/issues/804>`_)
+* [rolling] Update maintainers - 2022-11-07 (`#776 <https://github.com/ros2/ros2cli/issues/776>`_)
+* Contributors: Audrow Nash, Chris Lalancette
+
 0.21.0 (2022-11-02)
 -------------------
 

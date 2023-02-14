@@ -2,6 +2,17 @@
 Changelog for package ros2topic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix some flake8 warnings related to style. (`#805 <https://github.com/ros2/ros2cli/issues/805>`_)
+* Adds a timeout feature to rostopic echo (`#792 <https://github.com/ros2/ros2cli/issues/792>`_)
+* Refactor common types (`#791 <https://github.com/ros2/ros2cli/issues/791>`_)
+* Allow configuring liveliness in ros2 topic echo and pub (`#788 <https://github.com/ros2/ros2cli/issues/788>`_)
+* Extend timeout to shutdown the command line process. (`#783 <https://github.com/ros2/ros2cli/issues/783>`_)
+* [rolling] Update maintainers - 2022-11-07 (`#776 <https://github.com/ros2/ros2cli/issues/776>`_)
+* a couple of typo fixes. (`#774 <https://github.com/ros2/ros2cli/issues/774>`_)
+* Contributors: Arjo Chakravarty, Audrow Nash, Chris Lalancette, Ivan Santiago Paunovic, Tomoya Fujita
+
 0.21.0 (2022-11-02)
 -------------------
 * Add support use_sim_time for ros2 topic hz/bw/pub. (`#754 <https://github.com/ros2/ros2cli/issues/754>`_)

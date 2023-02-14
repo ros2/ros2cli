@@ -2,6 +2,11 @@
 Changelog for package ros2multicast
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [rolling] Update maintainers - 2022-11-07 (`#776 <https://github.com/ros2/ros2cli/issues/776>`_)
+* Contributors: Audrow Nash
+
 0.21.0 (2022-11-02)
 -------------------
 * Add --group and --port options to ros2 multicast (`#770 <https://github.com/ros2/ros2cli/issues/770>`_)
