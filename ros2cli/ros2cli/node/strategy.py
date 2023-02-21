@@ -27,6 +27,9 @@ class NodeStrategy:
         if use_daemon and is_daemon_running(args):
             self._daemon_node = DaemonNode(args)
             self._direct_node = None
+            if not self._daemon_node.connected:
+                self._direct_node = DirectNode(args)
+                self._daemon_node = None
         else:
             if use_daemon:
                 spawn_daemon(args)
