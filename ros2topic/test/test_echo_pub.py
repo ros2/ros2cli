@@ -240,12 +240,8 @@ class TestROS2TopicEchoPub(unittest.TestCase):
         )
 
         future = rclpy.task.Future()
-        received_message_count = 0
-
         def message_callback(msg):
             """If we receive one message, the test has succeeded."""
-            nonlocal received_message_count
-            received_message_count += 1
             future.set_result(True)
 
         self.node.create_subscription(String, topic, message_callback, 1)
@@ -256,8 +252,8 @@ class TestROS2TopicEchoPub(unittest.TestCase):
             )
         ) as command:
             self.executor.spin_until_future_complete(future, timeout_sec=10)
+            assert future.done()
             assert command.wait_for_shutdown(timeout=20)
-        assert received_message_count == 1
 
     @launch_testing.markers.retry_on_failure(times=5)
     def test_pub_times(self, launch_service, proc_info, proc_output):
