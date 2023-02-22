@@ -176,12 +176,12 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                 finally:
                     # Cleanup
                     self.node.destroy_subscription(subscription)
-    
+
     @launch_testing.markers.retry_on_failure(times=5)
     def test_pub_maxwait_no_subscribers(self, launch_service, proc_info, proc_output):
         command_action = ExecuteProcess(
-            cmd=(['ros2', 'topic', 'pub', '-t', '5', '--max-wait-time-secs', '1', '/clitest/topic/pub_times',
-                  'std_msgs/String', 'data: hello']),
+            cmd=(['ros2', 'topic', 'pub', '-t', '5', '--max-wait-time-secs',
+                  '1', '/clitest/topic/pub_times', 'std_msgs/String', 'data: hello']),
             additional_env={
                 'PYTHONUNBUFFERED': '1'
             },
@@ -198,7 +198,8 @@ class TestROS2TopicEchoPub(unittest.TestCase):
             expected_lines=[
                 'Waiting for at least 1 matching subscription(s)...',
                 'Waiting for at least 1 matching subscription(s)...',
-                'Timed out waiting for subscribers: Expected 1 subcribers but only got 0 subscribers'
+                'Timed out waiting for subscribers: Expected'
+                ' 1 subcribers but only got 0 subscribers'
             ],
             text=command.output,
             strict=True)
@@ -206,8 +207,8 @@ class TestROS2TopicEchoPub(unittest.TestCase):
     @launch_testing.markers.retry_on_failure(times=5)
     def test_pub_maxwait_malformed_arguments(self, launch_service, proc_info, proc_output):
         command_action = ExecuteProcess(
-            cmd=(['ros2', 'topic', 'pub', '--max-wait-time-secs', '1', '/clitest/topic/pub_times',
-                  'std_msgs/String', 'data: hello']),
+            cmd=(['ros2', 'topic', 'pub', '--max-wait-time-secs', '1',
+                  '/clitest/topic/pub_times', 'std_msgs/String', 'data: hello']),
             additional_env={
                 'PYTHONUNBUFFERED': '1'
             },
@@ -240,6 +241,7 @@ class TestROS2TopicEchoPub(unittest.TestCase):
         )
 
         future = rclpy.task.Future()
+
         def message_callback(msg):
             """If we receive one message, the test has succeeded."""
             future.set_result(True)

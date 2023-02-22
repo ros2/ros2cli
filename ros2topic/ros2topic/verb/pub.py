@@ -86,7 +86,8 @@ class PubVerb(VerbExtension):
         parser.add_argument(
             '--max-wait-time-secs', type=positive_float, default=None,
             help=(
-                'This sets the maximum wait time in seconds if --wait-until-matching-subscriptions is set.'
+                'This sets the maximum wait time in seconds if '
+                '--wait-until-matching-subscriptions is set. '
                 'By default, this flag is not set meaning the subscriber will wait endlessly.'))
         parser.add_argument(
             '--keep-alive', metavar='N', type=positive_float, default=0.1,
@@ -155,7 +156,8 @@ def publisher(
     pub = node.create_publisher(msg_module, topic_name, qos_profile)
 
     if wait_matching_subscriptions == 0 and max_wait_time is not None:
-        return '--max-wait-time-secs option is only effective with --wait-matching-subscriptions, --once or --times'
+        return '--max-wait-time-secs option is only effective' +
+            ' with --wait-matching-subscriptions, --once or --times'
 
     times_since_last_log = 0
     total_wait_time = 0
@@ -165,11 +167,12 @@ def publisher(
             print(
                 f'Waiting for at least {wait_matching_subscriptions} matching subscription(s)...')
         if max_wait_time is not None and max_wait_time <= total_wait_time:
-            return f'Timed out waiting for subscribers: Expected {wait_matching_subscriptions} subcribers but only got {pub.get_subscription_count()} subscribers'       
+            return f'Timed out waiting for subscribers: Expected {wait_matching_subscriptions}' +
+                f' subcribers but only got {pub.get_subscription_count()} subscribers'
         times_since_last_log = (times_since_last_log + 1) % 10
         time.sleep(DEFAULT_WAIT_TIME)
         total_wait_time += DEFAULT_WAIT_TIME
-        
+
     msg = msg_module()
     try:
         timestamp_fields = set_message_fields(
