@@ -223,7 +223,8 @@ class TestROS2TopicEchoPub(unittest.TestCase):
             assert command.wait_for_shutdown(timeout=5)
         assert launch_testing.tools.expect_output(
             expected_lines=[
-                '--max-wait-time-secs option is only effective with --wait-matching-subscriptions, --once or --times'
+                '--max-wait-time-secs option is only effective with'
+                ' --wait-matching-subscriptions, --once or --times'
             ],
             text=command.output,
             strict=True)
