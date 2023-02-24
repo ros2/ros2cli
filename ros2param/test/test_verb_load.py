@@ -269,11 +269,23 @@ class TestVerbLoad(unittest.TestCase):
             strict=False
         )
 
+    def test_verb_load_timeout(self):
+        with self.launch_param_load_command(
+            arguments=['invalid_node', 'invalid_path', '--timeout', '2']
+        ) as param_load_command:
+            assert param_load_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
+        assert param_load_command.exit_code != launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=['Node not found'],
+            text=param_load_command.output,
+            strict=False
+        )
+
     def test_verb_load(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             filepath = self._write_param_file(tmpdir, 'params.yaml')
             with self.launch_param_load_command(
-                arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}', filepath]
+                arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}', filepath, '--timeout', '3']
             ) as param_load_command:
                 assert param_load_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
             assert param_load_command.exit_code == launch_testing.asserts.EXIT_OK
@@ -300,7 +312,7 @@ class TestVerbLoad(unittest.TestCase):
             filepath = self._write_param_file(tmpdir, 'params.yaml', INPUT_WILDCARD_PARAMETER_FILE)
             with self.launch_param_load_command(
                 arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}', filepath,
-                           '--no-use-wildcard']
+                           '--no-use-wildcard', '--timeout', '3']
             ) as param_load_command:
                 assert param_load_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
             assert param_load_command.exit_code != launch_testing.asserts.EXIT_OK

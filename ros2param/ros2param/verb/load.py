@@ -16,8 +16,8 @@ from ros2cli.node.direct import DirectNode
 from ros2cli.node.strategy import add_arguments
 from ros2cli.node.strategy import NodeStrategy
 from ros2node.api import get_absolute_node_name
-from ros2node.api import get_node_names
 from ros2node.api import NodeNameCompleter
+from ros2node.api import wait_for_node
 from ros2param.api import load_parameter_file
 from ros2param.verb import VerbExtension
 
@@ -39,15 +39,15 @@ class LoadVerb(VerbExtension):
         parser.add_argument(
             '--no-use-wildcard', action='store_true',
             help="Do not load parameters in the '/**' namespace into the node")
+        parser.add_argument(
+            '--timeout', metavar='N', type=int, default=1,
+            help='Wait for N seconds until node becomes available (default %(default)s sec)')
 
     def main(self, *, args):  # noqa: D102
-        with NodeStrategy(args) as node:
-            node_names = get_node_names(
-                node=node, include_hidden_nodes=args.include_hidden_nodes)
-
         node_name = get_absolute_node_name(args.node_name)
-        if node_name not in {n.full_name for n in node_names}:
-            return 'Node not found'
+        with NodeStrategy(args) as node:
+            if not wait_for_node(node, node_name, args.include_hidden_nodes, args.timeout):
+                return 'Node not found'
 
         with DirectNode(args) as node:
             load_parameter_file(node=node, node_name=node_name, parameter_file=args.parameter_file,

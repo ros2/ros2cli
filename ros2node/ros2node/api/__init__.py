@@ -12,11 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import time
+
 from collections import namedtuple
 from typing import Any
 from typing import List
 
 from rclpy.node import HIDDEN_NODE_PREFIX
+from ros2cli.helpers import wait_for
 from ros2cli.node.strategy import NodeStrategy
 
 INFO_NONUNIQUE_WARNING_TEMPLATE = (
@@ -69,6 +72,15 @@ def get_node_names(*, node, include_hidden_nodes=False):
             (t[0] and not t[0].startswith(HIDDEN_NODE_PREFIX))
         )
     ]
+
+
+def wait_for_node(node, node_name, include_hidden_nodes=False, timeout=1.0) -> bool:
+    def node_available():
+        node_names = get_node_names(
+            node=node, include_hidden_nodes=include_hidden_nodes)
+        return True if node_name in {n.full_name for n in node_names} else False
+
+    return wait_for(node_available, timeout)
 
 
 def get_topics(remote_node_name, func, *, include_hidden_topics=False):
