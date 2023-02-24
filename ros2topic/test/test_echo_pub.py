@@ -534,4 +534,4 @@ class TestROS2TopicEchoPub(unittest.TestCase):
         ) as command:
             # wait for command to shutdown on its own
             assert command.wait_for_shutdown(timeout=5)
-            assert command.output == ""
+            assert command.output == ''
