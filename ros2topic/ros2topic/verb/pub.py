@@ -33,6 +33,7 @@ from rosidl_runtime_py.utilities import get_message
 import yaml
 
 MsgType = TypeVar('MsgType')
+DEFAULT_WAIT_TIME = 0.1
 
 
 def nonnegative_int(inval):
@@ -83,6 +84,12 @@ class PubVerb(VerbExtension):
                 'Wait until finding the specified number of matching subscriptions. '
                 'Defaults to 1 when using "-1"/"--once"/"--times", otherwise defaults to 0.'))
         parser.add_argument(
+            '--max-wait-time-secs', type=positive_float, default=None,
+            help=(
+                'This sets the maximum wait time in seconds if '
+                '--wait-until-matching-subscriptions is set. '
+                'By default, this flag is not set meaning the subscriber will wait endlessly.'))
+        parser.add_argument(
             '--keep-alive', metavar='N', type=positive_float, default=0.1,
             help='Keep publishing node alive for N seconds after the last msg '
                  '(default: 0.1)')
@@ -119,6 +126,7 @@ def main(args):
             times,
             args.wait_matching_subscriptions
             if args.wait_matching_subscriptions is not None else int(times != 0),
+            args.max_wait_time_secs,
             qos_profile,
             args.keep_alive)
 
@@ -132,6 +140,7 @@ def publisher(
     print_nth: int,
     times: int,
     wait_matching_subscriptions: int,
+    max_wait_time: float | None,
     qos_profile: QoSProfile,
     keep_alive: float,
 ) -> Optional[str]:
@@ -146,14 +155,23 @@ def publisher(
 
     pub = node.create_publisher(msg_module, topic_name, qos_profile)
 
+    if wait_matching_subscriptions == 0 and max_wait_time is not None:
+        return '--max-wait-time-secs option is only effective' \
+            ' with --wait-matching-subscriptions, --once or --times'
+
     times_since_last_log = 0
+    total_wait_time = 0
     while pub.get_subscription_count() < wait_matching_subscriptions:
         # Print a message reporting we're waiting each 1s, check condition each 100ms.
         if not times_since_last_log:
             print(
                 f'Waiting for at least {wait_matching_subscriptions} matching subscription(s)...')
+        if max_wait_time is not None and max_wait_time <= total_wait_time:
+            return f'Timed out waiting for subscribers: Expected {wait_matching_subscriptions}' \
+                f' subcribers but only got {pub.get_subscription_count()} subscribers'
         times_since_last_log = (times_since_last_log + 1) % 10
-        time.sleep(0.1)
+        time.sleep(DEFAULT_WAIT_TIME)
+        total_wait_time += DEFAULT_WAIT_TIME
 
     msg = msg_module()
     try:
