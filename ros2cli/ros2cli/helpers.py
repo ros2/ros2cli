@@ -43,6 +43,7 @@ def wait_for(predicate, timeout, period=0.1):
         time.sleep(period)
     return True
 
+
 def bind(func, *args, **kwargs):
     """
     Bind a function with a set of arguments.
