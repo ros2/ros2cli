@@ -233,7 +233,7 @@ class TestROS2TopicEchoPub(unittest.TestCase):
     def test_pub_maxwait_yields(self, launch_service, proc_info, proc_output):
         topic = '/clitest/topic/pub/max_wait_timeout'
         command_action = ExecuteProcess(
-            cmd=(['ros2', 'topic', 'pub', '-t', '1', '--max-wait-time-secs', '20', topic,
+            cmd=(['ros2', 'topic', 'pub', '-t', '10', '--max-wait-time-secs', '20', topic,
                   'std_msgs/String', 'data: hello']),
             additional_env={
                 'PYTHONUNBUFFERED': '1'
