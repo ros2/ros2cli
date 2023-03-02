@@ -2,6 +2,9 @@
 Changelog for package ros2lifecycle_test_fixtures
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.22.0 (2023-02-14)
 -------------------
 * Update the ros2cli test fixture to C++17. (`#789 <https://github.com/ros2/ros2cli/issues/789>`_)

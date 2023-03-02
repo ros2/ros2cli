@@ -2,6 +2,11 @@
 Changelog for package ros2param
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add timeout option for ros2param to find node. (`#802 <https://github.com/ros2/ros2cli/issues/802>`_)
+* Contributors: Tomoya Fujita
+
 0.22.0 (2023-02-14)
 -------------------
 * Fix printing of integer and double arrays. (`#804 <https://github.com/ros2/ros2cli/issues/804>`_)

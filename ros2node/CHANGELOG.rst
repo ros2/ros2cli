@@ -2,6 +2,12 @@
 Changelog for package ros2node
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix linters (`#808 <https://github.com/ros2/ros2cli/issues/808>`_)
+* add timeout option for ros2param to find node. (`#802 <https://github.com/ros2/ros2cli/issues/802>`_)
+* Contributors: Cristóbal Arroyo, Tomoya Fujita
+
 0.22.0 (2023-02-14)
 -------------------
 * [rolling] Update maintainers - 2022-11-07 (`#776 <https://github.com/ros2/ros2cli/issues/776>`_)

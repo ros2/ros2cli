@@ -2,6 +2,9 @@
 Changelog for package ros2pkg
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.22.0 (2023-02-14)
 -------------------
 * resolve `#790 <https://github.com/ros2/ros2cli/issues/790>`_ (`#801 <https://github.com/ros2/ros2cli/issues/801>`_)
