@@ -2,8 +2,8 @@
 Changelog for package ros2topic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.23.0 (2023-03-02)
+-------------------
 * avoid flaky test that subscriber might not receive the message (`#810 <https://github.com/ros2/ros2cli/issues/810>`_)
 * Adds a `--max-wait-time` option to `ros2 topic pub`  (`#800 <https://github.com/ros2/ros2cli/issues/800>`_)
 * Contributors: Arjo Chakravarty, Chen Lihui
