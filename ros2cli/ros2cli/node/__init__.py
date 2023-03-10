@@ -12,4 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from rclpy.node import HIDDEN_NODE_PREFIX
-NODE_NAME_PREFIX = HIDDEN_NODE_PREFIX + 'ros2cli'
+NODE_NAME_PREFIX = str(HIDDEN_NODE_PREFIX) + 'ros2cli'
