@@ -17,13 +17,13 @@ from typing import Optional
 from typing import TypeVar
 
 import rclpy
+from rclpy.event_handler import SubscriptionEventCallbacks
+from rclpy.event_handler import UnsupportedEventTypeError
 from rclpy.node import Node
 from rclpy.qos import QoSDurabilityPolicy
 from rclpy.qos import QoSPresetProfiles
 from rclpy.qos import QoSProfile
 from rclpy.qos import QoSReliabilityPolicy
-from rclpy.qos_event import SubscriptionEventCallbacks
-from rclpy.qos_event import UnsupportedEventTypeError
 from rclpy.task import Future
 from ros2cli.node.strategy import add_arguments as add_strategy_node_arguments
 from ros2cli.node.strategy import NodeStrategy
