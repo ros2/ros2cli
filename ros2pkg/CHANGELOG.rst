@@ -2,8 +2,8 @@
 Changelog for package ros2pkg
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.9.13 (2023-03-16)
+-------------------
 * Added changelogs
 * Contributors: Dharini Dutia
 
