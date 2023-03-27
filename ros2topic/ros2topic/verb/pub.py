@@ -140,7 +140,7 @@ def publisher(
     print_nth: int,
     times: int,
     wait_matching_subscriptions: int,
-    max_wait_time: float | None,
+    max_wait_time: Optional[float],
     qos_profile: QoSProfile,
     keep_alive: float,
 ) -> Optional[str]:
