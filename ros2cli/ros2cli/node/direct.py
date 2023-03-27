@@ -49,7 +49,7 @@ class DirectNode:
             start_parameter_services=start_parameter_services,
             parameter_overrides=[
                 Parameter('use_sim_time', value=use_sim_time)
-            ])
+            ], automatically_declare_parameters_from_overrides=True)
 
         timeout = getattr(args, 'spin_time', DEFAULT_TIMEOUT)
         timer = self.node.create_timer(timeout, timer_callback)
