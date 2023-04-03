@@ -110,6 +110,9 @@ class EchoVerb(VerbExtension):
         parser.add_argument(
             '--include-message-info', '-i', action='store_true',
             help='Shows the associated message info.')
+        parser.add_argument(
+            '--clear', '-c', action='store_true',
+            help='clear screen before printing next message')
 
     def choose_qos(self, node, args):
 
@@ -193,6 +196,7 @@ class EchoVerb(VerbExtension):
         self.no_str = args.no_str
         self.flow_style = args.flow_style
         self.once = args.once
+        self.prefix = '\033[2J\033[H' if args.clear else ''
 
         self.filter_fn = None
         if args.filter_expr:
@@ -288,13 +292,15 @@ class EchoVerb(VerbExtension):
         if self.future is not None and self.once:
             self.future.set_result(True)
 
+        to_print = ''
+
         if not hasattr(submsg, '__slots__'):
             # raw
             if self.include_message_info:
-                print('---Got new message, message info:---')
-                print(info)
-                print('---Message data:---')
-            print(submsg, end='\n---\n')
+                to_print = '---Got new message, message info:---\n'
+                to_print = f'{to_print}{info}\n'
+                to_print = f'{to_print}---Message data:---\n'
+            print(f'{self.prefix}{to_print}{submsg}', end='\n---\n')
             return
 
         if self.csv:
@@ -305,16 +311,15 @@ class EchoVerb(VerbExtension):
                 no_str=self.no_str)
             if self.include_message_info:
                 to_print = f'{",".join(str(x) for x in info.values())},{to_print}'
-            print(to_print)
+            print(f'{self.prefix}{to_print}')
             return
         # yaml
         if self.include_message_info:
-            print(yaml.dump(info), end='---\n')
-        print(
-            message_to_yaml(
+            to_print = f'{yaml.dump(info)}---\n'
+        to_print += message_to_yaml(
                 submsg, truncate_length=self.truncate_length,
-                no_arr=self.no_arr, no_str=self.no_str, flow_style=self.flow_style),
-            end='---\n')
+                no_arr=self.no_arr, no_str=self.no_str, flow_style=self.flow_style)
+        print(f'{self.prefix}{to_print}---\n')
 
 
 def _expr_eval(expr):
