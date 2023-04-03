@@ -32,7 +32,8 @@ class InfoVerb(VerbExtension):
             '-v',
             action='store_true',
             help='Prints detailed information like the node name, node namespace, topic type, '
-                 'GUID and QoS Profile of the publishers and subscribers to this topic')
+                 'topic type hash, GUID and QoS Profile of the publishers and subscribers to '
+                 'this topic')
         arg.completer = TopicNameCompleter(
             include_hidden_topics_key='include_hidden_topics')
 

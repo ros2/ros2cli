@@ -19,6 +19,7 @@ from xmlrpc.client import Unmarshaller
 import rclpy.duration
 import rclpy.qos
 import rclpy.topic_endpoint_info
+import rclpy.type_hash
 
 from .generic import dump_any_enum
 from .generic import dump_any_with_slots
@@ -75,3 +76,16 @@ Unmarshaller.dispatch[fullname(rclpy.topic_endpoint_info.TopicEndpointTypeEnum)]
     functools.partial(end_any_enum, enum_=rclpy.topic_endpoint_info.TopicEndpointTypeEnum)
 
 Marshaller.dispatch[rclpy.topic_endpoint_info.TopicEndpointTypeEnum] = dump_any_enum
+
+
+def end_type_hash(unmarshaller, data):
+    values = unmarshaller._stack[-1]
+    unmarshaller._stack[-1] = rclpy.type_hash.TypeHash(
+        version=int(values['version']), value=values['value'].data)
+    unmarshaller._value = 0
+
+
+Unmarshaller.dispatch[fullname(rclpy.type_hash.TypeHash)] = end_type_hash
+
+Marshaller.dispatch[rclpy.type_hash.TypeHash] = \
+    functools.partial(dump_any_with_slots, transform=lambda slot: slot.lstrip('_'))
