@@ -42,6 +42,7 @@ The package provides the node command for the ROS 2 command line tools.""",
         'ros2node.verb': [
             'info = ros2node.verb.info:InfoVerb',
             'list = ros2node.verb.list:ListVerb',
+            'get_type_description = ros2node.verb.get_type_description:GetTypeDescriptionVerb',
         ],
     }
 )

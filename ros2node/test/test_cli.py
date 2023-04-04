@@ -229,3 +229,44 @@ class TestROS2NodeCLI(unittest.TestCase):
             ]),
             text=node_command.output, strict=False
         ), 'Output does not match:\n' + node_command.output
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_get_type_description_invalid_hash(self):
+        arguments = ['get_type_description', '/complex_node', 'some_type', 'some_hash']
+        with self.launch_node_command(arguments=arguments) as node_command:
+            assert node_command.wait_for_shutdown(timeout=10)
+        assert node_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=itertools.chain([
+                'successful: false',
+                re.compile(r'failure_reason: .*'),
+                'type_description:',
+                '  type_description:',
+                '    type_name: ''',
+                '    fields: []',
+                '  referenced_type_descriptions: []',
+                'type_sources: []',
+                'extra_information: []',
+            ]),
+            text=node_command.output, strict=False
+        ), 'Output does not match:\n' + node_command.output
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_get_type_description_valid_hash(self):
+        arguments = [
+            'get_type_description',
+            '/complex_node',
+            'test_msgs.msg.Arrays',
+            # Type hash below is from test_msgs/share/test_msgs/msg/Arrays.json
+            'RIHS01_8a321b80dae8c44dfd1ce558eaf1b1cd5ebbe5950863ed675836535511a7f91a'
+        ]
+        with self.launch_node_command(arguments=arguments) as node_command:
+            assert node_command.wait_for_shutdown(timeout=10)
+        assert node_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=itertools.chain([
+                'successful: true',
+                "failure_reason: ''",
+            ]),
+            text=node_command.output, strict=False
+        ), 'Output does not match:\n' + node_command.output
