@@ -2,8 +2,8 @@
 Changelog for package ros2topic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.24.0 (2023-04-11)
+-------------------
 * Fix the type annotation in pub.py. (`#814 <https://github.com/ros2/ros2cli/issues/814>`_)
 * Switch to using new event_handler instead of qos_event. (`#787 <https://github.com/ros2/ros2cli/issues/787>`_)
 * Contributors: Chris Lalancette

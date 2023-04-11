@@ -2,8 +2,8 @@
 Changelog for package ros2node
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.24.0 (2023-04-11)
+-------------------
 * Enable document generation using rosdoc2 (`#811 <https://github.com/ros2/ros2cli/issues/811>`_)
   * Fix warnings for ros2component, ros2doctor, ros2interface, and ros2node
 * Contributors: Yadu
