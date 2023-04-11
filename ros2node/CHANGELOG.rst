@@ -2,6 +2,12 @@
 Changelog for package ros2node
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Enable document generation using rosdoc2 (`#811 <https://github.com/ros2/ros2cli/issues/811>`_)
+  * Fix warnings for ros2component, ros2doctor, ros2interface, and ros2node
+* Contributors: Yadu
+
 0.23.0 (2023-03-02)
 -------------------
 * Fix linters (`#808 <https://github.com/ros2/ros2cli/issues/808>`_)

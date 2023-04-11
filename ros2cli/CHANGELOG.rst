@@ -2,6 +2,12 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Set automatically_declare_parameters_from_overrides in DirectNode. (`#813 <https://github.com/ros2/ros2cli/issues/813>`_)
+* Enable document generation using rosdoc2 (`#811 <https://github.com/ros2/ros2cli/issues/811>`_)
+* Contributors: Chris Lalancette, Yadu
+
 0.23.0 (2023-03-02)
 -------------------
 * Fix linters (`#808 <https://github.com/ros2/ros2cli/issues/808>`_)

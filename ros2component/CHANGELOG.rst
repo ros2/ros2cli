@@ -2,6 +2,11 @@
 Changelog for package ros2component
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Enable document generation using rosdoc2 (`#811 <https://github.com/ros2/ros2cli/issues/811>`_)
+* Contributors: Yadu
+
 0.23.0 (2023-03-02)
 -------------------
 

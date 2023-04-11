@@ -2,6 +2,12 @@
 Changelog for package ros2topic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix the type annotation in pub.py. (`#814 <https://github.com/ros2/ros2cli/issues/814>`_)
+* Switch to using new event_handler instead of qos_event. (`#787 <https://github.com/ros2/ros2cli/issues/787>`_)
+* Contributors: Chris Lalancette
+
 0.23.0 (2023-03-02)
 -------------------
 * avoid flaky test that subscriber might not receive the message (`#810 <https://github.com/ros2/ros2cli/issues/810>`_)
