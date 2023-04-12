@@ -5,7 +5,7 @@ package_name = 'ros2component'
 
 setup(
     name=package_name,
-    version='0.24.0',
+    version='0.24.1',
     packages=find_packages(exclude=['test']),
     data_files=[
         ('share/' + package_name, ['package.xml']),
