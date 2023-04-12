@@ -185,3 +185,35 @@ def qos_profile_from_short_keys(
     profile = rclpy.qos.QoSPresetProfiles.get_from_short_key(preset_profile)
     profile_configure_short_keys(profile, reliability, durability, depth, history)
     return profile
+
+
+def add_qos_arguments(parser, default_profile_str):
+    parser.add_argument(
+        '--qos-profile',
+        choices=rclpy.qos.QoSPresetProfiles.short_keys(),
+        default=default_profile_str,
+        help='Quality of service preset profile to subscribe with (default: {})'
+             .format(default_profile_str))
+    default_profile = rclpy.qos.QoSPresetProfiles.get_from_short_key(default_profile_str)
+    parser.add_argument(
+        '--qos-depth', metavar='N', type=int,
+        help='Queue size setting to subscribe with '
+             '(overrides depth value of --qos-profile option)')
+    parser.add_argument(
+        '--qos-history',
+        choices=rclpy.qos.QoSHistoryPolicy.short_keys(),
+        help='History of samples setting to subscribe with '
+             '(overrides history value of --qos-profile option, default: {})'
+             .format(default_profile.history.short_key))
+    parser.add_argument(
+        '--qos-reliability',
+        choices=rclpy.qos.QoSReliabilityPolicy.short_keys(),
+        help='Quality of service reliability setting to subscribe with '
+             '(overrides reliability value of --qos-profile option, default: '
+             'Automatically match existing publishers )')
+    parser.add_argument(
+        '--qos-durability',
+        choices=rclpy.qos.QoSDurabilityPolicy.short_keys(),
+        help='Quality of service durability setting to subscribe with '
+             '(overrides durability value of --qos-profile option, default: '
+             'Automatically match existing publishers )')
