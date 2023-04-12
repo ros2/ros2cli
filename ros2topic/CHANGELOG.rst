@@ -2,6 +2,11 @@
 Changelog for package ros2topic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Expect type hash cli output in test (`#822 <https://github.com/ros2/ros2cli/issues/822>`_)
+* Contributors: Emerson Knapp
+
 0.24.0 (2023-04-11)
 -------------------
 * Fix the type annotation in pub.py. (`#814 <https://github.com/ros2/ros2cli/issues/814>`_)

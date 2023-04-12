@@ -2,6 +2,9 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.24.0 (2023-04-11)
 -------------------
 * Set automatically_declare_parameters_from_overrides in DirectNode. (`#813 <https://github.com/ros2/ros2cli/issues/813>`_)
