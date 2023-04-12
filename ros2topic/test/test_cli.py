@@ -317,6 +317,7 @@ class TestROS2TopicCLI(unittest.TestCase):
                 re.compile(r'Node name: \w+'),
                 'Node namespace: /',
                 'Topic type: std_msgs/msg/String',
+                'Topic type hash: UNKNOWN',
                 re.compile(r'Endpoint type: (INVALID|PUBLISHER|SUBSCRIPTION)'),
                 re.compile(r'GID: [\w\.]+'),
                 'QoS profile:',
