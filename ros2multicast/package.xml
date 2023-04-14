@@ -17,7 +17,7 @@
   <author email="mabel@openrobotics.org">Mabel Zhang</author>
   <author email="michael.jeronimo@openrobotics.org">Michael Jeronimo</author>
 
-  <depend>ros2cli</depend>
+  <exec_depend>ros2cli</exec_depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>

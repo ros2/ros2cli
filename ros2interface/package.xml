@@ -18,9 +18,8 @@
   <author email="michael.jeronimo@openrobotics.org">Michael Jeronimo</author>
   <author>Siddharth Kucheria</author>
 
-  <depend>ros2cli</depend>
-
   <exec_depend>ament_index_python</exec_depend>
+  <exec_depend>ros2cli</exec_depend>
   <exec_depend>rosidl_adapter</exec_depend>
   <exec_depend>rosidl_runtime_py</exec_depend>
 
