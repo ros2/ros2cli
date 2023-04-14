@@ -12,9 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-import sys
-
 from rclpy.parameter import PARAMETER_SEPARATOR_STRING
 from ros2cli.node.direct import DirectNode
 from ros2cli.node.strategy import add_arguments
@@ -43,13 +40,6 @@ class DumpVerb(VerbExtension):
         parser.add_argument(
             '--include-hidden-nodes', action='store_true',
             help='Consider hidden nodes as well')
-        parser.add_argument(
-            '--output-dir',
-            default='.',
-            help='DEPRECATED: The absolute path where to save the generated file')
-        parser.add_argument(
-            '--print', action='store_true',
-            help='DEPRECATED: Does nothing.')
         parser.add_argument(
             '--timeout', metavar='N', type=int, default=1,
             help='Wait for N seconds until node becomes available (default %(default)s sec)')
@@ -84,9 +74,6 @@ class DumpVerb(VerbExtension):
                 return 'Node not found'
 
         node_name = parse_node_name(absolute_node_name)
-        if not os.path.isdir(args.output_dir):
-            raise RuntimeError(
-                f"'{args.output_dir}' is not a valid directory.")
 
         with DirectNode(args) as node:
             yaml_output = {node_name.full_name: {'ros__parameters': {}}}
@@ -111,24 +98,5 @@ class DumpVerb(VerbExtension):
                 self.insert_dict(
                     yaml_output[node_name.full_name]['ros__parameters'], param_name, pval)
 
-            if args.print:
-                print(
-                    "WARNING: '--print' is deprecated; this utility prints to stdout by default",
-                    file=sys.stderr)
-
-            if args.output_dir != '.':
-                print(
-                    "WARNING: '--output-dir' is deprecated; use redirection to save to a file",
-                    file=sys.stderr)
-            else:
-                print(yaml.dump(yaml_output, default_flow_style=False))
-                return
-
-            if absolute_node_name[0] == '/':
-                file_name = absolute_node_name[1:].replace('/', '__')
-            else:
-                file_name = absolute_node_name.replace('/', '__')
-
-            print('Saving to: ', os.path.join(args.output_dir, file_name + '.yaml'))
-            with open(os.path.join(args.output_dir, file_name + '.yaml'), 'w') as yaml_file:
-                yaml.dump(yaml_output, yaml_file, default_flow_style=False)
+            print(yaml.dump(yaml_output, default_flow_style=False))
+            return

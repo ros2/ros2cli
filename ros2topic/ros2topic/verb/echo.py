@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys
 from typing import Optional
 from typing import TypeVar
 
@@ -93,8 +92,6 @@ class EchoVerb(VerbExtension):
             '--flow-style', action='store_true',
             help='Print collections in the block style (not available with csv format)')
         parser.add_argument(
-            '--lost-messages', action='store_true', help='DEPRECATED: Does nothing')
-        parser.add_argument(
             '--no-lost-messages', action='store_true', help="Don't report when a message is lost")
         parser.add_argument(
             '--raw', action='store_true', help='Echo the raw binary representation')
@@ -173,11 +170,6 @@ class EchoVerb(VerbExtension):
         return qos_profile
 
     def main(self, *, args):
-
-        if args.lost_messages:
-            print(
-                "WARNING: '--lost-messages' is deprecated; lost messages are reported by default",
-                file=sys.stderr)
 
         self.csv = args.csv
 
