@@ -17,11 +17,10 @@
   <author email="mabel@openrobotics.org">Mabel Zhang</author>
   <author email="michael.jeronimo@openrobotics.org">Michael Jeronimo</author>
 
-  <depend>rclpy</depend>
-  <depend>ros2cli</depend>
-
   <exec_depend>action_msgs</exec_depend>
   <exec_depend>ament_index_python</exec_depend>
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>ros2cli</exec_depend>
   <exec_depend>rosidl_runtime_py</exec_depend>
 
   <test_depend>ament_copyright</test_depend>

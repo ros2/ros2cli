@@ -17,10 +17,9 @@
   <author email="mabel@openrobotics.org">Mabel Zhang</author>
   <author email="michael.jeronimo@openrobotics.org">Michael Jeronimo</author>
 
-  <depend>rcl_interfaces</depend>
-  <depend>rclpy</depend>
-  <depend>ros2cli</depend>
-
+  <exec_depend>rcl_interfaces</exec_depend>
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>ros2cli</exec_depend>
   <exec_depend>ros2node</exec_depend>
   <exec_depend>ros2service</exec_depend>
 
