@@ -15,7 +15,6 @@
 import contextlib
 import os
 import sys
-import tempfile
 import time
 import unittest
 import xmlrpc
@@ -197,18 +196,6 @@ class TestVerbDump(unittest.TestCase):
             strict=True
         )
 
-    def test_verb_dump_invalid_path(self):
-        with self.launch_param_dump_command(
-            arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}', '--output-dir', 'invalid_path']
-        ) as param_dump_command:
-            assert param_dump_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
-        assert param_dump_command.exit_code != launch_testing.asserts.EXIT_OK
-        assert launch_testing.tools.expect_output(
-            expected_lines=["'invalid_path' is not a valid directory."],
-            text=param_dump_command.output,
-            strict=True
-        )
-
     def test_verb_dump(self):
         with self.launch_param_dump_command(
             arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}']
@@ -220,39 +207,3 @@ class TestVerbDump(unittest.TestCase):
             text=param_dump_command.output,
             strict=True
         )
-
-    # TODO(fujitatomoya): remove this test when '--print' option is removed
-    def test_verb_dump_print(self):
-        # If '--print' is provided, ensure it does nothing but print parameters to stdout
-        with self.launch_param_dump_command(
-            arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}', '--print']
-        ) as param_dump_command:
-            assert param_dump_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
-        assert param_dump_command.exit_code == launch_testing.asserts.EXIT_OK
-        assert launch_testing.tools.expect_output(
-            expected_lines=[
-                "WARNING: '--print' is deprecated; this utility prints to stdout by default"
-            ],
-            text=param_dump_command.stderr,
-            strict=True
-        )
-
-    # TODO(fujitatomoya): remove this test when '--output-dir' option is removed
-    def test_verb_dump_output(self):
-        # If '--output-dir' is provided, ensure it only saves parameters into file
-        with tempfile.TemporaryDirectory() as tmpdir:
-            with self.launch_param_dump_command(
-                arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}', '--output-dir', tmpdir]
-            ) as param_dump_command:
-                assert param_dump_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
-            assert param_dump_command.exit_code == launch_testing.asserts.EXIT_OK
-            assert launch_testing.tools.expect_output(
-                expected_lines=[
-                    "WARNING: '--output-dir' is deprecated; use redirection to save to a file"
-                ],
-                text=param_dump_command.stderr,
-                strict=True
-            )
-            # Compare generated parameter file against expected
-            generated_param_file = os.path.join(tmpdir, self._output_file())
-            assert (open(generated_param_file, 'r').read() == EXPECTED_PARAMETER_FILE)
