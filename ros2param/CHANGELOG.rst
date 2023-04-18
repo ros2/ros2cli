@@ -2,8 +2,8 @@
 Changelog for package ros2param
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.25.0 (2023-04-18)
+-------------------
 * remove deprecated options (`#824 <https://github.com/ros2/ros2cli/issues/824>`_)
 * Make all of the dependencies in pure Python packages exec_depend. (`#823 <https://github.com/ros2/ros2cli/issues/823>`_)
 * Contributors: Chris Lalancette, Tomoya Fujita

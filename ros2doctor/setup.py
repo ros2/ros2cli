@@ -5,7 +5,7 @@ package_name = 'ros2doctor'
 
 setup(
     name=package_name,
-    version='0.24.1',
+    version='0.25.0',
     packages=find_packages(exclude=['test']),
     data_files=[
         ('share/' + package_name, ['package.xml']),
