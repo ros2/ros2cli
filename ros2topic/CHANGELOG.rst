@@ -2,6 +2,12 @@
 Changelog for package ros2topic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* remove deprecated options (`#824 <https://github.com/ros2/ros2cli/issues/824>`_)
+* Make all of the dependencies in pure Python packages exec_depend. (`#823 <https://github.com/ros2/ros2cli/issues/823>`_)
+* Contributors: Chris Lalancette, Tomoya Fujita
+
 0.24.1 (2023-04-12)
 -------------------
 * Expect type hash cli output in test (`#822 <https://github.com/ros2/ros2cli/issues/822>`_)
