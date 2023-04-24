@@ -11,7 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import collections
+
 from ros2interface.api import package_name_completer
 from ros2interface.verb import VerbExtension
 from rosidl_runtime_py import get_action_interfaces, get_interfaces
