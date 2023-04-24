@@ -214,7 +214,7 @@ class TestROS2InterfaceCLI(unittest.TestCase):
             lines=output_lines,
             strict=True
         )
-        assert all(interface in output_lines for interface in some_services_from_test_msgs)
+        assert all(interface in output_lines for interface in some_messages_from_test_msgs)
 
     def test_package_on_test_msgs_only_srvs(self):
         with self.launch_interface_command(
@@ -246,7 +246,7 @@ class TestROS2InterfaceCLI(unittest.TestCase):
             lines=output_lines,
             strict=True
         )
-        assert all(interface in output_lines for interface in some_services_from_test_msgs)
+        assert all(interface in output_lines for interface in some_actions_from_test_msgs)
 
     def test_packages(self):
         with self.launch_interface_command(arguments=['packages']) as interface_command:
