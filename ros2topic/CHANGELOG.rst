@@ -2,6 +2,9 @@
 Changelog for package ros2topic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.18.6 (2023-04-25)
+-------------------
+
 0.18.5 (2023-01-10)
 -------------------
 * Extend timeout to shutdown the command line process. (`#783 <https://github.com/ros2/ros2cli/issues/783>`_) (`#784 <https://github.com/ros2/ros2cli/issues/784>`_)

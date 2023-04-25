@@ -2,6 +2,11 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.18.6 (2023-04-25)
+-------------------
+* Save method list via connection check to XMLRPC server. (`#796 <https://github.com/ros2/ros2cli/issues/796>`_) (`#798 <https://github.com/ros2/ros2cli/issues/798>`_)
+* Contributors: mergify[bot]
+
 0.18.5 (2023-01-10)
 -------------------
 * Fix network aware node issue (`#785 <https://github.com/ros2/ros2cli/issues/785>`_) (`#786 <https://github.com/ros2/ros2cli/issues/786>`_)
