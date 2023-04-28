@@ -2,6 +2,9 @@
 Changelog for package ros2topic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.26.0 (2023-04-28)
+-------------------
+
 0.25.0 (2023-04-18)
 -------------------
 * remove deprecated options (`#824 <https://github.com/ros2/ros2cli/issues/824>`_)
