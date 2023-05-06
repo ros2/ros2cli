@@ -223,4 +223,4 @@ class CreateVerb(VerbExtension):
         else:
             print("\n[WARNING]: Unknown license '%s'.  This has been set in the package.xml, but "
                   'no LICENSE file has been created.\nIt is recommended to use one of the ament '
-                  'license identitifers:\n%s' % (args.license, '\n'.join(available_licenses)))
+                  'license identifiers:\n%s' % (args.license, '\n'.join(available_licenses)))
