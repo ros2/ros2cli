@@ -2,6 +2,11 @@
 Changelog for package ros2doctor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Shutdown ros2doctor hello when ctrl-c is received (`#829 <https://github.com/ros2/ros2cli/issues/829>`_)
+* Contributors: Michael Carroll
+
 0.25.0 (2023-04-18)
 -------------------
 * Make all of the dependencies in pure Python packages exec_depend. (`#823 <https://github.com/ros2/ros2cli/issues/823>`_)
