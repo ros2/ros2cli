@@ -58,8 +58,8 @@ class HzVerb(VerbExtension):
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
             'topic_name',
-            nargs='*',
-            help="Name list of the ROS topic to listen to (e.g. '/chatter')")
+            nargs='+',
+            help="Name of the ROS topic to listen to (e.g. '/chatter')")
         arg.completer = TopicNameCompleter(
             include_hidden_topics_key='include_hidden_topics')
         parser.add_argument(
@@ -282,7 +282,7 @@ def _rostopic_hz(node, topics, window_size=DEFAULT_WINDOW_SIZE, filter_expr=None
     """
     Periodically print the publishing rate of a topic to console until shutdown.
 
-    :param topics: topic name list, ``list`` of ``str``
+    :param topics: list of topic names, ``list`` of ``str``
     :param window_size: number of messages to average over, -1 for infinite, ``int``
     :param filter_expr: Python filter expression that is called with m, the message instance
     """
