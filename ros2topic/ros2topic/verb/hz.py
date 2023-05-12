@@ -223,7 +223,7 @@ class ROSTopicHz(object):
 
             self.set_last_printed_tn(self.get_msg_tn(topic=topic), topic=topic)
 
-        return rate, min_delta, max_delta, std_dev, n+1
+        return rate, min_delta, max_delta, std_dev, n
 
     def print_hz(self, topics=None):
         def get_format_hz(stat):
@@ -254,7 +254,6 @@ class ROSTopicHz(object):
             stats['max_delta'].append('{:.3f}'.format(max_delta))
             stats['std_dev'].append('{:.5f}'.format(std_dev))
         if not stats['topic']:
-            print('no new messages')
             return
         print(_get_ascii_table(header, stats))
 
@@ -288,6 +287,7 @@ def _rostopic_hz(node, topics, window_size=DEFAULT_WINDOW_SIZE, filter_expr=None
     """
     # pause hz until topic is published
     rt = ROSTopicHz(node, window_size, filter_expr=filter_expr, use_wtime=use_wtime)
+    topics_len = len(topics)
     for topic in topics:
         msg_class = get_msg_class(
             node, topic, blocking=True, include_hidden_topics=True)
@@ -301,6 +301,8 @@ def _rostopic_hz(node, topics, window_size=DEFAULT_WINDOW_SIZE, filter_expr=None
             topic,
             functools.partial(rt.callback_hz, topic=topic),
             qos_profile_sensor_data)
+        if topics_len > 1:
+            print('Subscribed to [%s]' % topic)
 
     try:
         def thread_func():

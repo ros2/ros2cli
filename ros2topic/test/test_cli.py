@@ -811,6 +811,35 @@ class TestROS2TopicCLI(unittest.TestCase):
         assert math.isclose(average_rate, 1., rel_tol=1e-2)
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_multiple_topics_hz(self):
+        header_pattern = re.compile(r'\s+topic\s+rate\s+min_delta\s+max_delta\s+std_dev\s+window')
+        hline_pattern = re.compile(r'=+')
+        chatter_line_pattern = re.compile(
+          r'/chatter\s+(\d+.\d{3})\s+\d+.\d{3}\s+\d+.\d{3}\s+\d+.\d{5}\s+\d+\s+')
+        hidden_chatter_line_pattern = re.compile(
+          r'/_hidden_chatter\s+(\d+.\d{3})\s+\d+.\d{3}\s+\d+.\d{3}\s+\d+.\d{5}\s+\d+\s+')
+        with self.launch_topic_command(
+            arguments=['hz', '/chatter', '/_hidden_chatter']
+        ) as topic_command:
+            assert topic_command.wait_for_output(functools.partial(
+                launch_testing.tools.expect_output, expected_lines=[
+                    'Subscribed to [/chatter]',
+                    'Subscribed to [/_hidden_chatter]',
+                    header_pattern, hline_pattern,
+                    chatter_line_pattern, hidden_chatter_line_pattern
+                ], strict=True
+            ), timeout=10)
+        assert topic_command.wait_for_shutdown(timeout=10)
+
+        chatter_line = topic_command.output.splitlines()[4]
+        chatter_average_rate = float(chatter_line_pattern.match(chatter_line).group(1))
+        assert math.isclose(chatter_average_rate, 1., rel_tol=1e-2)
+        hidden_chatter_line = topic_command.output.splitlines()[5]
+        hidden_chatter_average_rate = float(hidden_chatter_line_pattern.match(
+            hidden_chatter_line).group(1))
+        assert math.isclose(hidden_chatter_average_rate, 1., rel_tol=1e-2)
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_filtered_topic_hz(self):
         average_rate_line_pattern = re.compile(r'average rate: (\d+.\d{3})')
         stats_line_pattern = re.compile(
