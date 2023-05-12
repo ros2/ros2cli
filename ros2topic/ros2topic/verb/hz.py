@@ -226,10 +226,11 @@ class ROSTopicHz(object):
         return rate, min_delta, max_delta, std_dev, n
 
     def print_hz(self, topics=None):
+        """Print the average publishing rate to screen."""
+
         def get_format_hz(stat):
             return stat[0] * 1e9, stat[1] * 1e-9, stat[2] * 1e-9, stat[3] * 1e-9, stat[4]
 
-        """Print the average publishing rate to screen."""
         if len(topics) == 1:
             ret = self.get_hz(topics[0])
             if ret is None:
@@ -247,12 +248,12 @@ class ROSTopicHz(object):
             if hz_stat is None:
                 continue
             rate, min_delta, max_delta, std_dev, window = get_format_hz(hz_stat)
-            stats['window'].append(str(window))
             stats['topic'].append(topic)
             stats['rate'].append('{:.3f}'.format(rate))
             stats['min_delta'].append('{:.3f}'.format(min_delta))
             stats['max_delta'].append('{:.3f}'.format(max_delta))
             stats['std_dev'].append('{:.5f}'.format(std_dev))
+            stats['window'].append(str(window))
         if not stats['topic']:
             return
         print(_get_ascii_table(header, stats))
