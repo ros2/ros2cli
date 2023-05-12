@@ -40,7 +40,7 @@ import rclpy
 
 from rclpy.clock import Clock
 from rclpy.clock import ClockType
-from rclpy.executors import SingleThreadedExecutor
+from rclpy.executors import ExternalShutdownException
 from rclpy.qos import qos_profile_sensor_data
 from ros2cli.node.direct import add_arguments as add_direct_node_arguments
 from ros2cli.node.direct import DirectNode
@@ -223,7 +223,7 @@ class ROSTopicHz(object):
 
             self.set_last_printed_tn(self.get_msg_tn(topic=topic), topic=topic)
 
-        return rate, min_delta, max_delta, std_dev, n
+        return rate, min_delta, max_delta, std_dev, n+1
 
     def print_hz(self, topics=None):
         def get_format_hz(stat):
@@ -253,8 +253,6 @@ class ROSTopicHz(object):
             stats['min_delta'].append('{:.3f}'.format(min_delta))
             stats['max_delta'].append('{:.3f}'.format(max_delta))
             stats['std_dev'].append('{:.5f}'.format(std_dev))
-            # print(stats['std_dev'][0])
-            stats['window'].append(str(window))
         if not stats['topic']:
             print(topic, 'no new messages')
             return
@@ -305,18 +303,17 @@ def _rostopic_hz(node, topics, window_size=DEFAULT_WINDOW_SIZE, filter_expr=None
             qos_profile_sensor_data)
 
     try:
-        executor = SingleThreadedExecutor()
-        executor.add_node(node)
-        executor_thread = threading.Thread(target=executor.spin)
-        executor_thread.start()
-        while rclpy.ok():
-            time.sleep(1.0)
-            rt.print_hz(topics)
-    except KeyboardInterrupt:
+        def thread_func():
+            while rclpy.ok():
+                rt.print_hz(topics)
+                time.sleep(1.0)
+
+        print_thread = threading.Thread(target=thread_func)
+        print_thread.start()
+        rclpy.spin(node)
+    except (KeyboardInterrupt, ExternalShutdownException):
         pass
     finally:
-        executor.shutdown()
-        executor_thread.join()
-
-    node.destroy_node()
-    rclpy.try_shutdown()
+        node.destroy_node()
+        rclpy.try_shutdown()
+        print_thread.join()
