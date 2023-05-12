@@ -254,7 +254,7 @@ class ROSTopicHz(object):
             stats['max_delta'].append('{:.3f}'.format(max_delta))
             stats['std_dev'].append('{:.5f}'.format(std_dev))
         if not stats['topic']:
-            print(topic, 'no new messages')
+            print('no new messages')
             return
         print(_get_ascii_table(header, stats))
 
