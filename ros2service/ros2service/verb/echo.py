@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from argparse import ArgumentTypeError
 from typing import TypeVar
 
 import rclpy
 
 from rclpy.qos import QoSPresetProfiles
+from ros2cli.helpers import unsigned_int
 from ros2cli.node.strategy import NodeStrategy
 from ros2service.api import get_service_class
 from ros2service.api import ServiceNameCompleter
@@ -30,16 +30,6 @@ from service_msgs.msg import ServiceEventInfo
 
 DEFAULT_TRUNCATE_LENGTH = 128
 MsgType = TypeVar('MsgType')
-
-
-def unsigned_int(string):
-    try:
-        value = int(string)
-    except ValueError:
-        value = -1
-    if value < 0:
-        raise ArgumentTypeError('value must be non-negative integer')
-    return value
 
 
 class EchoVerb(VerbExtension):

@@ -41,7 +41,7 @@ def get_service_class(node: Node, service_name: str, include_hidden_services: bo
 
     The service should be running for this function to find the service type.
     :param node: The node object of rclpy Node class.
-    :param service_name: The name of the service.
+    :param service_name: The fully-qualified name of the service.
     :param include_hidden_services: Whether to include hidden services while finding the
     list of currently running services.
     :return:
