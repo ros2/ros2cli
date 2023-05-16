@@ -44,7 +44,7 @@ def get_service_class(node: Node, service_name: str, include_hidden_services: bo
     :param service_name: The fully-qualified name of the service.
     :param include_hidden_services: Whether to include hidden services while finding the
     list of currently running services.
-    :return:
+    :return: the service class or None
     """
     service_names_and_types = get_service_names_and_types(
         node=node,
@@ -67,16 +67,16 @@ def get_service_class(node: Node, service_name: str, include_hidden_services: bo
     if len(matched_names_and_types) < 1:
         raise RuntimeError(f"Cannot find type for '{service_name}'")
     if len(matched_names_and_types) > 1:
-        raise RuntimeError("Unexpectedly saw more than one entry for service'{service_name}'")
+        raise RuntimeError(f"Unexpectedly saw more than one entry for service '{service_name}'")
 
     # Now check whether there are multiple types associated with this service, which is unsupported
     service_name_and_types = matched_names_and_types[0]
 
     types = service_name_and_types[1]
     if len(types) < 1:
-        raise RuntimeError("No types associated with '{service_name}'")
+        raise RuntimeError(f"No types associated with '{service_name}'")
     if len(types) > 1:
-        raise RuntimeError("More than one type associated with service '{service_name}'")
+        raise RuntimeError(f"More than one type associated with service '{service_name}'")
 
     service_type = types[0]
 

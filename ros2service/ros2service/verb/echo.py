@@ -78,7 +78,7 @@ class EchoVerb(VerbExtension):
                     srv_module = get_service_class(
                         node, args.service_name, include_hidden_services=True)
                 except (AttributeError, ModuleNotFoundError, ValueError):
-                    raise RuntimeError("The service name '%s' is invalid" % args.service_name)
+                    raise RuntimeError(f"The service name '{args.service_name}' is invalid")
         else:
             try:
                 srv_module = get_service(args.service_type)
