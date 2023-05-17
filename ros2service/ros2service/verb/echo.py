@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from collections import OrderedDict
+import sys
 from typing import TypeVar
 
 import rclpy
@@ -24,9 +26,12 @@ from ros2service.api import ServiceNameCompleter
 from ros2service.api import ServiceTypeCompleter
 from ros2service.verb import VerbExtension
 from rosidl_runtime_py import message_to_csv
-from rosidl_runtime_py import message_to_yaml
+from rosidl_runtime_py import message_to_ordereddict
 from rosidl_runtime_py.utilities import get_service
 from service_msgs.msg import ServiceEventInfo
+
+import yaml
+
 
 DEFAULT_TRUNCATE_LENGTH = 128
 MsgType = TypeVar('MsgType')
@@ -35,9 +40,20 @@ MsgType = TypeVar('MsgType')
 class EchoVerb(VerbExtension):
     """Echo a service."""
 
+    # Custom representer for getting clean YAML output that preserves the order in an OrderedDict.
+    # Inspired by: http://stackoverflow.com/a/16782282/7169408
+    def __represent_ordereddict(self, dumper, data):
+        items = []
+        for k, v in data.items():
+            items.append((dumper.represent_data(k), dumper.represent_data(v)))
+        return yaml.nodes.MappingNode(u'tag:yaml.org,2002:map', items)
+
     def __init__(self):
-        self.event_type_map = [
-            (v, k) for k, v in ServiceEventInfo._Metaclass_ServiceEventInfo__constants.items()]
+        self._event_number_to_name = {}
+        for k, v in ServiceEventInfo._Metaclass_ServiceEventInfo__constants.items():
+            self._event_number_to_name[v] = k
+
+        yaml.add_representer(OrderedDict, self.__represent_ordereddict)
 
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
@@ -126,9 +142,21 @@ class EchoVerb(VerbExtension):
             to_print = message_to_csv(msg, truncate_length=self.truncate_length,
                                       no_arr=self.no_arr, no_str=self.no_str)
         else:
-            to_print = message_to_yaml(msg, truncate_length=self.truncate_length,
-                                       no_arr=self.no_arr, no_str=self.no_str,
-                                       flow_style=self.flow_style)
+            # The "easy" way to print out a representation here is to call message_to_yaml().
+            # However, the message contains numbers for the event type, but we want to show
+            # meaningful names to the user.  So we call message_to_ordereddict() instead,
+            # and replace the numbers with meaningful names before dumping to YAML.
+            msgdict = message_to_ordereddict(msg, truncate_length=self.truncate_length,
+                                             no_arr=self.no_arr, no_str=self.no_str)
+
+            if 'info' in msgdict:
+                info = msgdict['info']
+                if 'event_type' in info:
+                    info['event_type'] = self._event_number_to_name[info['event_type']]
+
+            to_print = yaml.dump(msgdict, allow_unicode=True, width=sys.maxsize,
+                                 default_flow_style=self.flow_style)
+
             to_print += '---'
 
         print(to_print)
