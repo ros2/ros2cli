@@ -200,6 +200,54 @@ class TestROS2InterfaceCLI(unittest.TestCase):
         )
         assert all(interface in output_lines for interface in some_interfaces)
 
+    def test_package_on_test_msgs_only_msgs(self):
+        with self.launch_interface_command(
+            arguments=['package', 'test_msgs', '-m']
+        ) as interface_command:
+            assert interface_command.wait_for_shutdown(timeout=5)
+        assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
+        output_lines = interface_command.output.splitlines()
+        assert launch_testing.tools.expect_output(
+            expected_lines=itertools.repeat(
+                re.compile(r'test_msgs/msg/[A-z0-9_]+'), len(output_lines)
+            ),
+            lines=output_lines,
+            strict=True
+        )
+        assert all(interface in output_lines for interface in some_messages_from_test_msgs)
+
+    def test_package_on_test_msgs_only_srvs(self):
+        with self.launch_interface_command(
+            arguments=['package', 'test_msgs', '-s']
+        ) as interface_command:
+            assert interface_command.wait_for_shutdown(timeout=5)
+        assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
+        output_lines = interface_command.output.splitlines()
+        assert launch_testing.tools.expect_output(
+            expected_lines=itertools.repeat(
+                re.compile(r'test_msgs/srv/[A-z0-9_]+'), len(output_lines)
+            ),
+            lines=output_lines,
+            strict=True
+        )
+        assert all(interface in output_lines for interface in some_services_from_test_msgs)
+
+    def test_package_on_test_msgs_only_actions(self):
+        with self.launch_interface_command(
+            arguments=['package', 'test_msgs', '-a']
+        ) as interface_command:
+            assert interface_command.wait_for_shutdown(timeout=5)
+        assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
+        output_lines = interface_command.output.splitlines()
+        assert launch_testing.tools.expect_output(
+            expected_lines=itertools.repeat(
+                re.compile(r'test_msgs/action/[A-z0-9_]+'), len(output_lines)
+            ),
+            lines=output_lines,
+            strict=True
+        )
+        assert all(interface in output_lines for interface in some_actions_from_test_msgs)
+
     def test_packages(self):
         with self.launch_interface_command(arguments=['packages']) as interface_command:
             assert interface_command.wait_for_shutdown(timeout=2)
