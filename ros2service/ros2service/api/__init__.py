@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from rclpy.node import Node
 from rclpy.topic_or_service_is_hidden import topic_or_service_is_hidden
 from ros2cli.node.strategy import NodeStrategy
 from rosidl_runtime_py import get_service_interfaces
@@ -32,6 +33,60 @@ def get_service_names(*, node, include_hidden_services=False):
     service_names_and_types = get_service_names_and_types(
         node=node, include_hidden_services=include_hidden_services)
     return [n for (n, t) in service_names_and_types]
+
+
+def get_service_class(node: Node, service_name: str, include_hidden_services: bool):
+    """
+    Load service type module for the given service.
+
+    The service should be running for this function to find the service type.
+    :param node: The node object of rclpy Node class.
+    :param service_name: The fully-qualified name of the service.
+    :param include_hidden_services: Whether to include hidden services while finding the
+    list of currently running services.
+    :return: the service class or None
+    """
+    service_names_and_types = get_service_names_and_types(
+        node=node,
+        include_hidden_services=include_hidden_services)
+
+    # get_service_names_and_types() returns a list of lists, like the following:
+    #  [
+    #    ['/service1', ['service/srv/Type1]],
+    #    ['/service2', ['service/srv/Type2]],
+    #  ]
+    #
+    # If there are more than one server for a service with the same type, that is only represented
+    # once.  If there are more than one server for a service name with different types, those are
+    # represented like:
+    #
+    # [
+    #  ['/service1', ['service/srv/Type1', 'service/srv/Type2']],
+    # ]
+    matched_names_and_types = list(filter(lambda x: x[0] == service_name, service_names_and_types))
+    if len(matched_names_and_types) < 1:
+        raise RuntimeError(f"Cannot find type for '{service_name}'")
+    if len(matched_names_and_types) > 1:
+        raise RuntimeError(f"Unexpectedly saw more than one entry for service '{service_name}'")
+
+    # Now check whether there are multiple types associated with this service, which is unsupported
+    service_name_and_types = matched_names_and_types[0]
+
+    types = service_name_and_types[1]
+    if len(types) < 1:
+        raise RuntimeError(f"No types associated with '{service_name}'")
+    if len(types) > 1:
+        raise RuntimeError(f"More than one type associated with service '{service_name}'")
+
+    service_type = types[0]
+
+    if service_type is None:
+        return None
+
+    try:
+        return get_service(service_type)
+    except (AttributeError, ModuleNotFoundError, ValueError):
+        raise RuntimeError(f"The service type '{service_type}' is invalid")
 
 
 def service_type_completer(**kwargs):

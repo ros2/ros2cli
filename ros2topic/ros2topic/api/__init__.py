@@ -29,16 +29,6 @@ from rosidl_runtime_py import message_to_yaml
 from rosidl_runtime_py.utilities import get_message
 
 
-def unsigned_int(string):
-    try:
-        value = int(string)
-    except ValueError:
-        value = -1
-    if value < 0:
-        raise ArgumentTypeError('value must be non-negative integer')
-    return value
-
-
 def positive_int(string):
     try:
         value = int(string)
