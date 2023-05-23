@@ -18,10 +18,10 @@ import time
 import rclpy
 from rclpy.qos import QoSPresetProfiles
 from ros2cli.node import NODE_NAME_PREFIX
+from ros2cli.node.qos import profile_configure_short_keys, add_qos_arguments
 from ros2service.api import ServiceNameCompleter
 from ros2service.api import ServicePrototypeCompleter
 from ros2service.api import ServiceTypeCompleter
-from ros2topic.api import profile_configure_short_keys, add_qos_arguments
 from ros2service.verb import VerbExtension
 from rosidl_runtime_py import set_message_fields
 import yaml
