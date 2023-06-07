@@ -2,8 +2,8 @@
 Changelog for package ros2service
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.27.0 (2023-06-07)
+-------------------
 * [service introspection] ros2 service echo (`#745 <https://github.com/ros2/ros2cli/issues/745>`_)
 * Contributors: Brian
 
