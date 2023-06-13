@@ -305,6 +305,10 @@ class TestROS2TopicCLI(unittest.TestCase):
 
     @launch_testing.markers.retry_on_failure(times=5)
     def test_topic_endpoint_info_verbose(self):
+        # Hash value below can be found in std_msgs/msg/String.json
+        STD_MSGS_STRING_TYPE_HASH_STR = 'RIHS01_' \
+            'df668c740482bbd48fb39d76a70dfd4bd59db1288021743503259e948f6b1a18'
+
         with self.launch_topic_command(arguments=['info', '-v', '/chatter']) as topic_command:
             assert topic_command.wait_for_shutdown(timeout=10)
         assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
@@ -317,7 +321,7 @@ class TestROS2TopicCLI(unittest.TestCase):
                 re.compile(r'Node name: \w+'),
                 'Node namespace: /',
                 'Topic type: std_msgs/msg/String',
-                'Topic type hash: UNKNOWN',
+                f'Topic type hash: {STD_MSGS_STRING_TYPE_HASH_STR}',
                 re.compile(r'Endpoint type: (INVALID|PUBLISHER|SUBSCRIPTION)'),
                 re.compile(r'GID: [\w\.]+'),
                 'QoS profile:',
