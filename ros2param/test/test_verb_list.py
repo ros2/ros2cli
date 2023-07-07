@@ -180,6 +180,7 @@ class TestVerbList(unittest.TestCase):
                 '  foo.str_param',
                 '  int_array_param',
                 '  int_param',
+                '  start_type_description_service',
                 '  str_array_param',
                 '  str_param',
                 '  use_sim_time'],
