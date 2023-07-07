@@ -63,6 +63,7 @@ EXPECTED_PARAMETER_FILE = (
     '    - 2\n'
     '    - 3\n'
     '    int_param: 42\n'
+    '    start_type_description_service: true\n'
     '    str_array_param:\n'
     '    - foo\n'
     '    - bar\n'

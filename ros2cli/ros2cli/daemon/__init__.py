@@ -75,7 +75,8 @@ def serve(server, *, timeout=2 * 60 * 60):
         ros_domain_id = get_ros_domain_id()
         node_args = argparse.Namespace(
             node_name_suffix=f'_daemon_{ros_domain_id}_{uuid.uuid4().hex}',
-            start_parameter_services=False)
+            start_parameter_services=False,
+            start_type_description_service=False)
         with NetworkAwareNode(node_args) as node:
             functions = [
                 node.get_name,
