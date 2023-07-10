@@ -29,7 +29,7 @@ import yaml
 
 
 class DumpVerb(VerbExtension):
-    """Dump the parameters of a node to a yaml file."""
+    """Show all of the parameters of a node in a YAML file format."""
 
     def add_arguments(self, parser, cli_name):  # noqa: D102
         add_arguments(parser)
