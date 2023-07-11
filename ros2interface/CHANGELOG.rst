@@ -2,6 +2,9 @@
 Changelog for package ros2interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.27.0 (2023-06-07)
 -------------------
 * Add interface type filters to ros2 interface package (`#765 <https://github.com/ros2/ros2cli/issues/765>`_)
