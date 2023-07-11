@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="2">
   <name>ros2lifecycle_test_fixtures</name>
-  <version>0.27.0</version>
+  <version>0.28.0</version>
   <description>Package containing fixture nodes for ros2lifecycle tests</description>
 
   <maintainer email="audrow@openrobotics.org">Audrow Nash</maintainer>

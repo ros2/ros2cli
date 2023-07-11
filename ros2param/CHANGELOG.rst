@@ -2,8 +2,8 @@
 Changelog for package ros2param
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.28.0 (2023-07-11)
+-------------------
 * Fix tests with get_type_description service and param present (`#838 <https://github.com/ros2/ros2cli/issues/838>`_)
 * Update ros2 param dump dosctring. (`#837 <https://github.com/ros2/ros2cli/issues/837>`_)
 * Contributors: Emerson Knapp, Murilo M Marinho
