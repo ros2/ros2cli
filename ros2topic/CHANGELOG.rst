@@ -2,6 +2,11 @@
 Changelog for package ros2topic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add marshalling functions for rclpy.type_hash.TypeHash (`#835 <https://github.com/ros2/ros2cli/issues/835>`_)
+* Contributors: Hans-Joachim Krauch
+
 0.25.1 (2023-05-11)
 -------------------
 
