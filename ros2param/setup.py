@@ -5,7 +5,7 @@ package_name = 'ros2param'
 
 setup(
     name=package_name,
-    version='0.25.1',
+    version='0.25.2',
     packages=find_packages(exclude=['test']),
     data_files=[
         ('share/' + package_name, ['package.xml']),
