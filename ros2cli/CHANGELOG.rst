@@ -2,6 +2,11 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.18.7 (2023-07-18)
+-------------------
+* Set automatically_declare_parameters_from_overrides in DirectNode. (`#813 <https://github.com/ros2/ros2cli/issues/813>`_) (`#815 <https://github.com/ros2/ros2cli/issues/815>`_)
+* Contributors: mergify[bot]
+
 0.18.6 (2023-04-25)
 -------------------
 * Save method list via connection check to XMLRPC server. (`#796 <https://github.com/ros2/ros2cli/issues/796>`_) (`#798 <https://github.com/ros2/ros2cli/issues/798>`_)
