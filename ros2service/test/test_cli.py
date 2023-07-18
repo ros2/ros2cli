@@ -16,7 +16,6 @@ import contextlib
 import functools
 import itertools
 import os
-import re
 import sys
 import unittest
 
@@ -105,6 +104,16 @@ def generate_test_description(rmw_implementation):
 
 
 class TestROS2ServiceCLI(unittest.TestCase):
+    expected_builtin_services = {
+        'describe_parameters': 'rcl_interfaces/srv/DescribeParameters',
+        'get_parameter_types': 'rcl_interfaces/srv/GetParameterTypes',
+        'get_parameters': 'rcl_interfaces/srv/GetParameters',
+        'get_type_description': 'type_description_interfaces/srv/GetTypeDescription',
+        'list_parameters': 'rcl_interfaces/srv/ListParameters',
+        'set_parameters': 'rcl_interfaces/srv/SetParameters',
+        'set_parameters_atomically': 'rcl_interfaces/srv/SetParametersAtomically',
+    }
+    builtin_service_count = len(expected_builtin_services)
 
     @classmethod
     def setUpClass(
@@ -138,6 +147,13 @@ class TestROS2ServiceCLI(unittest.TestCase):
                 yield service_command
         cls.launch_service_command = launch_service_command
 
+    @classmethod
+    def get_expected_builtin_services(cls, namespace: str, with_types: bool = False) -> list[str]:
+        return [
+            f'{namespace}/{srv_name}' + (f' [{srv_type}]' if with_types else '')
+            for srv_name, srv_type in cls.expected_builtin_services.items()
+        ]
+
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_list_services(self):
         with self.launch_service_command(arguments=['list']) as service_command:
@@ -146,9 +162,7 @@ class TestROS2ServiceCLI(unittest.TestCase):
         assert launch_testing.tools.expect_output(
             expected_lines=itertools.chain(
                 ['/my_ns/echo'],
-                itertools.repeat(re.compile(
-                    r'/my_ns/echo_server/.*parameter.*'
-                ), 6)
+                self.get_expected_builtin_services('/my_ns/echo_server'),
             ),
             text=service_command.output,
             strict=True
@@ -164,13 +178,9 @@ class TestROS2ServiceCLI(unittest.TestCase):
         assert launch_testing.tools.expect_output(
             expected_lines=itertools.chain(
                 ['/my_ns/_echo'],
-                itertools.repeat(re.compile(
-                    r'/my_ns/_hidden_echo_server/.*parameter.*'
-                ), 6),
+                self.get_expected_builtin_services('/my_ns/_hidden_echo_server'),
                 ['/my_ns/echo'],
-                itertools.repeat(re.compile(
-                    r'/my_ns/echo_server/.*parameter.*'
-                ), 6)
+                self.get_expected_builtin_services('/my_ns/echo_server'),
             ),
             text=service_command.output,
             strict=True
@@ -184,10 +194,7 @@ class TestROS2ServiceCLI(unittest.TestCase):
         assert launch_testing.tools.expect_output(
             expected_lines=itertools.chain(
                 ['/my_ns/echo [test_msgs/srv/BasicTypes]'],
-                itertools.repeat(re.compile(
-                    r'/my_ns/echo_server/.*parameter.*'
-                    r' \[rcl_interfaces/srv/.*Parameter.*\]'
-                ), 6)
+                self.get_expected_builtin_services('/my_ns/echo_server', with_types=True)
             ),
             text=service_command.output,
             strict=True
@@ -200,7 +207,7 @@ class TestROS2ServiceCLI(unittest.TestCase):
         assert service_command.exit_code == launch_testing.asserts.EXIT_OK
         output_lines = service_command.output.splitlines()
         assert len(output_lines) == 1
-        assert int(output_lines[0]) == 7
+        assert int(output_lines[0]) == self.builtin_service_count + 1
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_find(self):
