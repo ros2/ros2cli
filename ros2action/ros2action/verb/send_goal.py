@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import sys
+
 from action_msgs.msg import GoalStatus
 import rclpy
 from rclpy.action import ActionClient
@@ -39,9 +41,13 @@ class SendGoalVerb(VerbExtension):
             'action_type',
             help="Type of the ROS action (e.g. 'example_interfaces/action/Fibonacci')")
         arg.completer = ActionTypeCompleter(action_name_key='action_name')
-        arg = parser.add_argument(
-            'goal',
+        group = parser.add_mutually_exclusive_group()
+        arg = group.add_argument(
+            'goal', nargs='?', default='{}',
             help="Goal request values in YAML format (e.g. '{order: 10}')")
+        group.add_argument(
+            '--stdin', action='store_true',
+            help='Read goal from standard input')
         arg.completer = ActionGoalPrototypeCompleter(action_type_key='action_type')
         parser.add_argument(
             '-f', '--feedback', action='store_true',
@@ -51,6 +57,16 @@ class SendGoalVerb(VerbExtension):
         feedback_callback = None
         if args.feedback:
             feedback_callback = _feedback_callback
+
+        if args.stdin:
+            lines = b""
+            while True:
+                line = sys.stdin.buffer.readline()
+                if not line:
+                    break
+                lines += line
+            args.goal = lines
+
         return send_goal(args.action_name, args.action_type, args.goal, feedback_callback)
 
 

@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import sys
 import time
 from typing import Optional
 from typing import TypeVar
@@ -58,13 +59,17 @@ class PubVerb(VerbExtension):
             help="Type of the ROS message (e.g. 'std_msgs/String')")
         arg.completer = TopicTypeCompleter(
             topic_name_key='topic_name')
-        arg = parser.add_argument(
+        group = parser.add_mutually_exclusive_group()
+        arg = group.add_argument(
             'values', nargs='?', default='{}',
             help='Values to fill the message with in YAML format '
                  "(e.g. 'data: Hello World'), "
                  'otherwise the message will be published with default values')
         arg.completer = TopicMessagePrototypeCompleter(
             topic_type_key='message_type')
+        group.add_argument(
+            '--stdin', action='store_true',
+            help='Read values from standard input')
         parser.add_argument(
             '-r', '--rate', metavar='N', type=positive_float, default=1.0,
             help='Publishing rate in Hz (default: 1)')
@@ -114,6 +119,15 @@ def main(args):
     times = args.times
     if args.once:
         times = 1
+
+    if args.stdin:
+        lines = b""
+        while True:
+            line = sys.stdin.buffer.readline()
+            if not line:
+                break
+            lines += line
+        args.values = lines
 
     with DirectNode(args, node_name=args.node_name) as node:
         return publisher(

@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import importlib
+import sys
 import time
 
 import rclpy
@@ -39,13 +40,17 @@ class CallVerb(VerbExtension):
             help="Type of the ROS service (e.g. 'std_srvs/srv/Empty')")
         arg.completer = ServiceTypeCompleter(
             service_name_key='service_name')
-        arg = parser.add_argument(
+        group = parser.add_mutually_exclusive_group()
+        arg = group.add_argument(
             'values', nargs='?', default='{}',
             help='Values to fill the service request with in YAML format ' +
                  "(e.g. '{a: 1, b: 2}'), " +
                  'otherwise the service request will be published with default values')
         arg.completer = ServicePrototypeCompleter(
             service_type_key='service_type')
+        group.add_argument(
+            '--stdin', action='store_true',
+            help='Read values from standard input')
         parser.add_argument(
             '-r', '--rate', metavar='N', type=float,
             help='Repeat the call at a specific rate in Hz')
@@ -54,6 +59,15 @@ class CallVerb(VerbExtension):
         if args.rate is not None and args.rate <= 0:
             raise RuntimeError('rate must be greater than zero')
         period = 1. / args.rate if args.rate else None
+
+        if args.stdin:
+            lines = b""
+            while True:
+                line = sys.stdin.buffer.readline()
+                if not line:
+                    break
+                lines += line
+            args.values = lines
 
         return requester(
             args.service_type, args.service_name, args.values, period)
