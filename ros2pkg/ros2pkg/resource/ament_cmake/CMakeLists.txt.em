@@ -26,7 +26,7 @@ add_library(@(project_name)::@(cpp_library_name) ALIAS @(cpp_library_name))
 target_compile_features(@(cpp_library_name) PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 target_include_directories(@(cpp_library_name) PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>)
+  $<INSTALL_INTERFACE:include/${PROJECT_NAME}>)
 @[  if dependencies]@
 ament_target_dependencies(
   @(cpp_library_name)
@@ -42,7 +42,7 @@ target_compile_definitions(@(cpp_library_name) PRIVATE "@(project_name.upper())_
 
 install(
   DIRECTORY include/
-  DESTINATION include
+  DESTINATION include/${PROJECT_NAME}
 )
 install(
   TARGETS @(cpp_library_name)
@@ -57,7 +57,7 @@ install(
 add_executable(@(cpp_node_name) src/@(cpp_node_name).cpp)
 target_include_directories(@(cpp_node_name) PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>)
+  $<INSTALL_INTERFACE:include/${PROJECT_NAME}>)
 @[  if cpp_library_name]@
 target_link_libraries(@(cpp_node_name) @(cpp_library_name))
 @[  else]@
@@ -90,7 +90,7 @@ endif()
 @[if cpp_library_name]@
 
 ament_export_include_directories(
-  include
+  "include/${PROJECT_NAME}"
 )
 ament_export_libraries(
   @(cpp_library_name)
