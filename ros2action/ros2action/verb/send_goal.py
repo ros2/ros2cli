@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys
-
 from action_msgs.msg import GoalStatus
 import rclpy
 from rclpy.action import ActionClient
@@ -21,6 +19,7 @@ from ros2action.api import action_name_completer
 from ros2action.api import ActionGoalPrototypeCompleter
 from ros2action.api import ActionTypeCompleter
 from ros2action.verb import VerbExtension
+from ros2cli.helpers import collect_stdin
 from ros2cli.node import NODE_NAME_PREFIX
 from rosidl_runtime_py import message_to_yaml
 from rosidl_runtime_py import set_message_fields
@@ -59,15 +58,11 @@ class SendGoalVerb(VerbExtension):
             feedback_callback = _feedback_callback
 
         if args.stdin:
-            lines = b""
-            while True:
-                line = sys.stdin.buffer.readline()
-                if not line:
-                    break
-                lines += line
-            args.goal = lines
+            goal = collect_stdin()
+        else:
+            goal = args.goal
 
-        return send_goal(args.action_name, args.action_type, args.goal, feedback_callback)
+        return send_goal(args.action_name, args.action_type, goal, feedback_callback)
 
 
 def _goal_status_to_string(status):

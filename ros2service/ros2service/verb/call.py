@@ -13,10 +13,10 @@
 # limitations under the License.
 
 import importlib
-import sys
 import time
 
 import rclpy
+from ros2cli.helpers import collect_stdin
 from ros2cli.node import NODE_NAME_PREFIX
 from ros2service.api import ServiceNameCompleter
 from ros2service.api import ServicePrototypeCompleter
@@ -61,16 +61,12 @@ class CallVerb(VerbExtension):
         period = 1. / args.rate if args.rate else None
 
         if args.stdin:
-            lines = b""
-            while True:
-                line = sys.stdin.buffer.readline()
-                if not line:
-                    break
-                lines += line
-            args.values = lines
+            values = collect_stdin()
+        else:
+            values = args.values
 
         return requester(
-            args.service_type, args.service_name, args.values, period)
+            args.service_type, args.service_name, values, period)
 
 
 def requester(service_type, service_name, values, period):

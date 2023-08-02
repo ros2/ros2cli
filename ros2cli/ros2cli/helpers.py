@@ -16,6 +16,7 @@ from argparse import ArgumentTypeError
 import functools
 import inspect
 import os
+import sys
 import time
 
 
@@ -107,3 +108,13 @@ def unsigned_int(string):
     if value < 0:
         raise ArgumentTypeError('value must be non-negative integer')
     return value
+
+
+def collect_stdin():
+    lines = b""
+    while True:
+        line = sys.stdin.buffer.readline()
+        if not line:
+            break
+        lines += line
+    return lines

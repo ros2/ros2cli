@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys
 import time
 from typing import Optional
 from typing import TypeVar
@@ -20,6 +19,7 @@ from typing import TypeVar
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile
+from ros2cli.helpers import collect_stdin
 from ros2cli.node.direct import add_arguments as add_direct_node_arguments
 from ros2cli.node.direct import DirectNode
 from ros2topic.api import add_qos_arguments
@@ -121,20 +121,16 @@ def main(args):
         times = 1
 
     if args.stdin:
-        lines = b""
-        while True:
-            line = sys.stdin.buffer.readline()
-            if not line:
-                break
-            lines += line
-        args.values = lines
+        values = collect_stdin()
+    else:
+        values = args.values
 
     with DirectNode(args, node_name=args.node_name) as node:
         return publisher(
             node.node,
             args.message_type,
             args.topic_name,
-            args.values,
+            values,
             1. / args.rate,
             args.print,
             times,
