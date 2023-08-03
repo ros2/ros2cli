@@ -111,7 +111,7 @@ def unsigned_int(string):
 
 
 def collect_stdin():
-    lines = b""
+    lines = b''
     while True:
         line = sys.stdin.buffer.readline()
         if not line:
