@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>ros2rosout</name>
+  <version>0.0.0</version>
+  <description>A command line tool to print the rosout logs in a ROS 2 system</description>
+
+  <maintainer email="gautran@clearpath.ai">Guillaume Autran</maintainer>
+
+  <license>Apache License 2.0</license>
+
+  <author email="gautran@clearpath.ai">Guillaume Autran</author>
+
+  <exec_depend>ament_index_python</exec_depend>
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>ros2cli</exec_depend>
+  <exec_depend>rcl_interfaces</exec_depend>
+
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>ament_xmllint</test_depend>
+  <test_depend>launch</test_depend>
+  <test_depend>launch_ros</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
