@@ -2,6 +2,11 @@
 Changelog for package ros2cli_test_interfaces
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update to C++17 (`#848 <https://github.com/ros2/ros2cli/issues/848>`_)
+* Contributors: Chris Lalancette
+
 0.28.0 (2023-07-11)
 -------------------
 

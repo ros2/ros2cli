@@ -2,6 +2,11 @@
 Changelog for package ros2pkg
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update the package template for our new include directories. (`#847 <https://github.com/ros2/ros2cli/issues/847>`_)
+* Contributors: Chris Lalancette
+
 0.28.0 (2023-07-11)
 -------------------
 
