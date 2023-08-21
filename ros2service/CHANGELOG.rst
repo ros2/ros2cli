@@ -2,8 +2,8 @@
 Changelog for package ros2service
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.29.0 (2023-08-21)
+-------------------
 * Load a message/request/goal from standard input (`#844 <https://github.com/ros2/ros2cli/issues/844>`_)
 * Contributors: ymd-stella
 
