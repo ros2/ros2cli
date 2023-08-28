@@ -18,9 +18,8 @@ import rclpy
 from ros2cli.node import NODE_NAME_PREFIX
 from ros2cli.node.strategy import add_arguments
 from ros2node.api import (
-    parse_node_name,
-    INFO_NONUNIQUE_WARNING_TEMPLATE,
     NodeNameCompleter,
+    parse_node_name,
 )
 from ros2node.verb import VerbExtension
 from type_description_interfaces.msg import FieldType
