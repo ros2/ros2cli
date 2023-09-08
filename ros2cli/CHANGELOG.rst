@@ -2,6 +2,11 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix tests with get_type_description service and param present (`#839 <https://github.com/ros2/ros2cli/issues/839>`_)
+* Contributors: Emerson Knapp
+
 0.25.2 (2023-07-14)
 -------------------
 * Add marshalling functions for rclpy.type_hash.TypeHash (`#835 <https://github.com/ros2/ros2cli/issues/835>`_)
