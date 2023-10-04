@@ -2,6 +2,11 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* catch ExternalShutdownException ros2cli main. (`#854 <https://github.com/ros2/ros2cli/issues/854>`_)
+* Contributors: Tomoya Fujita
+
 0.29.0 (2023-08-21)
 -------------------
 * Load a message/request/goal from standard input (`#844 <https://github.com/ros2/ros2cli/issues/844>`_)
