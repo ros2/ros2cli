@@ -2,8 +2,8 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.29.1 (2023-10-04)
+-------------------
 * catch ExternalShutdownException ros2cli main. (`#854 <https://github.com/ros2/ros2cli/issues/854>`_)
 * Contributors: Tomoya Fujita
 
