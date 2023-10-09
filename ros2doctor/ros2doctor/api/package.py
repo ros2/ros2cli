@@ -106,8 +106,13 @@ def compare_versions(result: Result, local_packages: dict, distro_packages: dict
         latest_ver_str = distro_packages.get(name, '')
         if not latest_ver_str:
             missing_req += name
-        local_ver = version.parse(local_ver_str).base_version
-        latest_ver = version.parse(latest_ver_str).base_version
+
+        try:
+            local_ver = version.parse(local_ver_str).base_version
+            latest_ver = version.parse(latest_ver_str).base_version
+        except version.InvalidVersion:
+            continue  # Logging is already done by missing_local/missing_req
+
         if local_ver < latest_ver:
             doctor_warn(
                 f'{name} has been updated to a new version.'
