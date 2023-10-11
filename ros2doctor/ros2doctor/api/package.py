@@ -176,9 +176,13 @@ class PackageReport(DoctorReport):
         distro_package_vers = get_distro_package_versions()
         if not local_package_vers or not distro_package_vers:
             return report
-        for name, local_ver_str in local_package_vers.items():
-            latest_ver_str = distro_package_vers.get(name, '')
-            local_ver = version.parse(local_ver_str).base_version
-            latest_ver = version.parse(latest_ver_str).base_version
+        for name, local_ver in local_package_vers.items():
+            latest_ver = distro_package_vers.get(name, '')
+            if local_ver:
+                local_ver = version.parse(local_ver).base_version
+            if latest_ver:
+                latest_ver = version.parse(latest_ver).base_version
+            else:
+                latest_ver = 'N/A'
             report.add_to_report(name, f'latest={latest_ver}, local={local_ver}')
         return report
