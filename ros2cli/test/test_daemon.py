@@ -237,3 +237,11 @@ def test_count_publishers(daemon_node):
 
 def test_count_subscribers(daemon_node):
     assert 1 == daemon_node.count_subscribers(TEST_TOPIC_NAME)
+
+
+def test_count_clients(daemon_node):
+    assert 1 == daemon_node.count_clients(TEST_SERVICE_NAME)
+
+
+def test_count_services(daemon_node):
+    assert 1 == daemon_node.count_services(TEST_SERVICE_NAME)
