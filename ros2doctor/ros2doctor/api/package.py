@@ -97,43 +97,46 @@ def compare_versions(result: Result, local_packages: dict, distro_packages: dict
     :param: boolean value determines which output to populate, msgs or report
     :return: list of warning messages
     """
-    missing_req = ''
-    missing_local = ''
+    missing_req = []
+    missing_local = []
     for name, local_ver_str in local_packages.items():
         if not local_ver_str:
-            missing_local += ' ' + name
-            local_ver_str = ''
+            missing_local.append(name)
         latest_ver_str = distro_packages.get(name, '')
         if not latest_ver_str:
-            missing_req += ' ' + name
-        local_ver = version.parse(local_ver_str).base_version
-        latest_ver = version.parse(latest_ver_str).base_version
+            missing_req.append(name)
+
+        if not local_ver_str or not latest_ver_str:
+            continue  # Logging is already done by missing_local/missing_req
+
+        try:
+            local_ver = version.parse(local_ver_str).base_version
+        except version.InvalidVersion:
+            doctor_warn(f"Failed to parse local version '{local_ver_str}' of package '{name}'")
+        try:
+            latest_ver = version.parse(latest_ver_str).base_version
+        except version.InvalidVersion:
+            doctor_warn(f"Failed to parse latest version '{latest_ver_str}' of package '{name}'")
+
         if local_ver < latest_ver:
             doctor_warn(
                 f'{name} has been updated to a new version.'
                 f' local: {local_ver} <'
                 f' latest: {latest_ver}')
             result.add_warning()
-    if missing_req:
-        if len(missing_req) > 100:
-            doctor_warn(
-                'Cannot find the latest versions of packages: ' +
-                textwrap.shorten(missing_req, width=100) +
-                ' Use `ros2 doctor --report` to see full list.')
-        else:
-            doctor_warn(
-                'Cannot find the latest versions of packages: ' +
-                missing_req)
-    if missing_local:
-        if len(missing_local) > 100:
-            doctor_warn(
-                'Cannot find local versions of packages: ' +
-                textwrap.shorten(missing_local, width=100) +
-                ' Use `ros2 doctor --report` to see full list.')
-        else:
-            doctor_warn(
-                'Cannot find local versions of packages: ' +
-                missing_local)
+
+    missing_req_str = ' '.join(missing_req)
+    if missing_req_str:
+        doctor_warn(
+            'Cannot find the latest versions of packages: ' +
+            textwrap.shorten(missing_req_str, width=100) +
+            '. Use `ros2 doctor --report` to see full list.')
+    missing_local_str = ' '.join(missing_local)
+    if missing_local_str:
+        doctor_warn(
+            'Cannot find local versions of packages: ' +
+            textwrap.shorten(missing_local_str, width=100) +
+            '. Use `ros2 doctor --report` to see full list.')
 
 
 class PackageCheck(DoctorCheck):
@@ -173,9 +176,13 @@ class PackageReport(DoctorReport):
         distro_package_vers = get_distro_package_versions()
         if not local_package_vers or not distro_package_vers:
             return report
-        for name, local_ver_str in local_package_vers.items():
-            latest_ver_str = distro_package_vers.get(name, '')
-            local_ver = version.parse(local_ver_str).base_version
-            latest_ver = version.parse(latest_ver_str).base_version
+        for name, local_ver in local_package_vers.items():
+            latest_ver = distro_package_vers.get(name, '')
+            if local_ver:
+                local_ver = version.parse(local_ver).base_version
+            if latest_ver:
+                latest_ver = version.parse(latest_ver).base_version
+            else:
+                latest_ver = 'N/A'
             report.add_to_report(name, f'latest={latest_ver}, local={local_ver}')
         return report
