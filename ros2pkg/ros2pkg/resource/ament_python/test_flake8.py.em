@@ -12,13 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import warnings
+
 from ament_flake8.main import main_with_errors
+
 import pytest
 
 
 @@pytest.mark.flake8
 @@pytest.mark.linter
 def test_flake8():
+    warnings.filterwarnings('ignore', 'SelectableGroups dict interface')
     rc, errors = main_with_errors(argv=[])
     assert rc == 0, \
         'Found %d code style errors / warnings:\n' % len(errors) + \
