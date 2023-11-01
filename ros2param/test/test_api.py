@@ -17,7 +17,7 @@ import array
 import pytest
 
 from rcl_interfaces.msg import ParameterType
-from ros2param.api import get_parameter_value
+from rclpy.parameter import get_parameter_value
 
 
 @pytest.mark.parametrize(
