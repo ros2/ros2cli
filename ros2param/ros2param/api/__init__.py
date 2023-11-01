@@ -39,7 +39,8 @@ def load_parameter_file(*, node, node_name, parameter_file, use_wildcard):
         raise RuntimeError('Wait for service timed out waiting for '
                            f'parameter services for node {node_name}')
     future = client.load_parameter_file(parameter_file, use_wildcard)
-    parameters = list(parameter_dict_from_yaml_file(parameter_file, use_wildcard).values())
+    parameters = list(parameter_dict_from_yaml_file(
+        parameter_file, use_wildcard, target_nodes=[node_name]).values())
     rclpy.spin_until_future_complete(node, future)
     response = future.result()
     assert len(response.results) == len(parameters), 'Not all parameters set'

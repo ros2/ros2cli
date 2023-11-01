@@ -85,6 +85,12 @@ INPUT_NODE_OVERLAY_PARAMETER_FILE = (
     '  ros__parameters:\n'
     '    str_param: Override\n'
 )
+INPUT_NS_NODE_OVERLAY_PARAMETER_FILE = (
+    f'{TEST_NAMESPACE}:\n'
+    f'  {TEST_NODE}:\n'
+    '    ros__parameters:\n'
+    '      str_param: Override\n'
+)
 
 # Skip cli tests on Windows while they exhibit pathological behavior
 # https://github.com/ros2/build_farmer/issues/248
@@ -318,7 +324,7 @@ class TestVerbLoad(unittest.TestCase):
                 assert param_load_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
             assert param_load_command.exit_code != launch_testing.asserts.EXIT_OK
             assert launch_testing.tools.expect_output(
-                expected_lines=['Param file does not contain selected parameters'],
+                expected_lines=['Param file does not contain any valid parameters'],
                 text=param_load_command.output,
                 strict=False
             )
@@ -344,10 +350,31 @@ class TestVerbLoad(unittest.TestCase):
             assert params['str_param'] == 'Wildcard'
             assert params['int_param'] == 12345
 
-            # Concatenate wildcard + some overlays
+            # Concatenate wildcard + some overlays with absolute node name
             filepath = self._write_param_file(tmpdir, 'params.yaml',
                                               INPUT_WILDCARD_PARAMETER_FILE + '\n' +
                                               INPUT_NODE_OVERLAY_PARAMETER_FILE)
+            with self.launch_param_load_command(
+                arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}', filepath]
+            ) as param_load_command:
+                assert param_load_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
+            assert param_load_command.exit_code == launch_testing.asserts.EXIT_OK
+
+            # Dump and check that wildcard parameters were overriden if in node namespace
+            with self.launch_param_dump_command(
+                arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}']
+            ) as param_dump_command:
+                assert param_dump_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
+            assert param_dump_command.exit_code == launch_testing.asserts.EXIT_OK
+            loaded_params = yaml.safe_load(param_dump_command.output)
+            params = loaded_params[f'{TEST_NAMESPACE}/{TEST_NODE}']['ros__parameters']
+            assert params['str_param'] == 'Override'  # Overriden
+            assert params['int_param'] == 12345  # Wildcard namespace
+
+            # Concatenate wildcard + some overlays with namespace and base node name
+            filepath = self._write_param_file(tmpdir, 'params.yaml',
+                                              INPUT_WILDCARD_PARAMETER_FILE + '\n' +
+                                              INPUT_NS_NODE_OVERLAY_PARAMETER_FILE)
             with self.launch_param_load_command(
                 arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}', filepath]
             ) as param_load_command:
