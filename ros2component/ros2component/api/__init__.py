@@ -23,12 +23,12 @@ import composition_interfaces.srv
 import rcl_interfaces.msg
 
 import rclpy
+from rclpy.parameter import get_parameter_value
 from rclpy.task import Future
 
 from ros2cli.node.strategy import NodeStrategy
 from ros2node.api import get_node_names
 from ros2node.api import get_service_server_info
-from ros2param.api import get_parameter_value
 from ros2pkg.api import get_executable_paths
 from ros2pkg.api import PackageNotFound
 

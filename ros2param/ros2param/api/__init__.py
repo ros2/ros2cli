@@ -13,21 +13,13 @@
 # limitations under the License.
 
 import sys
-import warnings
 
 from rcl_interfaces.msg import ParameterType
 import rclpy
-from rclpy.parameter import get_parameter_value as rclpy_get_parameter_value
 from rclpy.parameter import parameter_dict_from_yaml_file
 from rclpy.parameter import parameter_value_to_python
 from rclpy.parameter_client import AsyncParameterClient
 from ros2cli.node.direct import DirectNode
-
-
-def get_parameter_value(*, string_value):
-    warnings.warn('get_parameter_value() is deprecated. '
-                  'Use rclpy.parameter.get_parameter_value instead')
-    return rclpy_get_parameter_value(string_value)
 
 
 def get_value(*, parameter_value):
