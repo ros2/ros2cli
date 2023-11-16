@@ -19,6 +19,8 @@ import functools
 import signal
 import sys
 
+from rclpy.executors import ExternalShutdownException
+
 from ros2cli.command import add_subparsers_on_demand
 
 
@@ -89,6 +91,8 @@ def main(*, script_name='ros2', argv=None, description=None, extension=None):
         rc = extension.main(parser=parser, args=args)
     except KeyboardInterrupt:
         rc = signal.SIGINT
+    except ExternalShutdownException:
+        rc = signal.SIGTERM
     except RuntimeError as e:
         rc = str(e)
     return rc
