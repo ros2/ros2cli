@@ -64,7 +64,10 @@ class PubVerb(VerbExtension):
             'values', nargs='?', default='{}',
             help='Values to fill the message with in YAML format '
                  "(e.g. 'data: Hello World'), "
-                 'otherwise the message will be published with default values')
+                 'otherwise the message will be published with default values.'
+                 ' If the message contains a std_msgs.msg.Header, using the '
+                 ' value "auto" for this field will set the timestamp '
+                 '(e.g. \'header: "auto"\').')
         arg.completer = TopicMessagePrototypeCompleter(
             topic_type_key='message_type')
         group.add_argument(
