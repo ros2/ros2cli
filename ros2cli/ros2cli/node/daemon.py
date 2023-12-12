@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import errno
-import fcntl
 import functools
 import os
 import platform
