@@ -16,6 +16,7 @@ import errno
 import fcntl
 import functools
 import os
+import platform
 import socket
 
 import rclpy
@@ -122,18 +123,18 @@ def spawn_daemon(args, timeout=None, debug=False):
     :raises: if it fails to spawn the daemon.
     """
     # Make file handles(except for 0, 1, 2) not inheritable for the incoming daemon process
-    def is_valid_file_descriptor(file_descriptor):
-        try:
-            fcntl.fcntl(file_descriptor, fcntl.F_GETFD)
-            return True
-        except (OSError, IOError):
-            return False
-
     for i in range(3, 255):
-        if not is_valid_file_descriptor(i):
+        try:
+            if platform.system() == 'Windows':
+                import msvcrt
+                handle = msvcrt.get_osfhandle(i)
+                if os.get_handle_inheritable(handle):
+                    os.set_handle_inheritable(handle, False)
+            else:
+                if os.get_inheritable(i):
+                    os.set_inheritable(i, False)
+        except OSError:
             break
-        if os.get_inheritable(i):
-            os.set_inheritable(i, False)
 
     # Acquire socket by instantiating XMLRPC server.
     try:
