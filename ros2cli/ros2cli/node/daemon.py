@@ -13,7 +13,9 @@
 # limitations under the License.
 
 import errno
+import fcntl
 import functools
+import os
 import socket
 
 import rclpy
@@ -119,6 +121,20 @@ def spawn_daemon(args, timeout=None, debug=False):
       `False` if it was already running.
     :raises: if it fails to spawn the daemon.
     """
+    # Make file handles(except for 0, 1, 2) not inheritable for the incoming daemon process
+    def is_valid_file_descriptor(file_descriptor):
+        try:
+            fcntl.fcntl(file_descriptor, fcntl.F_GETFD)
+            return True
+        except (OSError, IOError):
+            return False
+
+    for i in range(3, 255):
+        if not is_valid_file_descriptor(i):
+            break
+        if os.get_inheritable(i):
+            os.set_inheritable(i, False)
+
     # Acquire socket by instantiating XMLRPC server.
     try:
         server = daemon.make_xmlrpc_server()
