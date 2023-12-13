@@ -121,20 +121,6 @@ def spawn_daemon(args, timeout=None, debug=False):
       `False` if it was already running.
     :raises: if it fails to spawn the daemon.
     """
-    # Make file handles(except for 0, 1, 2) not inheritable for the incoming daemon process
-    for i in range(3, 255):
-        try:
-            if platform.system() == 'Windows':
-                import msvcrt
-                handle = msvcrt.get_osfhandle(i)
-                if os.get_handle_inheritable(handle):
-                    os.set_handle_inheritable(handle, False)
-            else:
-                if os.get_inheritable(i):
-                    os.set_inheritable(i, False)
-        except OSError:
-            break
-
     # Acquire socket by instantiating XMLRPC server.
     try:
         server = daemon.make_xmlrpc_server()
@@ -145,6 +131,19 @@ def spawn_daemon(args, timeout=None, debug=False):
             # Daemon already running
             return False
         raise
+
+    # Make file handles(except for 0, 1, 2) not inheritable for the incoming daemon process.
+    # https://github.com/ros2/ros2cli/issues/851
+    if platform.system() != 'Windows':
+        import resource
+        soft, _ = resource.getrlimit(resource.RLIMIT_NOFILE)
+        for i in range(3, soft):
+            try:
+                if i != server.socket.fileno() and os.get_inheritable(i):
+                    os.set_inheritable(i, False)
+            except OSError:
+                # Just in case the file handles might be [3(closed), ..., 8(pipe handle), ...]
+                continue
 
     # Transfer XMLRPC server to daemon (and the socket with it).
     try:
