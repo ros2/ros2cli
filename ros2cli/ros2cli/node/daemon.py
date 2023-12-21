@@ -132,8 +132,11 @@ def spawn_daemon(args, timeout=None, debug=False):
             return False
         raise
 
-    # Make file handles(except for 0, 1, 2) not inheritable for the incoming daemon process.
-    # https://github.com/ros2/ros2cli/issues/851
+    # During tab completion on the ros2 tooling, we can get here and attempt to spawn a daemon.
+    # In that scenario, there may be open file descriptors that can prevent us from successfully
+    # daemonizing, and instead cause the terminal to hang.  Here we mark all file handles except
+    # for 0, 1, 2, and the server socket as non-inheritable, which will cause daemonize() to close
+    # those file descriptors.  See https://github.com/ros2/ros2cli/issues/851 for more details.
     if platform.system() != 'Windows':
         import resource
         soft, _ = resource.getrlimit(resource.RLIMIT_NOFILE)
