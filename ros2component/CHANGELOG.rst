@@ -2,6 +2,9 @@
 Changelog for package ros2component
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.30.0 (2023-11-06)
 -------------------
 * Warning: get_parameter_value() is deprecated. (`#866 <https://github.com/ros2/ros2cli/issues/866>`_)

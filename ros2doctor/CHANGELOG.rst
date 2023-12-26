@@ -2,6 +2,9 @@
 Changelog for package ros2doctor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.30.0 (2023-11-06)
 -------------------
 * (ros2doctor) fix PackageCheck (`#860 <https://github.com/ros2/ros2cli/issues/860>`_)
