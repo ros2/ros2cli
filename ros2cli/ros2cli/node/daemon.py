@@ -14,6 +14,8 @@
 
 import errno
 import functools
+import os
+import platform
 import socket
 
 import rclpy
@@ -129,6 +131,22 @@ def spawn_daemon(args, timeout=None, debug=False):
             # Daemon already running
             return False
         raise
+
+    # During tab completion on the ros2 tooling, we can get here and attempt to spawn a daemon.
+    # In that scenario, there may be open file descriptors that can prevent us from successfully
+    # daemonizing, and instead cause the terminal to hang.  Here we mark all file handles except
+    # for 0, 1, 2, and the server socket as non-inheritable, which will cause daemonize() to close
+    # those file descriptors.  See https://github.com/ros2/ros2cli/issues/851 for more details.
+    if platform.system() != 'Windows':
+        import resource
+        soft, _ = resource.getrlimit(resource.RLIMIT_NOFILE)
+        for i in range(3, soft):
+            try:
+                if i != server.socket.fileno() and os.get_inheritable(i):
+                    os.set_inheritable(i, False)
+            except OSError:
+                # Just in case the file handles might be [3(closed), ..., 8(pipe handle), ...]
+                continue
 
     # Transfer XMLRPC server to daemon (and the socket with it).
     try:
