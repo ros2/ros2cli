@@ -12,18 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from collections import defaultdict
 import functools
 import inspect
 
-import ifaddr
+import psutil
 import rclpy
 
 from ros2cli.node.direct import DirectNode
 
 
 def get_interfaces_ip_addresses():
-    addresses_by_interfaces = {repr(a) for a in ifaddr.get_adapters()}
+    addresses_by_interfaces = psutil.net_if_addrs()
     print(f'Addresses by interfaces: {addresses_by_interfaces}')
     return addresses_by_interfaces
 
