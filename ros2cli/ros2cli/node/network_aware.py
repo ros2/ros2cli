@@ -12,22 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from collections import defaultdict
 import functools
 import inspect
 
-import netifaces
+import psutil
 import rclpy
 
 from ros2cli.node.direct import DirectNode
 
 
 def get_interfaces_ip_addresses():
-    addresses_by_interfaces = defaultdict(functools.partial(defaultdict, set))
-    for interface_name in netifaces.interfaces():
-        for kind, info_list in netifaces.ifaddresses(interface_name).items():
-            for info in info_list:
-                addresses_by_interfaces[kind][interface_name].add(info['addr'])
+    addresses_by_interfaces = psutil.net_if_addrs()
     print(f'Addresses by interfaces: {addresses_by_interfaces}')
     return addresses_by_interfaces
 
