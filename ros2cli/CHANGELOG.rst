@@ -2,6 +2,12 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.18.8 (2024-01-24)
+-------------------
+* make handles not inheritable to prevent from blocking durning tab-completion (`#852 <https://github.com/ros2/ros2cli/issues/852>`_) (`#873 <https://github.com/ros2/ros2cli/issues/873>`_)
+* catch ExternalShutdownException ros2cli main. (`#854 <https://github.com/ros2/ros2cli/issues/854>`_) (`#859 <https://github.com/ros2/ros2cli/issues/859>`_)
+* Contributors: mergify[bot]
+
 0.18.7 (2023-07-18)
 -------------------
 * Set automatically_declare_parameters_from_overrides in DirectNode. (`#813 <https://github.com/ros2/ros2cli/issues/813>`_) (`#815 <https://github.com/ros2/ros2cli/issues/815>`_)
