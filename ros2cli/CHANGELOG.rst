@@ -2,8 +2,8 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.31.0 (2024-01-24)
+-------------------
 * Replace unmaintained `netifaces` library to avoid local wheel builds (`#875 <https://github.com/ros2/ros2cli/issues/875>`_)
 * Contributors: Laurenz
 
