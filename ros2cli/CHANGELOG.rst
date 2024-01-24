@@ -2,6 +2,11 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Replace unmaintained `netifaces` library to avoid local wheel builds (`#875 <https://github.com/ros2/ros2cli/issues/875>`_)
+* Contributors: Laurenz
+
 0.30.1 (2023-12-26)
 -------------------
 * make handles not inheritable to prevent from blocking durning tab-completion (`#852 <https://github.com/ros2/ros2cli/issues/852>`_)
