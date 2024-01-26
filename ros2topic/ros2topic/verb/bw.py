@@ -97,7 +97,7 @@ class ROSTopicBandwidth(object):
                 # TODO(yechun1): Subscribing to the msgs and calculate the length may be
                 # inefficient. Optimize here if a better solution is found.
                 self.sizes.append(len(data))  # AnyMsg instance
-                assert(len(self.times) == len(self.sizes))
+                assert len(self.times) == len(self.sizes)
 
                 if len(self.times) > self.window_size:
                     self.times.pop(0)
