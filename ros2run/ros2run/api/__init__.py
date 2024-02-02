@@ -70,7 +70,8 @@ def run_executable(*, path, argv, prefix=None):
             # therefore we continue here until the process has finished
             pass
     if process.returncode != 0:
-        if -process.returncode in signal.valid_signals() and os.name == 'posix':
+        if hasattr(signal, 'valid_signals') and -process.returncode in signal.valid_signals() \
+                and os.name == 'posix':
             # a negative value -N indicates that the child was terminated by signal N.
             print(ROS2RUN_MSG_PREFIX, signal.strsignal(-process.returncode))
         else:
