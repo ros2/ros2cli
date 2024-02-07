@@ -52,7 +52,7 @@ class DumpVerb(VerbExtension):
 
         # requested parameter not set
         if not response.values:
-            return '# Parameter not set'
+            return None
 
         # extract type specific value
         return [get_value(parameter_value=i) for i in response.values]
@@ -93,6 +93,10 @@ class DumpVerb(VerbExtension):
             response = response.result().result.names
             response = sorted(response)
             parameter_values = self.get_parameter_values(node, absolute_node_name, response)
+            if parameter_values is None:
+                raise RuntimeError(
+                    'Exception while calling service of node '
+                    f"'{node_name.full_name}'")
 
             for param_name, pval in zip(response, parameter_values):
                 self.insert_dict(
