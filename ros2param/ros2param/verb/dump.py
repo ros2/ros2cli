@@ -12,12 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+<<<<<<< HEAD
 import os
 import sys
 
 from rcl_interfaces.srv import ListParameters
 
 import rclpy
+=======
+import sys
+
+>>>>>>> d3cfbd7 (ros2 param dump should handle empty list as exception. (#881))
 from rclpy.parameter import PARAMETER_SEPARATOR_STRING
 
 from ros2cli.node.direct import DirectNode
@@ -64,7 +69,7 @@ class DumpVerb(VerbExtension):
 
         # requested parameter not set
         if not response.values:
-            return '# Parameter not set'
+            return None
 
         # extract type specific value
         return get_value(parameter_value=response.values[0])
@@ -112,6 +117,7 @@ class DumpVerb(VerbExtension):
             yaml_output = {node_name.full_name: {'ros__parameters': {}}}
 
             # retrieve values
+<<<<<<< HEAD
             if future.result() is not None:
                 response = future.result()
                 for param_name in sorted(response.result.names):
@@ -128,6 +134,29 @@ class DumpVerb(VerbExtension):
                 print(
                     "WARNING: '--print' is deprecated; this utility prints to stdout by default",
                     file=sys.stderr)
+=======
+            response = call_list_parameters(node=node, node_name=absolute_node_name)
+            if response is None:
+                print(
+                    'Wait for service timed out waiting for '
+                    f'parameter services for node {node_name.full_name}', file=sys.stderr)
+                return
+            elif response.result() is None:
+                e = response.exception()
+                print(
+                    'Exception while calling list_parameters service of node '
+                    f"'{node_name.full_name}': {e}", file=sys.stderr)
+                return
+
+            response = response.result().result.names
+            response = sorted(response)
+            parameter_values = self.get_parameter_values(node, absolute_node_name, response)
+            if parameter_values is None:
+                print(
+                    'Exception while calling get_parameters service of node '
+                    f"'{node_name.full_name}': {e}", file=sys.stderr)
+                return
+>>>>>>> d3cfbd7 (ros2 param dump should handle empty list as exception. (#881))
 
             if args.output_dir != '.':
                 print(
