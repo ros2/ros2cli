@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import sys
+
 from rclpy.parameter import PARAMETER_SEPARATOR_STRING
 from ros2cli.node.direct import DirectNode
 from ros2cli.node.strategy import add_arguments
@@ -52,7 +54,7 @@ class DumpVerb(VerbExtension):
 
         # requested parameter not set
         if not response.values:
-            return '# Parameter not set'
+            return None
 
         # extract type specific value
         return [get_value(parameter_value=i) for i in response.values]
@@ -81,18 +83,25 @@ class DumpVerb(VerbExtension):
             # retrieve values
             response = call_list_parameters(node=node, node_name=absolute_node_name)
             if response is None:
-                raise RuntimeError(
+                print(
                     'Wait for service timed out waiting for '
-                    f'parameter services for node {node_name.full_name}')
+                    f'parameter services for node {node_name.full_name}', file=sys.stderr)
+                return
             elif response.result() is None:
                 e = response.exception()
-                raise RuntimeError(
-                    'Exception while calling service of node '
-                    f"'{node_name.full_name}': {e}")
+                print(
+                    'Exception while calling list_parameters service of node '
+                    f"'{node_name.full_name}': {e}", file=sys.stderr)
+                return
 
             response = response.result().result.names
             response = sorted(response)
             parameter_values = self.get_parameter_values(node, absolute_node_name, response)
+            if parameter_values is None:
+                print(
+                    'Exception while calling get_parameters service of node '
+                    f"'{node_name.full_name}': {e}", file=sys.stderr)
+                return
 
             for param_name, pval in zip(response, parameter_values):
                 self.insert_dict(
