@@ -2,6 +2,9 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.18.9 (2024-02-16)
+-------------------
+
 0.18.8 (2024-01-24)
 -------------------
 * make handles not inheritable to prevent from blocking durning tab-completion (`#852 <https://github.com/ros2/ros2cli/issues/852>`_) (`#873 <https://github.com/ros2/ros2cli/issues/873>`_)
