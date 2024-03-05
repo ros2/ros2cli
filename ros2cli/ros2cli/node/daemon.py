@@ -27,15 +27,17 @@ from ros2cli.helpers import get_ros_domain_id
 from ros2cli.helpers import wait_for
 
 from ros2cli.xmlrpc.client import ServerProxy
+from ros2cli.xmlrpc.client import TimeoutTransport
 
 
 class DaemonNode:
 
-    def __init__(self, args):
+    def __init__(self, args, *, timeout=None):
         self._args = args
         self._proxy = ServerProxy(
             daemon.get_xmlrpc_server_url(),
-            allow_none=True)
+            allow_none=True,
+            transport=TimeoutTransport(timeout=timeout))
         self._methods = []
 
     @property
@@ -65,13 +67,16 @@ class DaemonNode:
         self._proxy.__exit__(exc_type, exc_value, traceback)
 
 
-def is_daemon_running(args):
+def is_daemon_running(args, timeout=None):
     """
     Check if the daemon node is running.
 
     :param args: `DaemonNode` arguments namespace.
+    :param timeout: option duration, in seconds, to wait
+      for the daemon node to respond. If it is not given,
+      the global default timeout setting is used.
     """
-    with DaemonNode(args) as node:
+    with DaemonNode(args, timeout=timeout) as node:
         return node.connected
 
 
