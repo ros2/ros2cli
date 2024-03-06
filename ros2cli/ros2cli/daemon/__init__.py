@@ -171,11 +171,8 @@ def main(*, argv=None):
     assert args.rmw_implementation == rclpy.get_rmw_implementation_identifier()
     assert args.ros_domain_id == get_ros_domain_id()
 
-    server = make_xmlrpc_server()
-    try:
+    with make_xmlrpc_server() as server:
         serve(server, timeout=args.timeout)
-    finally:
-        server.server_close()
 
 
 if __name__ == '__main__':
