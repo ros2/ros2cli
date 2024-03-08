@@ -143,15 +143,16 @@ def spawn_daemon(args, timeout=None, debug=False):
         try:
             string_to_find = 'FDSize:'
             with open('/proc/self/status', 'r') as f:
-                line = next(filter(lambda x: x.startswith(string_to_find), iter(f)))
-                fdlimit = int(line.removeprefix(string_to_find).strip())
-        except (FileNotFoundError, StopIteration):
+                for line in f:
+                    if line.startswith(string_to_find):
+                        fdlimit = int(line.removeprefix(string_to_find).strip())
+                        break
+        except (FileNotFoundError, ValueError):
             pass
         # The soft limit might be quite high on some systems.
         if fdlimit is None:
             import resource
             fdlimit, _ = resource.getrlimit(resource.RLIMIT_NOFILE)
-        #
         for i in range(3, fdlimit):
             try:
                 if i != server.socket.fileno() and os.get_inheritable(i):
