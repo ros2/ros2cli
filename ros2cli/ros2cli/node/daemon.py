@@ -140,17 +140,13 @@ def spawn_daemon(args, timeout=None, debug=False):
     if platform.system() != 'Windows':
         # Some unices have a high soft_limit; read fdsize if available.
         fdlimit = None
-        if platform.system() == 'Linux':
-            # This probably also works for many other Unices
-            try:
-                status = open('/proc/self/status', 'r').read()
-                _key = 'FDSize:'
-                idx = status.find(_key)
-                if idx > 0:
-                    fdlimit, *_ = status[idx:][len(_key):].split('\n', 1)
-                    fdlimit = int(fdlimit.strip())
-            except (FileNotFoundError, ValueError):
-                pass
+        try:
+            string_to_find = 'FDSize:'
+            with open('/proc/self/status', 'r') as f:
+                line = next(filter(lambda x: x.startswith(string_to_find), iter(f)))
+                fdlimit = int(line[len(string_to_find):].strip())
+        except (FileNotFoundError, StopIteration):
+            pass
         # The soft limit might be quite high on some systems.
         if fdlimit is None:
             import resource
