@@ -144,7 +144,7 @@ def spawn_daemon(args, timeout=None, debug=False):
             string_to_find = 'FDSize:'
             with open('/proc/self/status', 'r') as f:
                 line = next(filter(lambda x: x.startswith(string_to_find), iter(f)))
-                fdlimit = int(line[len(string_to_find):].strip())
+                fdlimit = int(line.removeprefix(string_to_find).strip())
         except (FileNotFoundError, StopIteration):
             pass
         # The soft limit might be quite high on some systems.
