@@ -138,9 +138,22 @@ def spawn_daemon(args, timeout=None, debug=False):
     # for 0, 1, 2, and the server socket as non-inheritable, which will cause daemonize() to close
     # those file descriptors.  See https://github.com/ros2/ros2cli/issues/851 for more details.
     if platform.system() != 'Windows':
-        import resource
-        soft, _ = resource.getrlimit(resource.RLIMIT_NOFILE)
-        for i in range(3, soft):
+        # Some unices have a high soft_limit; read fdsize if available.
+        fdlimit = None
+        try:
+            string_to_find = 'FDSize:'
+            with open('/proc/self/status', 'r') as f:
+                for line in f:
+                    if line.startswith(string_to_find):
+                        fdlimit = int(line.removeprefix(string_to_find).strip())
+                        break
+        except (FileNotFoundError, ValueError):
+            pass
+        # The soft limit might be quite high on some systems.
+        if fdlimit is None:
+            import resource
+            fdlimit, _ = resource.getrlimit(resource.RLIMIT_NOFILE)
+        for i in range(3, fdlimit):
             try:
                 if i != server.socket.fileno() and os.get_inheritable(i):
                     os.set_inheritable(i, False)
