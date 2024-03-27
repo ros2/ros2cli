@@ -2,6 +2,12 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* ros2cli.node.daemon : try getting fdsize from /proc for open fd limit (`#888 <https://github.com/ros2/ros2cli/issues/888>`_)
+* Fix the SIGTERM handling in the ros2 daemon. (`#887 <https://github.com/ros2/ros2cli/issues/887>`_)
+* Contributors: Chris Lalancette, akssri-sony
+
 0.31.1 (2024-02-07)
 -------------------
 
