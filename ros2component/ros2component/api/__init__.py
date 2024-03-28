@@ -14,8 +14,6 @@
 
 from collections import namedtuple
 import subprocess
-
-from ament_index_python import get_resource
 from ament_index_python import get_resources
 from ament_index_python import has_resource
 
@@ -32,37 +30,62 @@ from ros2node.api import get_service_server_info
 from ros2pkg.api import get_executable_paths
 from ros2pkg.api import PackageNotFound
 
-COMPONENTS_RESOURCE_TYPE = 'rclcpp_components'
+from .component_searcher import ComponentSearcher
+
+COMPONENTS_RESOURCE_TYPES = ['rclcpp_components', 'rclpy_components']
+
+try:
+    from importlib.metadata import entry_points
+except ImportError:
+    from importlib_meatadata import entry_points
+
+# TODO Make the process lazy or provide a explict init function
+# Try to find the loaders:
+res_searchers = {}
+eps = entry_points()
+for component_res_type in COMPONENTS_RESOURCE_TYPES:
+    searcher_entrypoints = eps.get(component_res_type+'.searcher', None)
+    if searcher_entrypoints:
+        # TODO What if there are multiple registered searchers?
+        component_class = searcher_entrypoints[0].load()
+        res_searchers[component_res_type] = component_class(component_res_type)
 
 
 def get_package_names_with_component_types():
     """Get the names of all packages that register component types in the ament index."""
-    return list(get_resources(COMPONENTS_RESOURCE_TYPE).keys())
+    package_names = dict()
+    for res_type in COMPONENTS_RESOURCE_TYPES:
+        package_names[res_type] = list(get_resources(res_type).keys())
+    return package_names
 
 
 def get_package_component_types(*, package_name=None):
     """
-    Get all component types registered in the ament index for the given package.
+    Get all component types registered for the given package.
 
     :param package_name: whose component types are to be retrieved.
     :return: a list of component type names.
     """
-    if not has_resource(COMPONENTS_RESOURCE_TYPE, package_name):
-        return []
-    component_registry, _ = get_resource(COMPONENTS_RESOURCE_TYPE, package_name)
-    return [line.split(';')[0] for line in component_registry.splitlines()]
+    component_types = []
+    global res_searchers
+    for resource_component_type, searcher in res_searchers.items():
+        if has_resource(resource_component_type, package_name):
+            component_types.extend(searcher.get_package_component_types(package_name))
+    return component_types
 
 
 def get_registered_component_types():
     """
-    Get all component types registered in the ament index.
+    Get all registered component types.
 
     :return: a list of (package name, component type names) tuples.
     """
-    return [
-        (package_name, get_package_component_types(package_name=package_name))
-        for package_name in get_package_names_with_component_types()
-    ]
+    global res_searchers
+    registered_component_types = []
+    for res_type, searcher in res_searchers.items():
+        component_types = searcher.get_component_types()
+        registered_component_types.extend(component_types)
+    return registered_component_types
 
 
 ComponentInfo = namedtuple('Component', ('uid', 'name'))
@@ -367,12 +390,12 @@ def add_component_arguments(parser):
     )
 
 
-def run_standalone_container(*, container_node_name):
+def run_standalone_container(*, container_node_name, component_type='rclcpp_components'):
     """Run a standalone component container."""
     try:
-        paths = get_executable_paths(package_name='rclcpp_components')
+        paths = get_executable_paths(package_name=component_type)
     except PackageNotFound:
-        raise RuntimeError("Package 'rclcpp_components' not found")
+        raise RuntimeError("Package '%s' not found" % component_type)
 
     executable_path = next((p for p in paths if 'component_container' in p), None)
     if executable_path is None:
