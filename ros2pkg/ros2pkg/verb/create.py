@@ -140,12 +140,20 @@ class CreateVerb(VerbExtension):
             test_dependencies = ['ament_copyright', 'ament_flake8', 'ament_pep257',
                                  'python3-pytest']
 
-        if args.build_type == 'ament_python' and args.package_name == 'test':
-            # If the package name is 'test', there will be a conflict between
-            # the directory the source code for the package goes in and the
-            # directory the tests for the package go in.
-            return "Aborted since 'ament_python' packages can't be named 'test'. Please " + \
-                'choose a different package name.'
+        # Name checks (for python pkgs)
+        if args.build_type == 'ament_python':
+            if args.package_name == 'test':
+                # If the package name is 'test', there will be a conflict between
+                # the directory the source code for the package goes in and the
+                # directory the tests for the package go in.
+                return "Aborted since 'ament_python' packages can't be named 'test'. Please " + \
+                    'choose a different package name.'
+            if '-' in args.package_name:
+                # Python packages shouldn't include hyphens in their name, refer to PEP-8.
+                # Running a via script 'ros2 run' with hyphens in the executable or package name 
+                # results in errors.
+                return "Aborted since 'ament_python' packages can't include hyphens ('-') in " + \
+                    "their name (refer to PEP-8). Please choose a different package name."
 
         package = Package(
             package_format=args.package_format,
