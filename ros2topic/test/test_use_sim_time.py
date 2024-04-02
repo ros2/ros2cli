@@ -118,7 +118,7 @@ class TestROS2TopicUseSimTime(unittest.TestCase):
                 )
             ) as command:
                 # The process will end up in around 2.5s (here we set 3s)
-                self.executor.spin_until_future_complete(
+                self.executor.spin_until_complete(
                     rclpy.task.Future(), timeout_sec=3
                 )
                 assert command.wait_for_shutdown(timeout=5)
@@ -183,7 +183,7 @@ class TestROS2TopicUseSimTime(unittest.TestCase):
                 )
             ) as command:
                 # The future won't complete - we will hit the timeout
-                self.executor.spin_until_future_complete(
+                self.executor.spin_until_complete(
                     rclpy.task.Future(), timeout_sec=5
                 )
                 assert command.wait_for_output(functools.partial(
@@ -240,7 +240,7 @@ class TestROS2TopicUseSimTime(unittest.TestCase):
                 )
             ) as command:
                 # The future won't complete - we will hit the timeout
-                self.executor.spin_until_future_complete(
+                self.executor.spin_until_complete(
                     rclpy.task.Future(), timeout_sec=10
                 )
                 assert command.wait_for_output(functools.partial(

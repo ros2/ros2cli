@@ -257,7 +257,7 @@ class EchoVerb(VerbExtension):
                 raw=raw)
 
         if self.future is not None:
-            rclpy.spin_until_future_complete(node, self.future)
+            rclpy.spin_until_complete(node, self.future)
         else:
             rclpy.spin(node)
 

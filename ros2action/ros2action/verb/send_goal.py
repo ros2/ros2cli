@@ -117,7 +117,7 @@ def send_goal(action_name, action_type, goal_values, feedback_callback):
 
         print('Sending goal:\n     {}'.format(message_to_yaml(goal)))
         goal_future = action_client.send_goal_async(goal, feedback_callback)
-        rclpy.spin_until_future_complete(node, goal_future)
+        rclpy.spin_until_complete(node, goal_future)
 
         goal_handle = goal_future.result()
 
@@ -134,7 +134,7 @@ def send_goal(action_name, action_type, goal_values, feedback_callback):
         print('Goal accepted with ID: {}\n'.format(bytes(goal_handle.goal_id.uuid).hex()))
 
         result_future = goal_handle.get_result_async()
-        rclpy.spin_until_future_complete(node, result_future)
+        rclpy.spin_until_complete(node, result_future)
 
         result = result_future.result()
 
@@ -154,7 +154,7 @@ def send_goal(action_name, action_type, goal_values, feedback_callback):
              GoalStatus.STATUS_EXECUTING == goal_handle.status)):
             print('Canceling goal...')
             cancel_future = goal_handle.cancel_goal_async()
-            rclpy.spin_until_future_complete(node, cancel_future)
+            rclpy.spin_until_complete(node, cancel_future)
 
             cancel_response = cancel_future.result()
 

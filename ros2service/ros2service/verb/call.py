@@ -110,7 +110,7 @@ def requester(service_type, service_name, values, period):
         print('requester: making request: %r\n' % request)
         last_call = time.time()
         future = cli.call_async(request)
-        rclpy.spin_until_future_complete(node, future)
+        rclpy.spin_until_complete(node, future)
         if future.result() is not None:
             print('response:\n%r\n' % future.result())
         else:

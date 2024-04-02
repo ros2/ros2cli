@@ -40,7 +40,7 @@ def load_parameter_file(*, node, node_name, parameter_file, use_wildcard):
                            f'parameter services for node {node_name}')
     future = client.load_parameter_file(parameter_file, use_wildcard)
     parameters = list(parameter_dict_from_yaml_file(parameter_file, use_wildcard).values())
-    rclpy.spin_until_future_complete(node, future)
+    rclpy.spin_until_complete(node, future)
     response = future.result()
     assert len(response.results) == len(parameters), 'Not all parameters set'
     for i in range(0, len(response.results)):
@@ -65,7 +65,7 @@ def call_describe_parameters(*, node, node_name, parameter_names=None):
         raise RuntimeError('Wait for service timed out waiting for '
                            f'parameter services for node {node_name}')
     future = client.describe_parameters(parameter_names)
-    rclpy.spin_until_future_complete(node, future)
+    rclpy.spin_until_complete(node, future)
     response = future.result()
     if response is None:
         raise RuntimeError('Exception while calling service of node '
@@ -80,7 +80,7 @@ def call_get_parameters(*, node, node_name, parameter_names):
         raise RuntimeError('Wait for service timed out waiting for '
                            f'parameter services for node {node_name}')
     future = client.get_parameters(parameter_names)
-    rclpy.spin_until_future_complete(node, future)
+    rclpy.spin_until_complete(node, future)
     response = future.result()
     if response is None:
         raise RuntimeError('Exception while calling service of node '
@@ -95,7 +95,7 @@ def call_set_parameters(*, node, node_name, parameters):
         raise RuntimeError('Wait for service timed out waiting for '
                            f'parameter services for node {node_name}')
     future = client.set_parameters(parameters)
-    rclpy.spin_until_future_complete(node, future)
+    rclpy.spin_until_complete(node, future)
     response = future.result()
     if response is None:
         raise RuntimeError('Exception while calling service of node '
@@ -109,7 +109,7 @@ def call_list_parameters(*, node, node_name, prefixes=None):
     if not ready:
         return None
     future = client.list_parameters(prefixes=prefixes)
-    rclpy.spin_until_future_complete(node, future)
+    rclpy.spin_until_complete(node, future)
     return future
 
 

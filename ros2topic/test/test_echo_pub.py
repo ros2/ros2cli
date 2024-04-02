@@ -42,8 +42,8 @@ from std_msgs.msg import String
 # https://github.com/ros2/build_farmer/issues/248
 if sys.platform.startswith('win'):
     pytest.skip(
-            'CLI tests can block for a pathological amount of time on Windows.',
-            allow_module_level=True)
+        'CLI tests can block for a pathological amount of time on Windows.',
+        allow_module_level=True)
 
 
 TEST_NODE = 'cli_echo_pub_test_node'
@@ -160,7 +160,7 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                             filtered_rmw_implementation=get_rmw_implementation_identifier()
                         )
                     ) as command:
-                        self.executor.spin_until_future_complete(future, timeout_sec=10)
+                        self.executor.spin_until_complete(future, timeout_sec=10)
                     command.wait_for_shutdown(timeout=10)
 
                     # Check results
@@ -254,7 +254,7 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                 filtered_rmw_implementation=get_rmw_implementation_identifier()
             )
         ) as command:
-            self.executor.spin_until_future_complete(future, timeout_sec=10)
+            self.executor.spin_until_complete(future, timeout_sec=10)
             assert future.done()
             assert command.wait_for_shutdown(timeout=20)
 
@@ -356,7 +356,7 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                         )
                     ) as command:
                         # The future won't complete - we will hit the timeout
-                        self.executor.spin_until_future_complete(
+                        self.executor.spin_until_complete(
                             rclpy.task.Future(), timeout_sec=5
                         )
                     command.wait_for_shutdown(timeout=10)
@@ -414,7 +414,7 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                         )
                     ) as command:
                         # The future won't complete - we will hit the timeout
-                        self.executor.spin_until_future_complete(
+                        self.executor.spin_until_complete(
                             rclpy.task.Future(), timeout_sec=5
                         )
                     command.wait_for_shutdown(timeout=10)
@@ -455,7 +455,7 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                 )
             ) as command:
                 # The future won't complete - we will hit the timeout
-                self.executor.spin_until_future_complete(
+                self.executor.spin_until_complete(
                     rclpy.task.Future(), timeout_sec=5
                 )
                 assert command.wait_for_output(functools.partial(
@@ -497,7 +497,7 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                 )
             ) as command:
                 # The future won't complete - we will hit the timeout
-                self.executor.spin_until_future_complete(
+                self.executor.spin_until_complete(
                     rclpy.task.Future(), timeout_sec=3
                 )
                 assert command.wait_for_shutdown(timeout=5)
