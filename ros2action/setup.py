@@ -40,11 +40,10 @@ The package provides the action command for the ROS 2 command line tools.""",
             'ros2action.verb = ros2action.verb:VerbExtension',
         ],
         'ros2action.verb': [
-            # 'echo = ros2action.verb.echo:EchoVerb',
             'info = ros2action.verb.info:InfoVerb',
             'list = ros2action.verb.list:ListVerb',
-            'type = ros2action.verb.type:TypeVerb',
             'send_goal = ros2action.verb.send_goal:SendGoalVerb',
+            'type = ros2action.verb.type:TypeVerb',
         ],
     }
 )
