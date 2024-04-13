@@ -222,6 +222,16 @@ class TestROS2ActionCLI(unittest.TestCase):
         assert int(command_output_lines[0]) == 1
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_type(self):
+        with self.launch_action_command(arguments=['type', '/fibonacci']) as action_command:
+            assert action_command.wait_for_shutdown(timeout=10)
+        assert action_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=['test_msgs/action/Fibonacci'],
+            text=action_command.output, strict=True
+        )
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_send_fibonacci_goal(self):
         with self.launch_action_command(
             arguments=[
