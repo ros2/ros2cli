@@ -8,9 +8,9 @@ Run `ros2 --help` to see all available commands.
 
 Run `ros2 <command> --help` for more information on individual command usage.
 
-Run `ros2 <command> <verb> --help` for even more usage information on a specific command's verbs.   
+Run `ros2 <command> <verb> --help` for even more usage information on a specific command's verbs.
 
-Read [Introspection with command line tools](https://index.ros.org/doc/ros2/Tutorials/Introspection-with-command-line-tools/) on ROS Index for more information and an example.
+Read [Introspection with command line tools](http://docs.ros.org/en/rolling/Concepts/Basic/About-Command-Line-Tools.html) for more information and an example.
 
 ### Cheat Sheet
 
