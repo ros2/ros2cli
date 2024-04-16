@@ -76,13 +76,13 @@ class PlatformCheck(DoctorCheck):
             doctor_warn(
                 f'Distribution {distro_name} is not fully supported or tested. '
                 'To get more consistent features, download a stable version at '
-                'https://index.ros.org/doc/ros2/Installation/')
+                'https://docs.ros.org')
             result.add_warning()
         elif distro_info.get('distribution_status') == 'end-of-life':
             doctor_warn(
                 f'Distribution {distro_name} is no longer supported or deprecated. '
                 'To get the latest features, download the new versions at '
-                'https://index.ros.org/doc/ros2/Installation/')
+                'https://docs.ros.org')
             result.add_warning()
         return result
 
