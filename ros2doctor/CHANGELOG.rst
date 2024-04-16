@@ -2,6 +2,11 @@
 Changelog for package ros2doctor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.32.0 (2024-04-16)
+-------------------
+* Remove references to https://index.ros.org (`#897 <https://github.com/ros2/ros2cli/issues/897>`_)
+* Contributors: Chris Lalancette
+
 0.31.2 (2024-03-27)
 -------------------
 

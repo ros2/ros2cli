@@ -2,6 +2,14 @@
 Changelog for package ros2action
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.32.0 (2024-04-16)
+-------------------
+* support `ros2 action type <action name>`. (`#894 <https://github.com/ros2/ros2cli/issues/894>`_)
+  * support `ros2 action type <action name>`.
+  * add review comments.
+  ---------
+* Contributors: Tomoya Fujita
+
 0.31.2 (2024-03-27)
 -------------------
 
