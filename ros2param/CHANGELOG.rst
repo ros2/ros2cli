@@ -2,6 +2,11 @@
 Changelog for package ros2param
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* ros2 param dump should handle empty list as exception. (`#882 <https://github.com/ros2/ros2cli/issues/882>`_)
+* Contributors: Tomoya Fujita
+
 0.25.5 (2024-02-07)
 -------------------
 
