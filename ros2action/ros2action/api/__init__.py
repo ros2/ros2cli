@@ -75,7 +75,7 @@ def action_name_completer(prefix, parsed_args, **kwargs):
 def action_type_completer(**kwargs):
     """Callable returning a list of action types."""
     action_types = []
-    for package_name, action_names in get_action_interfaces.items():
+    for package_name, action_names in get_action_interfaces().items():
         for action_name in action_names:
             action_types.append(f'{package_name}/{action_name}')
     return action_types
