@@ -2,6 +2,11 @@
 Changelog for package ros2action
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* call get_action_interfaces() properly. (`#898 <https://github.com/ros2/ros2cli/issues/898>`_)
+* Contributors: Tomoya Fujita
+
 0.32.0 (2024-04-16)
 -------------------
 * support `ros2 action type <action name>`. (`#894 <https://github.com/ros2/ros2cli/issues/894>`_)
