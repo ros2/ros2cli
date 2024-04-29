@@ -318,4 +318,4 @@ def populate_ament_cmake_python(package, package_directory, cpp_node_name, cpp_l
                           '__init__.py',
                           {})
 
-    test_directory = _create_folder('test', package_directory)
+    _ = _create_folder('test', package_directory)

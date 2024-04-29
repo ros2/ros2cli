@@ -216,7 +216,11 @@ class CreateVerb(VerbExtension):
         if args.build_type == 'ament_cmake_python':
             populate_ament_cmake_python(package, package_directory, node_name, library_name)
 
-        if args.build_type == 'ament_cmake' or args.build_type == 'cmake' or args.build_type == 'ament_cmake_python':
+        if (
+            args.build_type == 'ament_cmake' or
+            args.build_type == 'cmake' or
+            args.build_type == 'ament_cmake_python'
+        ):
             if node_name:
                 if not source_directory:
                     return 'unable to create source folder in ' + args.destination_directory
