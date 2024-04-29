@@ -112,10 +112,6 @@ def create_package_environment(package, destination_directory):
     if package.get_build_type() == 'ament_python':
         print('creating source folder')
         source_directory = _create_folder(package.name, package_directory)
-    if package.get_build_type() == 'ament_cmake_python':
-        print('creating source folder')
-        source_directory = _create_folder('src', package_directory)
-        include_directory = _create_folder(package.name, package_directory + os.sep + 'inlclude')
 
     return package_directory, source_directory, include_directory
 

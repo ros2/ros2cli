@@ -69,7 +69,7 @@ class CreateVerb(VerbExtension):
         parser.add_argument(
             '--build-type',
             default='ament_cmake',
-            choices=['cmake', 'ament_cmake', 'ament_python', 'ament_cmake_python'],
+            choices=['cmake', 'ament_cmake', 'ament_python'],
             help='The build type to process the package with')
         parser.add_argument(
             '--dependencies',
@@ -88,6 +88,10 @@ class CreateVerb(VerbExtension):
         parser.add_argument(
             '--library-name',
             help='name of the empty library')
+        parser.add_argument(
+            '--template-name',
+            help='name of template for package create'
+                 "(pass '?' to get a list)")
 
     def main(self, *, args):
         available_licenses = {}
@@ -97,6 +101,20 @@ class CreateVerb(VerbExtension):
         if args.license == '?':
             print('Supported licenses:\n%s' % ('\n'.join(available_licenses)))
             sys.exit(0)
+
+        available_template = {
+            'cmake': ['cmake'],
+            'ament_cmake': ['ament_cmake', 'ament_cmake_python'],
+            'ament_python': ['ament_python']
+        }
+        if args.template_name == '?':
+            print('Supported template:\n%s' % ('\n'.join(available_template[args.build_type])))
+            sys.exit(0)
+
+        template_name = args.template_name or args.build_type
+        if template_name not in available_template[args.build_type]:
+            return "Abort since template '{}' is not supported for given build-type '{}'" \
+                    .format(template_name, args.build_type)
 
         maintainer = Person(args.maintainer_name)
 
@@ -133,21 +151,18 @@ class CreateVerb(VerbExtension):
                 buildtool_depends = ['ament_cmake_ros']
             else:
                 buildtool_depends = ['ament_cmake']
-        if args.build_type == 'ament_cmake_python':
-            if args.library_name:
-                buildtool_depends = ['ament_cmake_ros']
-            else:
-                buildtool_depends = ['ament_cmake']
-            buildtool_depends.append('ament_cmake_python')
+
+            if template_name == 'ament_cmake_python':
+                buildtool_depends.append('ament_cmake_python')
 
         test_dependencies = []
         if args.build_type == 'ament_cmake':
             test_dependencies = ['ament_lint_auto', 'ament_lint_common']
+            if template_name == 'ament_cmake_python':
+                test_dependencies.append('ament_cmake_pytest')
         if args.build_type == 'ament_python':
             test_dependencies = ['ament_copyright', 'ament_flake8', 'ament_pep257',
                                  'python3-pytest']
-        if args.build_type == 'ament_cmake_python':
-            test_dependencies = ['ament_lint_auto', 'ament_lint_common', 'ament_cmake_pytest']
 
         if args.build_type == 'ament_python' and args.package_name == 'test':
             # If the package name is 'test', there will be a conflict between
@@ -155,10 +170,6 @@ class CreateVerb(VerbExtension):
             # directory the tests for the package go in.
             return "Aborted since 'ament_python' packages can't be named 'test'. Please " + \
                 'choose a different package name.'
-
-        export_build_type = args.build_type
-        if args.build_type == 'ament_cmake_python':
-            export_build_type = 'ament_cmake'
 
         package = Package(
             package_format=args.package_format,
@@ -170,7 +181,7 @@ class CreateVerb(VerbExtension):
             buildtool_depends=[Dependency(dep) for dep in buildtool_depends],
             build_depends=[Dependency(dep) for dep in args.dependencies],
             test_depends=[Dependency(dep) for dep in test_dependencies],
-            exports=[Export('build_type', content=export_build_type)]
+            exports=[Export('build_type', content=args.build_type)]
         )
 
         package_path = os.path.join(args.destination_directory, package.name)
@@ -202,7 +213,10 @@ class CreateVerb(VerbExtension):
             populate_cmake(package, package_directory, node_name, library_name)
 
         if args.build_type == 'ament_cmake':
-            populate_ament_cmake(package, package_directory, node_name, library_name)
+            if template_name == 'ament_cmake':
+                populate_ament_cmake(package, package_directory, node_name, library_name)
+            elif template_name == 'ament_cmake_python':
+                populate_ament_cmake_python(package, package_directory, node_name, library_name)
 
         if args.build_type == 'ament_python':
             if not source_directory:
@@ -213,14 +227,7 @@ class CreateVerb(VerbExtension):
             if library_name:
                 populate_python_libary(package, source_directory, library_name)
 
-        if args.build_type == 'ament_cmake_python':
-            populate_ament_cmake_python(package, package_directory, node_name, library_name)
-
-        if (
-            args.build_type == 'ament_cmake' or
-            args.build_type == 'cmake' or
-            args.build_type == 'ament_cmake_python'
-        ):
+        if args.build_type == 'ament_cmake' or args.build_type == 'cmake':
             if node_name:
                 if not source_directory:
                     return 'unable to create source folder in ' + args.destination_directory
