@@ -2,6 +2,9 @@
 Changelog for package ros2run
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.18.10 (2024-05-15)
+--------------------
+
 0.18.9 (2024-02-16)
 -------------------
 * Conditionally use valid_signals (`#880 <https://github.com/ros2/ros2cli/issues/880>`_)
