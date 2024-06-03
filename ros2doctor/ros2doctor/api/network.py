@@ -14,8 +14,6 @@
 
 import os
 import socket
-import struct
-import sys
 
 import psutil
 
@@ -28,105 +26,33 @@ from ros2doctor.api.format import doctor_warn
 
 
 class InterfaceFlags:
-    POSIX_NET_FLAGS = (
-        ('UP', 0),
-        ('BROADCAST', 1),
-        ('DEBUG', 2),
-        ('LOOPBACK', 3),
-
-        ('PTP', 4),
-        ('NOTRAILERS', 5),
-        ('RUNNING', 6),
-        ('NOARP', 7),
-
-        ('PROMISC', 8),
-        ('ALLMULTI', 9),
-        ('MASTER', 10),
-        ('SLAVE', 11),
-
-        ('MULTICAST', 12),
-        ('PORTSEL', 13),
-        ('AUTOMEDIA', 14),
-        ('DYNAMIC', 15),
-    )
-
     def __init__(self, interface_name):
-        self.flags = -1
-        self.flag_list = set()
+        self.flags = ''
         self.has_loopback = False
         self.has_non_loopback = False
         self.has_multicast = False
-        self.get(interface_name)
 
-    def get(self, interface_name):
-        if os.name != 'posix':
+        all_stats = psutil.net_if_stats()
+        if interface_name not in all_stats:
             return
 
-        import fcntl
+        interface_stats = all_stats[interface_name]
 
-        if sys.platform == 'darwin':
-            SIOCGIFFLAGS = 0xc0206911
-        else:
-            SIOCGIFFLAGS = 0x8913
+        self.flags = interface_stats.flags
 
-        # We need to pass a 'struct ifreq' to the SIOCGIFFLAGS ioctl.  Nominally the
-        # structure looks like:
-        #
-        #            struct ifreq {
-        #               char ifr_name[IFNAMSIZ]; /* Interface name */
-        #               union {
-        #                   struct sockaddr ifr_addr;
-        #                   struct sockaddr ifr_dstaddr;
-        #                   struct sockaddr ifr_broadaddr;
-        #                   struct sockaddr ifr_netmask;
-        #                   struct sockaddr ifr_hwaddr;
-        #                   short           ifr_flags;
-        #                   int             ifr_ifindex;
-        #                   int             ifr_metric;
-        #                   int             ifr_mtu;
-        #                   struct ifmap    ifr_map;
-        #                   char            ifr_slave[IFNAMSIZ];
-        #                   char            ifr_newname[IFNAMSIZ];
-        #                   char           *ifr_data;
-        #               };
-        #           };
-        #
-        # Where IFNAMSIZ is 16 bytes long.  The caller (that's us) sets the ifr_name
-        # to the interface in question, and the call fills in the union.  In the case
-        # of this particular ioctl, only the 'ifr_flags' is valid after the call.
-        # Either way, we need to provide enough room in the provided structure for the
-        # ioctl to fill it out, so we just provide an additional 256 bytes which should
-        # be more than enough.
-
-        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
-            try:
-                result = fcntl.ioctl(s.fileno(), SIOCGIFFLAGS, interface_name + '\0' * 256)
-            except OSError:
-                return
-
-        # On success, result contains the structure filled in with the info we asked
-        # for (the flags).  We just need to extract it from the correct place.
-
-        self.flags = struct.unpack('H', result[16:18])[0]
-        for flagname, bit in self.POSIX_NET_FLAGS:
-            if self.flags & (1 << bit):
-                self.flag_list.add(flagname)
-
-        if 'LOOPBACK' in self.flag_list:
+        if 'loopback' in interface_stats.flags:
             self.has_loopback = True
         else:
             self.has_non_loopback = True
 
-        if 'MULTICAST' in self.flag_list:
+        if 'multicast' in interface_stats.flags:
             self.has_multicast = True
 
     def __str__(self):
-        if self.flags == -1:
-            return ''
+        if not self.flags:
+            return
 
-        output_flags = ','.join(self.flag_list)
-
-        return f'{self.flags}<{output_flags}>'
+        return self.flags.upper()
 
 
 class NetworkCheck(DoctorCheck):
