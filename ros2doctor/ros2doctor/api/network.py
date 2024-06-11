@@ -26,6 +26,7 @@ from ros2doctor.api.format import doctor_warn
 
 
 class InterfaceFlags:
+
     def __init__(self, interface_name):
         self.flags = ''
         self.has_loopback = False
