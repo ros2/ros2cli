@@ -155,33 +155,3 @@ class TopicMessagePrototypeCompleter:
     def __call__(self, prefix, parsed_args, **kwargs):
         message = get_message(getattr(parsed_args, self.topic_type_key))
         return [message_to_yaml(message())]
-
-
-def profile_configure_short_keys(
-    profile: rclpy.qos.QoSProfile = None, reliability: str = None,
-    durability: str = None, depth: Optional[int] = None, history: str = None,
-) -> rclpy.qos.QoSProfile:
-    """Configure a QoSProfile given a profile, and optional overrides."""
-    if history:
-        profile.history = rclpy.qos.QoSHistoryPolicy.get_from_short_key(history)
-    if durability:
-        profile.durability = rclpy.qos.QoSDurabilityPolicy.get_from_short_key(durability)
-    if reliability:
-        profile.reliability = rclpy.qos.QoSReliabilityPolicy.get_from_short_key(reliability)
-    if depth and depth >= 0:
-        profile.depth = depth
-    else:
-        if (profile.durability == rclpy.qos.QoSDurabilityPolicy.TRANSIENT_LOCAL
-                and profile.depth == 0):
-            profile.depth = 1
-
-
-def qos_profile_from_short_keys(
-    preset_profile: str, reliability: str = None, durability: str = None,
-    depth: Optional[int] = None, history: str = None,
-) -> rclpy.qos.QoSProfile:
-    """Construct a QoSProfile given the name of a preset, and optional overrides."""
-    # Build a QoS profile based on user-supplied arguments
-    profile = rclpy.qos.QoSPresetProfiles.get_from_short_key(preset_profile)
-    profile_configure_short_keys(profile, reliability, durability, depth, history)
-    return profile
