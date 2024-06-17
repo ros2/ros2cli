@@ -2,6 +2,11 @@
 Changelog for package ros2doctor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Revamp how we get network information in ros2doctor. (`#910 <https://github.com/ros2/ros2cli/issues/910>`_)
+* Contributors: Chris Lalancette
+
 0.33.0 (2024-04-26)
 -------------------
 
