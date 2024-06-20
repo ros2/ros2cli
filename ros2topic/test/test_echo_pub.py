@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import functools
-import sys
 import unittest
 
 from launch import LaunchDescription
@@ -36,14 +35,6 @@ from rclpy.qos import ReliabilityPolicy
 from rclpy.utilities import get_rmw_implementation_identifier
 
 from std_msgs.msg import String
-
-
-# Skip cli tests on Windows while they exhibit pathological behavior
-# https://github.com/ros2/build_farmer/issues/248
-if sys.platform.startswith('win'):
-    pytest.skip(
-            'CLI tests can block for a pathological amount of time on Windows.',
-            allow_module_level=True)
 
 
 TEST_NODE = 'cli_echo_pub_test_node'

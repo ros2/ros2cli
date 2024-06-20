@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import contextlib
-import sys
 import unittest
 
 from launch import LaunchDescription
@@ -30,14 +29,6 @@ import launch_testing_ros.tools
 import pytest
 
 from rclpy.utilities import get_available_rmw_implementations
-
-
-# Skip cli tests on Windows while they exhibit pathological behavior
-# https://github.com/ros2/build_farmer/issues/248
-if sys.platform.startswith('win'):
-    pytest.skip(
-            'CLI tests can block for a pathological amount of time on Windows.',
-            allow_module_level=True)
 
 
 ALL_LIFECYCLE_NODE_TRANSITIONS = [
