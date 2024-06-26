@@ -44,6 +44,7 @@ The package provides the action command for the ROS 2 command line tools.""",
             'list = ros2action.verb.list:ListVerb',
             'send_goal = ros2action.verb.send_goal:SendGoalVerb',
             'type = ros2action.verb.type:TypeVerb',
+            'find = ros2action.verb.find:FindVerb',
         ],
     }
 )
