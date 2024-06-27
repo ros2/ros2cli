@@ -18,6 +18,7 @@ import pytest
 
 import rclpy
 import rclpy.action
+from rclpy.topic_endpoint_info import TopicEndpointTypeEnum
 
 from ros2cli.node.daemon import DaemonNode
 from ros2cli.node.daemon import is_daemon_running
@@ -40,6 +41,16 @@ TEST_TOPIC_PUBLISHER_QOS = rclpy.qos.QoSProfile(
     depth=1
 )
 TEST_TOPIC_SUBSCRIPTION_QOS = rclpy.qos.QoSProfile(
+    reliability=rclpy.qos.ReliabilityPolicy.BEST_EFFORT,
+    durability=rclpy.qos.DurabilityPolicy.VOLATILE,
+    depth=1
+)
+TEST_SRV_CLIENT_QOS = rclpy.qos.QoSProfile(
+    reliability=rclpy.qos.ReliabilityPolicy.RELIABLE,
+    durability=rclpy.qos.DurabilityPolicy.VOLATILE,
+    depth=1
+)
+TEST_SRV_SERVICE_QOS = rclpy.qos.QoSProfile(
     reliability=rclpy.qos.ReliabilityPolicy.BEST_EFFORT,
     durability=rclpy.qos.DurabilityPolicy.VOLATILE,
     depth=1
@@ -70,11 +81,13 @@ def local_node():
     service = node.create_service(
         srv_type=test_msgs.srv.Empty,
         srv_name=TEST_SERVICE_NAME,
+        qos_profile=TEST_SRV_SERVICE_QOS,
         callback=(lambda req, res: res)
     )
     client = node.create_client(
         srv_type=test_msgs.srv.Empty,
-        srv_name=TEST_SERVICE_NAME
+        srv_name=TEST_SERVICE_NAME,
+        qos_profile=TEST_SRV_CLIENT_QOS
     )
 
     def noop_execute_callback(goal_handle):
@@ -229,6 +242,40 @@ def test_get_subscriptions_info_by_topic(daemon_node):
         TEST_TOPIC_SUBSCRIPTION_QOS.durability
     assert test_subscription_info.qos_profile.reliability == \
         TEST_TOPIC_SUBSCRIPTION_QOS.reliability
+
+
+def test_get_clients_info_by_service(daemon_node):
+    clients_info = daemon_node.get_clients_info_by_service(TEST_SERVICE_NAME)
+    assert len(clients_info) >= 1
+    for client_info in clients_info:
+        assert client_info.node_name == TEST_NODE_NAME
+        assert client_info.node_namespace == TEST_NODE_NAMESPACE
+        assert client_info.qos_profile.durability == \
+            TEST_SRV_CLIENT_QOS.durability
+        assert client_info.qos_profile.reliability == \
+            TEST_SRV_CLIENT_QOS.reliability
+        assert TEST_SERVICE_TYPE in client_info.topic_type
+        if TEST_SERVICE_TYPE + '_Request' == client_info.topic_type:
+            client_info.endpoint_type == TopicEndpointTypeEnum.PUBLISHER
+        elif TEST_SERVICE_TYPE + '_Response' == client_info.topic_type:
+            client_info.endpoint_type == TopicEndpointTypeEnum.SUBSCRIPTION
+
+
+def test_get_servers_info_by_service(daemon_node):
+    servers_info = daemon_node.get_servers_info_by_service(TEST_SERVICE_NAME)
+    assert len(servers_info) >= 1
+    for server_info in servers_info:
+        assert server_info.node_name == TEST_NODE_NAME
+        assert server_info.node_namespace == TEST_NODE_NAMESPACE
+        assert server_info.qos_profile.durability == \
+            TEST_SRV_SERVICE_QOS.durability
+        assert server_info.qos_profile.reliability == \
+            TEST_SRV_SERVICE_QOS.reliability
+        assert TEST_SERVICE_TYPE in server_info.topic_type
+        if TEST_SERVICE_TYPE + '_Request' == server_info.topic_type:
+            server_info.endpoint_type == TopicEndpointTypeEnum.SUBSCRIPTION
+        elif TEST_SERVICE_TYPE + '_Response' == server_info.topic_type:
+            server_info.endpoint_type == TopicEndpointTypeEnum.PUBLISHER
 
 
 def test_count_publishers(daemon_node):
