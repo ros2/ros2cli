@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import rclpy
+from rclpy.executors import ExternalShutdownException
 from rclpy.qos import QoSDurabilityPolicy
 from rclpy.qos import QoSProfile
 from rclpy.qos import QoSReliabilityPolicy
@@ -38,62 +39,61 @@ class Counter:
 
 
 def main(args=None):
-    rclpy.init(args=args)
-    node = rclpy.create_node('qos_subscription')
+    try:
+        with rclpy.init(args=args):
+            node = rclpy.create_node('qos_subscription')
 
-    counter = Counter()
+            counter = Counter()
 
-    sub_default = node.create_subscription(
-            String,
-            'topic',
-            lambda msg: counter.onMsg('default', msg),
-            QoSProfile(depth=10))
+            sub_default = node.create_subscription(
+                    String,
+                    'topic',
+                    lambda msg: counter.onMsg('default', msg),
+                    QoSProfile(depth=10))
 
-    sub_transient = node.create_subscription(
-            String,
-            'topic',
-            lambda msg: counter.onMsg('transient', msg),
-            QoSProfile(
-                depth=10,
-                durability=QoSDurabilityPolicy.TRANSIENT_LOCAL))
+            sub_transient = node.create_subscription(
+                    String,
+                    'topic',
+                    lambda msg: counter.onMsg('transient', msg),
+                    QoSProfile(
+                        depth=10,
+                        durability=QoSDurabilityPolicy.TRANSIENT_LOCAL))
 
-    sub_volatile = node.create_subscription(
-            String,
-            'topic',
-            lambda msg: counter.onMsg('volatile', msg),
-            QoSProfile(
-                depth=10,
-                durability=QoSDurabilityPolicy.VOLATILE))
+            sub_volatile = node.create_subscription(
+                    String,
+                    'topic',
+                    lambda msg: counter.onMsg('volatile', msg),
+                    QoSProfile(
+                        depth=10,
+                        durability=QoSDurabilityPolicy.VOLATILE))
 
-    sub_reliable = node.create_subscription(
-            String,
-            'topic',
-            lambda msg: counter.onMsg('reliable', msg),
-            QoSProfile(
-                depth=10,
-                reliability=QoSReliabilityPolicy.RELIABLE))
+            sub_reliable = node.create_subscription(
+                    String,
+                    'topic',
+                    lambda msg: counter.onMsg('reliable', msg),
+                    QoSProfile(
+                        depth=10,
+                        reliability=QoSReliabilityPolicy.RELIABLE))
 
-    sub_best_effort = node.create_subscription(
-            String,
-            'topic',
-            lambda msg: counter.onMsg('best_effort', msg),
-            QoSProfile(
-                depth=10,
-                reliability=QoSReliabilityPolicy.BEST_EFFORT))
+            sub_best_effort = node.create_subscription(
+                    String,
+                    'topic',
+                    lambda msg: counter.onMsg('best_effort', msg),
+                    QoSProfile(
+                        depth=10,
+                        reliability=QoSReliabilityPolicy.BEST_EFFORT))
 
-    # Asserts to suppress unused variable warnings.
-    assert sub_default
-    assert sub_transient
-    assert sub_volatile
-    assert sub_reliable
-    assert sub_best_effort
+            timer = node.create_timer(0.5, lambda: print(counter.count))
 
-    timer = node.create_timer(0.5, lambda: print(counter.count))
-
-    rclpy.spin(node)
-    node.destroy_timer(timer)
-    node.destroy_node()
-    rclpy.shutdown()
+            # Asserts to suppress unused variable warnings.
+            assert sub_default
+            assert sub_transient
+            assert sub_volatile
+            assert sub_reliable
+            assert sub_best_effort
+            assert timer
+    except (KeyboardInterrupt, ExternalShutdownException):
+        pass
 
 
 if __name__ == '__main__':

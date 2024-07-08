@@ -12,9 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys
-
 import rclpy
+from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 from ros2topic.api import qos_profile_from_short_keys
 
@@ -37,20 +36,12 @@ class ListenerNode(Node):
 
 
 def main(args=None):
-    rclpy.init(args=args)
-
-    node = ListenerNode()
-
     try:
-        rclpy.spin(node)
-    except KeyboardInterrupt:
+        with rclpy.init(args=args):
+            node = ListenerNode()
+            rclpy.spin(node)
+    except (KeyboardInterrupt, ExternalShutdownException):
         print('listener stopped cleanly')
-    except BaseException:
-        print('exception in listener:', file=sys.stderr)
-        raise
-    finally:
-        node.destroy_node()
-        rclpy.shutdown()
 
 
 if __name__ == '__main__':
