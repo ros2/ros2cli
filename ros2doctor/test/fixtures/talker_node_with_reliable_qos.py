@@ -12,9 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys
-
 import rclpy
+from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 from rclpy.qos import QoSProfile
 from rclpy.qos import QoSReliabilityPolicy
@@ -40,20 +39,12 @@ class TalkerNode(Node):
 
 
 def main(args=None):
-    rclpy.init(args=args)
-
-    node = TalkerNode()
-
     try:
-        rclpy.spin(node)
-    except KeyboardInterrupt:
+        with rclpy.init(args=args):
+            node = TalkerNode()
+            rclpy.spin(node)
+    except (KeyboardInterrupt, ExternalShutdownException):
         print('talker stopped cleanly')
-    except BaseException:
-        print('exception in talker:', file=sys.stderr)
-        raise
-    finally:
-        node.destroy_node()
-        rclpy.shutdown()
 
 
 if __name__ == '__main__':

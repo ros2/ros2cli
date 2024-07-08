@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # Copyright 2019 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,10 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.import time
 
-import sys
-
 import rclpy
 from rclpy.action import ActionServer
+from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 
 from test_msgs.action import Fibonacci
@@ -52,19 +50,12 @@ class FibonacciActionServer(Node):
 
 
 def main(args=None):
-    rclpy.init(args=args)
-
-    node = FibonacciActionServer()
     try:
-        rclpy.spin(node)
-    except KeyboardInterrupt:
+        with rclpy.init(args=args):
+            node = FibonacciActionServer()
+            rclpy.spin(node)
+    except (KeyboardInterrupt, ExternalShutdownException):
         print('server stopped cleanly')
-    except BaseException:
-        print('exception in server:', file=sys.stderr)
-        raise
-    finally:
-        node.destroy_node()
-        rclpy.shutdown()
 
 
 if __name__ == '__main__':
