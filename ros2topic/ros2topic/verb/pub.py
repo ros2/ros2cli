@@ -30,7 +30,7 @@ from rclpy.qos import QoSProfile
 from rclpy.qos import QoSReliabilityPolicy
 from ros2cli.node.direct import add_arguments as add_direct_node_arguments
 from ros2cli.node.direct import DirectNode
-from ros2topic.api import profile_configure_short_keys
+from ros2cli.node.qos import profile_configure_short_keys
 from ros2topic.api import TopicMessagePrototypeCompleter
 from ros2topic.api import TopicNameCompleter
 from ros2topic.api import TopicTypeCompleter

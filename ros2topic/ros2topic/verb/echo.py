@@ -27,8 +27,8 @@ from rclpy.qos_event import UnsupportedEventTypeError
 from rclpy.task import Future
 from ros2cli.node.strategy import add_arguments as add_strategy_node_arguments
 from ros2cli.node.strategy import NodeStrategy
+from ros2cli.node.qos import qos_profile_from_short_keys, add_qos_arguments
 from ros2topic.api import get_msg_class
-from ros2topic.api import qos_profile_from_short_keys
 from ros2topic.api import TopicNameCompleter
 from ros2topic.api import unsigned_int
 from ros2topic.verb import VerbExtension
@@ -55,34 +55,7 @@ class EchoVerb(VerbExtension):
         parser.add_argument(
             'message_type', nargs='?',
             help="Type of the ROS message (e.g. 'std_msgs/msg/String')")
-        parser.add_argument(
-            '--qos-profile',
-            choices=rclpy.qos.QoSPresetProfiles.short_keys(),
-            help='Quality of service preset profile to subscribe with (default: {})'
-                 .format(default_profile_str))
-        default_profile = rclpy.qos.QoSPresetProfiles.get_from_short_key(default_profile_str)
-        parser.add_argument(
-            '--qos-depth', metavar='N', type=int,
-            help='Queue size setting to subscribe with '
-                 '(overrides depth value of --qos-profile option)')
-        parser.add_argument(
-            '--qos-history',
-            choices=rclpy.qos.QoSHistoryPolicy.short_keys(),
-            help='History of samples setting to subscribe with '
-                 '(overrides history value of --qos-profile option, default: {})'
-                 .format(default_profile.history.short_key))
-        parser.add_argument(
-            '--qos-reliability',
-            choices=rclpy.qos.QoSReliabilityPolicy.short_keys(),
-            help='Quality of service reliability setting to subscribe with '
-                 '(overrides reliability value of --qos-profile option, default: '
-                 'Automatically match existing publishers )')
-        parser.add_argument(
-            '--qos-durability',
-            choices=rclpy.qos.QoSDurabilityPolicy.short_keys(),
-            help='Quality of service durability setting to subscribe with '
-                 '(overrides durability value of --qos-profile option, default: '
-                 'Automatically match existing publishers )')
+        add_qos_arguments(parser, default_profile_str)
         parser.add_argument(
             '--csv', action='store_true',
             help='Output all recursive fields separated by commas (e.g. for '

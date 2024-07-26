@@ -16,7 +16,9 @@ import importlib
 import time
 
 import rclpy
+from rclpy.qos import QoSPresetProfiles
 from ros2cli.node import NODE_NAME_PREFIX
+from ros2cli.node.qos import profile_configure_short_keys, add_qos_arguments
 from ros2service.api import ServiceNameCompleter
 from ros2service.api import ServicePrototypeCompleter
 from ros2service.api import ServiceTypeCompleter
@@ -49,17 +51,23 @@ class CallVerb(VerbExtension):
         parser.add_argument(
             '-r', '--rate', metavar='N', type=float,
             help='Repeat the call at a specific rate in Hz')
+        add_qos_arguments(parser, 'services_default')
 
     def main(self, *, args):
         if args.rate is not None and args.rate <= 0:
             raise RuntimeError('rate must be greater than zero')
         period = 1. / args.rate if args.rate else None
 
+        default_profile = QoSPresetProfiles.get_from_short_key(args.qos_profile)
+        profile_configure_short_keys(
+            default_profile, args.qos_reliability, args.qos_durability,
+            args.qos_depth, args.qos_history)
+
         return requester(
-            args.service_type, args.service_name, args.values, period)
+            args.service_type, args.service_name, args.values, period, default_profile)
 
 
-def requester(service_type, service_name, values, period):
+def requester(service_type, service_name, values, period, qos_profile):
     # TODO(wjwwood) this logic should come from a rosidl related package
     try:
         parts = service_type.split('/')
@@ -83,7 +91,11 @@ def requester(service_type, service_name, values, period):
 
     node = rclpy.create_node(NODE_NAME_PREFIX + '_requester_%s_%s' % (package_name, srv_name))
 
-    cli = node.create_client(srv_module, service_name)
+    cli = node.create_client(
+        srv_type=srv_module,
+        srv_name=service_name,
+        qos_profile=qos_profile
+    )
 
     request = srv_module.Request()
 
