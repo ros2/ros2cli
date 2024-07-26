@@ -2,6 +2,12 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.18.11 (2024-07-26)
+--------------------
+* Update daemon.py for Python 3.8 compatibility (`#912 <https://github.com/ros2/ros2cli/issues/912>`_)
+* ros2cli.node.daemon : try getting fdsize from /proc for open fd limit (`#888 <https://github.com/ros2/ros2cli/issues/888>`_) (`#908 <https://github.com/ros2/ros2cli/issues/908>`_)
+* Contributors: AhmedMoaz, mergify[bot]
+
 0.18.10 (2024-05-15)
 --------------------
 
