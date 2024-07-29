@@ -2,8 +2,8 @@
 Changelog for package ros2service
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.34.1 (2024-07-29)
+-------------------
 * Switch to using the rclpy.init context manager. (`#920 <https://github.com/ros2/ros2cli/issues/920>`_)
 * Switch to using rclpy.init context manager. (`#918 <https://github.com/ros2/ros2cli/issues/918>`_)
 * Contributors: Chris Lalancette
