@@ -2,6 +2,12 @@
 Changelog for package ros2action
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Switch to using rclpy.init context manager. (`#918 <https://github.com/ros2/ros2cli/issues/918>`_)
+* support 'ros2 action find'. (`#917 <https://github.com/ros2/ros2cli/issues/917>`_)
+* Contributors: Chris Lalancette, Tomoya Fujita
+
 0.34.0 (2024-06-17)
 -------------------
 

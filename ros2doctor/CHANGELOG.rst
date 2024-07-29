@@ -2,6 +2,11 @@
 Changelog for package ros2doctor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Switch to using rclpy.init context manager. (`#918 <https://github.com/ros2/ros2cli/issues/918>`_)
+* Contributors: Chris Lalancette
+
 0.34.0 (2024-06-17)
 -------------------
 * Revamp how we get network information in ros2doctor. (`#910 <https://github.com/ros2/ros2cli/issues/910>`_)
