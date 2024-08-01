@@ -18,6 +18,12 @@ import sys
 
 import em
 try:
+    from em import Configuration
+    em_has_configuration = True
+except ImportError:
+    em_has_configuration = False
+
+try:
     import importlib.resources as importlib_resources
 except ModuleNotFoundError:
     import importlib_resources
@@ -25,14 +31,25 @@ except ModuleNotFoundError:
 
 def _expand_template(template_file, data, output_file):
     output = StringIO()
-    interpreter = em.Interpreter(
-        output=output,
-        options={
-            em.BUFFERED_OPT: True,
-            em.RAW_OPT: True,
-        },
-        globals=data,
-    )
+    if em_has_configuration:
+        config = Configuration(
+            defaultStdout=output,
+            deleteOnError=True,
+            rawErrors=True,
+            useProxy=False)
+        interpreter = em.Interpreter(
+            config=config,
+            dispatcher=False,
+            globals=data)
+    else:
+        interpreter = em.Interpreter(
+            output=output,
+            options={
+                em.BUFFERED_OPT: True,
+                em.RAW_OPT: True,
+            },
+            globals=data)
+
     with open(template_file, 'r') as h:
         try:
             interpreter.file(h)
