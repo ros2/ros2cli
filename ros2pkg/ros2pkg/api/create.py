@@ -36,7 +36,7 @@ def _expand_template(template_file, data, output_file):
             defaultStdout=output,
             deleteOnError=True,
             rawErrors=True,
-            useProxy=False)
+            useProxy=True)
         interpreter = em.Interpreter(
             config=config,
             dispatcher=False,
