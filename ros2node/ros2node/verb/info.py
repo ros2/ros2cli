@@ -39,7 +39,7 @@ class InfoVerb(VerbExtension):
         add_arguments(parser)
         argument = parser.add_argument(
             'node_name',
-            help='Node name to request information')
+            help='Fully qualified node name to request information')
         argument.completer = NodeNameCompleter()
         parser.add_argument(
             '--include-hidden', action='store_true',
