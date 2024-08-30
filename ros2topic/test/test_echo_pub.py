@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import functools
+import pathlib
 import sys
 import unittest
 
@@ -48,6 +49,8 @@ if sys.platform.startswith('win'):
 
 TEST_NODE = 'cli_echo_pub_test_node'
 TEST_NAMESPACE = 'cli_echo_pub'
+
+TEST_RESOURCES_DIR = pathlib.Path(__file__).resolve().parent / 'resources'
 
 
 @pytest.mark.rostest
@@ -288,6 +291,42 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                 "publishing #4: std_msgs.msg.String(data='hello')",
                 '',
                 "publishing #5: std_msgs.msg.String(data='hello')",
+                '',
+            ],
+            text=command.output,
+            strict=True
+        )
+
+    @launch_testing.markers.retry_on_failure(times=5)
+    def test_pub_yaml(self, launch_service, proc_info, proc_output):
+        command_action = ExecuteProcess(
+            # yaml file prevails to the values 'data: hello'
+            cmd=(['ros2', 'topic', 'pub', '/clitest/topic/chatter',
+                  'std_msgs/String', 'data: hello', '--yaml-file',
+                  str(TEST_RESOURCES_DIR / 'chatter.yaml')]),
+            additional_env={
+                'PYTHONUNBUFFERED': '1'
+            },
+            output='screen'
+        )
+        with launch_testing.tools.launch_process(
+            launch_service, command_action, proc_info, proc_output,
+            output_filter=launch_testing_ros.tools.basic_output_filter(
+                filtered_rmw_implementation=get_rmw_implementation_identifier()
+            )
+        ) as command:
+            assert command.wait_for_shutdown(timeout=10)
+        assert command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=[
+                'publisher: beginning loop',
+                "publishing #1: std_msgs.msg.String(data='Hello ROS Users')",
+                '',
+                "publishing #2: std_msgs.msg.String(data='Hello ROS Developers')",
+                '',
+                "publishing #3: std_msgs.msg.String(data='Hello ROS Developers')",
+                '',
+                "publishing #4: std_msgs.msg.String(data='Hello ROS Users')",
                 '',
             ],
             text=command.output,
