@@ -23,7 +23,7 @@ from test_msgs.action import Fibonacci
 class FibonacciActionServer(Node):
 
     def __init__(self):
-        super().__init__('fibonacci_action_server')
+        super().__init__('fibonacci_action_server', namespace='/test')
         self._action_server = ActionServer(
             self,
             Fibonacci,
