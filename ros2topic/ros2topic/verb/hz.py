@@ -59,7 +59,7 @@ class HzVerb(VerbExtension):
         arg = parser.add_argument(
             'topic_name',
             nargs='+',
-            help="Name of the ROS topic to listen to (e.g. '/chatter')")
+            help="Names of the ROS topic to listen to (e.g. '/chatter')")
         arg.completer = TopicNameCompleter(
             include_hidden_topics_key='include_hidden_topics')
         parser.add_argument(
@@ -208,7 +208,7 @@ class ROSTopicHz(object):
         elif self.get_msg_tn(topic=topic) == self.get_last_printed_tn(topic=topic):
             return
         with self.lock:
-            # Get frequency every one minute
+            # Get frequency every one second
             times = self.get_times(topic=topic)
             n = len(times)
             mean = sum(times) / n
@@ -289,13 +289,15 @@ def _rostopic_hz(node, topics, window_size=DEFAULT_WINDOW_SIZE, filter_expr=None
     # pause hz until topic is published
     rt = ROSTopicHz(node, window_size, filter_expr=filter_expr, use_wtime=use_wtime)
     topics_len = len(topics)
+    topics_to_be_removed = []
     for topic in topics:
         msg_class = get_msg_class(
             node, topic, blocking=True, include_hidden_topics=True)
 
         if msg_class is None:
-            node.destroy_node()
-            return
+            topics_to_be_removed.append(topic)
+            print('WARNING: failed to find message type for topic [%s]' % topic)
+            continue
 
         node.create_subscription(
             msg_class,
@@ -304,6 +306,14 @@ def _rostopic_hz(node, topics, window_size=DEFAULT_WINDOW_SIZE, filter_expr=None
             qos_profile_sensor_data)
         if topics_len > 1:
             print('Subscribed to [%s]' % topic)
+
+    # remove the topics from the list if failed to find message type
+    while (topic in topics_to_be_removed):
+        topics.remove(topic)
+    if len(topics) == 0:
+        node.destroy_node()
+        rclpy.try_shutdown()
+        return
 
     try:
         def thread_func():
