@@ -73,11 +73,6 @@ def generate_test_description():
 
 class TestROS2TopicEchoPub(unittest.TestCase):
 
-    # TODO(hidmic): investigate why making use of the same rclpy node, executor
-    #               and context for all tests on a per rmw implementation basis
-    #               makes them fail on Linux-aarch64 when using 'rmw_opensplice_cpp'.
-    #               Presumably, interfaces creation/destruction and/or executor spinning
-    #               on one test is affecting the other.
     def setUp(self):
         self.context = rclpy.context.Context()
         rclpy.init(context=self.context)
