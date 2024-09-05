@@ -146,15 +146,15 @@ class TestROS2ActionCLI(unittest.TestCase):
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_fibonacci_info(self):
-        with self.launch_action_command(arguments=['info', '/fibonacci']) as action_command:
+        with self.launch_action_command(arguments=['info', '/test/fibonacci']) as action_command:
             assert action_command.wait_for_shutdown(timeout=10)
         assert action_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
-                'Action: /fibonacci',
+                'Action: /test/fibonacci',
                 'Action clients: 0',
                 'Action servers: 1',
-                '  /fibonacci_action_server'
+                '  /test/fibonacci_action_server'
             ],
             text=action_command.output,
             strict=False
@@ -162,15 +162,16 @@ class TestROS2ActionCLI(unittest.TestCase):
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_fibonacci_info_with_types(self):
-        with self.launch_action_command(arguments=['info', '-t', '/fibonacci']) as action_command:
+        with self.launch_action_command(
+                arguments=['info', '-t', '/test/fibonacci']) as action_command:
             assert action_command.wait_for_shutdown(timeout=10)
         assert action_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
-                'Action: /fibonacci',
+                'Action: /test/fibonacci',
                 'Action clients: 0',
                 'Action servers: 1',
-                '  /fibonacci_action_server [test_msgs/action/Fibonacci]'
+                '  /test/fibonacci_action_server [test_msgs/action/Fibonacci]'
             ],
             text=action_command.output,
             strict=False
@@ -178,12 +179,13 @@ class TestROS2ActionCLI(unittest.TestCase):
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_fibonacci_info_count(self):
-        with self.launch_action_command(arguments=['info', '-c', '/fibonacci']) as action_command:
+        with self.launch_action_command(
+                arguments=['info', '-c', '/test/fibonacci']) as action_command:
             assert action_command.wait_for_shutdown(timeout=10)
         assert action_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
-                'Action: /fibonacci',
+                'Action: /test/fibonacci',
                 'Action clients: 0',
                 'Action servers: 1',
             ],
@@ -197,7 +199,7 @@ class TestROS2ActionCLI(unittest.TestCase):
             assert action_command.wait_for_shutdown(timeout=10)
         assert action_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
-            expected_lines=['/fibonacci'],
+            expected_lines=['/test/fibonacci'],
             text=action_command.output,
             strict=True
         )
@@ -208,7 +210,7 @@ class TestROS2ActionCLI(unittest.TestCase):
             assert action_command.wait_for_shutdown(timeout=10)
         assert action_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
-            expected_lines=['/fibonacci [test_msgs/action/Fibonacci]'],
+            expected_lines=['/test/fibonacci [test_msgs/action/Fibonacci]'],
             text=action_command.output, strict=True
         )
 
@@ -223,7 +225,7 @@ class TestROS2ActionCLI(unittest.TestCase):
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_type(self):
-        with self.launch_action_command(arguments=['type', '/fibonacci']) as action_command:
+        with self.launch_action_command(arguments=['type', '/test/fibonacci']) as action_command:
             assert action_command.wait_for_shutdown(timeout=10)
         assert action_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
@@ -238,7 +240,7 @@ class TestROS2ActionCLI(unittest.TestCase):
             assert action_command.wait_for_shutdown(timeout=10)
         assert action_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
-            expected_lines=['/fibonacci'],
+            expected_lines=['/test/fibonacci'],
             text=action_command.output, strict=True
         )
 
@@ -257,7 +259,7 @@ class TestROS2ActionCLI(unittest.TestCase):
         with self.launch_action_command(
             arguments=[
                 'send_goal',
-                '/fibonacci',
+                '/test/fibonacci',
                 'test_msgs/action/Fibonacci',
                 '{order: 5}'
             ],
@@ -275,7 +277,7 @@ class TestROS2ActionCLI(unittest.TestCase):
             arguments=[
                 'send_goal',
                 '-f',
-                '/fibonacci',
+                '/test/fibonacci',
                 'test_msgs/action/Fibonacci',
                 '{order: 5}'
             ],
