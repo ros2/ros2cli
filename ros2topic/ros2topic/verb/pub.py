@@ -100,7 +100,7 @@ class PubVerb(VerbExtension):
                  '(default: 0.1)')
         parser.add_argument(
             '--yaml-file', type=str, default=None,
-            help='Yaml file that has message contents, prevails <values>. '
+            help='YAML file that has message contents, prevails <values>. '
                  'e.g STDOUT from ros2 topic echo <topic>')
         parser.add_argument(
             '-n', '--node-name',
@@ -217,7 +217,7 @@ def publisher(
             try:
                 one_msg = next(msg_reader)
                 if not isinstance(one_msg, dict):
-                    print('The contents in yaml file need to be a YAML format')
+                    print('The contents in YAML file need to be a YAML format')
             except StopIteration:
                 nonlocal more_message
                 more_message = False
