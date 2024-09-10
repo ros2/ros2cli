@@ -34,9 +34,11 @@ import threading
 import traceback
 
 import rclpy
-from rclpy.qos import qos_profile_sensor_data
 from ros2cli.node.direct import add_arguments as add_direct_node_arguments
 from ros2cli.node.direct import DirectNode
+from ros2topic.api import add_qos_arguments
+from ros2topic.api import extract_qos_arguments
+from ros2topic.api import choose_qos
 from ros2topic.api import get_msg_class
 from ros2topic.api import positive_int
 from ros2topic.api import TopicNameCompleter
@@ -62,19 +64,21 @@ class BwVerb(VerbExtension):
 
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
-            'topic',
+            'topic_name',
             help='Topic name to monitor for bandwidth utilization')
         arg.completer = TopicNameCompleter(
             include_hidden_topics_key='include_hidden_topics')
+        add_qos_arguments(parser, 'subscribe', 'sensor_data')
         parser.add_argument(
-            '--window', '-w', type=positive_int, default=DEFAULT_WINDOW_SIZE,
+            '--window', '-w', dest='window_size', type=positive_int, default=DEFAULT_WINDOW_SIZE,
             help='maximum window size, in # of messages, for calculating rate '
                  f'(default: {DEFAULT_WINDOW_SIZE})', metavar='WINDOW')
         add_direct_node_arguments(parser)
 
     def main(self, *, args):
+        qos_args = extract_qos_arguments(args)
         with DirectNode(args) as node:
-            _rostopic_bw(node.node, args.topic, window_size=args.window)
+            _rostopic_bw(node.node, args.topic_name, qos_args, window_size=args.window_size)
 
 
 class ROSTopicBandwidth(object):
@@ -150,7 +154,7 @@ class ROSTopicBandwidth(object):
         print(f'{bw} from {n} messages\n\tMessage size mean: {mean} min: {min_s} max: {max_s}')
 
 
-def _rostopic_bw(node, topic, window_size=DEFAULT_WINDOW_SIZE):
+def _rostopic_bw(node, topic, qos, window_size=DEFAULT_WINDOW_SIZE):
     """Periodically print the received bandwidth of a topic to console until shutdown."""
     # pause bw until topic is published
     msg_class = get_msg_class(node, topic, blocking=True, include_hidden_topics=True)
@@ -158,12 +162,14 @@ def _rostopic_bw(node, topic, window_size=DEFAULT_WINDOW_SIZE):
         node.destroy_node()
         return
 
+    qos_profile = choose_qos(node, topic_name=topic, qos_args=qos)
+
     rt = ROSTopicBandwidth(node, window_size)
     node.create_subscription(
         msg_class,
         topic,
         rt.callback,
-        qos_profile_sensor_data,
+        qos_profile,
         raw=True
     )
 
