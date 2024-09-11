@@ -100,7 +100,7 @@ class DumpVerb(VerbExtension):
             if parameter_values is None:
                 print(
                     'Exception while calling get_parameters service of node '
-                    f"'{node_name.full_name}': {e}", file=sys.stderr)
+                    f"'{node_name.full_name}'", file=sys.stderr)
                 return
 
             for param_name, pval in zip(response, parameter_values):
