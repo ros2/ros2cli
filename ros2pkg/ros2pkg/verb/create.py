@@ -27,6 +27,7 @@ from catkin_pkg.package import Person
 
 from ros2pkg.api.create import create_package_environment
 from ros2pkg.api.create import populate_ament_cmake
+from ros2pkg.api.create import populate_ament_cmake_python
 from ros2pkg.api.create import populate_ament_python
 from ros2pkg.api.create import populate_cmake
 from ros2pkg.api.create import populate_cpp_library
@@ -87,6 +88,10 @@ class CreateVerb(VerbExtension):
         parser.add_argument(
             '--library-name',
             help='name of the empty library')
+        parser.add_argument(
+            '--template-name',
+            help='name of template for package create'
+                 "(pass '?' to get a list)")
 
     def main(self, *, args):
         available_licenses = {}
@@ -96,6 +101,20 @@ class CreateVerb(VerbExtension):
         if args.license == '?':
             print('Supported licenses:\n%s' % ('\n'.join(available_licenses)))
             sys.exit(0)
+
+        available_template = {
+            'cmake': ['cmake'],
+            'ament_cmake': ['ament_cmake', 'ament_cmake_python'],
+            'ament_python': ['ament_python']
+        }
+        if args.template_name == '?':
+            print('Supported template:\n%s' % ('\n'.join(available_template[args.build_type])))
+            sys.exit(0)
+
+        template_name = args.template_name or args.build_type
+        if template_name not in available_template[args.build_type]:
+            return "Abort since template '{}' is not supported for given build-type '{}'" \
+                    .format(template_name, args.build_type)
 
         maintainer = Person(args.maintainer_name)
 
@@ -133,9 +152,14 @@ class CreateVerb(VerbExtension):
             else:
                 buildtool_depends = ['ament_cmake']
 
+            if template_name == 'ament_cmake_python':
+                buildtool_depends.append('ament_cmake_python')
+
         test_dependencies = []
         if args.build_type == 'ament_cmake':
             test_dependencies = ['ament_lint_auto', 'ament_lint_common']
+            if template_name == 'ament_cmake_python':
+                test_dependencies.append('ament_cmake_pytest')
         if args.build_type == 'ament_python':
             test_dependencies = ['ament_copyright', 'ament_flake8', 'ament_pep257',
                                  'python3-pytest']
@@ -189,7 +213,10 @@ class CreateVerb(VerbExtension):
             populate_cmake(package, package_directory, node_name, library_name)
 
         if args.build_type == 'ament_cmake':
-            populate_ament_cmake(package, package_directory, node_name, library_name)
+            if template_name == 'ament_cmake':
+                populate_ament_cmake(package, package_directory, node_name, library_name)
+            elif template_name == 'ament_cmake_python':
+                populate_ament_cmake_python(package, package_directory, node_name, library_name)
 
         if args.build_type == 'ament_python':
             if not source_directory:

@@ -308,3 +308,27 @@ def populate_cpp_library(package, source_directory, include_directory, cpp_libra
         include_directory,
         'visibility_control.h',
         visibility_config)
+
+
+def populate_ament_cmake_python(package, package_directory, cpp_node_name, cpp_library_name):
+    cmakelists_config = {
+        'project_name': package.name,
+        'dependencies': [str(dep) for dep in package.build_depends],
+        'cpp_node_name': cpp_node_name,
+        'cpp_library_name': cpp_library_name,
+    }
+    _create_template_file(
+        'ament_cmake_python',
+        'CMakeLists.txt.em',
+        package_directory,
+        'CMakeLists.txt',
+        cmakelists_config)
+
+    _create_folder(package.name, package_directory)
+    _create_template_file('ament_cmake_python',
+                          'init.py.em',
+                          package_directory + os.sep + package.name,
+                          '__init__.py',
+                          {})
+
+    _ = _create_folder('test', package_directory)
