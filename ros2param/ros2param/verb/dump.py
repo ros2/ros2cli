@@ -91,9 +91,9 @@ class DumpVerb(VerbExtension):
                     'Exception while calling get_parameters service of node '
                     f"'{node_name.full_name}': {e}", file=sys.stderr)
             if response.values is None:
-                # no parameters available
-                print(f"'{node_name.full_name}' does not possess any parameters.")
-                return
+                # pass through here, no parameters are available with this node.
+                # since this is not failure, it proceeds to print the yaml as consistent behavior.
+                pass
             parameter_values = [get_value(parameter_value=i) for i in response.values]
 
             # create dictionary with parameter names and values
