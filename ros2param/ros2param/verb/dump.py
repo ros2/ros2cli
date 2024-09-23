@@ -68,6 +68,7 @@ class DumpVerb(VerbExtension):
             yaml_output = {node_name.full_name: {'ros__parameters': {}}}
 
             # retrieve parameter names
+            response = None
             response = call_list_parameters(node=node, node_name=absolute_node_name)
             if response is None:
                 print(
@@ -83,6 +84,7 @@ class DumpVerb(VerbExtension):
             parameter_names = sorted(response.result().result.names)
 
             # retrieve parameter values
+            response = None
             try:
                 response = call_get_parameters(
                     node=node, node_name=absolute_node_name, parameter_names=parameter_names)
@@ -90,6 +92,7 @@ class DumpVerb(VerbExtension):
                 print(
                     'Exception while calling get_parameters service of node '
                     f"'{node_name.full_name}': {e}", file=sys.stderr)
+                return
             if response.values is None:
                 # pass through here, no parameters are available with this node.
                 # since this is not failure, it proceeds to print the yaml as consistent behavior.
