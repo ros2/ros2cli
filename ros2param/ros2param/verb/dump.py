@@ -68,7 +68,6 @@ class DumpVerb(VerbExtension):
             yaml_output = {node_name.full_name: {'ros__parameters': {}}}
 
             # retrieve parameter names
-            response = None
             response = call_list_parameters(node=node, node_name=absolute_node_name)
             if response is None:
                 print(
