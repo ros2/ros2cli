@@ -56,6 +56,7 @@ class DumpVerb(VerbExtension):
             '--print', action='store_true',
             help='DEPRECATED: Does nothing.')
 
+<<<<<<< HEAD
     @staticmethod
     def get_parameter_value(node, node_name, param):
         response = call_get_parameters(
@@ -69,6 +70,8 @@ class DumpVerb(VerbExtension):
         # extract type specific value
         return get_value(parameter_value=response.values[0])
 
+=======
+>>>>>>> 8e46bf2 (cosmetic fixes for ros2param dump command. (#933))
     def insert_dict(self, dictionary, key, value):
         split = key.split(PARAMETER_SEPARATOR_STRING, 1)
         if len(split) > 1:
@@ -111,6 +114,7 @@ class DumpVerb(VerbExtension):
 
             yaml_output = {node_name.full_name: {'ros__parameters': {}}}
 
+<<<<<<< HEAD
             # retrieve values
             if future.result() is not None:
                 response = future.result()
@@ -125,6 +129,11 @@ class DumpVerb(VerbExtension):
                     f"'{node_name.full_name}': {e}")
 
             if args.print:
+=======
+            # retrieve parameter names
+            response = call_list_parameters(node=node, node_name=absolute_node_name)
+            if response is None:
+>>>>>>> 8e46bf2 (cosmetic fixes for ros2param dump command. (#933))
                 print(
                     "WARNING: '--print' is deprecated; this utility prints to stdout by default",
                     file=sys.stderr)
@@ -136,7 +145,9 @@ class DumpVerb(VerbExtension):
             else:
                 print(yaml.dump(yaml_output, default_flow_style=False))
                 return
+            parameter_names = sorted(response.result().result.names)
 
+<<<<<<< HEAD
             if absolute_node_name[0] == '/':
                 file_name = absolute_node_name[1:].replace('/', '__')
             else:
@@ -145,3 +156,28 @@ class DumpVerb(VerbExtension):
             print('Saving to: ', os.path.join(args.output_dir, file_name + '.yaml'))
             with open(os.path.join(args.output_dir, file_name + '.yaml'), 'w') as yaml_file:
                 yaml.dump(yaml_output, yaml_file, default_flow_style=False)
+=======
+            # retrieve parameter values
+            response = None
+            try:
+                response = call_get_parameters(
+                    node=node, node_name=absolute_node_name, parameter_names=parameter_names)
+            except RuntimeError as e:
+                print(
+                    'Exception while calling get_parameters service of node '
+                    f"'{node_name.full_name}': {e}", file=sys.stderr)
+                return
+            if response.values is None:
+                # pass through here, no parameters are available with this node.
+                # since this is not failure, it proceeds to print the yaml as consistent behavior.
+                pass
+            parameter_values = [get_value(parameter_value=i) for i in response.values]
+
+            # create dictionary with parameter names and values
+            for param_name, pval in zip(parameter_names, parameter_values):
+                self.insert_dict(
+                    yaml_output[node_name.full_name]['ros__parameters'], param_name, pval)
+
+            print(yaml.dump(yaml_output, default_flow_style=False))
+            return
+>>>>>>> 8e46bf2 (cosmetic fixes for ros2param dump command. (#933))
