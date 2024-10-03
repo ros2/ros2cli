@@ -2,6 +2,12 @@
 Changelog for package ros2topic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Support multiple topics via ros2 topic hz. (`#929 <https://github.com/ros2/ros2cli/issues/929>`_)
+* Remove TODO for OpenSplice DDS issue. (`#928 <https://github.com/ros2/ros2cli/issues/928>`_)
+* Contributors: Tomoya Fujita
+
 0.34.1 (2024-07-29)
 -------------------
 * Switch to using rclpy.init context manager. (`#918 <https://github.com/ros2/ros2cli/issues/918>`_)
