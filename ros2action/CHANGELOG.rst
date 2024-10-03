@@ -2,8 +2,8 @@
 Changelog for package ros2action
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.35.0 (2024-10-03)
+-------------------
 * node name print bug fix with ros2 action info. (`#926 <https://github.com/ros2/ros2cli/issues/926>`_)
 * Contributors: Tomoya Fujita
 
