@@ -41,9 +41,11 @@ import rclpy
 from rclpy.clock import Clock
 from rclpy.clock import ClockType
 from rclpy.executors import ExternalShutdownException
-from rclpy.qos import qos_profile_sensor_data
 from ros2cli.node.direct import add_arguments as add_direct_node_arguments
 from ros2cli.node.direct import DirectNode
+from ros2topic.api import add_qos_arguments
+from ros2topic.api import extract_qos_arguments
+from ros2topic.api import choose_qos
 from ros2topic.api import get_msg_class
 from ros2topic.api import positive_int
 from ros2topic.api import TopicNameCompleter
@@ -62,6 +64,7 @@ class HzVerb(VerbExtension):
             help="Names of the ROS topic to listen to (e.g. '/chatter')")
         arg.completer = TopicNameCompleter(
             include_hidden_topics_key='include_hidden_topics')
+        add_qos_arguments(parser, 'subscribe', 'sensor_data')
         parser.add_argument(
             '--window', '-w',
             dest='window_size', type=positive_int, default=DEFAULT_WINDOW_SIZE,
@@ -93,8 +96,10 @@ def main(args):
     else:
         filter_expr = None
 
+    qos_args = extract_qos_arguments(args)
+
     with DirectNode(args) as node:
-        _rostopic_hz(node.node, topics, window_size=args.window_size, filter_expr=filter_expr,
+        _rostopic_hz(node.node, topics, qos_args, window_size=args.window_size, filter_expr=filter_expr,
                      use_wtime=args.use_wtime)
 
 
@@ -278,11 +283,12 @@ def _get_ascii_table(header, cols):
     return table
 
 
-def _rostopic_hz(node, topics, window_size=DEFAULT_WINDOW_SIZE, filter_expr=None, use_wtime=False):
+def _rostopic_hz(node, topics, qos, window_size=DEFAULT_WINDOW_SIZE, filter_expr=None, use_wtime=False):
     """
     Periodically print the publishing rate of a topic to console until shutdown.
 
     :param topics: list of topic names, ``list`` of ``str``
+    :param qos: qos configuration of the subscriber
     :param window_size: number of messages to average over, -1 for infinite, ``int``
     :param filter_expr: Python filter expression that is called with m, the message instance
     """
@@ -299,11 +305,13 @@ def _rostopic_hz(node, topics, window_size=DEFAULT_WINDOW_SIZE, filter_expr=None
             print('WARNING: failed to find message type for topic [%s]' % topic)
             continue
 
+        qos_profile = choose_qos(node, topic_name=topic, qos_args=qos)
+
         node.create_subscription(
             msg_class,
             topic,
             functools.partial(rt.callback_hz, topic=topic),
-            qos_profile_sensor_data)
+            qos_profile)
         if topics_len > 1:
             print('Subscribed to [%s]' % topic)
 
