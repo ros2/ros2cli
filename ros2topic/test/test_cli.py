@@ -406,6 +406,17 @@ class TestROS2TopicCLI(unittest.TestCase):
         assert topic_command.wait_for_shutdown(timeout=10)
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_topic_echo_clear(self):
+        with self.launch_topic_command(arguments=['echo', '--clear', '/chatter']) as topic_command:
+            assert topic_command.wait_for_output(functools.partial(
+                launch_testing.tools.expect_output, expected_lines=[
+                    re.compile(r".*data: 'Hello World: \d+'"),
+                    '---'
+                ], strict=True
+            ), timeout=10), 'Output does not match: ' + topic_command.output
+        assert topic_command.wait_for_shutdown(timeout=10)
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_no_str_topic_echo(self):
         with self.launch_topic_command(
             arguments=['echo', '--no-str', '/chatter']
@@ -876,17 +887,6 @@ class TestROS2TopicCLI(unittest.TestCase):
                     'Subscribed to [/defaults]',
                     re.compile(r'\d{2} B/s from \d+ messages'),
                     re.compile(r'\s*Message size mean: \d{2} B min: \d{2} B max: \d{2} B')
-                ], strict=True
-            ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=10)
-
-    @launch_testing.markers.retry_on_failure(times=5, delay=1)
-    def test_topic_clear(self):
-        with self.launch_topic_command(arguments=['echo', '--clear', '/chatter']) as topic_command:
-            assert topic_command.wait_for_output(functools.partial(
-                launch_testing.tools.expect_output, expected_lines=[
-                    re.compile(r"\033\[2J\033\[Hdata: 'Hello World: \d+'"),
-                    '---'
                 ], strict=True
             ), timeout=10)
         assert topic_command.wait_for_shutdown(timeout=10)
