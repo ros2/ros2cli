@@ -81,7 +81,7 @@ class Result:
         self.warning += 1
 
 
-def run_checks(*, include_warnings=False) -> Tuple[Set[str], int, int]:
+def run_checks(*, include_warnings=False, exclude_packages=False) -> Tuple[Set[str], int, int]:
     """
     Run all checks and return check results.
 
@@ -96,6 +96,10 @@ def run_checks(*, include_warnings=False) -> Tuple[Set[str], int, int]:
         groups = entry_points.select(group='ros2doctor.checks')
     else:
         groups = entry_points.get('ros2doctor.checks', [])
+
+    if exclude_packages:
+        groups = [ep for ep in groups if ep.name != "PackageCheck"]
+
     for check_entry_pt in groups:
         try:
             check_class = check_entry_pt.load()
@@ -119,7 +123,7 @@ def run_checks(*, include_warnings=False) -> Tuple[Set[str], int, int]:
     return fail_categories, fail, total
 
 
-def generate_reports(*, categories=None) -> List[Report]:
+def generate_reports(*, categories=None, exclude_packages=False) -> List[Report]:
     """
     Print all reports or reports of failed checks to terminal.
 
@@ -131,6 +135,10 @@ def generate_reports(*, categories=None) -> List[Report]:
         groups = entry_points.select(group='ros2doctor.report')
     else:
         groups = entry_points.get('ros2doctor.report', [])
+
+    if exclude_packages:
+        groups = [ep for ep in groups if ep.name != "PackageReport"]
+
     for report_entry_pt in groups:
         try:
             report_class = report_entry_pt.load()
