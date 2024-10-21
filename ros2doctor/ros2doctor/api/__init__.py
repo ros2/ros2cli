@@ -98,7 +98,7 @@ def run_checks(*, include_warnings=False, exclude_packages=False) -> Tuple[Set[s
         groups = entry_points.get('ros2doctor.checks', [])
 
     if exclude_packages:
-        groups = [ep for ep in groups if ep.name != "PackageCheck"]
+        groups = [ep for ep in groups if ep.name != 'PackageCheck']
 
     for check_entry_pt in groups:
         try:
@@ -137,7 +137,7 @@ def generate_reports(*, categories=None, exclude_packages=False) -> List[Report]
         groups = entry_points.get('ros2doctor.report', [])
 
     if exclude_packages:
-        groups = [ep for ep in groups if ep.name != "PackageReport"]
+        groups = [ep for ep in groups if ep.name != 'PackageReport']
 
     for report_entry_pt in groups:
         try:
