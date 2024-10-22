@@ -58,7 +58,8 @@ class DoctorCommand(CommandExtension):
             return
 
         # `ros2 doctor
-        fail_category, fail, total = run_checks(include_warnings=args.include_warnings, exclude_packages=args.exclude_packages)
+        fail_category, fail, total = run_checks(include_warnings=args.include_warnings, 
+                                                exclude_packages=args.exclude_packages)
         if fail:
             print(f'\n{fail}/{total} check(s) failed\n')
             print('Failed modules:', *fail_category)
