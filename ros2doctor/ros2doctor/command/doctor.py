@@ -45,21 +45,25 @@ class DoctorCommand(CommandExtension):
             parser, cli_name, '_verb', 'ros2doctor.verb', required=False)
 
     def main(self, *, parser, args):
+        print('Hello moto')
         """Run checks and print report to terminal based on user input args."""
         if hasattr(args, '_verb'):
             extension = getattr(args, '_verb')
             return extension.main(args=args)
 
+        # LocalVariables to reduce code length
+        iw, ep = (args.include_warnings, args.exclude_packages)
+        
         # `ros2 doctor -r`
         if args.report:
-            all_reports = generate_reports(exclude_packages=args.exclude_packages)
+            all_reports = generate_reports(exclude_packages=ep)
             for report_obj in all_reports:
                 format_print(report_obj)
             return
 
         # `ros2 doctor
-        fail_category, fail, total = run_checks(include_warnings=args.include_warnings, 
-                                                exclude_packages=args.exclude_packages)
+
+        fail_category, fail, total = run_checks(include_warnings=iw, exclude_packages=ep)
         if fail:
             print(f'\n{fail}/{total} check(s) failed\n')
             print('Failed modules:', *fail_category)
