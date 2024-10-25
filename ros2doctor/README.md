@@ -18,6 +18,9 @@ Run `ros2 doctor -rf/--report-fail` to see report of failed checks only.
 Run `ros2 doctor -iw/--include-warnings` to include warnings as failed checks.
 `-iw` and `-rf` can be used in combination.
 
+Run `ros2 doctor -ep/--exclude-packages` to exclude package checks or report.
+
+
 ## Add New Checks
 
 To add your own checks or information to report, use [Python entry points](https://setuptools.readthedocs.io/en/latest/pkg_resources.html#entry-points) to add modules to `setup.py`.
