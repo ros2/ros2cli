@@ -111,7 +111,7 @@ class EchoVerb(VerbExtension):
             '--clear', '-c', action='store_true',
             help='Clear screen before printing next message')
         parser.add_argument(
-            '-n', '--node-name', type=str, default='',
+            '-n', '--node-name', type=str, default=None,
             help='Name of the created echoing node')
 
     def choose_qos(self, node, args):
