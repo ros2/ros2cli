@@ -33,6 +33,10 @@ class DoctorCommand(CommandExtension):
             help='Print reports of failed checks only.'
         )
         parser.add_argument(
+            '--exclude-packages', '-ep', action='store_true',
+            help='Exclude package checks or report.'
+        )
+        parser.add_argument(
             '--include-warnings', '-iw', action='store_true',
             help='Include warnings as failed checks. Warnings are ignored by default.'
         )
@@ -46,15 +50,18 @@ class DoctorCommand(CommandExtension):
             extension = getattr(args, '_verb')
             return extension.main(args=args)
 
+        # Local Variables to reduce code length
+        iw, ep = (args.include_warnings, args.exclude_packages)
         # `ros2 doctor -r`
         if args.report:
-            all_reports = generate_reports()
+            all_reports = generate_reports(exclude_packages=ep)
             for report_obj in all_reports:
                 format_print(report_obj)
             return
 
         # `ros2 doctor
-        fail_category, fail, total = run_checks(include_warnings=args.include_warnings)
+
+        fail_category, fail, total = run_checks(include_warnings=iw, exclude_packages=ep)
         if fail:
             print(f'\n{fail}/{total} check(s) failed\n')
             print('Failed modules:', *fail_category)
