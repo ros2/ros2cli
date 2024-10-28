@@ -107,6 +107,9 @@ class EchoVerb(VerbExtension):
         parser.add_argument(
             '--include-message-info', '-i', action='store_true',
             help='Shows the associated message info.')
+        parser.add_argument(
+            '-n', '--node-name', type=str, default=None,
+            help='Name of the created echoing node')
 
     def choose_qos(self, node, args):
 
@@ -196,7 +199,7 @@ class EchoVerb(VerbExtension):
 
         self.include_message_info = args.include_message_info
 
-        with NodeStrategy(args) as node:
+        with NodeStrategy(args, node_name=args.node_name) as node:
 
             qos_profile = self.choose_qos(node, args)
 
