@@ -107,6 +107,9 @@ class EchoVerb(VerbExtension):
         parser.add_argument(
             '--include-message-info', '-i', action='store_true',
             help='Shows the associated message info.')
+        parser.add_argument(
+            '--clear', '-c', action='store_true',
+            help='Clear screen before printing next message')
 
     def choose_qos(self, node, args):
 
@@ -185,6 +188,7 @@ class EchoVerb(VerbExtension):
         self.no_str = args.no_str
         self.flow_style = args.flow_style
         self.once = args.once
+        self.clear_screen = args.clear
 
         self.filter_fn = None
         if args.filter_expr:
@@ -280,6 +284,10 @@ class EchoVerb(VerbExtension):
         if self.future is not None and self.once:
             self.future.set_result(True)
 
+        # Clear terminal screen before print
+        if self.clear_screen:
+            clear_terminal()
+
         if not hasattr(submsg, '__slots__'):
             # raw
             if self.include_message_info:
@@ -322,3 +330,7 @@ def _message_lost_event_callback(message_lost_status):
         f'\n\ttotal count: {message_lost_status.total_count}',
         end='---\n'
     )
+
+
+def clear_terminal():
+    print('\x1b[H\x1b[2J')
