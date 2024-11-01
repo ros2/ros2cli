@@ -12,9 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-import platform
-
 from typing import Optional
 from typing import TypeVar
 
@@ -336,7 +333,4 @@ def _message_lost_event_callback(message_lost_status):
 
 
 def clear_terminal():
-    if platform.system() == 'Windows':
-        os.system('cls')
-    else:
-        os.system('clear')
+    print('\x1b[H\x1b[2J')
