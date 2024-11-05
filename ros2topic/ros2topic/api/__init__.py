@@ -257,10 +257,11 @@ def add_qos_arguments(parser: ArgumentParser, subscribe_or_publish: str, default
             f'Quality of service liveliness lease duration setting to {subscribe_or_publish} '
             'with (overrides liveliness lease duration value of --qos-profile option'))
 
+
 def extract_qos_arguments(args):
     class QosArgs:
         pass
-    
+
     qos = QosArgs()
     qos.qos_profile = args.qos_profile
     qos.qos_reliability = args.qos_reliability
@@ -271,6 +272,7 @@ def extract_qos_arguments(args):
     qos.qos_liveliness_lease_duration_seconds = args.qos_liveliness_lease_duration_seconds
 
     return qos
+
 
 def choose_qos(node, topic_name: str, qos_args):
     if (qos_args.qos_reliability is not None or

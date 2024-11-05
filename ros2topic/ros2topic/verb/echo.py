@@ -25,8 +25,8 @@ from ros2cli.helpers import unsigned_int
 from ros2cli.node.strategy import add_arguments as add_strategy_node_arguments
 from ros2cli.node.strategy import NodeStrategy
 from ros2topic.api import add_qos_arguments
-from ros2topic.api import extract_qos_arguments
 from ros2topic.api import choose_qos
+from ros2topic.api import extract_qos_arguments
 from ros2topic.api import get_msg_class
 from ros2topic.api import positive_float
 from ros2topic.api import TopicNameCompleter
