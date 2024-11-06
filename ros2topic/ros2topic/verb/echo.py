@@ -112,7 +112,7 @@ class EchoVerb(VerbExtension):
             help='Clear screen before printing next message')
         parser.add_argument(
             '-n', '--node-name', type=str, default=None,
-            help='Name of the created echoing node')
+            help='The name of the echoing node; by default, will be a hidden node name')
 
     def choose_qos(self, node, args):
 
