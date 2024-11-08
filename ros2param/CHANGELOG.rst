@@ -2,6 +2,11 @@
 Changelog for package ros2param
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* cosmetic fixes for ros2param dump command. (`#939 <https://github.com/ros2/ros2cli/issues/939>`_)
+* Contributors: Tomoya Fujita
+
 0.25.7 (2024-07-11)
 -------------------
 
