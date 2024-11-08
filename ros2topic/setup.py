@@ -5,7 +5,7 @@ package_name = 'ros2topic'
 
 setup(
     name=package_name,
-    version='0.25.7',
+    version='0.25.8',
     packages=find_packages(exclude=['test']),
     data_files=[
         ('share/' + package_name, ['package.xml']),
