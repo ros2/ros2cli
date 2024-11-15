@@ -22,7 +22,6 @@
   <exec_depend>python3-catkin-pkg-modules</exec_depend>
   <exec_depend>python3-empy</exec_depend>
   <exec_depend>python3-importlib-resources</exec_depend>
-  <exec_depend>python3-pkg-resources</exec_depend>
   <exec_depend>ros2cli</exec_depend>
 
   <test_depend>ament_flake8</test_depend>

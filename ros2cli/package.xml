@@ -20,7 +20,6 @@
   <exec_depend>python3-argcomplete</exec_depend>
   <exec_depend>python3-importlib-metadata</exec_depend>
   <exec_depend>python3-packaging</exec_depend>
-  <exec_depend>python3-pkg-resources</exec_depend>
   <exec_depend>python3-psutil</exec_depend>
   <exec_depend>rclpy</exec_depend>
 
