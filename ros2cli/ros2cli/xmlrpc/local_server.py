@@ -14,7 +14,6 @@
 
 import os
 import socket
-import struct
 # Import SimpleXMLRPCRequestHandler to re-export it.
 from xmlrpc.server import SimpleXMLRPCRequestHandler  # noqa
 from xmlrpc.server import SimpleXMLRPCServer
@@ -39,19 +38,6 @@ class LocalXMLRPCServer(SimpleXMLRPCServer):
     # https://learn.microsoft.com/en-us/windows/win32/winsock/using-so-reuseaddr-and-so-exclusiveaddruse.  # noqa
     # So we don't set the option for Windows.
     allow_reuse_address = False if os.name == 'nt' else True
-
-    def server_bind(self):
-        # Prevent listening socket from lingering in TIME_WAIT state after close()
-        # self.socket.setsockopt(
-        #     socket.SOL_SOCKET, socket.SO_LINGER, struct.pack('ii', 1, 0))
-        super(LocalXMLRPCServer, self).server_bind()
-
-    def get_request(self):
-        # Prevent accepted socket from lingering in TIME_WAIT state after close()
-        sock, addr = super(LocalXMLRPCServer, self).get_request()
-        # sock.setsockopt(
-        #     socket.SOL_SOCKET, socket.SO_LINGER, struct.pack('ii', 1, 0))
-        return sock, addr
 
     def verify_request(self, request, client_address):
         if client_address[0] not in get_local_ipaddrs():
