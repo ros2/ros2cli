@@ -42,15 +42,15 @@ class LocalXMLRPCServer(SimpleXMLRPCServer):
 
     def server_bind(self):
         # Prevent listening socket from lingering in TIME_WAIT state after close()
-        self.socket.setsockopt(
-            socket.SOL_SOCKET, socket.SO_LINGER, struct.pack('ii', 1, 0))
+        # self.socket.setsockopt(
+        #     socket.SOL_SOCKET, socket.SO_LINGER, struct.pack('ii', 1, 0))
         super(LocalXMLRPCServer, self).server_bind()
 
     def get_request(self):
         # Prevent accepted socket from lingering in TIME_WAIT state after close()
         sock, addr = super(LocalXMLRPCServer, self).get_request()
-        sock.setsockopt(
-            socket.SOL_SOCKET, socket.SO_LINGER, struct.pack('ii', 1, 0))
+        # sock.setsockopt(
+        #     socket.SOL_SOCKET, socket.SO_LINGER, struct.pack('ii', 1, 0))
         return sock, addr
 
     def verify_request(self, request, client_address):
