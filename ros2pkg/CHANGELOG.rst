@@ -2,8 +2,8 @@
 Changelog for package ros2pkg
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.36.0 (2024-11-20)
+-------------------
 * Drop dependency on python3-pkg-resources (`#946 <https://github.com/ros2/ros2cli/issues/946>`_)
 * Contributors: Scott K Logan
 
