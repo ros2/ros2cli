@@ -2,6 +2,9 @@
 Changelog for package ros2node
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.35.0 (2024-10-03)
 -------------------
 * ros2node requires fully qualified node name. (`#923 <https://github.com/ros2/ros2cli/issues/923>`_)

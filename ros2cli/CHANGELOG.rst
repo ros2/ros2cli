@@ -2,6 +2,13 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix instability in the ros2 daemon. (`#947 <https://github.com/ros2/ros2cli/issues/947>`_)
+* Drop dependency on python3-pkg-resources (`#946 <https://github.com/ros2/ros2cli/issues/946>`_)
+* NodeStrategy supports node name argument. (`#941 <https://github.com/ros2/ros2cli/issues/941>`_)
+* Contributors: Chris Lalancette, Scott K Logan, Tomoya Fujita
+
 0.35.0 (2024-10-03)
 -------------------
 

@@ -2,6 +2,11 @@
 Changelog for package ros2pkg
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Drop dependency on python3-pkg-resources (`#946 <https://github.com/ros2/ros2cli/issues/946>`_)
+* Contributors: Scott K Logan
+
 0.35.0 (2024-10-03)
 -------------------
 * Support empy4 and empy3 (`#921 <https://github.com/ros2/ros2cli/issues/921>`_)

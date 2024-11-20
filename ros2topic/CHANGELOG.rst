@@ -2,6 +2,12 @@
 Changelog for package ros2topic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* NodeStrategy supports node name argument. (`#941 <https://github.com/ros2/ros2cli/issues/941>`_)
+* feat(echo --clear): add --clear option to echo (`#819 <https://github.com/ros2/ros2cli/issues/819>`_)
+* Contributors: Guillaume Beuzeboc, Tomoya Fujita
+
 0.35.0 (2024-10-03)
 -------------------
 * Support multiple topics via ros2 topic hz. (`#929 <https://github.com/ros2/ros2cli/issues/929>`_)
