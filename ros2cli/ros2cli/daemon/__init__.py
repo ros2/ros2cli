@@ -151,6 +151,13 @@ def serve(server: LocalXMLRPCServer, *, timeout: int = 2 * 60 * 60):
             pass
 
 
+def serve_and_close(server: LocalXMLRPCServer, *, timeout: int = 2 * 60 * 60):
+    try:
+        serve(server, timeout=timeout)
+    finally:
+        server.server_close()
+
+
 def main(*, argv=None):
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)

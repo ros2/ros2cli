@@ -46,7 +46,7 @@ class DaemonNode:
                 for method in self._proxy.system.listMethods()
                 if not method.startswith('system.')
             ]
-        except ConnectionRefusedError:
+        except (ConnectionRefusedError, ConnectionResetError):
             return False
         return True
 
@@ -168,7 +168,7 @@ def spawn_daemon(args, timeout=None, debug=False):
             'rmw_implementation': rclpy.get_rmw_implementation_identifier()}
 
         daemonize(
-            functools.partial(daemon.serve, server),
+            functools.partial(daemon.serve_and_close, server),
             tags=tags, timeout=timeout, debug=debug)
     finally:
         server.server_close()
