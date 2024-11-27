@@ -21,6 +21,9 @@ import rclpy
 
 from rclpy.duration import Duration
 from rclpy.expand_topic_name import expand_topic_name
+from rclpy.qos import QoSDurabilityPolicy
+from rclpy.qos import QoSPresetProfiles
+from rclpy.qos import QoSReliabilityPolicy
 from rclpy.topic_or_service_is_hidden import topic_or_service_is_hidden
 from rclpy.validate_full_topic_name import validate_full_topic_name
 from ros2cli.node.strategy import NodeStrategy
@@ -253,3 +256,80 @@ def add_qos_arguments(parser: ArgumentParser, subscribe_or_publish: str, default
         help=(
             f'Quality of service liveliness lease duration setting to {subscribe_or_publish} '
             'with (overrides liveliness lease duration value of --qos-profile option'))
+
+
+def extract_qos_arguments(args):
+    class QosArgs:
+        pass
+
+    qos = QosArgs()
+    qos.qos_profile = args.qos_profile
+    qos.qos_reliability = args.qos_reliability
+    qos.qos_durability = args.qos_durability
+    qos.qos_depth = args.qos_depth
+    qos.qos_history = args.qos_history
+    qos.qos_liveliness = args.qos_liveliness
+    qos.qos_liveliness_lease_duration_seconds = args.qos_liveliness_lease_duration_seconds
+
+    return qos
+
+
+def choose_qos(node, topic_name: str, qos_args):
+    if (qos_args.qos_reliability is not None or
+            qos_args.qos_durability is not None or
+            qos_args.qos_depth is not None or
+            qos_args.qos_history is not None or
+            qos_args.qos_liveliness is not None or
+            qos_args.qos_liveliness_lease_duration_seconds is not None):
+
+        return qos_profile_from_short_keys(
+            qos_args.qos_profile,
+            reliability=qos_args.qos_reliability,
+            durability=qos_args.qos_durability,
+            depth=qos_args.qos_depth,
+            history=qos_args.qos_history,
+            liveliness=qos_args.qos_liveliness,
+            liveliness_lease_duration_s=qos_args.qos_liveliness_lease_duration_seconds)
+
+    qos_profile = QoSPresetProfiles.get_from_short_key(qos_args.qos_profile)
+    reliability_reliable_endpoints_count = 0
+    durability_transient_local_endpoints_count = 0
+
+    pubs_info = node.get_publishers_info_by_topic(topic_name)
+    publishers_count = len(pubs_info)
+    if publishers_count == 0:
+        return qos_profile
+
+    for info in pubs_info:
+        if (info.qos_profile.reliability == QoSReliabilityPolicy.RELIABLE):
+            reliability_reliable_endpoints_count += 1
+        if (info.qos_profile.durability == QoSDurabilityPolicy.TRANSIENT_LOCAL):
+            durability_transient_local_endpoints_count += 1
+
+    # If all endpoints are reliable, ask for reliable
+    if reliability_reliable_endpoints_count == publishers_count:
+        qos_profile.reliability = QoSReliabilityPolicy.RELIABLE
+    else:
+        if reliability_reliable_endpoints_count > 0:
+            print(
+                'Some, but not all, publishers are offering '
+                'QoSReliabilityPolicy.RELIABLE. Falling back to '
+                'QoSReliabilityPolicy.BEST_EFFORT as it will connect '
+                'to all publishers'
+            )
+        qos_profile.reliability = QoSReliabilityPolicy.BEST_EFFORT
+
+    # If all endpoints are transient_local, ask for transient_local
+    if durability_transient_local_endpoints_count == publishers_count:
+        qos_profile.durability = QoSDurabilityPolicy.TRANSIENT_LOCAL
+    else:
+        if durability_transient_local_endpoints_count > 0:
+            print(
+                'Some, but not all, publishers are offering '
+                'QoSDurabilityPolicy.TRANSIENT_LOCAL. Falling back to '
+                'QoSDurabilityPolicy.VOLATILE as it will connect '
+                'to all publishers'
+            )
+        qos_profile.durability = QoSDurabilityPolicy.VOLATILE
+
+    return qos_profile
