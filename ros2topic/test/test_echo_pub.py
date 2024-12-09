@@ -302,7 +302,7 @@ class TestROS2TopicEchoPub(unittest.TestCase):
         command_action = ExecuteProcess(
             # yaml file prevails to the values 'data: hello'
             cmd=(['ros2', 'topic', 'pub', '/clitest/topic/chatter',
-                  'std_msgs/String', 'data: hello', '--yaml-file',
+                  'std_msgs/String', '--yaml-file',
                   str(TEST_RESOURCES_DIR / 'chatter.yaml')]),
             additional_env={
                 'PYTHONUNBUFFERED': '1'

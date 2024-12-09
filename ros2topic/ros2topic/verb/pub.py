@@ -70,6 +70,10 @@ class PubVerb(VerbExtension):
         group.add_argument(
             '--stdin', action='store_true',
             help='Read values from standard input')
+        group.add_argument(
+            '--yaml-file', type=str, default=None,
+            help='YAML file that has message contents, '
+                 'e.g STDOUT from ros2 topic echo <topic>')
         parser.add_argument(
             '-r', '--rate', metavar='N', type=positive_float, default=1.0,
             help='Publishing rate in Hz (default: 1)')
@@ -99,10 +103,6 @@ class PubVerb(VerbExtension):
             help='Keep publishing node alive for N seconds after the last msg '
                  '(default: 0.1)')
         parser.add_argument(
-            '--yaml-file', type=str, default=None,
-            help='YAML file that has message contents, prevails <values>. '
-                 'e.g STDOUT from ros2 topic echo <topic>')
-        parser.add_argument(
             '-n', '--node-name',
             help='Name of the created publishing node')
         add_qos_arguments(parser, 'publish', 'default')
@@ -124,12 +124,10 @@ def main(args):
     if args.once:
         times = 1
 
-    values = None
-    if not args.yaml_file:
-        if args.stdin:
-            values = collect_stdin()
-        else:
-            values = args.values
+    if args.stdin:
+        values = collect_stdin()
+    else:
+        values = args.values
 
     with DirectNode(args, node_name=args.node_name) as node:
         return publisher(
