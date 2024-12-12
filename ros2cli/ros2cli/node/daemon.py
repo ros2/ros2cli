@@ -145,7 +145,7 @@ def spawn_daemon(args, timeout=None, debug=False):
             with open('/proc/self/status', 'r') as f:
                 for line in f:
                     if line.startswith(string_to_find):
-                        fdlimit = int(line.removeprefix(string_to_find).strip())
+                        fdlimit = int(line[len(string_to_find):].strip())
                         break
         except (FileNotFoundError, ValueError):
             pass
