@@ -2,8 +2,8 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.32.2 (2024-12-18)
+-------------------
 * replace removeprefix with string slicing. (`#953 <https://github.com/ros2/ros2cli/issues/953>`_) (`#955 <https://github.com/ros2/ros2cli/issues/955>`_)
   (cherry picked from commit 35d6abd50a55181099aab82134fc507d8fd162bd)
   Co-authored-by: Tomoya Fujita <Tomoya.Fujita@sony.com>
