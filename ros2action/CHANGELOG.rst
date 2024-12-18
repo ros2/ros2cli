@@ -2,6 +2,9 @@
 Changelog for package ros2action
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.32.1 (2024-05-13)
 -------------------
 * call get_action_interfaces() properly. (`#898 <https://github.com/ros2/ros2cli/issues/898>`_) (`#900 <https://github.com/ros2/ros2cli/issues/900>`_)

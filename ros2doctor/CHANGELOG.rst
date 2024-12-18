@@ -2,6 +2,13 @@
 Changelog for package ros2doctor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* New flag and code update for its use (`#942 <https://github.com/ros2/ros2cli/issues/942>`_) (`#943 <https://github.com/ros2/ros2cli/issues/943>`_)
+  (cherry picked from commit a3198b80f8a993ac01501d8e3fbdd76e7aaf92dc)
+  Co-authored-by: Angel LoGa <98213868+AngeLoGa@users.noreply.github.com>
+* Contributors: mergify[bot]
+
 0.32.1 (2024-05-13)
 -------------------
 

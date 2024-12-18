@@ -2,6 +2,18 @@
 Changelog for package ros2param
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* cosmetic fixes for ros2param dump command. (`#933 <https://github.com/ros2/ros2cli/issues/933>`_) (`#940 <https://github.com/ros2/ros2cli/issues/940>`_)
+  * cosmetic fixes for ros2param dump command.
+  * pass through no parameters available case.
+  * bug fix from review comment.
+  * remove unnecessary initial assignment.
+  ---------
+  (cherry picked from commit 8e46bf2608d04e81a3d088ccc5087dbde9f3e32f)
+  Co-authored-by: Tomoya Fujita <Tomoya.Fujita@sony.com>
+* Contributors: mergify[bot]
+
 0.32.1 (2024-05-13)
 -------------------
 
