@@ -2,6 +2,11 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* replace removeprefix with string slicing. (`#953 <https://github.com/ros2/ros2cli/issues/953>`_)
+* Contributors: Tomoya Fujita
+
 0.36.0 (2024-11-20)
 -------------------
 * Fix instability in the ros2 daemon. (`#947 <https://github.com/ros2/ros2cli/issues/947>`_)

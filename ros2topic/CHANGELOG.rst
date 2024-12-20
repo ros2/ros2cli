@@ -2,6 +2,9 @@
 Changelog for package ros2topic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.36.0 (2024-11-20)
 -------------------
 * NodeStrategy supports node name argument. (`#941 <https://github.com/ros2/ros2cli/issues/941>`_)

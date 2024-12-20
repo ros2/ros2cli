@@ -2,6 +2,9 @@
 Changelog for package ros2param
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.36.0 (2024-11-20)
 -------------------
 * cosmetic fixes for ros2param dump command. (`#933 <https://github.com/ros2/ros2cli/issues/933>`_)
