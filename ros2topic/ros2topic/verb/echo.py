@@ -19,18 +19,16 @@ import rclpy
 from rclpy.event_handler import SubscriptionEventCallbacks
 from rclpy.event_handler import UnsupportedEventTypeError
 from rclpy.node import Node
-from rclpy.qos import QoSDurabilityPolicy
-from rclpy.qos import QoSPresetProfiles
 from rclpy.qos import QoSProfile
-from rclpy.qos import QoSReliabilityPolicy
 from rclpy.task import Future
 from ros2cli.helpers import unsigned_int
 from ros2cli.node.strategy import add_arguments as add_strategy_node_arguments
 from ros2cli.node.strategy import NodeStrategy
 from ros2topic.api import add_qos_arguments
+from ros2topic.api import choose_qos
+from ros2topic.api import extract_qos_arguments
 from ros2topic.api import get_msg_class
 from ros2topic.api import positive_float
-from ros2topic.api import qos_profile_from_short_keys
 from ros2topic.api import TopicNameCompleter
 from ros2topic.verb import VerbExtension
 from rosidl_runtime_py import message_to_csv
@@ -114,67 +112,6 @@ class EchoVerb(VerbExtension):
             '-n', '--node-name', type=str, default=None,
             help='The name of the echoing node; by default, will be a hidden node name')
 
-    def choose_qos(self, node, args):
-
-        if (args.qos_reliability is not None or
-                args.qos_durability is not None or
-                args.qos_depth is not None or
-                args.qos_history is not None or
-                args.qos_liveliness is not None or
-                args.qos_liveliness_lease_duration_seconds is not None):
-
-            return qos_profile_from_short_keys(
-                args.qos_profile,
-                reliability=args.qos_reliability,
-                durability=args.qos_durability,
-                depth=args.qos_depth,
-                history=args.qos_history,
-                liveliness=args.qos_liveliness,
-                liveliness_lease_duration_s=args.qos_liveliness_lease_duration_seconds)
-
-        qos_profile = QoSPresetProfiles.get_from_short_key(args.qos_profile)
-        reliability_reliable_endpoints_count = 0
-        durability_transient_local_endpoints_count = 0
-
-        pubs_info = node.get_publishers_info_by_topic(args.topic_name)
-        publishers_count = len(pubs_info)
-        if publishers_count == 0:
-            return qos_profile
-
-        for info in pubs_info:
-            if (info.qos_profile.reliability == QoSReliabilityPolicy.RELIABLE):
-                reliability_reliable_endpoints_count += 1
-            if (info.qos_profile.durability == QoSDurabilityPolicy.TRANSIENT_LOCAL):
-                durability_transient_local_endpoints_count += 1
-
-        # If all endpoints are reliable, ask for reliable
-        if reliability_reliable_endpoints_count == publishers_count:
-            qos_profile.reliability = QoSReliabilityPolicy.RELIABLE
-        else:
-            if reliability_reliable_endpoints_count > 0:
-                print(
-                    'Some, but not all, publishers are offering '
-                    'QoSReliabilityPolicy.RELIABLE. Falling back to '
-                    'QoSReliabilityPolicy.BEST_EFFORT as it will connect '
-                    'to all publishers'
-                )
-            qos_profile.reliability = QoSReliabilityPolicy.BEST_EFFORT
-
-        # If all endpoints are transient_local, ask for transient_local
-        if durability_transient_local_endpoints_count == publishers_count:
-            qos_profile.durability = QoSDurabilityPolicy.TRANSIENT_LOCAL
-        else:
-            if durability_transient_local_endpoints_count > 0:
-                print(
-                    'Some, but not all, publishers are offering '
-                    'QoSDurabilityPolicy.TRANSIENT_LOCAL. Falling back to '
-                    'QoSDurabilityPolicy.VOLATILE as it will connect '
-                    'to all publishers'
-                )
-            qos_profile.durability = QoSDurabilityPolicy.VOLATILE
-
-        return qos_profile
-
     def main(self, *, args):
 
         self.csv = args.csv
@@ -205,7 +142,8 @@ class EchoVerb(VerbExtension):
 
         with NodeStrategy(args, node_name=args.node_name) as node:
 
-            qos_profile = self.choose_qos(node, args)
+            qos = extract_qos_arguments(args)
+            qos_profile = choose_qos(node, topic_name=args.topic_name, qos_args=qos)
 
             if args.message_type is None:
                 message_type = get_msg_class(
