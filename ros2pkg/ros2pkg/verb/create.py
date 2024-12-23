@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# TODO: integrate features of https://github.com/ika-rwth-aachen/ros2-pkg-create
+
 import getpass
 import os
 import shutil
