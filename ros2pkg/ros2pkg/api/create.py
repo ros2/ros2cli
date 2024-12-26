@@ -186,6 +186,11 @@ def populate_ament_python(package, package_directory, source_directory, python_n
                           test_directory,
                           'test_pep257.py',
                           {})
+    _create_template_file('ament_python',
+                          'test_xmllint.py.em',
+                          test_directory,
+                          'test_xmllint.py',
+                          {})
 
 
 def populate_python_node(package, source_directory, python_node_name):
