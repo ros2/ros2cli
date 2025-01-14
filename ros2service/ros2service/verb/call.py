@@ -97,9 +97,12 @@ def requester(service_type, service_name, values, period):
         request = srv_module.Request()
 
         try:
-            set_message_fields(request, values_dictionary,
-                  expand_header_auto=True,
-                  expand_time_now=True)
+            set_message_fields(
+                request,
+                values_dictionary,
+                expand_header_auto=True,
+                expand_time_now=True
+            )
         except Exception as e:
             return 'Failed to populate field: {0}'.format(e)
 
