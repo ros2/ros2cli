@@ -108,7 +108,7 @@ def send_goal(action_name, action_type, goal_values, feedback_callback):
         goal = action_module.Goal()
 
         try:
-            set_message_fields(goal, goal_dict)
+            set_message_fields(goal, goal_dict, expand_header_auto=True, expand_time_now=True)
         except Exception as ex:
             return 'Failed to populate message fields: {!r}'.format(ex)
 
