@@ -1,13 +1,13 @@
 # Copyright 2019 Open Source Robotics Foundation, Inc.
 #
-# Licensed under the Apache License, Version 2.0 (the 'License');
+# Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
 #     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an 'AS IS' BASIS,
+# distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
@@ -29,7 +29,7 @@ import yaml
 
 
 class SendGoalVerb(VerbExtension):
-    'Send an action goal.'
+    """Send an action goal."""
 
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
@@ -100,7 +100,7 @@ def send_goal(action_name, action_type, goal_values, feedback_callback):
 
         rclpy.init()
 
-        node_name = f'{NODE_NAME_PREFIX}_send_goal_{action_type.replace('/', '_')}'
+        node_name = f"{NODE_NAME_PREFIX}_send_goal_{action_type.replace('/', '_')}"
         node = rclpy.create_node(node_name)
 
         action_client = ActionClient(node, action_module, action_name)
