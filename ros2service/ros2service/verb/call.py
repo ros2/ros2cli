@@ -96,13 +96,10 @@ def requester(service_type, service_name, values, period):
 
         request = srv_module.Request()
 
+        timestamp_fields = []
         try:
-            set_message_fields(
-                request,
-                values_dictionary,
-                expand_header_auto=True,
-                expand_time_now=True
-            )
+            timestamp_fields = set_message_fields(
+                request, values_dictionary, expand_header_auto=True, expand_time_now=True)
         except Exception as e:
             return 'Failed to populate field: {0}'.format(e)
 
@@ -111,6 +108,9 @@ def requester(service_type, service_name, values, period):
             cli.wait_for_service()
 
         while True:
+            stamp_now = node.get_clock().now().to_msg()
+            for field_setter in timestamp_fields:
+                field_setter(stamp_now)
             print('requester: making request: %r\n' % request)
             last_call = time.time()
             future = cli.call_async(request)
