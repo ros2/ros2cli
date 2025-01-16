@@ -153,11 +153,8 @@ def send_goal(action_name, action_type, goal_values, feedback_callback):
         goal_handle = None
 
         print('Result:\n    {}'.format(message_to_yaml(result.result)))
-        print(
-            'Goal finished with status: {}'.format(
-                _goal_status_to_string(result.status)
-            )
-        )
+        print('Goal finished with status: {}'.format(_goal_status_to_string(result.status)))
+
     finally:
         # Cancel the goal if it's still active
         if (goal_handle is not None and
