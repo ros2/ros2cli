@@ -69,7 +69,7 @@ class EchoVerb(VerbExtension):
             )
         )
         parser.add_argument(
-            '--field', type=str, default=None,
+            '--field', action='append', type=str, default=None,
             help='Echo a selected field of a message. '
                  "Use '.' to select sub-fields. "
                  'For example, to echo the position field of a nav_msgs/msg/Odometry message: '
@@ -180,11 +180,10 @@ class EchoVerb(VerbExtension):
         self.csv = args.csv
 
         # Validate field selection
-        self.field = args.field
-        if self.field is not None:
-            self.field = list(filter(None, self.field.split('.')))
-            if not self.field:
-                raise RuntimeError(f"Invalid field value '{args.field}'")
+        self.fields_list = []
+        for field in args.field:
+            if field is not None:
+                self.fields_list.append(list(filter(None, field.split('.'))))
 
         self.truncate_length = args.truncate_length if not args.full_length else None
         self.no_arr = args.no_arr
@@ -272,17 +271,23 @@ class EchoVerb(VerbExtension):
         self.future.set_result(True)
 
     def _subscriber_callback(self, msg, info):
-        submsg = msg
-        if self.field is not None:
-            for field in self.field:
+        submsgs = []
+        for fields in self.fields_list:
+            submsg = msg
+            for field in fields:
                 try:
                     submsg = getattr(submsg, field)
                 except AttributeError as ex:
-                    raise RuntimeError(f"Invalid field '{'.'.join(self.field)}': {ex}")
+                    raise RuntimeError(f"Invalid field '{'.'.join(field)}': {ex}")
+            submsgs.append(submsg)
 
         # Evaluate the current msg against the supplied expression
-        if self.filter_fn is not None and not self.filter_fn(submsg):
-            return
+        if self.filter_fn is not None:
+            for submsg in submsgs:
+                if not self.filter_fn(submsg):
+                    submsgs.remove(submsg)
+            if not submsgs:
+                return
 
         if self.future is not None and self.once:
             self.future.set_result(True)
@@ -291,34 +296,34 @@ class EchoVerb(VerbExtension):
         if self.clear_screen:
             clear_terminal()
 
-        if not hasattr(submsg, '__slots__'):
-            # raw
-            if self.include_message_info:
-                print('---Got new message, message info:---')
-                print(info)
-                print('---Message data:---')
-            print(submsg, end='\n---\n')
-            return
+        for submsg in submsgs:
+            if not hasattr(submsg, '__slots__'):
+                # raw
+                if self.include_message_info:
+                    print('---Got new message, message info:---')
+                    print(info)
+                    print('---Message data:---')
+                print(submsg, end='\n---\n')
+                continue
 
-        if self.csv:
-            to_print = message_to_csv(
-                submsg,
-                truncate_length=self.truncate_length,
-                no_arr=self.no_arr,
-                no_str=self.no_str)
+            if self.csv:
+                to_print = message_to_csv(
+                    submsg,
+                    truncate_length=self.truncate_length,
+                    no_arr=self.no_arr,
+                    no_str=self.no_str)
+                if self.include_message_info:
+                    to_print = f'{",".join(str(x) for x in info.values())},{to_print}'
+                print(to_print)
+                continue
+            # yaml
             if self.include_message_info:
-                to_print = f'{",".join(str(x) for x in info.values())},{to_print}'
-            print(to_print)
-            return
-        # yaml
-        if self.include_message_info:
-            print(yaml.dump(info), end='---\n')
-        print(
-            message_to_yaml(
-                submsg, truncate_length=self.truncate_length,
-                no_arr=self.no_arr, no_str=self.no_str, flow_style=self.flow_style),
-            end='---\n')
-
+                print(yaml.dump(info), end='---\n')
+            print(
+                message_to_yaml(
+                    submsg, truncate_length=self.truncate_length,
+                    no_arr=self.no_arr, no_str=self.no_str, flow_style=self.flow_style),
+                end='---\n')
 
 def _expr_eval(expr):
     def eval_fn(m):
