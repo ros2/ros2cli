@@ -622,7 +622,8 @@ class TestROS2TopicCLI(unittest.TestCase):
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_echo_multi_fields_nested(self):
         with self.launch_topic_command(
-            arguments=['echo', '/cmd_vel', '--field', 'twist.linear.x', '--field', 'twist.linear.y'],
+            arguments=['echo', '/cmd_vel', '--field', 'twist.linear.x',
+                       '--field', 'twist.linear.y'],
         ) as topic_command:
             assert topic_command.wait_for_output(functools.partial(
                 launch_testing.tools.expect_output, expected_lines=[
