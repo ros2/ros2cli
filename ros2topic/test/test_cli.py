@@ -590,6 +590,21 @@ class TestROS2TopicCLI(unittest.TestCase):
         assert topic_command.wait_for_shutdown(timeout=10)
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_topic_echo_multi_fields(self):
+        with self.launch_topic_command(
+            arguments=['echo', '/defaults', '--field', 'int8_value', '--field', 'uint8_value'],
+        ) as topic_command:
+            assert topic_command.wait_for_output(functools.partial(
+                launch_testing.tools.expect_output, expected_lines=[
+                    '-50',
+                    '---',
+                    '200',
+                    '---',
+                ], strict=True
+            ), timeout=10)
+        assert topic_command.wait_for_shutdown(timeout=10)
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_echo_field_nested(self):
         with self.launch_topic_command(
             arguments=['echo', '/cmd_vel', '--field', 'twist.angular'],
@@ -605,9 +620,46 @@ class TestROS2TopicCLI(unittest.TestCase):
         assert topic_command.wait_for_shutdown(timeout=10)
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_topic_echo_multi_fields_nested(self):
+        with self.launch_topic_command(
+            arguments=['echo', '/cmd_vel', '--field', 'twist.linear.x', '--field', 'twist.linear.y'],
+        ) as topic_command:
+            assert topic_command.wait_for_output(functools.partial(
+                launch_testing.tools.expect_output, expected_lines=[
+                    '1.0',
+                    '---',
+                    '0.0',
+                    '---',
+                ], strict=True
+            ), timeout=10)
+        assert topic_command.wait_for_shutdown(timeout=10)
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_echo_field_not_a_member(self):
         with self.launch_topic_command(
             arguments=['echo', '/arrays', '--field', 'not_member'],
+        ) as topic_command:
+            assert topic_command.wait_for_output(functools.partial(
+                launch_testing.tools.expect_output, expected_lines=[
+                    "Invalid field 'not_member': 'Arrays' object has no attribute 'not_member'",
+                ], strict=True
+            ), timeout=10)
+        assert topic_command.wait_for_shutdown(timeout=10)
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_topic_echo_multi_fields_not_a_member(self):
+        with self.launch_topic_command(
+            arguments=['echo', '/arrays', '--field', 'not_member', '--field', 'alignment_check'],
+        ) as topic_command:
+            assert topic_command.wait_for_output(functools.partial(
+                launch_testing.tools.expect_output, expected_lines=[
+                    "Invalid field 'not_member': 'Arrays' object has no attribute 'not_member'",
+                ], strict=True
+            ), timeout=10)
+        assert topic_command.wait_for_shutdown(timeout=10)
+
+        with self.launch_topic_command(
+            arguments=['echo', '/arrays', '--field', 'alignment_check', '--field', 'not_member'],
         ) as topic_command:
             assert topic_command.wait_for_output(functools.partial(
                 launch_testing.tools.expect_output, expected_lines=[
@@ -629,6 +681,27 @@ class TestROS2TopicCLI(unittest.TestCase):
 
         with self.launch_topic_command(
             arguments=['echo', '/arrays', '--field', '.'],
+        ) as topic_command:
+            assert topic_command.wait_for_output(functools.partial(
+                launch_testing.tools.expect_output, expected_lines=[
+                    "Invalid field value '.'",
+                ], strict=True
+            ), timeout=10)
+        assert topic_command.wait_for_shutdown(timeout=10)
+
+    def test_topic_echo_multi_fields_invalid(self):
+        with self.launch_topic_command(
+            arguments=['echo', '/arrays', '--field', '/', '--field', 'alignment_check'],
+        ) as topic_command:
+            assert topic_command.wait_for_output(functools.partial(
+                launch_testing.tools.expect_output, expected_lines=[
+                    "Invalid field '/': 'Arrays' object has no attribute '/'",
+                ], strict=True
+            ), timeout=10)
+        assert topic_command.wait_for_shutdown(timeout=10)
+
+        with self.launch_topic_command(
+            arguments=['echo', '/arrays', '--field', 'alignment_check', '--field', '.'],
         ) as topic_command:
             assert topic_command.wait_for_output(functools.partial(
                 launch_testing.tools.expect_output, expected_lines=[

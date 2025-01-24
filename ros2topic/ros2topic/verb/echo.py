@@ -181,9 +181,13 @@ class EchoVerb(VerbExtension):
 
         # Validate field selection
         self.fields_list = []
-        for field in args.field:
-            if field is not None:
-                self.fields_list.append(list(filter(None, field.split('.'))))
+        if args.field:
+            for field in args.field:
+                if field is not None:
+                    field_filtered = list(filter(None, field.split('.')))
+                    self.fields_list.append(field_filtered)
+                    if not field_filtered:
+                        raise RuntimeError(f"Invalid field value '{field}'")
 
         self.truncate_length = args.truncate_length if not args.full_length else None
         self.no_arr = args.no_arr
@@ -272,14 +276,17 @@ class EchoVerb(VerbExtension):
 
     def _subscriber_callback(self, msg, info):
         submsgs = []
-        for fields in self.fields_list:
-            submsg = msg
-            for field in fields:
-                try:
-                    submsg = getattr(submsg, field)
-                except AttributeError as ex:
-                    raise RuntimeError(f"Invalid field '{'.'.join(field)}': {ex}")
-            submsgs.append(submsg)
+        if self.fields_list:
+            for fields in self.fields_list:
+                submsg = msg
+                for field in fields:
+                    try:
+                        submsg = getattr(submsg, field)
+                    except AttributeError as ex:
+                        raise RuntimeError(f"Invalid field '{'.'.join(fields)}': {ex}")
+                submsgs.append(submsg)
+        else:
+            submsgs.append(msg)
 
         # Evaluate the current msg against the supplied expression
         if self.filter_fn is not None:
@@ -324,6 +331,7 @@ class EchoVerb(VerbExtension):
                     submsg, truncate_length=self.truncate_length,
                     no_arr=self.no_arr, no_str=self.no_str, flow_style=self.flow_style),
                 end='---\n')
+
 
 def _expr_eval(expr):
     def eval_fn(m):
