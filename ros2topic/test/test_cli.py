@@ -597,7 +597,6 @@ class TestROS2TopicCLI(unittest.TestCase):
             assert topic_command.wait_for_output(functools.partial(
                 launch_testing.tools.expect_output, expected_lines=[
                     '-50',
-                    '---',
                     '200',
                     '---',
                 ], strict=True
@@ -628,7 +627,6 @@ class TestROS2TopicCLI(unittest.TestCase):
             assert topic_command.wait_for_output(functools.partial(
                 launch_testing.tools.expect_output, expected_lines=[
                     '1.0',
-                    '---',
                     '0.0',
                     '---',
                 ], strict=True

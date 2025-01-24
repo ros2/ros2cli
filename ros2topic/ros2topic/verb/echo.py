@@ -303,14 +303,19 @@ class EchoVerb(VerbExtension):
         if self.clear_screen:
             clear_terminal()
 
-        for submsg in submsgs:
+        for i, submsg in enumerate(submsgs):
+            if i == len(submsgs)-1:
+                line_end = '---\n'
+            else:
+                line_end = ''
             if not hasattr(submsg, '__slots__'):
                 # raw
                 if self.include_message_info:
                     print('---Got new message, message info:---')
                     print(info)
                     print('---Message data:---')
-                print(submsg, end='\n---\n')
+                line_end = '\n' + line_end
+                print(submsg, end=line_end)
                 continue
 
             if self.csv:
@@ -325,12 +330,12 @@ class EchoVerb(VerbExtension):
                 continue
             # yaml
             if self.include_message_info:
-                print(yaml.dump(info), end='---\n')
+                print(yaml.dump(info), end=line_end)
             print(
                 message_to_yaml(
                     submsg, truncate_length=self.truncate_length,
                     no_arr=self.no_arr, no_str=self.no_str, flow_style=self.flow_style),
-                end='---\n')
+                end=line_end)
 
 
 def _expr_eval(expr):
