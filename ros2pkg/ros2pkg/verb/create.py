@@ -1,3 +1,4 @@
+cat create.py 
 # Copyright 2017 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -79,7 +80,7 @@ class CreateVerb(VerbExtension):
             '--maintainer-email',
             help='email address of the maintainer of this package'),
         parser.add_argument(
-            '--maintainer-name',
+            '--maintainer-name', 
             help='name of the maintainer of this package'),
         parser.add_argument(
             '--node-name',
