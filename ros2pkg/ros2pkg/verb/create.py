@@ -79,7 +79,7 @@ class CreateVerb(VerbExtension):
             '--maintainer-email',
             help='email address of the maintainer of this package'),
         parser.add_argument(
-            '--maintainer-name', 
+            '--maintainer-name',
             help='name of the maintainer of this package'),
         parser.add_argument(
             '--node-name',
