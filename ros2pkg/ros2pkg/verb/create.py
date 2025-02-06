@@ -79,7 +79,7 @@ class CreateVerb(VerbExtension):
             '--maintainer-email',
             help='email address of the maintainer of this package'),
         parser.add_argument(
-            '--maintainer-name', default=getpass.getuser(),
+            '--maintainer-name',
             help='name of the maintainer of this package'),
         parser.add_argument(
             '--node-name',
@@ -97,13 +97,29 @@ class CreateVerb(VerbExtension):
             print('Supported licenses:\n%s' % ('\n'.join(available_licenses)))
             sys.exit(0)
 
-        maintainer = Person(args.maintainer_name)
+        git = shutil.which('git')
+
+        if args.maintainer_name:
+            maintainer_name = args.maintainer_name
+        else:
+            # try getting the name from the global git config
+            if git is not None:
+                p = subprocess.Popen(
+                    [git, 'config', 'user.name'],
+                    stdout=subprocess.PIPE)
+                resp = p.communicate()
+                name = resp[0].decode().rstrip()
+                if name:
+                    maintainer_name = name
+            if not maintainer_name:
+                maintainer_name = getpass.getuser()
+
+        maintainer = Person(maintainer_name)
 
         if args.maintainer_email:
             maintainer.email = args.maintainer_email
         else:
             # try getting the email from the global git config
-            git = shutil.which('git')
             if git is not None:
                 p = subprocess.Popen(
                     [git, 'config', 'user.email'],
