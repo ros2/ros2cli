@@ -93,7 +93,7 @@ def main(args):
     else:
         filter_expr = None
     print('Reported frequency might not be accurate! https://github.com/ros2/ros2cli/issues/871')
-    
+
     with DirectNode(args) as node:
         _rostopic_hz(node.node, topics, window_size=args.window_size, filter_expr=filter_expr,
                      use_wtime=args.use_wtime)
