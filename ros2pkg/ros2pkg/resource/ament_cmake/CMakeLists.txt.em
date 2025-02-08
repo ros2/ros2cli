@@ -29,7 +29,7 @@ target_include_directories(@(cpp_library_name) PUBLIC
   $<INSTALL_INTERFACE:include/${PROJECT_NAME}>)
 @[  if dependencies]@
 target_link_libraries(
-  @(cpp_library_name)
+  @(cpp_library_name) PUBLIC
 @[    for dep in dependencies]@
   ${@(dep)_TARGETS}
 @[    end for]@
