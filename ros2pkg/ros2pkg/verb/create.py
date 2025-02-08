@@ -87,7 +87,7 @@ class CreateVerb(VerbExtension):
         parser.add_argument(
             '--library-name',
             help='name of the empty library')
-        
+
     def main(self, *, args):
 
         def get_git_config(key: str) -> str | None:
@@ -112,9 +112,15 @@ class CreateVerb(VerbExtension):
             print('Supported licenses:\n%s' % ('\n'.join(available_licenses)))
             sys.exit(0)
 
-        maintainer_name: str = args.maintainer_name or get_git_config('user.name') or getpass.getuser()
+        maintainer_name: str = (
+            args.maintainer_name 
+            or get_git_config('user.name') 
+            or getpass.getuser())
         maintainer = Person(maintainer_name)
-        maintainer.email = args.maintainer_email or get_git_config('user.email') or f"{maintainer.name.replace(' ', '')}@todo.todo"
+        maintainer.email = (
+            args.maintainer_email 
+            or get_git_config('user.email') 
+            or f"{maintainer.name.replace(' ', '')}@todo.todo")
 
         node_name = None
         library_name = None
