@@ -87,8 +87,23 @@ class CreateVerb(VerbExtension):
         parser.add_argument(
             '--library-name',
             help='name of the empty library')
-
+        
     def main(self, *, args):
+
+        def get_git_config(key: str) -> str | None:
+            # retrieve a value from git config
+            git = shutil.which('git')
+            if git is not None:
+                result = subprocess.run(
+                    [git, 'config', key],
+                    stdout=subprocess.PIPE,
+                    text=True
+                )
+                value = result.stdout.strip()
+                if value:
+                    return value
+            return None
+
         available_licenses = {}
         for shortname, entry in ament_copyright.get_licenses().items():
             available_licenses[entry.spdx] = entry.license_files
@@ -97,39 +112,9 @@ class CreateVerb(VerbExtension):
             print('Supported licenses:\n%s' % ('\n'.join(available_licenses)))
             sys.exit(0)
 
-        git = shutil.which('git')
-
-        if args.maintainer_name:
-            maintainer_name = args.maintainer_name
-        else:
-            # try getting the name from the global git config
-            if git is not None:
-                p = subprocess.Popen(
-                    [git, 'config', 'user.name'],
-                    stdout=subprocess.PIPE)
-                resp = p.communicate()
-                name = resp[0].decode().rstrip()
-                if name:
-                    maintainer_name = name
-            if not maintainer_name:
-                maintainer_name = getpass.getuser()
-
+        maintainer_name: str = args.maintainer_name or get_git_config('user.name') or getpass.getuser()
         maintainer = Person(maintainer_name)
-
-        if args.maintainer_email:
-            maintainer.email = args.maintainer_email
-        else:
-            # try getting the email from the global git config
-            if git is not None:
-                p = subprocess.Popen(
-                    [git, 'config', 'user.email'],
-                    stdout=subprocess.PIPE)
-                resp = p.communicate()
-                email = resp[0].decode().rstrip()
-                if email:
-                    maintainer.email = email
-            if not maintainer.email:
-                maintainer.email = maintainer.name + '@todo.todo'
+        maintainer.email = args.maintainer_email or get_git_config('user.email') or f"{maintainer.name.replace(' ', '')}@todo.todo"
 
         node_name = None
         library_name = None
