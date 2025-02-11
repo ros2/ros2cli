@@ -17,6 +17,7 @@ import os
 import shutil
 import subprocess
 import sys
+from typing import Optional
 
 import ament_copyright
 
@@ -90,7 +91,7 @@ class CreateVerb(VerbExtension):
 
     def main(self, *, args):
 
-        def get_git_config(key: str) -> str | None:
+        def get_git_config(key: str) -> Optional[str]:
             # retrieve a value from git config
             git = shutil.which('git')
             if git is not None:
