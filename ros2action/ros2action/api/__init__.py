@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from rclpy.expand_topic_name import expand_topic_name
+from rclpy.node import Node
 from rclpy.validate_full_topic_name import validate_full_topic_name
 from ros2cli.node.strategy import NodeStrategy
 from rosidl_runtime_py import get_action_interfaces
@@ -64,6 +65,43 @@ def get_action_names_and_types(*, node):
 def get_action_names(*, node):
     action_names_and_types = get_action_names_and_types(node=node)
     return [n for (n, t) in action_names_and_types]
+
+
+def get_action_class(node: Node, action_name: str):
+    """
+    Load action type module for the given action.
+
+    The action should be running for this function to find the action type.
+    :param node: The node object of rclpy Node class.
+    :param action_name: The fully-qualified name of the action.
+    :return: the action class or None
+    """
+    action_names_and_types = get_action_names_and_types(node=node)
+
+    matched_names_and_types = list(filter(lambda x: x[0] == action_name, action_names_and_types))
+    if len(matched_names_and_types) < 1:
+        raise RuntimeError(f"Cannot find type for '{action_name}'")
+    if len(matched_names_and_types) > 1:
+        raise RuntimeError(f"Unexpectedly saw more than one entry for action '{action_name}'")
+
+    # Now check whether there are multiple types associated with this action, which is unsupported
+    action_name_and_types = matched_names_and_types[0]
+
+    types = action_name_and_types[1]
+    if len(types) < 1:
+        raise RuntimeError(f"No types associated with '{action_name}'")
+    if len(types) > 1:
+        raise RuntimeError(f"More than one type associated with action '{action_name}'")
+
+    action_type = types[0]
+
+    if action_type is None:
+        return None
+
+    try:
+        return get_action(action_type)
+    except (AttributeError, ModuleNotFoundError, ValueError):
+        raise RuntimeError(f"The action type '{action_type}' is invalid")
 
 
 def action_name_completer(prefix, parsed_args, **kwargs):
