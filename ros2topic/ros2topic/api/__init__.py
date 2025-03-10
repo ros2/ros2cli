@@ -264,22 +264,6 @@ def add_qos_arguments(
             f'{default_profile.liveliness_lease_duration})'))
 
 
-def extract_qos_arguments(args):
-    class QosArgs:
-        pass
-
-    qos = QosArgs()
-    qos.qos_profile = args.qos_profile
-    qos.qos_reliability = args.qos_reliability
-    qos.qos_durability = args.qos_durability
-    qos.qos_depth = args.qos_depth
-    qos.qos_history = args.qos_history
-    qos.qos_liveliness = args.qos_liveliness
-    qos.qos_liveliness_lease_duration_seconds = args.qos_liveliness_lease_duration_seconds
-
-    return qos
-
-
 def choose_qos(node, topic_name: str, qos_args):
     if (qos_args.qos_reliability is not None or
             qos_args.qos_durability is not None or

@@ -38,7 +38,6 @@ from ros2cli.node.direct import add_arguments as add_direct_node_arguments
 from ros2cli.node.direct import DirectNode
 from ros2topic.api import add_qos_arguments
 from ros2topic.api import choose_qos
-from ros2topic.api import extract_qos_arguments
 from ros2topic.api import get_msg_class
 from ros2topic.api import positive_int
 from ros2topic.api import TopicNameCompleter
@@ -68,9 +67,9 @@ class DelayVerb(VerbExtension):
 
 
 def main(args):
-    qos_args = extract_qos_arguments(args)
     with DirectNode(args) as node:
-        _rostopic_delay(node.node, args.topic_name, qos_args, window_size=args.window_size)
+        qos_profile = choose_qos(node.node, topic_name=args.topic_name, qos_args=args)
+        _rostopic_delay(node.node, args.topic_name, qos_profile, window_size=args.window_size)
 
 
 class ROSTopicDelay(object):
@@ -158,12 +157,12 @@ class ROSTopicDelay(object):
               % (delay * 1e-9, min_delta * 1e-9, max_delta * 1e-9, std_dev * 1e-9, window))
 
 
-def _rostopic_delay(node, topic, qos, window_size=DEFAULT_WINDOW_SIZE):
+def _rostopic_delay(node, topic, qos_profile, window_size=DEFAULT_WINDOW_SIZE):
     """
     Periodically print the publishing delay of a topic to console until shutdown.
 
     :param topic: topic name, ``str``
-    :param qos: qos configuration of the subscriber
+    :param qos_profile: qos profile of the subscriber
     :param window_size: number of messages to average over, ``unsigned_int``
     :param blocking: pause delay until topic is published, ``bool``
     """
@@ -173,8 +172,6 @@ def _rostopic_delay(node, topic, qos, window_size=DEFAULT_WINDOW_SIZE):
     if msg_class is None:
         node.destroy_node()
         return
-
-    qos_profile = choose_qos(node, topic_name=topic, qos_args=qos)
 
     rt = ROSTopicDelay(node, window_size)
     node.create_subscription(

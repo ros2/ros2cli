@@ -26,7 +26,6 @@ from ros2cli.node.strategy import add_arguments as add_strategy_node_arguments
 from ros2cli.node.strategy import NodeStrategy
 from ros2topic.api import add_qos_arguments
 from ros2topic.api import choose_qos
-from ros2topic.api import extract_qos_arguments
 from ros2topic.api import get_msg_class
 from ros2topic.api import positive_float
 from ros2topic.api import TopicNameCompleter
@@ -147,8 +146,7 @@ class EchoVerb(VerbExtension):
 
         with NodeStrategy(args, node_name=args.node_name) as node:
 
-            qos = extract_qos_arguments(args)
-            qos_profile = choose_qos(node, topic_name=args.topic_name, qos_args=qos)
+            qos_profile = choose_qos(node, topic_name=args.topic_name, qos_args=args)
 
             if args.message_type is None:
                 message_type = get_msg_class(

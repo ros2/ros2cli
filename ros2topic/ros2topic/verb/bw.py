@@ -38,7 +38,6 @@ from ros2cli.node.direct import add_arguments as add_direct_node_arguments
 from ros2cli.node.direct import DirectNode
 from ros2topic.api import add_qos_arguments
 from ros2topic.api import choose_qos
-from ros2topic.api import extract_qos_arguments
 from ros2topic.api import get_msg_class
 from ros2topic.api import positive_int
 from ros2topic.api import TopicNameCompleter
@@ -76,9 +75,9 @@ class BwVerb(VerbExtension):
         add_direct_node_arguments(parser)
 
     def main(self, *, args):
-        qos_args = extract_qos_arguments(args)
         with DirectNode(args) as node:
-            _rostopic_bw(node.node, args.topic_name, qos_args, window_size=args.window_size)
+            qos_profile = choose_qos(node.node, topic_name=args.topic_name, qos_args=args)
+            _rostopic_bw(node.node, args.topic_name, qos_profile, window_size=args.window_size)
 
 
 class ROSTopicBandwidth(object):
@@ -154,15 +153,13 @@ class ROSTopicBandwidth(object):
         print(f'{bw} from {n} messages\n\tMessage size mean: {mean} min: {min_s} max: {max_s}')
 
 
-def _rostopic_bw(node, topic, qos, window_size=DEFAULT_WINDOW_SIZE):
+def _rostopic_bw(node, topic, qos_profile, window_size=DEFAULT_WINDOW_SIZE):
     """Periodically print the received bandwidth of a topic to console until shutdown."""
     # pause bw until topic is published
     msg_class = get_msg_class(node, topic, blocking=True, include_hidden_topics=True)
     if msg_class is None:
         node.destroy_node()
         return
-
-    qos_profile = choose_qos(node, topic_name=topic, qos_args=qos)
 
     rt = ROSTopicBandwidth(node, window_size)
     node.create_subscription(
