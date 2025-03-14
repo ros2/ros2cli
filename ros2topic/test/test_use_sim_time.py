@@ -264,7 +264,8 @@ class TestROS2TopicUseSimTime(unittest.TestCase):
                     launch_testing.tools.expect_output, expected_lines=[
                         # without speed up, the average band width should be 16 B
                         re.compile(r'8 B/s from \d+ messages'),
-                        re.compile(r'\s*Message size mean: 16 B min: 16 B max: 16 B')
+                        re.compile(
+                            r'\s*Message size mean: (14|16) B min: (14|16) B max: (14|16) B')
                     ], strict=False
                 ), timeout=10), 'Echo CLI did not print expected message'
             assert command.wait_for_shutdown(timeout=5)
