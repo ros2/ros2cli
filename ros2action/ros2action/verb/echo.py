@@ -87,9 +87,6 @@ class EchoVerb(VerbExtension):
                  '"CANCEL_SERVICE", "RESULT_SERVICE", "FEEDBACK_TOPIC" and "STATUS_TOPIC". '
                  'If this option is not set, output messages from all interfaces of the action.')
         parser.add_argument(
-            '--queue-size', '-q', type=unsigned_int, default=100,
-            help='The length of output message queue. The default is 100.')
-        parser.add_argument(
             '--csv', action='store_true', default=False,
             help=(
                 'Output all recursive fields separated by commas (e.g. for plotting).'
@@ -142,7 +139,7 @@ class EchoVerb(VerbExtension):
                 raise RuntimeError(f"The service type '{args.action_type}' is invalid")
 
         if action_module is None:
-            raise RuntimeError('Could not load the type for the passed action')
+            raise RuntimeError(f"Could not load the action type for '{args.action_type}'")
 
         self.csv = args.csv
         self.truncate_length = args.truncate_length if not args.full_length else None
@@ -165,8 +162,9 @@ class EchoVerb(VerbExtension):
         status_topic = args.action_name + '/_action/status'
         status_topic_type = action_module.Impl.GoalStatusMessage
 
-        # Queue for messages from above topic
-        self.output_msg_queue = queue.Queue(args.queue_size)
+        # Queue for messages from above topic. The queue size is set to 100.
+        # If the queue is full, the message will be dropped.
+        self.output_msg_queue = queue.Queue(100)
 
         run_thread = True
         # Create a thread to output message from output_queue
@@ -184,6 +182,9 @@ class EchoVerb(VerbExtension):
 
         with NodeStrategy(args) as node:
             send_goal_event_sub = None
+            # TODO: The QoS for the service event publisher, feedback publisher and status
+            # publisher can be specified by the user, so new parameters need to be added to allow
+            # specifying QoS of subscription to replace the current fixed QoS.
             if ActionInterfaces.GOAL_SERVICE.value in output_interface_list:
                 send_goal_event_sub: Subscription[EventMessage] = node.create_subscription(
                         send_goal_event_msg_type,

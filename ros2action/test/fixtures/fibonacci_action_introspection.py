@@ -59,6 +59,8 @@ class FibonacciActionClient(Node):
     def __init__(self):
         super().__init__('fibonacci_action_client', namespace='/test')
         self._action_client = ActionClient(self, Fibonacci, 'fibonacci')
+        self._action_client.configure_introspection(
+            self.get_clock(), qos_profile_system_default, ServiceIntrospectionState.CONTENTS)
         self._timer = self.create_timer(2, self._timer_callback)
 
     def _timer_callback(self):
@@ -95,7 +97,6 @@ class FibonacciActionClient(Node):
     def get_result_callback(self, future):
         result = future.result().result
         self.get_logger().info('Result: {0}'.format(result.sequence))
-        # rclpy.shutdown()
 
     def feedback_callback(self, feedback_msg):
         feedback = feedback_msg.feedback

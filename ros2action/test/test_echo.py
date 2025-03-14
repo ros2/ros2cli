@@ -113,6 +113,21 @@ class TestROS2ActionCLI(unittest.TestCase):
             [
                 'interface: GOAL_SERVICE',
                 'info:',
+                '  event_type: REQUEST_SENT',
+                '  stamp:',
+                re.compile(r'    sec: \d+'),
+                re.compile(r'    nanosec: \d+'),
+                "  client_gid: '<array type: uint8[16]>'",
+                re.compile(r'  sequence_number: \d+'),
+                "request: '<sequence type: test_msgs/action/Fibonacci_SendGoal_Request[1], "
+                "length: 1>'",
+                "response: '<sequence type: test_msgs/action/Fibonacci_SendGoal_Response[1], "
+                "length: 0>'",
+                '---',
+            ],
+            [
+                'interface: GOAL_SERVICE',
+                'info:',
                 '  event_type: REQUEST_RECEIVED',
                 '  stamp:',
                 re.compile(r'    sec: \d+'),
@@ -129,6 +144,21 @@ class TestROS2ActionCLI(unittest.TestCase):
                 'interface: GOAL_SERVICE',
                 'info:',
                 '  event_type: RESPONSE_SENT',
+                '  stamp:',
+                re.compile(r'    sec: \d+'),
+                re.compile(r'    nanosec: \d+'),
+                "  client_gid: '<array type: uint8[16]>'",
+                re.compile(r'  sequence_number: \d+'),
+                "request: '<sequence type: test_msgs/action/Fibonacci_SendGoal_Request[1], "
+                "length: 0>'",
+                "response: '<sequence type: test_msgs/action/Fibonacci_SendGoal_Response[1], "
+                "length: 1>'",
+                '---',
+            ],
+            [
+                'interface: GOAL_SERVICE',
+                'info:',
+                '  event_type: RESPONSE_RECEIVED',
                 '  stamp:',
                 re.compile(r'    sec: \d+'),
                 re.compile(r'    nanosec: \d+'),
