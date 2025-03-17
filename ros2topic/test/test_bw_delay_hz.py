@@ -117,6 +117,7 @@ class TestROS2TopicBwDelayHz(unittest.TestCase):
                         verb_extra_options = [
                             '--qos-reliability', 'reliable',
                             '--qos-durability', 'transient_local']
+                        # This QoS profile matched with the extra options defined above
                         rostopic_qos_profile = QoSProfile(
                             depth=10,
                             reliability=ReliabilityPolicy.RELIABLE,

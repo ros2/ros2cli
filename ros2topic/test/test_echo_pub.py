@@ -127,6 +127,7 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                         pub_extra_options = [
                             '--qos-reliability', 'best_effort',
                             '--qos-durability', 'volatile']
+                        # This QoS profile matched with the extra options defined above
                         rostopic_qos_profile = QoSProfile(
                             depth=10,
                             reliability=ReliabilityPolicy.BEST_EFFORT,
@@ -376,6 +377,7 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                             depth=10,
                             reliability=ReliabilityPolicy.BEST_EFFORT,
                             durability=DurabilityPolicy.VOLATILE)
+                        # This QoS profile matched with the extra options defined above
                         rostopic_qos_profile = QoSProfile(
                             depth=10,
                             reliability=ReliabilityPolicy.RELIABLE,
