@@ -137,6 +137,8 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                             durability=DurabilityPolicy.TRANSIENT_LOCAL)
                         expected_maximum_message_count = 0
                         expected_minimum_message_count = 0
+                        # Check if the rmw has a compatible QoS between publisher and susbcriber
+                        # DDS and Zenoh has different results
                         comp, reason = qos_check_compatible(
                             rostopic_qos_profile, subscription_qos_profile)
                         if comp == QoSCompatibility.OK:
@@ -378,6 +380,8 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                             depth=10,
                             reliability=ReliabilityPolicy.RELIABLE,
                             durability=DurabilityPolicy.TRANSIENT_LOCAL)
+                        # Check if the rmw has a compatible QoS between publisher and susbcriber
+                        # DDS and Zenoh has different results
                         comp, reason = qos_check_compatible(
                             rostopic_qos_profile, publisher_qos_profile)
                         if comp == QoSCompatibility.OK or comp == QoSCompatibility.WARNING:
