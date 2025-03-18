@@ -126,8 +126,7 @@ class TestROS2TopicBwDelayHz(unittest.TestCase):
                             depth=10,
                             reliability=ReliabilityPolicy.BEST_EFFORT,
                             durability=DurabilityPolicy.VOLATILE)
-                        # Check if the rmw has a compatible QoS between publisher and susbcriber
-                        # DDS and Zenoh has different results
+                        # Skip this test if the QoS between the publisher and subscription are compatible according to the underlying middleware.
                         comp, reason = qos_check_compatible(
                             rostopic_qos_profile, publisher_qos_profile)
                         if comp == QoSCompatibility.OK or comp == QoSCompatibility.WARNING:
