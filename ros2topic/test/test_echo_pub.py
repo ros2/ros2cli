@@ -13,6 +13,11 @@
 # limitations under the License.
 
 import functools
+<<<<<<< HEAD
+=======
+import pathlib
+import re
+>>>>>>> 31d814d (Adapt tests to Zenoh (#988))
 import sys
 import unittest
 
@@ -31,6 +36,8 @@ import pytest
 import rclpy
 from rclpy.executors import SingleThreadedExecutor
 from rclpy.qos import DurabilityPolicy
+from rclpy.qos import qos_check_compatible
+from rclpy.qos import QoSCompatibility
 from rclpy.qos import QoSProfile
 from rclpy.qos import ReliabilityPolicy
 from rclpy.utilities import get_rmw_implementation_identifier
@@ -126,12 +133,23 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                         pub_extra_options = [
                             '--qos-reliability', 'best_effort',
                             '--qos-durability', 'volatile']
+                        # This QoS profile matched with the extra options defined above
+                        rostopic_qos_profile = QoSProfile(
+                            depth=10,
+                            reliability=ReliabilityPolicy.BEST_EFFORT,
+                            durability=DurabilityPolicy.VOLATILE)
                         subscription_qos_profile = QoSProfile(
                             depth=10,
                             reliability=ReliabilityPolicy.RELIABLE,
                             durability=DurabilityPolicy.TRANSIENT_LOCAL)
                         expected_maximum_message_count = 0
                         expected_minimum_message_count = 0
+                        # Skip this test if the QoS between the publisher and subscription
+                        # are compatible according to the underlying middleware.
+                        comp, reason = qos_check_compatible(
+                            rostopic_qos_profile, subscription_qos_profile)
+                        if comp == QoSCompatibility.OK:
+                            raise unittest.SkipTest()
 
                 future = rclpy.task.Future()
 
@@ -329,6 +347,17 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                             depth=10,
                             reliability=ReliabilityPolicy.BEST_EFFORT,
                             durability=DurabilityPolicy.VOLATILE)
+                        # This QoS profile matched with the extra options defined above
+                        rostopic_qos_profile = QoSProfile(
+                            depth=10,
+                            reliability=ReliabilityPolicy.RELIABLE,
+                            durability=DurabilityPolicy.TRANSIENT_LOCAL)
+                        # Skip this test if the QoS between the publisher and subscription
+                        # are compatible according to the underlying middleware.
+                        comp, reason = qos_check_compatible(
+                            rostopic_qos_profile, publisher_qos_profile)
+                        if comp == QoSCompatibility.OK or comp == QoSCompatibility.WARNING:
+                            raise unittest.SkipTest()
                 if not message_lost:
                     echo_extra_options.append('--no-lost-messages')
                 publisher = self.node.create_publisher(String, topic, publisher_qos_profile)
@@ -460,9 +489,9 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                 )
                 assert command.wait_for_output(functools.partial(
                     launch_testing.tools.expect_output, expected_lines=[
-                        "b'\\x00\\x01\\x00\\x00\\x06\\x00\\x00\\x00hello\\x00\\x00\\x00'",
-                        '---',
-                    ], strict=True
+                        re.compile(r"^b'\\x00\\x01\\x00\\x00\\x06\\x00\\x00\\x00hello(\\x00)*'$"),
+                        re.compile(r'^---$'),
+                    ], strict=False
                 ), timeout=10), 'Echo CLI did not print expected message'
             assert command.wait_for_shutdown(timeout=10)
 
