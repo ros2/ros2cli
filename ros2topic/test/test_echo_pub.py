@@ -13,11 +13,8 @@
 # limitations under the License.
 
 import functools
-<<<<<<< HEAD
-=======
 import pathlib
 import re
->>>>>>> 31d814d (Adapt tests to Zenoh (#988))
 import sys
 import unittest
 
