@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 import time
 from typing import Optional
 
 import rclpy
-from rclpy.qos import QoSPresetProfiles, QoSProfile
+from rclpy.qos import QoSPresetProfiles
+from rclpy.qos import QoSProfile
 from ros2cli.helpers import collect_stdin
 from ros2cli.node import NODE_NAME_PREFIX
 from ros2service.api import ServiceNameCompleter
@@ -83,8 +83,6 @@ def requester(service_type: str, service_name: str, values, period: Optional[flo
               qos_profile: QoSProfile) -> None:
     try:
         parts = service_type.split('/')
-        if len(parts) == 2:
-            parts = [parts[0], 'srv', parts[1]]
         package_name = parts[0]
         srv_name = parts[-1]
         srv_module = get_service(service_type)
@@ -97,7 +95,7 @@ def requester(service_type: str, service_name: str, values, period: Optional[flo
         node = rclpy.create_node(NODE_NAME_PREFIX + '_requester_%s_%s' % (package_name, srv_name))
 
         cli = node.create_client(
-            srv_module,
+            srv_module,     
             service_name,
             qos_profile=qos_profile)
 
