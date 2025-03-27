@@ -12,11 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import importlib
+
 import time
+from typing import Optional
 
 import rclpy
-from rclpy.qos import QoSPresetProfiles
+from rclpy.qos import QoSPresetProfiles, QoSProfile
 from ros2cli.helpers import collect_stdin
 from ros2cli.node import NODE_NAME_PREFIX
 from ros2service.api import ServiceNameCompleter
@@ -25,6 +26,7 @@ from ros2service.api import ServiceTypeCompleter
 from ros2service.verb import VerbExtension
 from ros2topic.api import add_qos_arguments, profile_configure_short_keys
 from rosidl_runtime_py import set_message_fields
+from rosidl_runtime_py.utilities import get_service
 import yaml
 
 
@@ -77,23 +79,17 @@ class CallVerb(VerbExtension):
             args.service_type, args.service_name, values, period, default_profile)
 
 
-def requester(service_type, service_name, values, period, qos_profile):
-    # TODO(wjwwood) this logic should come from a rosidl related package
+def requester(service_type: str, service_name: str, values, period: Optional[float],
+              qos_profile: QoSProfile) -> None:
     try:
         parts = service_type.split('/')
         if len(parts) == 2:
             parts = [parts[0], 'srv', parts[1]]
         package_name = parts[0]
-        module = importlib.import_module('.'.join(parts[:-1]))
         srv_name = parts[-1]
-        srv_module = getattr(module, srv_name)
-    except (AttributeError, ModuleNotFoundError, ValueError):
+        srv_module = get_service(service_type)
+    except (AttributeError, ModuleNotFoundError):
         raise RuntimeError('The passed service type is invalid')
-    try:
-        srv_module.Request
-        srv_module.Response
-    except AttributeError:
-        raise RuntimeError('The passed type is not a service')
 
     values_dictionary = yaml.safe_load(values)
 
