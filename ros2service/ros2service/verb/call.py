@@ -95,7 +95,7 @@ def requester(service_type: str, service_name: str, values, period: Optional[flo
         node = rclpy.create_node(NODE_NAME_PREFIX + '_requester_%s_%s' % (package_name, srv_name))
 
         cli = node.create_client(
-            srv_module,     
+            srv_module,
             service_name,
             qos_profile=qos_profile)
 
