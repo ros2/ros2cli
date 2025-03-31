@@ -173,7 +173,19 @@ def publisher(
     if yaml_file:
         msg_reader = read_msg_from_yaml(yaml_file)
     else:
-        values_dictionary = yaml.safe_load(values)
+        try:
+            values_string = yaml.safe_load(values)
+
+            # Values need to be loaded in yaml twice due
+            #   to packaging in TopicMessagePrototypeCompleter
+            if not isinstance(values_string, dict):
+                values_dictionary = yaml.safe_load(values_string)
+            else:
+                values_dictionary = values_string
+
+        except yaml.parser.ParserError:
+            return 'The passed value needs to be in YAML string or a dictionary'
+
         if not isinstance(values_dictionary, dict):
             return 'The passed value needs to be a dictionary in YAML format'
 

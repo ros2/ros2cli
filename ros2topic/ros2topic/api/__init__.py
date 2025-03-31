@@ -14,6 +14,7 @@
 
 from argparse import ArgumentParser
 from argparse import ArgumentTypeError
+import sys
 from time import sleep
 from typing import Optional
 
@@ -30,6 +31,7 @@ from ros2cli.node.strategy import NodeStrategy
 from rosidl_runtime_py import get_message_interfaces
 from rosidl_runtime_py import message_to_yaml
 from rosidl_runtime_py.utilities import get_message
+import yaml
 
 
 def positive_int(string):
@@ -169,7 +171,16 @@ class TopicMessagePrototypeCompleter:
 
     def __call__(self, prefix, parsed_args, **kwargs):
         message = get_message(getattr(parsed_args, self.topic_type_key))
-        return [message_to_yaml(message())]
+
+        # yaml string needs to be dumped twice
+        # as argcomplete escapes characters
+        yaml_snippet = message_to_yaml(message())
+
+        topic_prototype = yaml.dump(
+            yaml_snippet, allow_unicode=False,
+            width=sys.maxsize, default_flow_style=False)
+
+        return [topic_prototype]
 
 
 def profile_configure_short_keys(
