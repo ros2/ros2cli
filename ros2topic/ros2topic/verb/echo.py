@@ -227,7 +227,7 @@ class EchoVerb(VerbExtension):
                         else:
                             submsg = submsg[int(match.group(1))]
                     except (AttributeError, TypeError, IndexError) as ex:
-                        raise RuntimeError(f"Invalid field '{'.'.join(self.field)}': {ex}")
+                        raise RuntimeError(f"Invalid field '{'.'.join(fields)}': {ex}")
                 submsgs.append(submsg)
         else:
             submsgs.append(msg)
