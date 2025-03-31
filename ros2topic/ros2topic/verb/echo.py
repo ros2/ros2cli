@@ -34,6 +34,7 @@ from rosidl_runtime_py import message_to_csv
 from rosidl_runtime_py import message_to_yaml
 from rosidl_runtime_py.utilities import get_message
 
+import re
 import yaml
 
 DEFAULT_TRUNCATE_LENGTH = 128
@@ -218,10 +219,15 @@ class EchoVerb(VerbExtension):
             for fields in self.fields_list:
                 submsg = msg
                 for field in fields:
+                    is_indexing = re.compile(r"^\[(\d+)\]$")
+                    match = is_indexing.match(field)
                     try:
-                        submsg = getattr(submsg, field)
-                    except AttributeError as ex:
-                        raise RuntimeError(f"Invalid field '{'.'.join(fields)}': {ex}")
+                        if match is None:
+                            submsg = getattr(submsg, field)
+                        else:
+                            submsg = submsg[int(match.group(1))]
+                    except (AttributeError, TypeError, IndexError) as ex:
+                        raise RuntimeError(f"Invalid field '{'.'.join(self.field)}': {ex}")
                 submsgs.append(submsg)
         else:
             submsgs.append(msg)
