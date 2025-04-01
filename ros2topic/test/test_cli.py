@@ -617,6 +617,19 @@ class TestROS2TopicCLI(unittest.TestCase):
         assert topic_command.wait_for_shutdown(timeout=10)
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_topic_echo_field_array(self):
+        with self.launch_topic_command(
+            arguments=['echo', '/arrays', '--field', 'float32_values_default.[2]'],
+        ) as topic_command:
+            assert topic_command.wait_for_output(functools.partial(
+                launch_testing.tools.expect_output, expected_lines=[
+                    '-1.125',
+                    '---',
+                ], strict=True
+            ), timeout=10)
+        assert topic_command.wait_for_shutdown(timeout=10)
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_echo_multi_fields_nested(self):
         with self.launch_topic_command(
             arguments=['echo', '/cmd_vel', '--field', 'twist.linear.x',
@@ -632,6 +645,21 @@ class TestROS2TopicCLI(unittest.TestCase):
         assert topic_command.wait_for_shutdown(timeout=10)
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_topic_echo_multi_fields_array(self):
+        with self.launch_topic_command(
+            arguments=['echo', '/arrays', '--field', 'float32_values_default.[2]', '--field',
+                       'string_values_default.[1]'],
+        ) as topic_command:
+            assert topic_command.wait_for_output(functools.partial(
+                launch_testing.tools.expect_output, expected_lines=[
+                    '-1.125',
+                    'max value',
+                    '---',
+                ], strict=True
+            ), timeout=10)
+        assert topic_command.wait_for_shutdown(timeout=10)
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_echo_field_not_a_member(self):
         with self.launch_topic_command(
             arguments=['echo', '/arrays', '--field', 'not_member'],
@@ -639,6 +667,45 @@ class TestROS2TopicCLI(unittest.TestCase):
             assert topic_command.wait_for_output(functools.partial(
                 launch_testing.tools.expect_output, expected_lines=[
                     "Invalid field 'not_member': 'Arrays' object has no attribute 'not_member'",
+                ], strict=True
+            ), timeout=10)
+        assert topic_command.wait_for_shutdown(timeout=10)
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_topic_echo_field_array_not_an_array(self):
+        with self.launch_topic_command(
+            arguments=['echo', '/arrays', '--field', 'float32_values_default.[0].[0]'],
+        ) as topic_command:
+            assert topic_command.wait_for_output(functools.partial(
+                launch_testing.tools.expect_output, expected_lines=[
+                    "Invalid field 'float32_values_default.[0].[0]': invalid index to "
+                    'scalar variable.',
+                ], strict=True
+            ), timeout=10)
+        assert topic_command.wait_for_shutdown(timeout=10)
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_topic_echo_field_array_index_out_of_bounds(self):
+        with self.launch_topic_command(
+            arguments=['echo', '/arrays', '--field', 'float32_values_default.[3]'],
+        ) as topic_command:
+            assert topic_command.wait_for_output(functools.partial(
+                launch_testing.tools.expect_output, expected_lines=[
+                    "Invalid field 'float32_values_default.[3]': index 3 is out of bounds "
+                    'for axis 0 with size 3',
+                ], strict=True
+            ), timeout=10)
+        assert topic_command.wait_for_shutdown(timeout=10)
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_topic_echo_field_array_no_index(self):
+        with self.launch_topic_command(
+            arguments=['echo', '/arrays', '--field', 'float32_values_default.[abc]'],
+        ) as topic_command:
+            assert topic_command.wait_for_output(functools.partial(
+                launch_testing.tools.expect_output, expected_lines=[
+                    "Invalid field 'float32_values_default.[abc]': 'numpy.ndarray' object "
+                    "has no attribute '[abc]'",
                 ], strict=True
             ), timeout=10)
         assert topic_command.wait_for_shutdown(timeout=10)

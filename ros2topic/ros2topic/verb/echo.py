@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import re
 from typing import Optional
 from typing import TypeVar
 
@@ -34,7 +35,6 @@ from rosidl_runtime_py import message_to_csv
 from rosidl_runtime_py import message_to_yaml
 from rosidl_runtime_py.utilities import get_message
 
-import re
 import yaml
 
 DEFAULT_TRUNCATE_LENGTH = 128
@@ -73,7 +73,9 @@ class EchoVerb(VerbExtension):
             help='Echo a selected field of a message. '
                  "Use '.' to select sub-fields. "
                  'For example, to echo the position field of a nav_msgs/msg/Odometry message: '
-                 "'ros2 topic echo /odom --field pose.pose.position'",
+                 "'ros2 topic echo /odom --field pose.pose.position'. "
+                 'Use the --field option multiple times to echo multiple fields. '
+                 'If the field is an array, use the syntax .[index] to select a single element.'
         )
         parser.add_argument(
             '--full-length', '-f', action='store_true',
@@ -219,7 +221,7 @@ class EchoVerb(VerbExtension):
             for fields in self.fields_list:
                 submsg = msg
                 for field in fields:
-                    is_indexing = re.compile(r"^\[(\d+)\]$")
+                    is_indexing = re.compile(r'^\[(\d+)\]$')
                     match = is_indexing.match(field)
                     try:
                         if match is None:
