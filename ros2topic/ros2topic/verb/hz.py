@@ -87,18 +87,6 @@ class HzVerb(VerbExtension):
         return main(args)
 
 
-<<<<<<< HEAD
-def main(args):
-    topic = args.topic_name
-    if args.filter_expr:
-        def expr_eval(expr):
-            def eval_fn(m):
-                return eval(expr)
-            return eval_fn
-        filter_expr = expr_eval(args.filter_expr)
-    else:
-        filter_expr = None
-=======
 def _get_nested_messages(msg_class):
     all_attributes = list(msg_class.__slots__)
     for attr in msg_class.__slots__:
@@ -107,8 +95,6 @@ def _get_nested_messages(msg_class):
             nested_messages = _get_nested_messages(value)
             all_attributes.extend(nested_messages)
     return all_attributes
->>>>>>> 644310d (Patch CVE-2024-42002)
-
 
 def _setup_base_safe_eval():
     safe_eval_model = base_eval_model.clone()
