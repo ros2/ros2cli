@@ -218,10 +218,12 @@ class EchoVerb(VerbExtension):
     def _subscriber_callback(self, msg, info):
         submsgs = []
         if self.fields_list:
+            # Matches strings exactly in the format "[digits]" (e.g., "[123]")
+            # and captures the digits as a group
+            is_indexing = re.compile(r'^\[(\d+)\]$')
             for fields in self.fields_list:
                 submsg = msg
                 for field in fields:
-                    is_indexing = re.compile(r'^\[(\d+)\]$')
                     match = is_indexing.match(field)
                     try:
                         if match is None:
