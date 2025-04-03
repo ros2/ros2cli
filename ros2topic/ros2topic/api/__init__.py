@@ -14,9 +14,10 @@
 
 from argparse import ArgumentParser
 from argparse import ArgumentTypeError
-import sys
 from time import sleep
 from typing import Optional
+
+from argcomplete import CompletionFinder
 
 import rclpy
 
@@ -31,7 +32,6 @@ from ros2cli.node.strategy import NodeStrategy
 from rosidl_runtime_py import get_message_interfaces
 from rosidl_runtime_py import message_to_yaml
 from rosidl_runtime_py.utilities import get_message
-import yaml
 
 
 def positive_int(string):
@@ -163,6 +163,17 @@ def _get_msg_class(node, topic, include_hidden_topics):
         raise RuntimeError("The message type '%s' is invalid" % message_type)
 
 
+class YamlCompletionFinder(CompletionFinder):
+    def quote_completions(
+        self, completions: list[str],
+            cword_prequote: str, last_wordbreak_pos: Optional[int]):
+
+        # For YAML content, return as-is without escaping
+        if not any('-' in c for c in completions):
+            return completions
+        return super().quote_completions(completions, cword_prequote, last_wordbreak_pos)
+
+
 class TopicMessagePrototypeCompleter:
     """Callable returning a message prototype."""
 
@@ -171,16 +182,8 @@ class TopicMessagePrototypeCompleter:
 
     def __call__(self, prefix, parsed_args, **kwargs):
         message = get_message(getattr(parsed_args, self.topic_type_key))
-
-        # yaml string needs to be dumped twice
-        # as argcomplete escapes characters
-        yaml_snippet = message_to_yaml(message())
-
-        topic_prototype = yaml.dump(
-            yaml_snippet, allow_unicode=False,
-            width=sys.maxsize, default_flow_style=False)
-
-        return [topic_prototype]
+        yaml_snippet = "'" + message_to_yaml(message()) + "'"
+        return [yaml_snippet]
 
 
 def profile_configure_short_keys(
