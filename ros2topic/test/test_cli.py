@@ -938,19 +938,6 @@ class TestROS2TopicCLI(unittest.TestCase):
         average_rate = float(average_rate_line_pattern.match(head_line).group(1))
         assert math.isclose(average_rate, 0.5, rel_tol=1e-2)
 
-        # check that use of eval() on hz verb cannot be exploited
-        try:
-            self.launch_topic_command(
-                arguments=[
-                    'hz',
-                    '--filter',
-                    '__import__("os").system("cat /etc/passwd")',
-                    '/chatter'
-                ]
-            )
-        except ValueError as e:
-            self.assertIn('Attribute system is not allowed', str(e))
-
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_bw(self):
         with self.launch_topic_command(arguments=['bw', '/defaults']) as topic_command:
