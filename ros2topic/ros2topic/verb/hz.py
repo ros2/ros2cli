@@ -96,6 +96,7 @@ def _get_nested_messages(msg_class):
             all_attributes.extend(nested_messages)
     return all_attributes
 
+
 def _setup_base_safe_eval():
     safe_eval_model = base_eval_model.clone()
 
@@ -117,6 +118,7 @@ def _setup_base_safe_eval():
     safe_eval_model.allowed_functions.extend(safe_builtins)
     return safe_eval_model
 
+
 def _setup_safe_eval(safe_eval_model, msg_class, topic):
     # allow-list topic builtins, msg attributes
     topic_builtins = [i for i in dir(topic) if not i.startswith('_')]
@@ -129,27 +131,24 @@ def _setup_safe_eval(safe_eval_model, msg_class, topic):
 
 def main(args):
     with DirectNode(args) as node:
-        topics = args.topic_name
+        topic = args.topic_name
         filter_expr = None
         # set up custom safe eval model for filter expression
         if args.filter_expr:
             safe_eval_model = _setup_base_safe_eval()
-            for topic in topics:
-                msg_class = get_msg_class(
-                    node, topic, blocking=True, include_hidden_topics=True)
-                if msg_class is None:
-                    continue
-
+            msg_class = get_msg_class(
+                node, topic, blocking=True, include_hidden_topics=True)
+            if msg_class is not None:
                 safe_eval_model = _setup_safe_eval(safe_eval_model, msg_class, topic)
 
-            def expr_eval(expr):
-                def eval_fn(m):
-                    safe_expression = Expr(expr, model=safe_eval_model)
-                    return eval(safe_expression.code)
-                return eval_fn
-            filter_expr = expr_eval(args.filter_expr)
+                def expr_eval(expr):
+                    def eval_fn(m):
+                        safe_expression = Expr(expr, model=safe_eval_model)
+                        return eval(safe_expression.code)
+                    return eval_fn
+                filter_expr = expr_eval(args.filter_expr)
 
-        _rostopic_hz(node.node, topics, qos_args=args, window_size=args.window_size,
+        _rostopic_hz(node.node, topic, window_size=args.window_size,
                      filter_expr=filter_expr, use_wtime=args.use_wtime)
 
 
