@@ -316,7 +316,8 @@ def _rostopic_hz(node, topics, qos_args, window_size=DEFAULT_WINDOW_SIZE, filter
             msg_class,
             topic,
             functools.partial(rt.callback_hz, topic=topic),
-            qos_profile)
+            qos_profile,
+            raw=True if filter_expr is None else False)
         if topics_len > 1:
             print('Subscribed to [%s]' % topic)
 
