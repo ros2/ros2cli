@@ -255,30 +255,7 @@ def _rostopic_hz(node, topic, window_size=DEFAULT_WINDOW_SIZE, filter_expr=None,
     msg_class = get_msg_class(
         node, topic, blocking=True, include_hidden_topics=True)
 
-<<<<<<< HEAD
     if msg_class is None:
-=======
-        if msg_class is None:
-            topics_to_be_removed.append(topic)
-            print('WARNING: failed to find message type for topic [%s]' % topic)
-            continue
-
-        qos_profile = choose_qos(node, topic_name=topic, qos_args=qos_args)
-
-        node.create_subscription(
-            msg_class,
-            topic,
-            functools.partial(rt.callback_hz, topic=topic),
-            qos_profile,
-            raw=filter_expr is None)
-        if topics_len > 1:
-            print('Subscribed to [%s]' % topic)
-
-    # remove the topics from the list if failed to find message type
-    while (topic in topics_to_be_removed):
-        topics.remove(topic)
-    if len(topics) == 0:
->>>>>>> bfc5245 (Conditional deserialization of message for `ros2 topic hz` (#1005))
         node.destroy_node()
         return
 
@@ -287,7 +264,8 @@ def _rostopic_hz(node, topic, window_size=DEFAULT_WINDOW_SIZE, filter_expr=None,
         msg_class,
         topic,
         functools.partial(rt.callback_hz, topic=topic),
-        qos_profile_sensor_data)
+        qos_profile_sensor_data,
+        raw=filter_expr is None)
 
     while rclpy.ok():
         rclpy.spin_once(node)
