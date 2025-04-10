@@ -161,7 +161,10 @@ class PubVerb(VerbExtension):
             'values', nargs='?', default='{}',
             help='Values to fill the message with in YAML format '
                  "(e.g. 'data: Hello World'), "
-                 'otherwise the message will be published with default values')
+                 'otherwise the message will be published with default values. '
+                 "You can use 'now' placeholder to get the current time and "
+                 "'auto' placeholder to get a std_msgs.msg.Header with current "
+                 'time and empty frame_id.')
         arg.completer = TopicMessagePrototypeCompleter(
             topic_type_key='message_type')
         parser.add_argument(
