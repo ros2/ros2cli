@@ -128,6 +128,8 @@ class TestVerbList(unittest.TestCase):
                     services = node.get_service_names_and_types_by_node(TEST_NODE, TEST_NAMESPACE)
                 except rclpy.node.NodeNameNonExistentError:
                     continue
+                except ConnectionRefusedError:
+                    continue
                 except xmlrpc.client.Fault as e:
                     if 'NodeNameNonExistentError' in e.faultString:
                         continue
