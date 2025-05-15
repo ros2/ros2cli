@@ -121,7 +121,11 @@ class InterfaceFlags:
             self.has_multicast = True
 
     def __str__(self):
+<<<<<<< HEAD
         if self.flags == -1:
+=======
+        if not self.flags:
+>>>>>>> 74f6989 (Fix stringifying InterfaceFlags when the flags are empty. (#1026))
             return ''
 
         output_flags = ','.join(self.flag_list)
