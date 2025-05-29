@@ -34,6 +34,48 @@ import pytest
 
 from rclpy.utilities import get_available_rmw_implementations
 
+EXPECTED_OUTPUT = [
+    'info:',
+    '  event_type: REQUEST_SENT',
+    '  stamp:',
+    re.compile(r'    sec: \d+'),
+    re.compile(r'    nanosec: \d+'),
+    "  client_gid: '<array type: uint8[16]>'",
+    re.compile(r'  sequence_number: \d+'),
+    "request: '<sequence type: test_msgs/srv/BasicTypes_Request[1], length: 1>'",
+    "response: '<sequence type: test_msgs/srv/BasicTypes_Response[1], length: 0>'",
+    '---',
+    'info:',
+    '  event_type: REQUEST_RECEIVED',
+    '  stamp:',
+    re.compile(r'    sec: \d+'),
+    re.compile(r'    nanosec: \d+'),
+    "  client_gid: '<array type: uint8[16]>'",
+    re.compile(r'  sequence_number: \d+'),
+    "request: '<sequence type: test_msgs/srv/BasicTypes_Request[1], length: 1>'",
+    "response: '<sequence type: test_msgs/srv/BasicTypes_Response[1], length: 0>'",
+    '---',
+    'info:',
+    '  event_type: RESPONSE_SENT',
+    '  stamp:',
+    re.compile(r'    sec: \d+'),
+    re.compile(r'    nanosec: \d+'),
+    "  client_gid: '<array type: uint8[16]>'",
+    re.compile(r'  sequence_number: \d+'),
+    "request: '<sequence type: test_msgs/srv/BasicTypes_Request[1], length: 0>'",
+    "response: '<sequence type: test_msgs/srv/BasicTypes_Response[1], length: 1>'",
+    '---',
+    'info:',
+    '  event_type: RESPONSE_RECEIVED',
+    '  stamp:',
+    re.compile(r'    sec: \d+'),
+    re.compile(r'    nanosec: \d+'),
+    "  client_gid: '<array type: uint8[16]>'",
+    re.compile(r'  sequence_number: \d+'),
+    "request: '<sequence type: test_msgs/srv/BasicTypes_Request[1], length: 0>'",
+    "response: '<sequence type: test_msgs/srv/BasicTypes_Response[1], length: 1>'",
+]
+
 
 # Skip cli tests on Windows while they exhibit pathological behavior
 # https://github.com/ros2/build_farmer/issues/248
@@ -113,53 +155,28 @@ class TestROS2ServiceEcho(unittest.TestCase):
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_echo_no_arr(self):
         echo_arguments = ['echo', '/test_introspectable', '--no-arr']
-        expected_output = [
-            'info:',
-            '  event_type: REQUEST_SENT',
-            '  stamp:',
-            re.compile(r'    sec: \d+'),
-            re.compile(r'    nanosec: \d+'),
-            "  client_gid: '<array type: uint8[16]>'",
-            re.compile(r'  sequence_number: \d+'),
-            "request: '<sequence type: test_msgs/srv/BasicTypes_Request[1], length: 1>'",
-            "response: '<sequence type: test_msgs/srv/BasicTypes_Response[1], length: 0>'",
-            '---',
-            'info:',
-            '  event_type: REQUEST_RECEIVED',
-            '  stamp:',
-            re.compile(r'    sec: \d+'),
-            re.compile(r'    nanosec: \d+'),
-            "  client_gid: '<array type: uint8[16]>'",
-            re.compile(r'  sequence_number: \d+'),
-            "request: '<sequence type: test_msgs/srv/BasicTypes_Request[1], length: 1>'",
-            "response: '<sequence type: test_msgs/srv/BasicTypes_Response[1], length: 0>'",
-            '---',
-            'info:',
-            '  event_type: RESPONSE_SENT',
-            '  stamp:',
-            re.compile(r'    sec: \d+'),
-            re.compile(r'    nanosec: \d+'),
-            "  client_gid: '<array type: uint8[16]>'",
-            re.compile(r'  sequence_number: \d+'),
-            "request: '<sequence type: test_msgs/srv/BasicTypes_Request[1], length: 0>'",
-            "response: '<sequence type: test_msgs/srv/BasicTypes_Response[1], length: 1>'",
-            '---',
-            'info:',
-            '  event_type: RESPONSE_RECEIVED',
-            '  stamp:',
-            re.compile(r'    sec: \d+'),
-            re.compile(r'    nanosec: \d+'),
-            "  client_gid: '<array type: uint8[16]>'",
-            re.compile(r'  sequence_number: \d+'),
-            "request: '<sequence type: test_msgs/srv/BasicTypes_Request[1], length: 0>'",
-            "response: '<sequence type: test_msgs/srv/BasicTypes_Response[1], length: 1>'",
-        ],
 
         with self.launch_service_command(arguments=echo_arguments) as service_command:
             assert service_command.wait_for_output(
                 functools.partial(
                     launch_testing.tools.expect_output,
-                    expected_lines=expected_output,
+                    expected_lines=EXPECTED_OUTPUT,
+                    strict=True
+                ),
+                timeout=10,
+            )
+        assert service_command.wait_for_shutdown(timeout=10)
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_echo_no_arr_with_qos(self):
+        echo_arguments = [
+            'echo', '/test_introspectable', '--no-arr', '--qos-profile', 'services_default']
+
+        with self.launch_service_command(arguments=echo_arguments) as service_command:
+            assert service_command.wait_for_output(
+                functools.partial(
+                    launch_testing.tools.expect_output,
+                    expected_lines=EXPECTED_OUTPUT,
                     strict=True
                 ),
                 timeout=10,

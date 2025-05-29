@@ -25,6 +25,7 @@ from ros2service.api import get_service_class
 from ros2service.api import ServiceNameCompleter
 from ros2service.api import ServiceTypeCompleter
 from ros2service.verb import VerbExtension
+from ros2topic.api import add_qos_arguments, profile_configure_short_keys
 from rosidl_runtime_py import message_to_csv
 from rosidl_runtime_py import message_to_ordereddict
 from rosidl_runtime_py.utilities import get_service
@@ -86,6 +87,7 @@ class EchoVerb(VerbExtension):
         parser.add_argument(
             '--flow-style', action='store_true',
             help='Print collections in the block style (not available with csv format)')
+        add_qos_arguments(parser, 'service introspection', 'services_default')
 
     def main(self, *, args):
         if args.service_type is None:
@@ -115,12 +117,18 @@ class EchoVerb(VerbExtension):
         self.no_arr = args.no_arr
         self.no_str = args.no_str
 
+        qos_profile = QoSPresetProfiles.get_from_short_key(args.qos_profile)
+        profile_configure_short_keys(
+            qos_profile, args.qos_reliability, args.qos_durability,
+            args.qos_depth, args.qos_history, args.qos_liveliness,
+            args.qos_liveliness_lease_duration_seconds)
+
         with NodeStrategy(args) as node:
             sub = node.create_subscription(
                 event_msg_type,
                 event_topic_name,
                 self._subscriber_callback,
-                QoSPresetProfiles.get_from_short_key('services_default'))
+                qos_profile=qos_profile)
 
             have_printed_warning = False
             executor = rclpy.get_global_executor()
