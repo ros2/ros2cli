@@ -20,7 +20,7 @@ import threading
 
 import rclpy
 from rclpy.qos import qos_profile_action_status_default
-from rclpy.qos import qos_profile_services_default
+from rclpy.qos import QoSPresetProfiles
 from rclpy.qos import QoSProfile
 from rclpy.subscription import Subscription
 from rclpy.type_support import EventMessage
@@ -33,6 +33,8 @@ from ros2action.verb import VerbExtension
 
 from ros2cli.helpers import unsigned_int
 from ros2cli.node.strategy import NodeStrategy
+
+from ros2topic.api import add_qos_arguments, profile_configure_short_keys
 
 from rosidl_runtime_py import message_to_csv
 from rosidl_runtime_py import message_to_ordereddict
@@ -107,6 +109,7 @@ class EchoVerb(VerbExtension):
         parser.add_argument(
             '--flow-style', action='store_true',
             help='Print collections in the block style (not available with csv format)')
+        add_qos_arguments(parser, 'action introspection', 'services_default')
 
     def main(self, *, args):
         output_interface_list = set()
@@ -146,6 +149,12 @@ class EchoVerb(VerbExtension):
         self.flow_style = args.flow_style
         self.no_arr = args.no_arr
         self.no_str = args.no_str
+
+        qos_profile = QoSPresetProfiles.get_from_short_key(args.qos_profile)
+        profile_configure_short_keys(
+            qos_profile, args.qos_reliability, args.qos_durability,
+            args.qos_depth, args.qos_history, args.qos_liveliness,
+            args.qos_liveliness_lease_duration_seconds)
 
         send_goal_event_topic = args.action_name + '/_action/send_goal/_service_event'
         send_goal_event_msg_type = action_module.Impl.SendGoalService.Event
@@ -187,10 +196,10 @@ class EchoVerb(VerbExtension):
             # specifying QoS of subscription to replace the current fixed QoS.
             if ActionInterfaces.GOAL_SERVICE.value in output_interface_list:
                 send_goal_event_sub: Subscription[EventMessage] = node.create_subscription(
-                        send_goal_event_msg_type,
-                        send_goal_event_topic,
-                        self._send_goal_subscriber_callback,
-                        qos_profile_services_default)
+                    send_goal_event_msg_type,
+                    send_goal_event_topic,
+                    self._send_goal_subscriber_callback,
+                    qos_profile)
 
             cancel_goal_event_sub = None
             if ActionInterfaces.CANCEL_SERVICE.value in output_interface_list:
@@ -198,7 +207,7 @@ class EchoVerb(VerbExtension):
                     cancel_goal_event_msg_type,
                     cancel_goal_event_topic,
                     self._cancel_goal_subscriber_callback,
-                    qos_profile_services_default)
+                    qos_profile)
 
             get_result_event_sub = None
             if ActionInterfaces.RESULT_SERVICE.value in output_interface_list:
@@ -206,7 +215,7 @@ class EchoVerb(VerbExtension):
                     get_result_event_msg_type,
                     get_result_event_topic,
                     self._get_result_subscriber_callback,
-                    qos_profile_services_default)
+                    qos_profile)
 
             feedback_sub = None
             if ActionInterfaces.FEEDBACK_TOPIC.value in output_interface_list:

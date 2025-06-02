@@ -51,7 +51,7 @@ class InterfaceFlags:
 
     def __str__(self):
         if not self.flags:
-            return
+            return ''
 
         return self.flags.upper()
 

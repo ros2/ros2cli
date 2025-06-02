@@ -61,15 +61,26 @@ class FibonacciActionClient(Node):
         self._action_client = ActionClient(self, Fibonacci, 'fibonacci')
         self._action_client.configure_introspection(
             self.get_clock(), qos_profile_system_default, ServiceIntrospectionState.CONTENTS)
-        self._timer = self.create_timer(2, self._timer_callback)
+        self._timer = self.create_timer(3, self._timer_callback)
+        self._send_goal_future = None
 
     def _timer_callback(self):
-        self._timer.cancel()
         if not self._action_client.wait_for_server():
-            self.get_logger().info('Action erver is unavailable.')
+            self.get_logger().info('Action server is unavailable.')
             return
 
-        self.send_goal(2)
+        if self._send_goal_future is None:
+            self.send_goal(2)
+            return
+
+        if not self._send_goal_future.done():
+            return
+
+        if self._send_goal_future.result() is None:
+            self.get_logger().error('Exception generated on the goal: {0}'.format(
+                self._send_goal_future.exception()))
+
+        self._send_goal_future = None
 
     def send_goal(self, order):
         goal_msg = Fibonacci.Goal()
