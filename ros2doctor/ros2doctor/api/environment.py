@@ -34,11 +34,11 @@ class EnvironmentReport(DoctorReport):
         rcutils_variable_list: List[str] = []
 
         for key, value in os.environ.items():
-            if "ROS" in key:
+            if "ROS" in key.upper():
                 ros_variable_list.append(f'{key}={value}')
-            if "RMW" in key:
+            if "RMW" in key.upper():
                 rmw_variable_list.append(f'{key}={value}')
-            if "RCUTILS" in key:
+            if "RCUTILS" in key.upper():
                 rcutils_variable_list.append(f'{key}={value}')
 
         environment_report.add_to_report('ros environment variables', ", ".join(ros_variable_list))
