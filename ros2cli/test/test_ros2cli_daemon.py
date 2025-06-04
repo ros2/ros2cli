@@ -37,12 +37,13 @@ TEST_TOPIC_TYPE = 'test_msgs/msg/Empty'
 TEST_TOPIC_PUBLISHER_QOS = rclpy.qos.QoSProfile(
     reliability=rclpy.qos.ReliabilityPolicy.RELIABLE,
     durability=rclpy.qos.DurabilityPolicy.VOLATILE,
-    depth=1
+    history=rclpy.qos.HistoryPolicy.KEEP_ALL
 )
 TEST_TOPIC_SUBSCRIPTION_QOS = rclpy.qos.QoSProfile(
     reliability=rclpy.qos.ReliabilityPolicy.BEST_EFFORT,
     durability=rclpy.qos.DurabilityPolicy.VOLATILE,
-    depth=1
+    history=rclpy.qos.HistoryPolicy.KEEP_LAST,
+    depth=8
 )
 TEST_SERVICE_NAME = '/test/service'
 TEST_SERVICE_TYPE = 'test_msgs/srv/Empty'
@@ -213,6 +214,8 @@ def test_get_publishers_info_by_topic(daemon_node):
         TEST_TOPIC_PUBLISHER_QOS.durability
     assert test_publisher_info.qos_profile.reliability == \
         TEST_TOPIC_PUBLISHER_QOS.reliability
+    assert test_publisher_info.qos_profile.history == \
+        TEST_TOPIC_PUBLISHER_QOS.history
 
 
 def test_get_subscriptions_info_by_topic(daemon_node):
@@ -226,6 +229,10 @@ def test_get_subscriptions_info_by_topic(daemon_node):
         TEST_TOPIC_SUBSCRIPTION_QOS.durability
     assert test_subscription_info.qos_profile.reliability == \
         TEST_TOPIC_SUBSCRIPTION_QOS.reliability
+    assert test_subscription_info.qos_profile.history == \
+        TEST_TOPIC_SUBSCRIPTION_QOS.history
+    assert test_subscription_info.qos_profile.depth == \
+        TEST_TOPIC_SUBSCRIPTION_QOS.depth
 
 
 def test_count_publishers(daemon_node):
