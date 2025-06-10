@@ -15,7 +15,7 @@
 import rclpy
 from rclpy.duration import Duration
 
-from ros2topic.api import qos_profile_from_short_keys
+from ros2cli.qos import qos_profile_from_short_keys
 
 
 def test_profile_conversion():
