@@ -19,7 +19,6 @@ import sys
 import threading
 
 import rclpy
-
 from rclpy.qos import qos_profile_action_status_default
 from rclpy.qos import QoSPresetProfiles
 from rclpy.qos import QoSProfile

@@ -16,7 +16,6 @@ import time
 from typing import Optional
 
 import rclpy
-
 from rclpy.qos import QoSPresetProfiles
 from rclpy.qos import QoSProfile
 

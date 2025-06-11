@@ -17,7 +17,6 @@ from typing import Optional
 from typing import TypeVar
 
 import rclpy
-
 from rclpy.event_handler import SubscriptionEventCallbacks
 from rclpy.event_handler import UnsupportedEventTypeError
 from rclpy.node import Node

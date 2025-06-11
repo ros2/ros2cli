@@ -16,7 +16,6 @@ from argparse import ArgumentParser
 from typing import Optional
 
 import rclpy
-
 from rclpy.duration import Duration
 from rclpy.qos import QoSDurabilityPolicy
 from rclpy.qos import QoSPresetProfiles
