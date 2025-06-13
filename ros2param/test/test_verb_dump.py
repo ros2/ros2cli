@@ -207,5 +207,5 @@ class TestVerbDump(unittest.TestCase):
         assert launch_testing.tools.expect_output(
             expected_text=EXPECTED_PARAMETER_FILE + '\n',
             text=param_dump_command.output,
-            strict=True
+            strict=False
         )

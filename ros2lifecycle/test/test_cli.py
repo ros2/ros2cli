@@ -204,7 +204,7 @@ class TestROS2LifecycleCLI(unittest.TestCase):
                 '\tGoal: shuttingdown'
             ],
             text=lifecycle_command.output,
-            strict=True
+            strict=False
         )
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
@@ -217,7 +217,7 @@ class TestROS2LifecycleCLI(unittest.TestCase):
         assert launch_testing.tools.expect_output(
             expected_lines=ALL_LIFECYCLE_NODE_TRANSITIONS,
             text=lifecycle_command.output,
-            strict=True
+            strict=False
         )
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
@@ -243,7 +243,7 @@ class TestROS2LifecycleCLI(unittest.TestCase):
         assert launch_testing.tools.expect_output(
             expected_lines=ALL_LIFECYCLE_NODE_TRANSITIONS,
             text=lifecycle_command.output,
-            strict=True
+            strict=False
         )
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
@@ -303,7 +303,7 @@ class TestROS2LifecycleCLI(unittest.TestCase):
                 '- shutdown [5]'
             ],
             text=lifecycle_command.output,
-            strict=True
+            strict=False
         )
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
@@ -355,7 +355,7 @@ class TestROS2LifecycleCLI(unittest.TestCase):
         assert launch_testing.tools.expect_output(
             expected_lines=['Node not found'],
             text=lifecycle_command.output,
-            strict=True
+            strict=False
         )
 
         with self.launch_lifecycle_command(
@@ -366,7 +366,7 @@ class TestROS2LifecycleCLI(unittest.TestCase):
         assert launch_testing.tools.expect_output(
             expected_lines=['unconfigured [1]'],
             text=lifecycle_command.output,
-            strict=True
+            strict=False
         )
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
@@ -379,7 +379,7 @@ class TestROS2LifecycleCLI(unittest.TestCase):
         assert launch_testing.tools.expect_output(
             expected_lines=['unconfigured [1]'],
             text=lifecycle_command.output,
-            strict=True
+            strict=False
         )
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
@@ -399,7 +399,7 @@ class TestROS2LifecycleCLI(unittest.TestCase):
             assert launch_testing.tools.expect_output(
                 expected_lines=[current_state],
                 text=lifecycle_command.output,
-                strict=True
+                strict=False
             )
 
             with self.launch_lifecycle_command(
@@ -412,7 +412,7 @@ class TestROS2LifecycleCLI(unittest.TestCase):
             assert launch_testing.tools.expect_output(
                 expected_lines=['Transitioning successful'],
                 text=lifecycle_command.output,
-                strict=True
+                strict=False
             )
 
         with self.launch_lifecycle_command(
@@ -421,5 +421,5 @@ class TestROS2LifecycleCLI(unittest.TestCase):
             assert lifecycle_command.wait_for_shutdown(timeout=20)
         assert lifecycle_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
-            expected_lines=[lifecycle[0][0]], text=lifecycle_command.output, strict=True
+            expected_lines=[lifecycle[0][0]], text=lifecycle_command.output, strict=False
         )

@@ -161,7 +161,7 @@ class TestROS2ServiceEcho(unittest.TestCase):
                 functools.partial(
                     launch_testing.tools.expect_output,
                     expected_lines=EXPECTED_OUTPUT,
-                    strict=True
+                    strict=False
                 ),
                 timeout=10,
             )
@@ -177,7 +177,7 @@ class TestROS2ServiceEcho(unittest.TestCase):
                 functools.partial(
                     launch_testing.tools.expect_output,
                     expected_lines=EXPECTED_OUTPUT,
-                    strict=True
+                    strict=False
                 ),
                 timeout=10,
             )

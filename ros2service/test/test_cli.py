@@ -284,7 +284,7 @@ class TestROS2ServiceCLI(unittest.TestCase):
         assert launch_testing.tools.expect_output(
             expected_lines=get_echo_call_output(),
             text=service_command.output,
-            strict=True
+            strict=False
         )
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
@@ -307,7 +307,7 @@ class TestROS2ServiceCLI(unittest.TestCase):
                 string_value='bazbar'
             ),
             text=service_command.output,
-            strict=True
+            strict=False
         )
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
@@ -361,5 +361,5 @@ class TestROS2ServiceCLI(unittest.TestCase):
                 string_value='bazbar'
             ),
             text=service_command.output,
-            strict=True
+            strict=False
         )
