@@ -55,9 +55,7 @@ install(
 install(
   TARGETS @(cpp_library_name)
   EXPORT export_@(project_name)
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin)
+)
 @[end if]@
 @[if cpp_node_name]@
 
