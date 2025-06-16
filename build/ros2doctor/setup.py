@@ -1,1 +1,0 @@
-/home/rmc/ros2cli/ros2doctor/setup.py
