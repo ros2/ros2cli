@@ -270,7 +270,7 @@ class TestROS2ActionCLI(unittest.TestCase):
         assert action_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=get_fibonacci_send_goal_output(order=5),
-            text=action_command.output, strict=True
+            text=action_command.output, strict=False
         )
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)

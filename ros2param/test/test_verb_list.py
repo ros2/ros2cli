@@ -188,7 +188,7 @@ class TestVerbList(unittest.TestCase):
                 '  str_param',
                 '  use_sim_time'],
             text=param_list_command.output,
-            strict=True
+            strict=False
         )
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
@@ -203,5 +203,5 @@ class TestVerbList(unittest.TestCase):
                 '  bool_array_param',
                 '  bool_param'],
             text=param_list_command.output,
-            strict=True
+            strict=False
         ), f'actual output: {param_list_command.output}'

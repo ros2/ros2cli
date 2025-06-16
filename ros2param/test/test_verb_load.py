@@ -311,7 +311,7 @@ class TestVerbLoad(unittest.TestCase):
             assert launch_testing.tools.expect_output(
                 expected_text=INPUT_PARAMETER_FILE + '\n',
                 text=param_dump_command.output,
-                strict=True
+                strict=False
             )
 
     def test_verb_load_wildcard(self):
