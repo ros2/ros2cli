@@ -15,6 +15,7 @@
 from typing import List
 from typing import Set
 from typing import Tuple
+from typing import Union
 
 try:
     import importlib.metadata as importlib_metadata
@@ -57,11 +58,19 @@ class Report:
     def __init__(self, name: str):
         """Initialize with report name."""
         self.name = name
-        self.items = []
+        self.items: List[Tuple[str, Union[str, int]]] = []
 
-    def add_to_report(self, item_name: str, item_info: str) -> None:
+    def add_to_report(self, item_name: str, item_info: Union[int, str]) -> None:
         """Add report content to items list (list of string tuples)."""
         self.items.append((item_name, item_info))
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Report):
+            return False
+        return self.name == other.name and self.items == other.items
+
+    def __str__(self) -> str:
+        return f'{self.name} Report, Items: {self.items}'
 
 
 class Result:
@@ -163,12 +172,23 @@ def generate_reports(*, categories=None, exclude_packages=False) -> List[Report]
     return reports
 
 
-def get_topic_names(skip_topics: List = ()) -> List:
+def get_topic_names(skip_topics: List[str] = []) -> List[str]:
     """Get all topic names using rclpy API."""
-    topics = []
+    topics: List[str] = []
     with NodeStrategy(None) as node:
         topic_names_types = node.get_topic_names_and_types()
         for t_name, _ in topic_names_types:
             if t_name not in skip_topics:
                 topics.append(t_name)
     return topics
+
+
+def get_service_names(skip_services: List[str] = []) -> List[str]:
+    """Get all topic names using rclpy API."""
+    services: List[str] = []
+    with NodeStrategy(None) as node:
+        topic_names_types = node.get_topic_names_and_types()
+        for t_name, _ in topic_names_types:
+            if t_name not in skip_services:
+                services.append(t_name)
+    return services

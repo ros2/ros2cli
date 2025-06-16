@@ -1,0 +1,25 @@
+[ros2cli.command]
+doctor = ros2doctor.command.doctor:DoctorCommand
+wtf = ros2doctor.command.doctor:WtfCommand
+
+[ros2cli.extension_point]
+ros2doctor.verb = ros2doctor.verb:VerbExtension
+
+[ros2doctor.checks]
+NetworkCheck = ros2doctor.api.network:NetworkCheck
+PackageCheck = ros2doctor.api.package:PackageCheck
+PlatformCheck = ros2doctor.api.platform:PlatformCheck
+QoSCompatibilityCheck = ros2doctor.api.qos_compatibility:QoSCompatibilityCheck
+TopicCheck = ros2doctor.api.topic:TopicCheck
+
+[ros2doctor.report]
+NetworkReport = ros2doctor.api.network:NetworkReport
+PackageReport = ros2doctor.api.package:PackageReport
+PlatformReport = ros2doctor.api.platform:PlatformReport
+QoSCompatibilityReport = ros2doctor.api.qos_compatibility:QoSCompatibilityReport
+RMWReport = ros2doctor.api.rmw:RMWReport
+RosdistroReport = ros2doctor.api.platform:RosdistroReport
+TopicReport = ros2doctor.api.topic:TopicReport
+
+[ros2doctor.verb]
+hello = ros2doctor.verb.hello:HelloVerb

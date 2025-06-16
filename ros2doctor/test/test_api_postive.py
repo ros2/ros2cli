@@ -12,13 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
+import sys
 import unittest
+
 
 from common import generate_expected_service_report
 from common import generate_expected_topic_report
 
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess
+from launch_ros.actions.node import Node
 
 import launch_testing.actions
 import launch_testing.markers
@@ -32,8 +36,18 @@ from ros2doctor.api.topic import TopicReport
 
 @pytest.mark.rostest
 @launch_testing.markers.keep_alive
-def generate_test_description() -> LaunchDescription:
+def generate_test_decription() -> LaunchDescription:
+
+    path_to_fixtures = os.path.join(os.path.dirname(__file__), 'fixtures')
+    path_to_report_node = os.path.join(path_to_fixtures, 'report_node.py')
+
+    report_node = Node(
+        executable=sys.executable,
+        arguments=[path_to_report_node],
+    )
+
     return LaunchDescription([
+        # Always restart daemon to isolate tests.
         ExecuteProcess(
             cmd=['ros2', 'daemon', 'stop'],
             name='daemon-stop',
@@ -42,15 +56,16 @@ def generate_test_description() -> LaunchDescription:
                     cmd=['ros2', 'daemon', 'start'],
                     name='daemon-start',
                     on_exit=[
+                        report_node,
                         launch_testing.actions.ReadyToTest()
-                    ]
+                    ],
                 )
             ]
-        )
+        ),
     ])
 
 
-class TestROS2DoctorAPINegativeTest(unittest.TestCase):
+class TestROS2DoctorAPIPositiveTest(unittest.TestCase):
 
     def test_topic_check(self):
         """Assume no topics are publishing or subscribing other than whitelisted ones."""
@@ -59,18 +74,19 @@ class TestROS2DoctorAPINegativeTest(unittest.TestCase):
         self.assertEqual(check_result.error, 0)
         self.assertEqual(check_result.warning, 0)
 
-    def test_no_topic_report(self):
-        """Assume no topics are publishing or subscribing other than whitelisted ones."""
+    def test_topic_report(self) -> None:
+        """Assume topics are publishing or subscribing other than whitelisted ones."""
         report = TopicReport().report()
-        expected_report = generate_expected_topic_report('none', 0, 0)
+        expected_report = generate_expected_topic_report('msg', 1, 1)
         self.assertEqual(report.name, expected_report.name)
         self.assertEqual(report.items, expected_report.items)
         self.assertEqual(report, expected_report)
 
-    def test_no_service_report(self):
-        """Assume no services are being used other than whitelisted ones."""
+    def test_service_report(self) -> None:
+        """Assume services are being used."""
         report = ServiceReport().report()
-        expected_report = generate_expected_service_report(['none'], [0], [0])
+        expected_report = generate_expected_service_report(['baz', 'bar'],
+                                                           [0, 1], [1, 0])
         self.assertEqual(report.name, expected_report.name)
         self.assertEqual(report.items, expected_report.items)
         self.assertEqual(report, expected_report)
