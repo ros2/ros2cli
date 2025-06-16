@@ -184,11 +184,11 @@ def get_topic_names(skip_topics: List[str] = []) -> List[str]:
 
 
 def get_service_names(skip_services: List[str] = []) -> List[str]:
-    """Get all topic names using rclpy API."""
+    """Get all service names using rclpy API."""
     services: List[str] = []
     with NodeStrategy(None) as node:
-        topic_names_types = node.get_topic_names_and_types()
-        for t_name, _ in topic_names_types:
+        service_names_types = node.get_service_names_and_types()
+        for t_name, _ in service_names_types:
             if t_name not in skip_services:
                 services.append(t_name)
     return services
