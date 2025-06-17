@@ -21,6 +21,7 @@ setup(
             'completion/ros2-argcomplete.zsh'
         ]),
     ],
+    package_data={'': ['py.typed']},
     zip_safe=False,
     author='Dirk Thomas',
     author_email='dthomas@osrfoundation.org',

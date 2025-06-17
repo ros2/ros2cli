@@ -50,6 +50,7 @@ The package provides the pkg command for the ROS 2 command line tools.""",
     package_data={
         'ros2pkg': [
             'resource/**/*',
+            'py.typed'
         ],
     },
 )
