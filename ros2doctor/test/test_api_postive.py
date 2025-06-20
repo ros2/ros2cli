@@ -1,4 +1,4 @@
-# Copyright 2020 Open Source Robotics Foundation, Inc.
+# Copyright 2025 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,42 +12,51 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import contextlib
 import os
 import sys
+from typing import Any
+from typing import Dict
+from typing import Generator
+from typing import Tuple
 import unittest
 
-
-from common import generate_expected_service_report
-from common import generate_expected_topic_report
-
 from launch import LaunchDescription
+from launch import LaunchService
 from launch.actions import ExecuteProcess
-from launch_ros.actions.node import Node
 
+from launch_ros.actions import Node
+
+import launch_testing
 import launch_testing.actions
+import launch_testing.asserts
 import launch_testing.markers
+import launch_testing.tools
+import launch_testing_ros.tools
 
 import pytest
 
-from ros2doctor.api.service import ServiceReport
-from ros2doctor.api.topic import TopicCheck
-from ros2doctor.api.topic import TopicReport
+from rclpy.utilities import get_available_rmw_implementations
+from ros2cli.helpers import get_rmw_additional_env
+
+
+# Skip cli tests on Windows while they exhibit pathological behavior
+# https://github.com/ros2/build_farmer/issues/248
+if sys.platform.startswith('win'):
+    pytest.skip(
+        'CLI tests can block for a pathological amount of time on Windows.',
+        allow_module_level=True)
 
 
 @pytest.mark.rostest
-@launch_testing.markers.keep_alive
-def generate_test_decription() -> LaunchDescription:
-
+@launch_testing.parametrize('rmw_implementation', get_available_rmw_implementations())
+def generate_test_description(rmw_implementation: str) -> Tuple[LaunchDescription,
+                                                                Dict[str, Any]]:
     path_to_fixtures = os.path.join(os.path.dirname(__file__), 'fixtures')
-    path_to_report_node = os.path.join(path_to_fixtures, 'report_node.py')
-
-    report_node = Node(
-        executable=sys.executable,
-        arguments=[path_to_report_node],
-    )
+    additional_env = get_rmw_additional_env(rmw_implementation)
+    additional_env['PYTHONUNBUFFERED'] = '1'
 
     return LaunchDescription([
-        # Always restart daemon to isolate tests.
         ExecuteProcess(
             cmd=['ros2', 'daemon', 'stop'],
             name='daemon-stop',
@@ -56,37 +65,92 @@ def generate_test_decription() -> LaunchDescription:
                     cmd=['ros2', 'daemon', 'start'],
                     name='daemon-start',
                     on_exit=[
-                        report_node,
+                        Node(
+                            executable=sys.executable,
+                            arguments=[os.path.join(path_to_fixtures, 'report_node.py')],
+                            additional_env=additional_env
+                        ),
                         launch_testing.actions.ReadyToTest()
-                    ],
+                    ]
                 )
             ]
-        ),
-    ])
+        )
+    ]), locals()
 
 
-class TestROS2DoctorAPIPositiveTest(unittest.TestCase):
+class TestROS2DoctorQoSCompatibility(unittest.TestCase):
 
-    def test_topic_check(self):
-        """Assume no topics are publishing or subscribing other than whitelisted ones."""
-        topic_check = TopicCheck()
-        check_result = topic_check.check()
-        self.assertEqual(check_result.error, 0)
-        self.assertEqual(check_result.warning, 0)
+    @classmethod
+    def setUpClass(
+            cls,
+            launch_service: LaunchService,
+            proc_info: launch_testing.tools.process.ActiveProcInfoHandler,
+            proc_output: launch_testing.tools.process.ActiveIoHandler,
+            rmw_implementation: str,
+    ) -> None:
+        rmw_implementation_filter = launch_testing_ros.tools.basic_output_filter(
+            filtered_patterns=['WARNING: topic .* does not appear to be published yet'],
+            filtered_rmw_implementation=rmw_implementation
+        )
 
-    def test_topic_report(self) -> None:
-        """Assume topics are publishing or subscribing other than whitelisted ones."""
-        report = TopicReport().report()
-        expected_report = generate_expected_topic_report('msg', 1, 1)
-        self.assertEqual(report.name, expected_report.name)
-        self.assertEqual(report.items, expected_report.items)
-        self.assertEqual(report, expected_report)
+        # skip zenoh because of the QoS compatibility
+        if rmw_implementation == 'rmw_zenoh_cpp':
+            raise unittest.SkipTest()
 
-    def test_service_report(self) -> None:
-        """Assume services are being used."""
-        report = ServiceReport().report()
-        expected_report = generate_expected_service_report(['baz', 'bar'],
-                                                           [0, 1], [1, 0])
-        self.assertEqual(report.name, expected_report.name)
-        self.assertEqual(report.items, expected_report.items)
-        self.assertEqual(report, expected_report)
+        @contextlib.contextmanager
+        def launch_doctor_command(
+            self,
+            arguments
+        ) -> Generator[launch_testing.tools.process.ProcessProxy, None, None]:
+            additional_env = get_rmw_additional_env(rmw_implementation)
+            additional_env['PYTHONUNBUFFERED'] = '1'
+            doctor_command_action = ExecuteProcess(
+                cmd=['ros2', 'doctor', *arguments],
+                additional_env=additional_env,
+                name='ros2doctor-cli',
+                output='screen'
+            )
+            with launch_testing.tools.launch_process(
+                    launch_service, doctor_command_action, proc_info, proc_output,
+                    output_filter=rmw_implementation_filter
+            ) as doctor_command:
+                yield doctor_command
+        cls.launch_doctor_command = launch_doctor_command
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_check(self) -> None:
+        with self.launch_doctor_command(
+                arguments=[]
+        ) as doctor_command:
+            assert doctor_command.wait_for_shutdown(timeout=10)
+        assert doctor_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert doctor_command.output
+
+        lines_list = [line for line in doctor_command.output.splitlines() if line]
+        assert 'All' in lines_list[-1]
+        assert 'checks passed' in lines_list[-1]
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_report(self) -> None:
+        for argument in ['-r', '--report']:
+            with self.launch_doctor_command(
+                    arguments=[argument]
+            ) as doctor_command:
+                assert doctor_command.wait_for_shutdown(timeout=10)
+            assert doctor_command.exit_code == launch_testing.asserts.EXIT_OK
+
+            assert ('   TOPIC LIST\n'
+                    'topic               : /msg\n'
+                    'publisher count     : 1\n'
+                    'subscriber count    : 1\n') in doctor_command.output
+
+            assert ('   SERVICE LIST\n'
+                    'service          : /bar\n'
+                    'service count    : 1\n'
+                    'client count     : 0\n'
+                    'service          : /baz\n'
+                    'service count    : 0\n'
+                    'client count     : 1\n'
+                    'service          : /report_node/get_type_description\n'
+                    'service count    : 1\n'
+                    'client count     : 0\n') in doctor_command.output

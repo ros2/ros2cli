@@ -35,7 +35,7 @@ class ServiceReport(DoctorReport):
             report.add_to_report('client count', 0)
         with DirectNode(None) as node:
             for service_name in to_be_reported:
-                report.add_to_report('topic', service_name)
+                report.add_to_report('service', service_name)
                 report.add_to_report('service count', node.node.count_services(service_name))
                 report.add_to_report('client count', node.node.count_clients(service_name))
         return report

@@ -23,7 +23,8 @@ from std_srvs.srv import SetBool
 class ReportTestNode(Node):
 
     def __init__(self):
-        super().__init__('talker_node')
+        # Disable all extraneous node services to simplify the test
+        super().__init__('report_node', start_parameter_services=False)
         self.create_publisher(String, 'msg', 10)
         self.create_subscription(String, 'msg', lambda msg: None, 10)
         self.create_client(SetBool, 'baz')
