@@ -91,6 +91,8 @@ def serve(server: LocalXMLRPCServer, *, timeout: int = 2 * 60 * 60):
             node.get_subscriber_names_and_types_by_node,
             node.get_subscriptions_info_by_topic,
             node.get_service_names_and_types_by_node,
+            node.get_servers_info_by_service,
+            node.get_clients_info_by_service,
             node.get_client_names_and_types_by_node,
             bind(rclpy.action.get_action_server_names_and_types_by_node, node),
             bind(rclpy.action.get_action_client_names_and_types_by_node, node),

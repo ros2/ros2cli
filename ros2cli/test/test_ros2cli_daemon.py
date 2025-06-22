@@ -18,6 +18,7 @@ import pytest
 
 import rclpy
 import rclpy.action
+from rclpy.endpoint_info import EndpointTypeEnum
 
 from ros2cli.node.daemon import DaemonNode
 from ros2cli.node.daemon import is_daemon_running
@@ -45,6 +46,8 @@ TEST_TOPIC_SUBSCRIPTION_QOS = rclpy.qos.QoSProfile(
     history=rclpy.qos.HistoryPolicy.KEEP_LAST,
     depth=8
 )
+TEST_SERVICE_CLIENT_QOS = TEST_TOPIC_PUBLISHER_QOS
+TEST_SERVICE_SERVER_QOS = TEST_TOPIC_SUBSCRIPTION_QOS
 TEST_SERVICE_NAME = '/test/service'
 TEST_SERVICE_TYPE = 'test_msgs/srv/Empty'
 TEST_ACTION_NAME = '/test/action'
@@ -73,12 +76,14 @@ def local_node():
         service = node.create_service(
             srv_type=test_msgs.srv.Empty,
             srv_name=TEST_SERVICE_NAME,
-            callback=(lambda req, res: res)
+            callback=(lambda req, res: res),
+            qos_profile=TEST_SERVICE_SERVER_QOS
         )
         service  # to avoid "assigned by never used" warning
         client = node.create_client(
             srv_type=test_msgs.srv.Empty,
-            srv_name=TEST_SERVICE_NAME
+            srv_name=TEST_SERVICE_NAME,
+            qos_profile=TEST_SERVICE_CLIENT_QOS
         )
         client  # to avoid "assigned by never used" warning
 
@@ -233,6 +238,42 @@ def test_get_subscriptions_info_by_topic(daemon_node):
         TEST_TOPIC_SUBSCRIPTION_QOS.history
     assert test_subscription_info.qos_profile.depth == \
         TEST_TOPIC_SUBSCRIPTION_QOS.depth
+
+
+def test_get_clients_info_by_service(daemon_node):
+    clients_info = daemon_node.get_clients_info_by_service(TEST_SERVICE_NAME)
+    assert len(clients_info) == 1
+    test_client_info = clients_info[0]
+    assert test_client_info.node_name == TEST_NODE_NAME
+    assert test_client_info.node_namespace == TEST_NODE_NAMESPACE
+    assert test_client_info.service_type == TEST_SERVICE_TYPE
+    assert test_client_info.endpoint_type == EndpointTypeEnum.CLIENT
+    assert (test_client_info.endpoint_count == 1 or test_client_info.endpoint_count == 2)
+    assert len(test_client_info.qos_profiles) == test_client_info.endpoint_count
+    assert len(test_client_info.endpoint_gids) == test_client_info.endpoint_count
+    for i in range(test_client_info.endpoint_count):
+        assert test_client_info.qos_profiles[i].durability == \
+            TEST_SERVICE_CLIENT_QOS.durability
+        assert test_client_info.qos_profiles[i].reliability == \
+            TEST_SERVICE_CLIENT_QOS.reliability
+
+
+def test_get_servers_info_by_service(daemon_node):
+    servers_info = daemon_node.get_servers_info_by_service(TEST_SERVICE_NAME)
+    assert len(servers_info) == 1
+    test_server_info = servers_info[0]
+    assert test_server_info.node_name == TEST_NODE_NAME
+    assert test_server_info.node_namespace == TEST_NODE_NAMESPACE
+    assert test_server_info.service_type == TEST_SERVICE_TYPE
+    assert test_server_info.endpoint_type == EndpointTypeEnum.SERVER
+    assert (test_server_info.endpoint_count == 1 or test_server_info.endpoint_count == 2)
+    assert len(test_server_info.qos_profiles) == test_server_info.endpoint_count
+    assert len(test_server_info.endpoint_gids) == test_server_info.endpoint_count
+    for i in range(test_server_info.endpoint_count):
+        assert test_server_info.qos_profiles[i].durability == \
+            TEST_SERVICE_SERVER_QOS.durability
+        assert test_server_info.qos_profiles[i].reliability == \
+            TEST_SERVICE_SERVER_QOS.reliability
 
 
 def test_count_publishers(daemon_node):
