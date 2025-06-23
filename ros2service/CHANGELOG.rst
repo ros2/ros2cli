@@ -2,6 +2,14 @@
 Changelog for package ros2service
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.39.1 (2025-06-19)
+-------------------
+* Relax the check from exact to partial match. (`#1055 <https://github.com/ros2/ros2cli/issues/1055>`_)
+* Export Typing information (`#1041 <https://github.com/ros2/ros2cli/issues/1041>`_)
+* move QoS methods from ros2topic.api to ros2cli.qos. (`#1053 <https://github.com/ros2/ros2cli/issues/1053>`_)
+* add QoS option to ros2service/ros2action echo commands. (`#1036 <https://github.com/ros2/ros2cli/issues/1036>`_)
+* Contributors: Michael Carlstrom, Tomoya Fujita
+
 0.39.0 (2025-04-25)
 -------------------
 

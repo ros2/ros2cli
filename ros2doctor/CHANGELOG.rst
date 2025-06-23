@@ -2,6 +2,12 @@
 Changelog for package ros2doctor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.39.1 (2025-06-19)
+-------------------
+* Export Typing information (`#1041 <https://github.com/ros2/ros2cli/issues/1041>`_)
+* Fix stringifying InterfaceFlags when the flags are empty. (`#1026 <https://github.com/ros2/ros2cli/issues/1026>`_)
+* Contributors: Chris Lalancette, Michael Carlstrom
+
 0.39.0 (2025-04-25)
 -------------------
 

@@ -2,6 +2,11 @@
 Changelog for package ros2component
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.39.1 (2025-06-19)
+-------------------
+* Export Typing information (`#1041 <https://github.com/ros2/ros2cli/issues/1041>`_)
+* Contributors: Michael Carlstrom
+
 0.39.0 (2025-04-25)
 -------------------
 

@@ -2,6 +2,12 @@
 Changelog for package ros2pkg
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.39.1 (2025-06-19)
+-------------------
+* Reduce boilerplate in install(TARGETS for library (`#1056 <https://github.com/ros2/ros2cli/issues/1056>`_)
+* Export Typing information (`#1041 <https://github.com/ros2/ros2cli/issues/1041>`_)
+* Contributors: Michael Carlstrom, Silvio Traversaro
+
 0.39.0 (2025-04-25)
 -------------------
 

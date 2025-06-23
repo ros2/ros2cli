@@ -2,6 +2,14 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.39.1 (2025-06-19)
+-------------------
+* Export Typing information (`#1041 <https://github.com/ros2/ros2cli/issues/1041>`_)
+* move QoS methods from ros2topic.api to ros2cli.qos. (`#1053 <https://github.com/ros2/ros2cli/issues/1053>`_)
+* Assert HistoryQoS in test_ros2cli_daemon (`#1040 <https://github.com/ros2/ros2cli/issues/1040>`_)
+* remove add_subparsers from ros2cli. (`#1032 <https://github.com/ros2/ros2cli/issues/1032>`_)
+* Contributors: Mario Domínguez López, Michael Carlstrom, Tomoya Fujita
+
 0.39.0 (2025-04-25)
 -------------------
 

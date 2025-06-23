@@ -5,13 +5,14 @@ package_name = 'ros2doctor'
 
 setup(
     name=package_name,
-    version='0.39.0',
+    version='0.39.1',
     packages=find_packages(exclude=['test']),
     data_files=[
         ('share/' + package_name, ['package.xml']),
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
     ],
+    package_data={'': ['py.typed']},
     install_requires=['ros2cli'],
     zip_safe=True,
     author='Claire Wang',
