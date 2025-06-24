@@ -21,7 +21,7 @@ from ros2doctor.api import Report
 
 
 class ServiceReport(DoctorReport):
-    """Report topic related information."""
+    """Report service related information."""
 
     def category(self) -> Literal['topic']:
         return 'topic'
