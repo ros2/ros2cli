@@ -50,7 +50,7 @@ def generate_test_description() -> LaunchDescription:
     ])
 
 
-class TestROS2DoctorAPINegativeTest(unittest.TestCase):
+class TestROS2DoctorAPI(unittest.TestCase):
 
     def test_topic_check(self):
         """Assume no topics are publishing or subscribing other than whitelisted ones."""

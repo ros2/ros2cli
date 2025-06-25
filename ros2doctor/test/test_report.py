@@ -93,10 +93,6 @@ class TestROS2DoctorQoSCompatibility(unittest.TestCase):
             filtered_rmw_implementation=rmw_implementation
         )
 
-        # skip zenoh because of the QoS compatibility
-        if rmw_implementation == 'rmw_zenoh_cpp':
-            raise unittest.SkipTest()
-
         @contextlib.contextmanager
         def launch_doctor_command(
             self,
@@ -139,18 +135,24 @@ class TestROS2DoctorQoSCompatibility(unittest.TestCase):
                 assert doctor_command.wait_for_shutdown(timeout=10)
             assert doctor_command.exit_code == launch_testing.asserts.EXIT_OK
 
-            assert ('   TOPIC LIST\n'
-                    'topic               : /msg\n'
-                    'publisher count     : 1\n'
-                    'subscriber count    : 1\n') in doctor_command.output
+            assert launch_testing.tools.expect_output(
+                expected_lines=[
+                    'topic               : /msg',
+                    'publisher count     : 1',
+                    'subscriber count    : 1'
+                ],
+                text=doctor_command.output
+            )
 
-            assert ('   SERVICE LIST\n'
-                    'service          : /bar\n'
-                    'service count    : 1\n'
-                    'client count     : 0\n'
-                    'service          : /baz\n'
-                    'service count    : 0\n'
-                    'client count     : 1\n'
-                    'service          : /report_node/get_type_description\n'
-                    'service count    : 1\n'
-                    'client count     : 0\n') in doctor_command.output
+            assert launch_testing.tools.expect_output(
+                expected_lines=[
+                    'service          : /bar',
+                    'service count    : 1',
+                    'client count     : 0',
+                    'service          : /baz',
+                    'service count    : 0',
+                    'client count     : 1',
+                    'service          : /report_node/get_type_description',
+                    'service count    : 1',
+                    'client count     : 0'],
+                text=doctor_command.output)
