@@ -78,7 +78,7 @@ def generate_test_description(rmw_implementation: str) -> Tuple[LaunchDescriptio
     ]), locals()
 
 
-class TestROS2DoctorQoSCompatibility(unittest.TestCase):
+class TestROS2DoctorReport(unittest.TestCase):
 
     @classmethod
     def setUpClass(
