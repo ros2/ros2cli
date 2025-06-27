@@ -64,6 +64,7 @@ def generate_test_description(rmw_implementation: str) -> Tuple[LaunchDescriptio
                 ExecuteProcess(
                     cmd=['ros2', 'daemon', 'start'],
                     name='daemon-start',
+                    additional_env=additional_env,
                     on_exit=[
                         Node(
                             executable=sys.executable,
@@ -88,6 +89,7 @@ class TestROS2DoctorReport(unittest.TestCase):
             proc_output: launch_testing.tools.process.ActiveIoHandler,
             rmw_implementation: str,
     ) -> None:
+        cls.rmw_implementation = rmw_implementation
         rmw_implementation_filter = launch_testing_ros.tools.basic_output_filter(
             filtered_patterns=['WARNING: topic .* does not appear to be published yet'],
             filtered_rmw_implementation=rmw_implementation
@@ -128,6 +130,11 @@ class TestROS2DoctorReport(unittest.TestCase):
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_report(self) -> None:
+        # TODO(@fujitatomoya): rmw_zenoh_cpp is instable to find the endpoints, it does not
+        # matter if DaemonNode or DirectNode is used. For now, skip the test for rmw_zenoh_cpp.
+        if self.rmw_implementation == 'rmw_zenoh_cpp':
+            raise unittest.SkipTest()
+
         for argument in ['-r', '--report']:
             with self.launch_doctor_command(
                     arguments=[argument]
