@@ -16,9 +16,14 @@ from collections import namedtuple
 from typing import Any
 from typing import List
 
+import rclpy
+
 from rclpy.node import HIDDEN_NODE_PREFIX
 from ros2cli.helpers import wait_for
 from ros2cli.node.strategy import NodeStrategy
+
+from rcl_interfaces.msg import LoggerLevel
+from rcl_interfaces.srv import SetLoggerLevels
 
 INFO_NONUNIQUE_WARNING_TEMPLATE = (
     'There are {num_nodes} nodes in the graph with the exact name "{node_name}". '
@@ -27,6 +32,14 @@ INFO_NONUNIQUE_WARNING_TEMPLATE = (
 
 NodeName = namedtuple('NodeName', ('name', 'namespace', 'full_name'))
 TopicInfo = namedtuple('Topic', ('name', 'types'))
+
+LEVEL_STR_TO_ENUM = {
+    'DEBUG': LoggerLevel.LOG_LEVEL_DEBUG,
+    'INFO': LoggerLevel.LOG_LEVEL_INFO,
+    'WARN': LoggerLevel.LOG_LEVEL_WARN,
+    'ERROR': LoggerLevel.LOG_LEVEL_ERROR,
+    'FATAL': LoggerLevel.LOG_LEVEL_FATAL,
+}
 
 
 def _is_hidden_name(name):
@@ -143,6 +156,45 @@ def get_action_client_info(*, node, remote_node_name, include_hidden=False):
             name=n,
             types=t)
         for n, t in names_and_types if include_hidden or not _is_hidden_name(n)]
+
+
+def call_log_level_set(node, node_name, level):
+    """
+    Set the log level of the specified node using the SetLoggerLevels ROS service.
+    :param node: The rclpy node to use as the client
+    :param node_name: The full name of the target node
+    :param level: The log level as a string (e.g., 'DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL')
+    """
+
+    # Prepare the service name for the target node
+    service_name = f'{node_name}/set_logger_levels'
+    client = node.create_client(SetLoggerLevels, service_name)
+
+    if not client.service_is_ready():
+        raise RuntimeError(f'Service {service_name} not ready')
+
+    # Prepare the request
+    level_value = LEVEL_STR_TO_ENUM.get(level.upper(), None)
+    if level_value is None:
+        raise ValueError(
+            f'Invalid log level "{level}". Valid levels are: {", ".join(LEVEL_STR_TO_ENUM.keys())}')
+
+    request = SetLoggerLevels.Request()
+    logger_level = LoggerLevel()
+    logger_level.name = node_name
+    logger_level.level = level_value
+    request.levels = [logger_level]
+
+    # Call the service
+    future = client.call_async(request)
+    rclpy.spin_until_future_complete(node, future)
+    if future.result() is not None:
+        res = future.result()
+        if not all([r.successful for r in res.results]):
+            raise RuntimeError(
+                f'Failed to set log level for node "{node_name}": {res.results}')
+    else:
+        raise RuntimeError(f'Failed to set log level: {future.exception()}')
 
 
 class NodeNameCompleter:
