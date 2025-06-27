@@ -28,7 +28,7 @@ def generate_expected_topic_report(topic: str, pub_count: int, sub_count: int) -
 def generate_expected_service_report(services: Iterable[str], serv_counts: Iterable[int],
                                      cli_counts: Iterable[int]) -> Report:
     expected_report = Report('SERVICE LIST')
-    for service, serv_count, cli_count in zip(services, serv_counts, cli_counts, strict=True):
+    for service, serv_count, cli_count in zip(services, serv_counts, cli_counts):
         expected_report.add_to_report('service', service)
         expected_report.add_to_report('service count', serv_count)
         expected_report.add_to_report('client count', cli_count)
