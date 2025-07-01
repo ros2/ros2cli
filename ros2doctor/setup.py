@@ -51,6 +51,7 @@ setup(
             'NetworkReport = ros2doctor.api.network:NetworkReport',
             'RMWReport = ros2doctor.api.rmw:RMWReport',
             'TopicReport = ros2doctor.api.topic:TopicReport',
+            'ServiceReport = ros2doctor.api.service:ServiceReport',
             'QoSCompatibilityReport = ros2doctor.api.qos_compatibility:QoSCompatibilityReport',
             'PackageReport = ros2doctor.api.package:PackageReport',
         ],
