@@ -2,8 +2,8 @@
 Changelog for package ros2multicast
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.39.2 (2025-07-01)
+-------------------
 * Make sure to install py.typed files (`#1058 <https://github.com/ros2/ros2cli/issues/1058>`_)
 * Contributors: Christophe Bedard
 
