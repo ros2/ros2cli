@@ -12,18 +12,19 @@
 
 from ros2cli.node.strategy import add_arguments
 
-from ros2node.verb import VerbExtension
-from ros2node.api import call_log_level_set, LEVEL_STR_TO_ENUM
 from ros2cli.node.direct import DirectNode
+from ros2node.api import call_log_level_set, LEVEL_STR_TO_ENUM
+from ros2node.verb import VerbExtension
 
 
 class LogVerb(VerbExtension):
-    """Set the log level of a node"""
+    """Set the log level of a node."""
+
     def add_arguments(self, parser, cli_name):
         add_arguments(parser)
 
         parser.add_argument('node_name', help='The name of the node')
-        parser.add_argument('-l', '--logger-name', help='The logger name, if it is different from the node name')
+        parser.add_argument('-l', '--logger-name', help='Logger name if different from node name')
         parser.add_argument('level', choices=LEVEL_STR_TO_ENUM.keys(), help='Log level')
 
     def main(self, *, args):

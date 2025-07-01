@@ -20,9 +20,8 @@ import rclpy
 
 from rclpy.node import HIDDEN_NODE_PREFIX
 from ros2cli.helpers import wait_for
-from ros2cli.node.strategy import NodeStrategy
-
 from rcl_interfaces.msg import LoggerLevel
+from ros2cli.node.strategy import NodeStrategy
 from rcl_interfaces.srv import SetLoggerLevels
 
 INFO_NONUNIQUE_WARNING_TEMPLATE = (
@@ -161,11 +160,11 @@ def get_action_client_info(*, node, remote_node_name, include_hidden=False):
 def call_log_level_set(node, node_name, level):
     """
     Set the log level of the specified node using the SetLoggerLevels ROS service.
+
     :param node: The rclpy node to use as the client
     :param node_name: The full name of the target node
     :param level: The log level as a string (e.g., 'DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL')
     """
-
     # Prepare the service name for the target node
     service_name = f'{node_name}/set_logger_levels'
     client = node.create_client(SetLoggerLevels, service_name)
@@ -190,7 +189,7 @@ def call_log_level_set(node, node_name, level):
     rclpy.spin_until_future_complete(node, future)
     if future.result() is not None:
         res = future.result()
-        if not all([r.successful for r in res.results]):
+        if not all(r.successful for r in res.results):
             raise RuntimeError(
                 f'Failed to set log level for node "{node_name}": {res.results}')
     else:
