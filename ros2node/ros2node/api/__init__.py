@@ -16,13 +16,12 @@ from collections import namedtuple
 from typing import Any
 from typing import List
 
+from rcl_interfaces.msg import LoggerLevel
+from rcl_interfaces.srv import SetLoggerLevels
 import rclpy
-
 from rclpy.node import HIDDEN_NODE_PREFIX
 from ros2cli.helpers import wait_for
-from rcl_interfaces.msg import LoggerLevel
 from ros2cli.node.strategy import NodeStrategy
-from rcl_interfaces.srv import SetLoggerLevels
 
 INFO_NONUNIQUE_WARNING_TEMPLATE = (
     'There are {num_nodes} nodes in the graph with the exact name "{node_name}". '
@@ -176,7 +175,7 @@ def call_log_level_set(node, node_name, level):
     level_value = LEVEL_STR_TO_ENUM.get(level.upper(), None)
     if level_value is None:
         raise ValueError(
-            f'Invalid log level "{level}". Valid levels are: {", ".join(LEVEL_STR_TO_ENUM.keys())}')
+            f'Invalid log level "{level}". Valid levels: {", ".join(LEVEL_STR_TO_ENUM.keys())}')
 
     request = SetLoggerLevels.Request()
     logger_level = LoggerLevel()
