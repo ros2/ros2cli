@@ -113,11 +113,9 @@ def generate_test_description(rmw_implementation):
                             executable=sys.executable,
                             arguments=[path_to_introspectable_script],
                             name='introspectable_service',
-                            additional_env=additional_env,
                         ),
                         launch_testing.actions.ReadyToTest()
                     ],
-                    additional_env=additional_env
                 )
             ]
         ),
