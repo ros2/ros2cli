@@ -5,13 +5,14 @@ package_name = 'ros2doctor'
 
 setup(
     name=package_name,
-    version='0.39.1',
+    version='0.39.2',
     packages=find_packages(exclude=['test']),
     data_files=[
         ('share/' + package_name, ['package.xml']),
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
     ],
+    package_data={'': ['py.typed']},
     install_requires=['ros2cli'],
     zip_safe=True,
     author='Claire Wang',
@@ -50,6 +51,7 @@ setup(
             'NetworkReport = ros2doctor.api.network:NetworkReport',
             'RMWReport = ros2doctor.api.rmw:RMWReport',
             'TopicReport = ros2doctor.api.topic:TopicReport',
+            'ServiceReport = ros2doctor.api.service:ServiceReport',
             'QoSCompatibilityReport = ros2doctor.api.qos_compatibility:QoSCompatibilityReport',
             'PackageReport = ros2doctor.api.package:PackageReport',
         ],

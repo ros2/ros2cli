@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import os
+from typing import Optional
 
 import rclpy
 import rclpy.action
@@ -24,7 +25,7 @@ DEFAULT_TIMEOUT = 0.5
 
 class DirectNode:
 
-    def __init__(self, args, *, node_name=None):
+    def __init__(self, args, *, node_name: Optional[str] = None):
         timeout_reached = False
 
         def timer_callback():

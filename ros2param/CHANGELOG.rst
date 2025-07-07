@@ -2,6 +2,11 @@
 Changelog for package ros2param
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.39.2 (2025-07-01)
+-------------------
+* Make sure to install py.typed files (`#1058 <https://github.com/ros2/ros2cli/issues/1058>`_)
+* Contributors: Christophe Bedard
+
 0.39.1 (2025-06-19)
 -------------------
 * Relax the check from exact to partial match. (`#1055 <https://github.com/ros2/ros2cli/issues/1055>`_)
