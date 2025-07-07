@@ -25,14 +25,17 @@ setup(
     classifiers=[
         'Environment :: Console',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python',
     ],
     description='The interface command for ROS 2 command line tools.',
     long_description="""\
 The package provides the interface command for the ROS 2 command line tools.""",
     license='Apache License, Version 2.0',
-    tests_require=['pytest'],
+    extras_require={
+        'test': [
+            'pytest',
+        ],
+    },
     entry_points={
         'ros2cli.command': [
             'interface = ros2interface.command.interface:InterfaceCommand',
