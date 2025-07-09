@@ -124,7 +124,7 @@ def send_goal(action_name, action_type, goal_values, feedback_callback, timeout=
 
         print('Waiting for an action server to become available...')
         if not action_client.wait_for_server(timeout_sec=timeout):
-            print('Action server is not available after waiting {timeout} seconds.')
+            print(f'Action server is not available after waiting {timeout} seconds.')
             return
 
         stamp_now = node.get_clock().now().to_msg()
@@ -179,7 +179,7 @@ def send_goal(action_name, action_type, goal_values, feedback_callback, timeout=
         rclpy.spin_until_future_complete(node, result_future, timeout_sec=timeout)
 
         if not result_future.done():
-            print('Timed out waiting for result after {timeout} seconds.')
+            print(f'Timed out waiting for result after {timeout} seconds.')
             return
 
         result = result_future.result()
