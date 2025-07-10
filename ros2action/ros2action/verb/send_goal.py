@@ -48,12 +48,28 @@ class SendGoalVerb(VerbExtension):
         parser.add_argument(
             '-f', '--feedback', action='store_true',
             help='Echo feedback messages for the goal')
+        parser.add_argument(
+            '-t', '--timeout', metavar='N', type=int, default=None,
+            help=(
+                'Wait for N seconds until server becomes available and goal is completed '
+                '(default waits indefinitely)'
+            ))
 
     def main(self, *, args):
         feedback_callback = None
         if args.feedback:
             feedback_callback = _feedback_callback
+<<<<<<< HEAD
         return send_goal(args.action_name, args.action_type, args.goal, feedback_callback)
+=======
+
+        if args.stdin:
+            goal = collect_stdin()
+        else:
+            goal = args.goal
+
+        return send_goal(args.action_name, args.action_type, goal, feedback_callback, args.timeout)
+>>>>>>> e4e86fe (Fujitatomoya/ros2 action send goal timeout (#1067))
 
 
 def _goal_status_to_string(status):
@@ -77,7 +93,7 @@ def _feedback_callback(feedback):
     print('Feedback:\n    {}'.format(message_to_yaml(feedback.feedback)))
 
 
-def send_goal(action_name, action_type, goal_values, feedback_callback):
+def send_goal(action_name, action_type, goal_values, feedback_callback, timeout=None):
     goal_handle = None
     node = None
     action_client = None
@@ -104,7 +120,9 @@ def send_goal(action_name, action_type, goal_values, feedback_callback):
             return 'Failed to populate message fields: {!r}'.format(ex)
 
         print('Waiting for an action server to become available...')
-        action_client.wait_for_server()
+        if not action_client.wait_for_server(timeout_sec=timeout):
+            print(f'Action server is not available after waiting {timeout} seconds.')
+            return
 
         print('Sending goal:\n     {}'.format(message_to_yaml(goal)))
         goal_future = action_client.send_goal_async(goal, feedback_callback)
@@ -151,7 +169,11 @@ def send_goal(action_name, action_type, goal_values, feedback_callback):
         print('Goal accepted with ID: {}\n'.format(bytes(goal_handle.goal_id.uuid).hex()))
 
         result_future = goal_handle.get_result_async()
-        rclpy.spin_until_future_complete(node, result_future)
+        rclpy.spin_until_future_complete(node, result_future, timeout_sec=timeout)
+
+        if not result_future.done():
+            print(f'Timed out waiting for result after {timeout} seconds.')
+            return
 
         result = result_future.result()
 
