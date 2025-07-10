@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from argparse import ArgumentTypeError
+
 import signal
 
 from action_msgs.msg import GoalStatus
@@ -28,6 +30,16 @@ from rosidl_runtime_py import set_message_fields
 from rosidl_runtime_py.utilities import get_action
 
 import yaml
+
+
+def non_negative_int(string):
+    try:
+        value = int(string)
+    except ValueError:
+        value = -1
+    if value < 0:
+        raise ArgumentTypeError('value must not be a negative integer')
+    return value
 
 
 class SendGoalVerb(VerbExtension):
@@ -54,7 +66,7 @@ class SendGoalVerb(VerbExtension):
             '-f', '--feedback', action='store_true',
             help='Echo feedback messages for the goal')
         parser.add_argument(
-            '-t', '--timeout', metavar='N', type=int, default=None,
+            '-t', '--timeout', metavar='N', type=non_negative_int, default=None,
             help=(
                 'Wait for N seconds until server becomes available and goal is completed '
                 '(default waits indefinitely)'
@@ -176,7 +188,18 @@ def send_goal(action_name, action_type, goal_values, feedback_callback, timeout=
         print('Goal accepted with ID: {}\n'.format(bytes(goal_handle.goal_id.uuid).hex()))
 
         result_future = goal_handle.get_result_async()
-        rclpy.spin_until_future_complete(node, result_future, timeout_sec=timeout)
+        if timeout == 0:
+            # Not waiting for the result, just return immediately
+            rclpy.spin_until_future_complete(node, result_future, timeout_sec=0)
+        else:
+            elapsed_time = 0
+            while rclpy.ok() and not result_future.done():
+                # Spin until the result is available or timeout occurs
+                # To trigger the signal handler, it calls spin_until_future_complete with 1 second
+                elapsed_time += 1
+                rclpy.spin_until_future_complete(node, result_future, timeout_sec=1)
+                if timeout is not None and elapsed_time >= timeout:
+                    break
 
         if not result_future.done():
             print(f'Timed out waiting for result after {timeout} seconds.')
