@@ -59,7 +59,13 @@ class SendGoalVerb(VerbExtension):
         feedback_callback = None
         if args.feedback:
             feedback_callback = _feedback_callback
-        return send_goal(args.action_name, args.action_type, args.goal, feedback_callback, args.timeout)
+        return send_goal(
+            args.action_name,
+            args.action_type,
+            args.goal,
+            feedback_callback,
+            args.timeout
+        )
 
 
 def _goal_status_to_string(status):
