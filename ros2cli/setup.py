@@ -7,6 +7,9 @@ setup(
     packages=find_packages(exclude=['test']),
     extras_require={
         'completion': ['argcomplete'],
+        'test': [
+            'pytest',
+        ],
     },
     data_files=[
         ('share/ament_index/resource_index/packages', [
@@ -33,7 +36,6 @@ setup(
     classifiers=[
         'Environment :: Console',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python',
     ],
     description='Framework for ROS 2 command line tools.',
@@ -41,7 +43,6 @@ setup(
 The framework provides a single command line script which can be extended with
 commands and verbs.""",
     license='Apache License, Version 2.0',
-    tests_require=['pytest'],
     entry_points={
         'ros2cli.command': [
             'daemon = ros2cli.command.daemon:DaemonCommand',
