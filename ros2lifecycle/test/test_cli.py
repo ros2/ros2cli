@@ -18,6 +18,7 @@ import unittest
 
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess
+from launch.actions import SetEnvironmentVariable
 from launch_ros.actions import Node
 
 import launch_testing
@@ -25,6 +26,7 @@ import launch_testing.actions
 import launch_testing.asserts
 import launch_testing.markers
 import launch_testing.tools
+from launch_testing_ros.actions import EnableRmwIsolation
 import launch_testing_ros.tools
 
 import pytest
@@ -124,12 +126,15 @@ ALL_LIFECYCLE_NODE_TRANSITIONS = [
 @launch_testing.parametrize('rmw_implementation', get_available_rmw_implementations())
 def generate_test_description(rmw_implementation):
     additional_env = get_rmw_additional_env(rmw_implementation)
+    set_env_actions = [SetEnvironmentVariable(k, v) for k, v in additional_env.items()]
     return LaunchDescription([
         # Always restart daemon to isolate tests.
         ExecuteProcess(
             cmd=['ros2', 'daemon', 'stop'],
             name='daemon-stop',
             on_exit=[
+                *set_env_actions,
+                EnableRmwIsolation(),
                 ExecuteProcess(
                     cmd=['ros2', 'daemon', 'start'],
                     name='daemon-start',
@@ -140,18 +145,15 @@ def generate_test_description(rmw_implementation):
                             executable='simple_lifecycle_node',
                             name='test_lifecycle_node',
                             output='screen',
-                            additional_env=additional_env
                         ),
                         Node(
                             package='ros2lifecycle_test_fixtures',
                             executable='simple_lifecycle_node',
                             name='_hidden_test_lifecycle_node',
                             output='screen',
-                            additional_env=additional_env
                         ),
                         launch_testing.actions.ReadyToTest()
                     ],
-                    additional_env=additional_env
                 )
             ]
         ),
@@ -170,8 +172,9 @@ class TestROS2LifecycleCLI(unittest.TestCase):
     ):
         @contextlib.contextmanager
         def launch_lifecycle_command(self, arguments):
-            additional_env = get_rmw_additional_env(rmw_implementation)
-            additional_env['PYTHONUNBUFFERED'] = '1'
+            additional_env = {
+                'PYTHONUNBUFFERED': '1',
+            }
             lifecycle_command_action = ExecuteProcess(
                 cmd=['ros2', 'lifecycle', *arguments],
                 additional_env=additional_env,
