@@ -22,6 +22,7 @@ import unittest
 
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess
+from launch.actions import SetEnvironmentVariable
 
 from launch_ros.actions import Node
 
@@ -30,6 +31,7 @@ import launch_testing.actions
 import launch_testing.asserts
 import launch_testing.markers
 import launch_testing.tools
+from launch_testing_ros.actions import EnableRmwIsolation
 import launch_testing_ros.tools
 
 import pytest
@@ -52,6 +54,7 @@ def generate_test_description(rmw_implementation):
     path_to_fixtures = os.path.join(os.path.dirname(__file__), 'fixtures')
     additional_env = get_rmw_additional_env(rmw_implementation)
     additional_env['PYTHONUNBUFFERED'] = '1'
+    set_env_actions = [SetEnvironmentVariable(k, v) for k, v in additional_env.items()]
     path_to_talker_node_script = os.path.join(path_to_fixtures, 'talker_node.py')
     path_to_listener_node_script = os.path.join(path_to_fixtures, 'listener_node.py')
 
@@ -59,18 +62,15 @@ def generate_test_description(rmw_implementation):
         executable=sys.executable,
         arguments=[path_to_talker_node_script],
         remappings=[('chatter', '_hidden_chatter')],
-        additional_env=additional_env
     )
     talker_node_action = Node(
         executable=sys.executable,
         arguments=[path_to_talker_node_script],
-        additional_env=additional_env
     )
     listener_node_action = Node(
         executable=sys.executable,
         arguments=[path_to_listener_node_script],
         remappings=[('chatter', 'chit_chatter')],
-        additional_env=additional_env
     )
 
     path_to_repeater_node_script = os.path.join(path_to_fixtures, 'repeater_node.py')
@@ -81,14 +81,12 @@ def generate_test_description(rmw_implementation):
         name='array_repeater',
         remappings=[('/array_repeater/output', '/arrays')],
         output='screen',
-        additional_env=additional_env
     )
     defaults_repeater_node_action = Node(
         executable=sys.executable,
         arguments=[path_to_repeater_node_script, 'test_msgs/msg/Defaults'],
         name='defaults_repeater',
         remappings=[('/defaults_repeater/output', '/defaults')],
-        additional_env=additional_env,
     )
     bounded_sequences_repeater_node_action = Node(
         executable=sys.executable,
@@ -97,7 +95,6 @@ def generate_test_description(rmw_implementation):
         ],
         name='bounded_sequences_repeater',
         remappings=[('/bounded_sequences_repeater/output', '/bounded_sequences')],
-        additional_env=additional_env
     )
     unbounded_sequences_repeater_node_action = Node(
         executable=sys.executable,
@@ -106,7 +103,6 @@ def generate_test_description(rmw_implementation):
         ],
         name='unbounded_sequences_repeater',
         remappings=[('/unbounded_sequences_repeater/output', '/unbounded_sequences')],
-        additional_env=additional_env
     )
 
     path_to_controller_node_script = os.path.join(path_to_fixtures, 'controller_node.py')
@@ -114,7 +110,6 @@ def generate_test_description(rmw_implementation):
     cmd_vel_controller_node_action = Node(
         executable=sys.executable,
         arguments=[path_to_controller_node_script],
-        additional_env=additional_env
     )
 
     return LaunchDescription([
@@ -123,6 +118,8 @@ def generate_test_description(rmw_implementation):
             cmd=['ros2', 'daemon', 'stop'],
             name='daemon-stop',
             on_exit=[
+                *set_env_actions,
+                EnableRmwIsolation(),
                 ExecuteProcess(
                     cmd=['ros2', 'daemon', 'start'],
                     name='daemon-start',
@@ -141,7 +138,6 @@ def generate_test_description(rmw_implementation):
                         cmd_vel_controller_node_action,
                         launch_testing.actions.ReadyToTest()
                     ],
-                    additional_env=additional_env
                 )
             ]
         ),
@@ -166,11 +162,8 @@ class TestROS2TopicCLI(unittest.TestCase):
 
         @contextlib.contextmanager
         def launch_topic_command(self, arguments):
-            additional_env = get_rmw_additional_env(rmw_implementation)
-            additional_env['PYTHONUNBUFFERED'] = '1'
             topic_command_action = ExecuteProcess(
                 cmd=['ros2', 'topic', *arguments],
-                additional_env=additional_env,
                 name='ros2topic-cli',
                 output='screen'
             )
@@ -842,13 +835,12 @@ class TestROS2TopicCLI(unittest.TestCase):
         assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
 
     def test_topic_pub_once_matching_two_listeners(
-        self, launch_service, proc_info, proc_output, path_to_listener_node_script, additional_env
+        self, launch_service, proc_info, proc_output, path_to_listener_node_script
     ):
         second_listener_node_action = Node(
             executable=sys.executable,
             arguments=[path_to_listener_node_script],
             remappings=[('chatter', 'chit_chatter')],
-            additional_env=additional_env,
             name='second_listener',
         )
         with launch_testing.tools.launch_process(
