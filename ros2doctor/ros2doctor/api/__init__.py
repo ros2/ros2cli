@@ -176,11 +176,12 @@ def print_warning_notice() -> None:
     print('\n' + '='*80)
     print('!!! WARNING !!!'.center(80))
     print('='*80)
-    print(
-        'The report includes all ROS 2 endpoint information and system platform information.\n'
+    warning_message = [
+        'The report includes all ROS 2 endpoint information and system platform information.',
         'Please review the report before sharing, as it may contain sensitive or private data.'
-        .center(80)
-    )
+    ]
+    for line in warning_message:
+        print(line.center(80))
     print('='*80 + '\n')
 
 
