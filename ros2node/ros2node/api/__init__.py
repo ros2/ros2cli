@@ -192,7 +192,7 @@ def call_log_level_set(node, node_name, level):
             raise RuntimeError(
                 f'Failed to set log level for node "{node_name}": {res.results}')
         else:
-            print(f'Successfully set log level "{node_name}" set to {level}.')
+            print(f'Successfully set log level of "{node_name}" to {level}.')
     else:
         raise RuntimeError(f'Failed to set log level: {future.exception()}')
 
