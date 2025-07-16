@@ -60,6 +60,7 @@ def get_action_clients_and_servers(*, node: Ros2CliNodes,
 
     return (action_clients, action_servers)
 
+
 def get_action_names_and_types(*, node: Ros2CliNodes) -> ActionNameAndTypeInfo:
     return node.get_action_names_and_types()
 
