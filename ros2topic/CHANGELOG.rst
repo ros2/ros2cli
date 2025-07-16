@@ -2,6 +2,12 @@
 Changelog for package ros2topic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* ros2topic: Documented now and auto keywords (`#1008 <https://github.com/ros2/ros2cli/issues/1008>`_) (`#1010 <https://github.com/ros2/ros2cli/issues/1010>`_)
+* Conditional deserialization of message for `ros2 topic hz` (backport `#1005 <https://github.com/ros2/ros2cli/issues/1005>`_) (`#1007 <https://github.com/ros2/ros2cli/issues/1007>`_)
+* Contributors: mergify[bot]
+
 0.18.12 (2025-03-25)
 --------------------
 * Adjust topic hz and bw command description. (`#987 <https://github.com/ros2/ros2cli/issues/987>`_) (`#989 <https://github.com/ros2/ros2cli/issues/989>`_)
