@@ -2,8 +2,8 @@
 Changelog for package ros2param
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.18.13 (2025-07-16)
+--------------------
 * catch ConnectionRefusedError, so that it can fall back to DirectNode. (`#1014 <https://github.com/ros2/ros2cli/issues/1014>`_) (`#1022 <https://github.com/ros2/ros2cli/issues/1022>`_)
 * fails the test properly to avoid TypeError exception. (backport `#1016 <https://github.com/ros2/ros2cli/issues/1016>`_) (`#1019 <https://github.com/ros2/ros2cli/issues/1019>`_)
 * Contributors: mergify[bot]

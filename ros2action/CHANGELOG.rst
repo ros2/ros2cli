@@ -2,8 +2,8 @@
 Changelog for package ros2action
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.18.13 (2025-07-16)
+--------------------
 * remove unnecessary '/' from ros2 action info. (backport `#1049 <https://github.com/ros2/ros2cli/issues/1049>`_) (`#1052 <https://github.com/ros2/ros2cli/issues/1052>`_)
 * Contributors: mergify[bot]
 
