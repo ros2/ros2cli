@@ -23,8 +23,8 @@ from ros2doctor.api import Report
 class ServiceReport(DoctorReport):
     """Report service related information."""
 
-    def category(self) -> Literal['topic']:
-        return 'topic'
+    def category(self) -> Literal['service']:
+        return 'service'
 
     def report(self) -> Report:
         report = Report('SERVICE LIST')

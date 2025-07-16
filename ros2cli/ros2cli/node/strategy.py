@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from typing import Optional
+
 from ros2cli.node.daemon import add_arguments as add_daemon_node_arguments
 from ros2cli.node.daemon import DaemonNode
 from ros2cli.node.daemon import is_daemon_running
@@ -22,7 +24,7 @@ from ros2cli.node.direct import DirectNode
 
 class NodeStrategy:
 
-    def __init__(self, args, *, node_name=None):
+    def __init__(self, args, *, node_name: Optional[str] = None):
         use_daemon = not getattr(args, 'no_daemon', False)
         if use_daemon and is_daemon_running(args):
             self._daemon_node = DaemonNode(args)

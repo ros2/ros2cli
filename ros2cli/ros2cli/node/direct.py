@@ -68,7 +68,7 @@ class DirectNode:
     # TODO(hidmic): generalize/standardize rclpy graph API
     #               to not have to make a special case for
     #               rclpy.action
-    def get_action_names_and_types(self):
+    def get_action_names_and_types(self) -> list[tuple[str, list[str]]]:
         return rclpy.action.get_action_names_and_types(self.node)
 
     def get_action_client_names_and_types_by_node(self, remote_node_name, remote_node_namespace):

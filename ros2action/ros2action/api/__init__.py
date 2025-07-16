@@ -12,9 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from rclpy.expand_topic_name import expand_topic_name
 from rclpy.node import Node
-from rclpy.validate_full_topic_name import validate_full_topic_name
+# Forwarding these methods since they use to be implemented here
+from ros2cli.node.action_helpers import \
+    (get_action_clients_and_servers as get_action_clients_and_servers)  # noqa: F401
+from ros2cli.node.action_helpers import get_action_names as get_action_names
+from ros2cli.node.action_helpers import get_action_names_and_types as get_action_names_and_types
 from ros2cli.node.strategy import NodeStrategy
 from rosidl_runtime_py import get_action_interfaces
 from rosidl_runtime_py import message_to_yaml
@@ -23,48 +26,6 @@ from rosidl_runtime_py.utilities import get_action
 
 def _is_action_status_topic(topic_name, action_name):
     return action_name + '/_action/status' == topic_name
-
-
-def get_action_clients_and_servers(*, node, action_name):
-    action_clients = []
-    action_servers = []
-
-    expanded_name = expand_topic_name(action_name, node.get_name(), node.get_namespace())
-    validate_full_topic_name(expanded_name)
-
-    node_names_and_ns = node.get_node_names_and_namespaces()
-    for node_name, node_ns in node_names_and_ns:
-        # Construct fully qualified name
-        node_fqn = (node_ns.rstrip('/') + '/' + node_name.lstrip('/')) if node_ns else node_name
-
-        # Get any action clients associated with the node
-        client_names_and_types = node.get_action_client_names_and_types_by_node(
-            node_name,
-            node_ns,
-        )
-        for client_name, client_types in client_names_and_types:
-            if client_name == expanded_name:
-                action_clients.append((node_fqn, client_types))
-
-        # Get any action servers associated with the node
-        server_names_and_types = node.get_action_server_names_and_types_by_node(
-            node_name,
-            node_ns,
-        )
-        for server_name, server_types in server_names_and_types:
-            if server_name == expanded_name:
-                action_servers.append((node_fqn, server_types))
-
-    return (action_clients, action_servers)
-
-
-def get_action_names_and_types(*, node):
-    return node.get_action_names_and_types()
-
-
-def get_action_names(*, node):
-    action_names_and_types = get_action_names_and_types(node=node)
-    return [n for (n, t) in action_names_and_types]
 
 
 def get_action_class(node: Node, action_name: str):
