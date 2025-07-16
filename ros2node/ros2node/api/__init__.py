@@ -169,7 +169,7 @@ def call_log_level_set(node, node_name, level):
     client = node.create_client(SetLoggerLevels, service_name)
 
     if not client.service_is_ready():
-        raise RuntimeError(f'Service {service_name} not ready')
+        raise RuntimeError(f'Service not available. Are the logging services enabled?')
 
     # Prepare the request
     level_value = LEVEL_STR_TO_ENUM.get(level.upper(), None)
@@ -191,6 +191,8 @@ def call_log_level_set(node, node_name, level):
         if not all(r.successful for r in res.results):
             raise RuntimeError(
                 f'Failed to set log level for node "{node_name}": {res.results}')
+        else:
+            print(f'Successfully set log level "{node_name}" set to {level}.')
     else:
         raise RuntimeError(f'Failed to set log level: {future.exception()}')
 

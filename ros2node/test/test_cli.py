@@ -230,3 +230,10 @@ class TestROS2NodeCLI(unittest.TestCase):
             ]),
             text=node_command.output, strict=False
         ), 'Output does not match:\n' + node_command.output
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_change_log_level(self):
+        with self.launch_node_command(arguments=['log', '/complex_node', 'DEBUG']) as node_command:
+            assert node_command.wait_for_shutdown(timeout=10)
+        assert node_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert node_command.output == 'Successfully set log level "/complex_node" to DEBUG.\n'
