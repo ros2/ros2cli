@@ -22,8 +22,15 @@ try:
 except ModuleNotFoundError:
     import importlib_metadata
 
+from rclpy.expand_topic_name import expand_topic_name
+from rclpy.validate_full_topic_name import validate_full_topic_name
+
+from ros2cli.node.direct import DirectNode
 from ros2cli.node.strategy import NodeStrategy
 from ros2doctor.api.format import doctor_warn
+
+Ros2CliNodes = Union[DirectNode, NodeStrategy]
+ActionNameAndTypeInfo = list[tuple[str, list[str]]]
 
 
 class DoctorCheck:
@@ -78,26 +85,27 @@ class Result:
 
     __slots__ = ['error', 'warning']
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize with no error or warning."""
         self.error = 0
         self.warning = 0
 
-    def add_error(self):
+    def add_error(self) -> None:
         self.error += 1
 
-    def add_warning(self):
+    def add_warning(self) -> None:
         self.warning += 1
 
 
-def run_checks(*, include_warnings=False, exclude_packages=False) -> Tuple[Set[str], int, int]:
+def run_checks(*, include_warnings: bool = False,
+               exclude_packages: bool = False) -> Tuple[Set[str], int, int]:
     """
     Run all checks and return check results.
 
     :return: 3-tuple (categories of failed checks, number of failed checks,
              total number of checks)
     """
-    fail_categories = set()  # remove repeating elements
+    fail_categories: Set[str] = set()  # remove repeating elements
     fail = 0
     total = 0
     entry_points = importlib_metadata.entry_points()
@@ -132,7 +140,7 @@ def run_checks(*, include_warnings=False, exclude_packages=False) -> Tuple[Set[s
     return fail_categories, fail, total
 
 
-def generate_reports(*, categories=None, exclude_packages=False) -> List[Report]:
+def generate_reports(*, categories=None, exclude_packages: bool = False) -> List[Report]:
     """
     Print all reports or reports of failed checks to terminal.
 
@@ -192,3 +200,43 @@ def get_service_names(skip_services: List[str] = []) -> List[str]:
             if t_name not in skip_services:
                 services.append(t_name)
     return services
+
+
+def get_action_clients_and_servers(node: Ros2CliNodes,
+                                   action_name: str
+                                   ) -> tuple[ActionNameAndTypeInfo, ActionNameAndTypeInfo]:
+    action_clients: ActionNameAndTypeInfo = []
+    action_servers: ActionNameAndTypeInfo = []
+
+    expanded_name = expand_topic_name(action_name, node.get_name(), node.get_namespace())
+    validate_full_topic_name(expanded_name)
+
+    node_names_and_ns = node.get_node_names_and_namespaces()
+    for node_name, node_ns in node_names_and_ns:
+        # Construct fully qualified name
+        node_fqn = (node_ns.rstrip('/') + '/' + node_name.lstrip('/')) if node_ns else node_name
+
+        # Get any action clients associated with the node
+        client_names_and_types = node.get_action_client_names_and_types_by_node(
+            node_name,
+            node_ns,
+        )
+        for client_name, client_types in client_names_and_types:
+            if client_name == expanded_name:
+                action_clients.append((node_fqn, client_types))
+
+        # Get any action servers associated with the node
+        server_names_and_types = node.get_action_server_names_and_types_by_node(
+            node_name,
+            node_ns,
+        )
+        for server_name, server_types in server_names_and_types:
+            if server_name == expanded_name:
+                action_servers.append((node_fqn, server_types))
+
+    return (action_clients, action_servers)
+
+
+def get_action_names(node: Ros2CliNodes) -> list[str]:
+    action_names_and_types = node.get_action_names_and_types()
+    return [n for (n, _) in action_names_and_types]

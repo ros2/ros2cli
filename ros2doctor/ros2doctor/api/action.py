@@ -14,12 +14,11 @@
 
 from typing import Literal
 
-from ros2cli.node.action_helpers import get_action_clients_and_servers
-from ros2cli.node.action_helpers import get_action_names
 from ros2cli.node.direct import DirectNode
 from ros2doctor.api import DoctorReport
+from ros2doctor.api import get_action_clients_and_servers
+from ros2doctor.api import get_action_names
 from ros2doctor.api import Report
-# from ros2doctor.api import get_action_names
 
 
 class ActionReport(DoctorReport):
@@ -31,7 +30,7 @@ class ActionReport(DoctorReport):
     def report(self) -> Report:
         report = Report('ACTION LIST')
         with DirectNode(None) as node:
-            to_be_reported = get_action_names(node=node)
+            to_be_reported = get_action_names(node)
             if not to_be_reported:
                 report.add_to_report('action', 'none')
                 report.add_to_report('action server count', 0)
@@ -39,8 +38,7 @@ class ActionReport(DoctorReport):
                 return report
 
             for action_name in to_be_reported:
-                clients, server = get_action_clients_and_servers(node=node,
-                                                                 action_name=action_name)
+                clients, server = get_action_clients_and_servers(node, action_name)
                 report.add_to_report('action', action_name)
                 report.add_to_report('action server count', len(clients))
                 report.add_to_report('action client count', len(server))
