@@ -172,6 +172,18 @@ def generate_reports(*, categories=None, exclude_packages=False) -> List[Report]
     return reports
 
 
+def print_warning_notice() -> None:
+    print('\n' + '='*80)
+    print('!!! WARNING !!!'.center(80))
+    print('='*80)
+    print(
+        'The report includes all ROS 2 endpoint information and system platform information.\n'
+        'Please review the report before sharing, as it may contain sensitive or private data.'
+        .center(80)
+    )
+    print('='*80 + '\n')
+
+
 def get_topic_names(skip_topics: List[str] = []) -> List[str]:
     """Get all topic names using rclpy API."""
     topics: List[str] = []
