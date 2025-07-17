@@ -126,7 +126,8 @@ def create_package_environment(package, destination_directory, template_name):
         if template_name == 'cmake':
             print('creating source and include folder')
             source_directory = _create_folder('src', package_directory)
-            include_directory = _create_folder(package.name, package_directory + os.sep + 'include')
+            include_directory = _create_folder(package.name,
+                package_directory + os.sep + 'include')
         elif template_name == 'python':
             print('creating source and tests folder')
             source_directory = _create_folder(package.name, package_directory)
@@ -268,6 +269,7 @@ def populate_ament_cmake(package, package_directory, cpp_node_name, cpp_library_
         'CMakeLists.txt',
         cmakelists_config)
 
+
 def populate_ament_cmake_python(package, package_directory, cpp_node_name, cpp_library_name):
     cmakelists_config = {
         'project_name': package.name,
@@ -283,6 +285,7 @@ def populate_ament_cmake_python(package, package_directory, cpp_node_name, cpp_l
         'CMakeLists.txt',
         cmakelists_config
     )
+
 
 def populate_cpp_node(package, source_directory, cpp_node_name):
     cpp_node_config = {
