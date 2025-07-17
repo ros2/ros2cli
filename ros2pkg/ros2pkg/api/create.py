@@ -98,7 +98,7 @@ def _create_template_file(
     _expand_template(template_path, template_config, output_file_path)
 
 
-def create_package_environment(package, destination_directory):
+def create_package_environment(package, destination_directory, template_name):
     package_directory = _create_folder(package.name, destination_directory)
 
     package_xml_config = {
@@ -123,9 +123,13 @@ def create_package_environment(package, destination_directory):
     source_directory = None
     include_directory = None
     if package.get_build_type() == 'cmake' or package.get_build_type() == 'ament_cmake':
-        print('creating source and include folder')
-        source_directory = _create_folder('src', package_directory)
-        include_directory = _create_folder(package.name, package_directory + os.sep + 'include')
+        if template_name == 'cmake':
+            print('creating source and include folder')
+            source_directory = _create_folder('src', package_directory)
+            include_directory = _create_folder(package.name, package_directory + os.sep + 'include')
+        elif template_name == 'python':
+            print('creating source and tests folder')
+            source_directory = _create_folder(package.name, package_directory)
     if package.get_build_type() == 'ament_python':
         print('creating source folder')
         source_directory = _create_folder(package.name, package_directory)
@@ -264,6 +268,21 @@ def populate_ament_cmake(package, package_directory, cpp_node_name, cpp_library_
         'CMakeLists.txt',
         cmakelists_config)
 
+def populate_ament_cmake_python(package, package_directory, cpp_node_name, cpp_library_name):
+    cmakelists_config = {
+        'project_name': package.name,
+        'dependencies': [str(dep) for dep in package.build_depends],
+        'cpp_node_name': cpp_node_name,
+        'cpp_library_name': cpp_library_name,
+    }
+
+    _create_template_file(
+        'ament_cmake_python',
+        'CMakeLists.txt.em',
+        package_directory,
+        'CMakeLists.txt',
+        cmakelists_config
+    )
 
 def populate_cpp_node(package, source_directory, cpp_node_name):
     cpp_node_config = {
