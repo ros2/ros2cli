@@ -161,12 +161,14 @@ class TestROS2DoctorReport(unittest.TestCase):
                     'client count     : 1',
                     'service          : /report_node/get_type_description',
                     'service count    : 1',
-                    'client count     : 0'],
+                    'client count     : 0'
+                ],
                 text=doctor_command.output)
 
             assert launch_testing.tools.expect_output(
                 expected_lines=[
                     'action                 : /fibonacci',
                     'action server count    : 1',
-                    'action client count    : 1',],
+                    'action client count    : 1'
+                ],
                 text=doctor_command.output)
