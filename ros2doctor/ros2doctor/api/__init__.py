@@ -78,26 +78,27 @@ class Result:
 
     __slots__ = ['error', 'warning']
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize with no error or warning."""
         self.error = 0
         self.warning = 0
 
-    def add_error(self):
+    def add_error(self) -> None:
         self.error += 1
 
-    def add_warning(self):
+    def add_warning(self) -> None:
         self.warning += 1
 
 
-def run_checks(*, include_warnings=False, exclude_packages=False) -> Tuple[Set[str], int, int]:
+def run_checks(*, include_warnings: bool = False,
+               exclude_packages: bool = False) -> Tuple[Set[str], int, int]:
     """
     Run all checks and return check results.
 
     :return: 3-tuple (categories of failed checks, number of failed checks,
              total number of checks)
     """
-    fail_categories = set()  # remove repeating elements
+    fail_categories: Set[str] = set()  # remove repeating elements
     fail = 0
     total = 0
     entry_points = importlib_metadata.entry_points()
@@ -132,7 +133,7 @@ def run_checks(*, include_warnings=False, exclude_packages=False) -> Tuple[Set[s
     return fail_categories, fail, total
 
 
-def generate_reports(*, categories=None, exclude_packages=False) -> List[Report]:
+def generate_reports(*, categories=None, exclude_packages: bool = False) -> List[Report]:
     """
     Print all reports or reports of failed checks to terminal.
 

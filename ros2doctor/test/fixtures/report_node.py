@@ -13,11 +13,14 @@
 # limitations under the License.
 
 import rclpy
+from rclpy.action import ActionClient
+from rclpy.action import ActionServer
 from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 
 from std_msgs.msg import String
 from std_srvs.srv import SetBool
+from test_msgs.action import Fibonacci
 
 
 class ReportTestNode(Node):
@@ -29,6 +32,8 @@ class ReportTestNode(Node):
         self.create_subscription(String, 'msg', lambda msg: None, 10)
         self.create_client(SetBool, 'baz')
         self.create_service(SetBool, 'bar', lambda req, res: res)
+        ActionServer(self, Fibonacci, 'fibonacci', lambda handle: Fibonacci.Result())
+        ActionClient(self, Fibonacci, 'fibonacci')
 
 
 def main():
