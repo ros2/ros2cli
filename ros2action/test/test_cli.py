@@ -222,6 +222,27 @@ class TestROS2ActionCLI(unittest.TestCase):
         assert int(command_output_lines[0]) == 1
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_send_fibonacci_goal_timeout_server_not_available(self):
+        with self.launch_action_command(
+            arguments=[
+                'send_goal',
+                '-t', '1',
+                '/test/fibonacci_noexist',
+                'test_msgs/action/Fibonacci',
+                '{order: 1}'
+            ],
+        ) as action_command:
+            assert action_command.wait_for_shutdown(timeout=10)
+        assert action_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=[
+                'Waiting for an action server to become available...',
+                'Action server is not available after waiting 1 seconds.'
+            ],
+            text=action_command.output, strict=False
+        )
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_send_fibonacci_goal(self):
         with self.launch_action_command(
             arguments=[
