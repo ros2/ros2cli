@@ -2,6 +2,14 @@
 Changelog for package ros2action
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Use rmw_test_fixture to isolate ros2cli tests (`#1062 <https://github.com/ros2/ros2cli/issues/1062>`_)
+* fix setuptools deprecations (`#1066 <https://github.com/ros2/ros2cli/issues/1066>`_)
+* fix ros2action send_goal signal handling. (`#1072 <https://github.com/ros2/ros2cli/issues/1072>`_)
+* Fujitatomoya/ros2 action send goal timeout (`#1067 <https://github.com/ros2/ros2cli/issues/1067>`_)
+* Contributors: Scott K Logan, Tomoya Fujita, mosfet80
+
 0.39.2 (2025-07-01)
 -------------------
 * Make sure to install py.typed files (`#1058 <https://github.com/ros2/ros2cli/issues/1058>`_)
