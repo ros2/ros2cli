@@ -2,8 +2,8 @@
 Changelog for package ros2doctor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.40.0 (2025-07-29)
+-------------------
 * add warning notice for ros2 doctor --report. (`#1079 <https://github.com/ros2/ros2cli/issues/1079>`_)
 * [ros2doctor] Add Action Report (`#1076 <https://github.com/ros2/ros2cli/issues/1076>`_)
 * Use rmw_test_fixture to isolate ros2cli tests (`#1062 <https://github.com/ros2/ros2cli/issues/1062>`_)

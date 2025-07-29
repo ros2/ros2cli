@@ -2,8 +2,8 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.40.0 (2025-07-29)
+-------------------
 * [ros2doctor] Add Action Report (`#1076 <https://github.com/ros2/ros2cli/issues/1076>`_)
 * Use rmw_test_fixture to isolate ros2cli tests (`#1062 <https://github.com/ros2/ros2cli/issues/1062>`_)
 * fix setuptools deprecations (`#1066 <https://github.com/ros2/ros2cli/issues/1066>`_)

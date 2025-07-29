@@ -2,8 +2,8 @@
 Changelog for package ros2action
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.40.0 (2025-07-29)
+-------------------
 * Use rmw_test_fixture to isolate ros2cli tests (`#1062 <https://github.com/ros2/ros2cli/issues/1062>`_)
 * fix setuptools deprecations (`#1066 <https://github.com/ros2/ros2cli/issues/1066>`_)
 * fix ros2action send_goal signal handling. (`#1072 <https://github.com/ros2/ros2cli/issues/1072>`_)
