@@ -14,10 +14,16 @@
 
 import os
 from typing import Literal
-from typing import List
 
+from rclpy.utilities import get_rmw_implementation_identifier
 from ros2doctor.api import DoctorReport
+from ros2doctor.api import RCL_ENVIRONMENT_VARIABLES
+from ros2doctor.api import RCUTILS_ENVIRONMENT_VARIABLES
 from ros2doctor.api import Report
+from ros2doctor.api import RMW_CONNEXTDDS_ENVIRONMENT_VARIABLES
+from ros2doctor.api import RMW_CYCLONEDDS_ENVIRONMENT_VARIABLES
+from ros2doctor.api import RMW_FASTRTPS_ENVIRONMENT_VARIABLES
+from ros2doctor.api import RMW_ZENOH_CPP_ENVIRONMENT_VARIABLES
 
 
 class EnvironmentReport(DoctorReport):
@@ -29,19 +35,38 @@ class EnvironmentReport(DoctorReport):
     def report(self) -> Report:
         environment_report = Report('ROS ENVIRONMENT')
 
-        ros_variable_list: List[str] = []
-        rmw_variable_list: List[str] = []
-        rcutils_variable_list: List[str] = []
+        rmw_name = get_rmw_implementation_identifier()
+
+        rmw_environment_variables: list[str] = []
+
+        if rmw_name == 'rmw_cyclonedds_cpp':
+            rmw_environment_variables = RMW_CYCLONEDDS_ENVIRONMENT_VARIABLES
+        elif rmw_name == 'rmw_connext_cpp':
+            rmw_environment_variables = RMW_CONNEXTDDS_ENVIRONMENT_VARIABLES
+        elif rmw_name == 'rmw_zenoh_cpp':
+            rmw_environment_variables = RMW_ZENOH_CPP_ENVIRONMENT_VARIABLES
+        elif rmw_name == 'rmw_fastrtps_cpp':
+            rmw_environment_variables = RMW_FASTRTPS_ENVIRONMENT_VARIABLES
+
+        ros_variable_list: list[str] = []
+        rmw_variable_list: list[str] = []
+        rcutils_variable_list: list[str] = []
 
         for key, value in os.environ.items():
-            if "ROS" in key.upper():
+            if key in RCL_ENVIRONMENT_VARIABLES:
                 ros_variable_list.append(f'{key}={value}')
-            if "RMW" in key.upper():
-                rmw_variable_list.append(f'{key}={value}')
-            if "RCUTILS" in key.upper():
+            if key in RCUTILS_ENVIRONMENT_VARIABLES:
                 rcutils_variable_list.append(f'{key}={value}')
+            if key in rmw_environment_variables:
+                rmw_variable_list.append(f'{key}={value}')
 
-        environment_report.add_to_report('ros environment variables', ", ".join(ros_variable_list))
-        environment_report.add_to_report('rcutils environment variables', ", ".join(rcutils_variable_list))
-        environment_report.add_to_report('rmw environment variables', ", ".join(rmw_variable_list))
+        environment_report.add_to_report('ros environment variables',
+                                         ', '.join(ros_variable_list))
+        environment_report.add_to_report('rcutils environment variables',
+                                         ', '.join(rcutils_variable_list))
+
+        if not rmw_environment_variables:
+            environment_report.add_to_report(
+                f'{rmw_environment_variables} environment variables',
+                ', '.join(rmw_variable_list))
         return environment_report

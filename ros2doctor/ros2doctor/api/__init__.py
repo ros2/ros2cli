@@ -12,9 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import List
-from typing import Set
-from typing import Tuple
+from typing import Final
 from typing import Union
 
 try:
@@ -26,6 +24,84 @@ from ros2cli.node.strategy import NodeStrategy
 from ros2doctor.api.format import doctor_warn
 
 
+# List of Environment Variables compiled from github.com/ros2/ros2cli/issues/1046
+# In the future maybe get from rcl/rmw layers
+RCL_ENVIRONMENT_VARIABLES: Final = [
+    'RMW_IMPLEMENTATION',
+    'ROS_AUTOMATIC_DISCOVERY_RANGE',
+    'ROS_STATIC_PEERS',
+    'ROS_DISABLE_LOANED_MESSAGES',
+    'ROS_DOMAIN_ID',
+    'ROS_SECURITY_ENABLE',
+    'ROS_SECURITY_STRATEGY',
+    'ROS_SECURITY_KEYSTORE',
+    'ROS_SECURITY_ENCLAVE_OVERRIDE',
+    'ROS_LOG_DIR',
+    'ROS_HOME',
+    'RCL_LOGGING_SPDLOG_EXPERIMENTAL_OLD_FLUSHING_BEHAVIOR'
+]
+
+
+RCUTILS_ENVIRONMENT_VARIABLES: Final = [
+    'RCUTILS_CONSOLE_OUTPUT_FORMAT',
+    'RCUTILS_CONSOLE_STDOUT_LINE_BUFFERED',
+    'RCUTILS_COLORIZED_OUTPUT',
+    'RCUTILS_LOGGING_USE_STDOUT',
+    'RCUTILS_LOGGING_BUFFERED_STREAM'
+]
+
+
+RMW_FASTRTPS_ENVIRONMENT_VARIABLES: Final = [
+    'RCUTILS_CONSOLE_OUTPUT_FORMAT',
+    'RCUTILS_CONSOLE_STDOUT_LINE_BUFFERED',
+    'RCUTILS_COLORIZED_OUTPUT',
+    'RCUTILS_LOGGING_USE_STDOUT',
+    'RCUTILS_LOGGING_BUFFERED_STREAM'
+]
+
+
+RMW_ZENOH_CPP_ENVIRONMENT_VARIABLES: Final = [
+    'RUST_LOG',
+    'ZENOH_SESSION_CONFIG_URI',
+    'ZENOH_ROUTER_CONFIG_URI',
+    'ZENOH_ROUTER_CHECK_ATTEMPTS',
+    'ZENOH_CONFIG_OVERRIDE'
+]
+
+
+RMW_CONNEXTDDS_ENVIRONMENT_VARIABLES: Final = [
+    'RMW_CONNEXT_USE_DEFAULT_PUBLISH_MODE',
+    'RMW_CONNEXT_PARTICIPANT_QOS_OVERRIDE_POLICY',
+    'RMW_CONNEXT_ENDPOINT_QOS_OVERRIDE_POLICY',
+    'RMW_CONNEXT_SECURITY_LOG_FILE',
+    'RMW_CONNEXT_SECURITY_LOG_PUBLISH',
+    'RMW_CONNEXT_SECURITY_LOG_VERBOSITY',
+    'RMW_CONNEXT_CYCLONE_COMPATIBILITY_MODE',
+    'RMW_CONNEXT_REQUEST_REPLY_MAPPING',
+    'RMW_CONNEXT_OLD_RMW_COMPATIBILITY_MODE',
+    'RMW_CONNEXT_DISABLE_FAST_ENDPOINT_DISCOVERY',
+    'RMW_CONNEXT_DISABLE_LARGE_DATA_OPTIMIZATIONS',
+    'RMW_CONNEXT_INITIAL_PEERS',
+    'RMW_CONNEXT_DISABLE_RELIABILITY_OPTIMIZATIONS',
+    'RMW_CONNEXT_ENV_UDP_INTERFACE'
+]
+
+
+RMW_CYCLONEDDS_ENVIRONMENT_VARIABLES: Final = [
+    'CYCLONEDDS_URI'
+]
+
+
+ALL_ENVIRONMENT_VARIABLES: Final = [
+    *RCL_ENVIRONMENT_VARIABLES,
+    *RCUTILS_ENVIRONMENT_VARIABLES,
+    *RMW_FASTRTPS_ENVIRONMENT_VARIABLES,
+    *RMW_ZENOH_CPP_ENVIRONMENT_VARIABLES,
+    *RMW_CONNEXTDDS_ENVIRONMENT_VARIABLES,
+    *RMW_CYCLONEDDS_ENVIRONMENT_VARIABLES
+]
+
+
 class DoctorCheck:
     """Abstract base class of ros2doctor check."""
 
@@ -33,8 +109,8 @@ class DoctorCheck:
         """:return: string linking checks and reports."""
         raise NotImplementedError
 
-    def check(self) -> bool:
-        """:return: boolean indicating result of checks."""
+    def check(self) -> 'Result':
+        """:return: Result indicating result of checks."""
         raise NotImplementedError
 
 
@@ -58,7 +134,7 @@ class Report:
     def __init__(self, name: str):
         """Initialize with report name."""
         self.name = name
-        self.items: List[Tuple[str, Union[str, int]]] = []
+        self.items: list[tuple[str, Union[str, int]]] = []
 
     def add_to_report(self, item_name: str, item_info: Union[int, str]) -> None:
         """Add report content to items list (list of string tuples)."""
@@ -91,14 +167,14 @@ class Result:
 
 
 def run_checks(*, include_warnings: bool = False,
-               exclude_packages: bool = False) -> Tuple[Set[str], int, int]:
+               exclude_packages: bool = False) -> tuple[set[str], int, int]:
     """
     Run all checks and return check results.
 
     :return: 3-tuple (categories of failed checks, number of failed checks,
              total number of checks)
     """
-    fail_categories: Set[str] = set()  # remove repeating elements
+    fail_categories: set[str] = set()  # remove repeating elements
     fail = 0
     total = 0
     entry_points = importlib_metadata.entry_points()
@@ -133,7 +209,7 @@ def run_checks(*, include_warnings: bool = False,
     return fail_categories, fail, total
 
 
-def generate_reports(*, categories=None, exclude_packages: bool = False) -> List[Report]:
+def generate_reports(*, categories=None, exclude_packages: bool = False) -> list[Report]:
     """
     Print all reports or reports of failed checks to terminal.
 
@@ -186,9 +262,9 @@ def print_warning_notice() -> None:
     print('='*80 + '\n')
 
 
-def get_topic_names(skip_topics: List[str] = []) -> List[str]:
+def get_topic_names(skip_topics: list[str] = []) -> list[str]:
     """Get all topic names using rclpy API."""
-    topics: List[str] = []
+    topics: list[str] = []
     with NodeStrategy(None) as node:
         topic_names_types = node.get_topic_names_and_types()
         for t_name, _ in topic_names_types:
@@ -197,9 +273,9 @@ def get_topic_names(skip_topics: List[str] = []) -> List[str]:
     return topics
 
 
-def get_service_names(skip_services: List[str] = []) -> List[str]:
+def get_service_names(skip_services: list[str] = []) -> list[str]:
     """Get all service names using rclpy API."""
-    services: List[str] = []
+    services: list[str] = []
     with NodeStrategy(None) as node:
         service_names_types = node.get_service_names_and_types()
         for t_name, _ in service_names_types:
