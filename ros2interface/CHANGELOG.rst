@@ -2,6 +2,21 @@
 Changelog for package ros2interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.40.0 (2025-07-29)
+-------------------
+* fix setuptools deprecations (`#1066 <https://github.com/ros2/ros2cli/issues/1066>`_)
+* Contributors: mosfet80
+
+0.39.2 (2025-07-01)
+-------------------
+* Make sure to install py.typed files (`#1058 <https://github.com/ros2/ros2cli/issues/1058>`_)
+* Contributors: Christophe Bedard
+
+0.39.1 (2025-06-19)
+-------------------
+* Export Typing information (`#1041 <https://github.com/ros2/ros2cli/issues/1041>`_)
+* Contributors: Michael Carlstrom
+
 0.39.0 (2025-04-25)
 -------------------
 

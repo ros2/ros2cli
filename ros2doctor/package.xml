@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>ros2doctor</name>
-  <version>0.39.0</version>
+  <version>0.40.0</version>
   <description>A command line tool to check potential issues in a ROS 2 system</description>
 
   <maintainer email="audrow@openrobotics.org">Audrow Nash</maintainer>
@@ -21,6 +21,7 @@
   <exec_depend>python3-importlib-metadata</exec_depend>
   <exec_depend>python3-rosdistro-modules</exec_depend>
   <exec_depend>rclpy</exec_depend>
+  <exec_depend>ros2action</exec_depend>
   <exec_depend>ros2cli</exec_depend>
   <exec_depend>ros_environment</exec_depend>
   <exec_depend>std_msgs</exec_depend>
@@ -36,6 +37,8 @@
   <test_depend>python3-pytest</test_depend>
   <test_depend>python3-pytest-timeout</test_depend>
   <test_depend>std_msgs</test_depend>
+  <test_depend>std_srvs</test_depend>
+  <test_depend>test_msgs</test_depend>
 
   <export>
     <build_type>ament_python</build_type>

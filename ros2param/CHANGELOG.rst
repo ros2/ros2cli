@@ -2,6 +2,26 @@
 Changelog for package ros2param
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.40.0 (2025-07-29)
+-------------------
+* Use rmw_test_fixture to isolate ros2cli tests (`#1062 <https://github.com/ros2/ros2cli/issues/1062>`_)
+* fix setuptools deprecations (`#1066 <https://github.com/ros2/ros2cli/issues/1066>`_)
+* Contributors: Scott K Logan, mosfet80
+
+0.39.2 (2025-07-01)
+-------------------
+* Make sure to install py.typed files (`#1058 <https://github.com/ros2/ros2cli/issues/1058>`_)
+* Contributors: Christophe Bedard
+
+0.39.1 (2025-06-19)
+-------------------
+* Relax the check from exact to partial match. (`#1055 <https://github.com/ros2/ros2cli/issues/1055>`_)
+* Export Typing information (`#1041 <https://github.com/ros2/ros2cli/issues/1041>`_)
+* fix misspelling. (`#1035 <https://github.com/ros2/ros2cli/issues/1035>`_)
+* catch ConnectionRefusedError, so that it can fall back to DirectNode. (`#1014 <https://github.com/ros2/ros2cli/issues/1014>`_)
+* fails the test properly to avoid TypeError exception. (`#1016 <https://github.com/ros2/ros2cli/issues/1016>`_)
+* Contributors: Michael Carlstrom, Tomoya Fujita
+
 0.39.0 (2025-04-25)
 -------------------
 

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.20)
 project(@(project_name))
 
 set(@(project_name)_MAJOR_VERSION 0)
@@ -55,9 +55,7 @@ install(
 install(
   TARGETS @(cpp_library_name)
   EXPORT export_@(project_name)
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin)
+)
 @[end if]@
 @[if cpp_node_name]@
 

@@ -2,6 +2,23 @@
 Changelog for package ros2pkg
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.40.0 (2025-07-29)
+-------------------
+* fix cmake deprecation (`#1082 <https://github.com/ros2/ros2cli/issues/1082>`_)
+* fix setuptools deprecations (`#1066 <https://github.com/ros2/ros2cli/issues/1066>`_)
+* Contributors: mosfet80
+
+0.39.2 (2025-07-01)
+-------------------
+* Make sure to install py.typed files (`#1058 <https://github.com/ros2/ros2cli/issues/1058>`_)
+* Contributors: Christophe Bedard
+
+0.39.1 (2025-06-19)
+-------------------
+* Reduce boilerplate in install(TARGETS for library (`#1056 <https://github.com/ros2/ros2cli/issues/1056>`_)
+* Export Typing information (`#1041 <https://github.com/ros2/ros2cli/issues/1041>`_)
+* Contributors: Michael Carlstrom, Silvio Traversaro
+
 0.39.0 (2025-04-25)
 -------------------
 

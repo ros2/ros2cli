@@ -2,6 +2,26 @@
 Changelog for package ros2doctor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.40.0 (2025-07-29)
+-------------------
+* add warning notice for ros2 doctor --report. (`#1079 <https://github.com/ros2/ros2cli/issues/1079>`_)
+* [ros2doctor] Add Action Report (`#1076 <https://github.com/ros2/ros2cli/issues/1076>`_)
+* Use rmw_test_fixture to isolate ros2cli tests (`#1062 <https://github.com/ros2/ros2cli/issues/1062>`_)
+* fix setuptools deprecations (`#1066 <https://github.com/ros2/ros2cli/issues/1066>`_)
+* Add Service report similar to topic report (`#1059 <https://github.com/ros2/ros2cli/issues/1059>`_)
+* Contributors: Michael Carlstrom, Scott K Logan, Tomoya Fujita, mosfet80
+
+0.39.2 (2025-07-01)
+-------------------
+* Make sure to install py.typed files (`#1058 <https://github.com/ros2/ros2cli/issues/1058>`_)
+* Contributors: Christophe Bedard
+
+0.39.1 (2025-06-19)
+-------------------
+* Export Typing information (`#1041 <https://github.com/ros2/ros2cli/issues/1041>`_)
+* Fix stringifying InterfaceFlags when the flags are empty. (`#1026 <https://github.com/ros2/ros2cli/issues/1026>`_)
+* Contributors: Chris Lalancette, Michael Carlstrom
+
 0.39.0 (2025-04-25)
 -------------------
 

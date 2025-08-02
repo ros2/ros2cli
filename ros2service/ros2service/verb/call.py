@@ -18,15 +18,20 @@ from typing import Optional
 import rclpy
 from rclpy.qos import QoSPresetProfiles
 from rclpy.qos import QoSProfile
+
 from ros2cli.helpers import collect_stdin
 from ros2cli.node import NODE_NAME_PREFIX
+from ros2cli.qos import add_qos_arguments
+from ros2cli.qos import profile_configure_short_keys
+
 from ros2service.api import ServiceNameCompleter
 from ros2service.api import ServicePrototypeCompleter
 from ros2service.api import ServiceTypeCompleter
 from ros2service.verb import VerbExtension
-from ros2topic.api import add_qos_arguments, profile_configure_short_keys
+
 from rosidl_runtime_py import set_message_fields
 from rosidl_runtime_py.utilities import get_service
+
 import yaml
 
 

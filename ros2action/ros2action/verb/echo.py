@@ -33,8 +33,8 @@ from ros2action.verb import VerbExtension
 
 from ros2cli.helpers import unsigned_int
 from ros2cli.node.strategy import NodeStrategy
-
-from ros2topic.api import add_qos_arguments, profile_configure_short_keys
+from ros2cli.qos import add_qos_arguments
+from ros2cli.qos import profile_configure_short_keys
 
 from rosidl_runtime_py import message_to_csv
 from rosidl_runtime_py import message_to_ordereddict

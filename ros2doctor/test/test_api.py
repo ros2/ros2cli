@@ -14,6 +14,9 @@
 
 import unittest
 
+from common import generate_expected_service_report
+from common import generate_expected_topic_report
+
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess
 
@@ -22,14 +25,14 @@ import launch_testing.markers
 
 import pytest
 
-from ros2doctor.api import Report
+from ros2doctor.api.service import ServiceReport
 from ros2doctor.api.topic import TopicCheck
 from ros2doctor.api.topic import TopicReport
 
 
 @pytest.mark.rostest
 @launch_testing.markers.keep_alive
-def generate_test_description():
+def generate_test_description() -> LaunchDescription:
     return LaunchDescription([
         ExecuteProcess(
             cmd=['ros2', 'daemon', 'stop'],
@@ -47,14 +50,6 @@ def generate_test_description():
     ])
 
 
-def _generate_expected_report(topic, pub_count, sub_count):
-    expected_report = Report('TOPIC LIST')
-    expected_report.add_to_report('topic', topic)
-    expected_report.add_to_report('publisher count', pub_count)
-    expected_report.add_to_report('subscriber count', sub_count)
-    return expected_report
-
-
 class TestROS2DoctorAPI(unittest.TestCase):
 
     def test_topic_check(self):
@@ -64,9 +59,18 @@ class TestROS2DoctorAPI(unittest.TestCase):
         self.assertEqual(check_result.error, 0)
         self.assertEqual(check_result.warning, 0)
 
-    def test_topic_report(self):
+    def test_no_topic_report(self):
         """Assume no topics are publishing or subscribing other than whitelisted ones."""
         report = TopicReport().report()
-        expected_report = _generate_expected_report('none', 0, 0)
+        expected_report = generate_expected_topic_report('none', 0, 0)
         self.assertEqual(report.name, expected_report.name)
         self.assertEqual(report.items, expected_report.items)
+        self.assertEqual(report, expected_report)
+
+    def test_no_service_report(self):
+        """Assume no services are being used other than whitelisted ones."""
+        report = ServiceReport().report()
+        expected_report = generate_expected_service_report(['none'], [0], [0])
+        self.assertEqual(report.name, expected_report.name)
+        self.assertEqual(report.items, expected_report.items)
+        self.assertEqual(report, expected_report)

@@ -2,6 +2,27 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.40.0 (2025-07-29)
+-------------------
+* [ros2doctor] Add Action Report (`#1076 <https://github.com/ros2/ros2cli/issues/1076>`_)
+* Use rmw_test_fixture to isolate ros2cli tests (`#1062 <https://github.com/ros2/ros2cli/issues/1062>`_)
+* fix setuptools deprecations (`#1066 <https://github.com/ros2/ros2cli/issues/1066>`_)
+* Add Service report similar to topic report (`#1059 <https://github.com/ros2/ros2cli/issues/1059>`_)
+* Contributors: Michael Carlstrom, Scott K Logan, mosfet80
+
+0.39.2 (2025-07-01)
+-------------------
+* Make sure to install py.typed files (`#1058 <https://github.com/ros2/ros2cli/issues/1058>`_)
+* Contributors: Christophe Bedard
+
+0.39.1 (2025-06-19)
+-------------------
+* Export Typing information (`#1041 <https://github.com/ros2/ros2cli/issues/1041>`_)
+* move QoS methods from ros2topic.api to ros2cli.qos. (`#1053 <https://github.com/ros2/ros2cli/issues/1053>`_)
+* Assert HistoryQoS in test_ros2cli_daemon (`#1040 <https://github.com/ros2/ros2cli/issues/1040>`_)
+* remove add_subparsers from ros2cli. (`#1032 <https://github.com/ros2/ros2cli/issues/1032>`_)
+* Contributors: Mario Domínguez López, Michael Carlstrom, Tomoya Fujita
+
 0.39.0 (2025-04-25)
 -------------------
 

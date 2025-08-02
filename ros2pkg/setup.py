@@ -5,7 +5,7 @@ package_name = 'ros2pkg'
 
 setup(
     name=package_name,
-    version='0.39.0',
+    version='0.40.0',
     packages=find_packages(exclude=['test']),
     data_files=[
         ('share/' + package_name, ['package.xml']),
@@ -24,14 +24,17 @@ setup(
     classifiers=[
         'Environment :: Console',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python',
     ],
     description='The pkg command for ROS 2 command line tools.',
     long_description="""\
 The package provides the pkg command for the ROS 2 command line tools.""",
     license='Apache License, Version 2.0',
-    tests_require=['pytest'],
+    extras_require={
+        'test': [
+            'pytest',
+        ],
+    },
     entry_points={
         'ros2cli.command': [
             'pkg = ros2pkg.command.pkg:PkgCommand',
@@ -50,6 +53,7 @@ The package provides the pkg command for the ROS 2 command line tools.""",
     package_data={
         'ros2pkg': [
             'resource/**/*',
+            'py.typed'
         ],
     },
 )

@@ -127,8 +127,6 @@ def get_rmw_additional_env(rmw_implementation: str) -> Dict[str, str]:
     if rmw_implementation == 'rmw_zenoh_cpp':
         return {
             'RMW_IMPLEMENTATION': rmw_implementation,
-            'ZENOH_ROUTER_CHECK_ATTEMPTS': '-1',
-            'ZENOH_CONFIG_OVERRIDE': 'scouting/multicast/enabled=true',
             'RUST_LOG': 'z=error'
         }
     else:

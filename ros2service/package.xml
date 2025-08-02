@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="2">
   <name>ros2service</name>
-  <version>0.39.0</version>
+  <version>0.40.0</version>
   <description>
     The service command for ROS 2 command line tools.
   </description>
@@ -20,7 +20,6 @@
   <exec_depend>python3-yaml</exec_depend>
   <exec_depend>rclpy</exec_depend>
   <exec_depend>ros2cli</exec_depend>
-  <exec_depend>ros2topic</exec_depend>
   <exec_depend>rosidl_runtime_py</exec_depend>
 
   <test_depend>ament_copyright</test_depend>

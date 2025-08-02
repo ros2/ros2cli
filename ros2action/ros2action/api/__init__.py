@@ -35,7 +35,7 @@ def get_action_clients_and_servers(*, node, action_name):
     node_names_and_ns = node.get_node_names_and_namespaces()
     for node_name, node_ns in node_names_and_ns:
         # Construct fully qualified name
-        node_fqn = '/'.join([node_ns, node_name])
+        node_fqn = (node_ns.rstrip('/') + '/' + node_name.lstrip('/')) if node_ns else node_name
 
         # Get any action clients associated with the node
         client_names_and_types = node.get_action_client_names_and_types_by_node(
