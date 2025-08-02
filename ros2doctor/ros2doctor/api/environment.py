@@ -65,8 +65,8 @@ class EnvironmentReport(DoctorReport):
         environment_report.add_to_report('rcutils environment variables',
                                          ', '.join(rcutils_variable_list))
 
-        if not rmw_environment_variables:
+        if rmw_environment_variables:
             environment_report.add_to_report(
-                f'{rmw_environment_variables} environment variables',
+                f'{rmw_name} environment variables',
                 ', '.join(rmw_variable_list))
         return environment_report
