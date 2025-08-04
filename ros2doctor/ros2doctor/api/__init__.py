@@ -13,6 +13,9 @@
 # limitations under the License.
 
 from typing import Final
+from typing import List
+from typing import Set
+from typing import Tuple
 from typing import Union
 
 try:
@@ -134,7 +137,7 @@ class Report:
     def __init__(self, name: str):
         """Initialize with report name."""
         self.name = name
-        self.items: list[tuple[str, Union[str, int]]] = []
+        self.items: List[Tuple[str, Union[str, int]]] = []
 
     def add_to_report(self, item_name: str, item_info: Union[int, str]) -> None:
         """Add report content to items list (list of string tuples)."""
@@ -167,14 +170,14 @@ class Result:
 
 
 def run_checks(*, include_warnings: bool = False,
-               exclude_packages: bool = False) -> tuple[set[str], int, int]:
+               exclude_packages: bool = False) -> Tuple[Set[str], int, int]:
     """
     Run all checks and return check results.
 
     :return: 3-tuple (categories of failed checks, number of failed checks,
              total number of checks)
     """
-    fail_categories: set[str] = set()  # remove repeating elements
+    fail_categories: Set[str] = set()  # remove repeating elements
     fail = 0
     total = 0
     entry_points = importlib_metadata.entry_points()
@@ -209,7 +212,7 @@ def run_checks(*, include_warnings: bool = False,
     return fail_categories, fail, total
 
 
-def generate_reports(*, categories=None, exclude_packages: bool = False) -> list[Report]:
+def generate_reports(*, categories=None, exclude_packages: bool = False) -> List[Report]:
     """
     Print all reports or reports of failed checks to terminal.
 
@@ -262,9 +265,9 @@ def print_warning_notice() -> None:
     print('='*80 + '\n')
 
 
-def get_topic_names(skip_topics: list[str] = []) -> list[str]:
+def get_topic_names(skip_topics: List[str] = []) -> List[str]:
     """Get all topic names using rclpy API."""
-    topics: list[str] = []
+    topics: List[str] = []
     with NodeStrategy(None) as node:
         topic_names_types = node.get_topic_names_and_types()
         for t_name, _ in topic_names_types:
@@ -273,9 +276,9 @@ def get_topic_names(skip_topics: list[str] = []) -> list[str]:
     return topics
 
 
-def get_service_names(skip_services: list[str] = []) -> list[str]:
+def get_service_names(skip_services: List[str] = []) -> List[str]:
     """Get all service names using rclpy API."""
-    services: list[str] = []
+    services: List[str] = []
     with NodeStrategy(None) as node:
         service_names_types = node.get_service_names_and_types()
         for t_name, _ in service_names_types:
