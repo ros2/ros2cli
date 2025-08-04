@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import re
-from typing import Literal
 
 from rclpy.qos import qos_check_compatible
 from rclpy.qos import QoSCompatibility
@@ -30,10 +29,10 @@ from ros2doctor.api.format import doctor_warn
 class QoSCompatibilityCheck(DoctorCheck):
     """Check for incompatible QoS profiles in each pub/sub pair."""
 
-    def category(self) -> Literal['middleware']:
+    def category(self):
         return 'middleware'
 
-    def check(self) -> Result:
+    def check(self):
         """Check publisher and subscriber counts."""
         result = Result()
         to_be_checked = get_topic_names()
@@ -72,10 +71,10 @@ class QoSCompatibilityCheck(DoctorCheck):
 class QoSCompatibilityReport(DoctorReport):
     """Report QoS compatibility related information."""
 
-    def category(self) -> Literal['middleware']:
+    def category(self):
         return 'middleware'
 
-    def report(self) -> Report:
+    def report(self):
         report = Report('QOS COMPATIBILITY LIST')
         to_be_reported = get_topic_names()
         with NodeStrategy(None) as node:

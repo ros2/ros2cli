@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Literal
 
 from rclpy.utilities import get_rmw_implementation_identifier
 from ros2doctor.api import DoctorReport
@@ -22,10 +21,10 @@ from ros2doctor.api import Report
 class RMWReport(DoctorReport):
     """Report current RMW information."""
 
-    def category(self) -> Literal['middleware']:
+    def category(self):
         return 'middleware'
 
-    def report(self) -> Report:
+    def report(self):
         rmw_report = Report('RMW MIDDLEWARE')
         rmw_report.add_to_report('middleware name', get_rmw_implementation_identifier())
         return rmw_report
