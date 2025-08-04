@@ -25,7 +25,7 @@ from ros2doctor.api.format import doctor_warn
 
 
 # List of Environment Variables compiled from github.com/ros2/ros2cli/issues/1046
-# In the future maybe get from rcl/rmw layers
+# TODO(@fujitatomoya): In the future maybe get from centralized storage via rcl/rmw interfaces.
 RCL_ENVIRONMENT_VARIABLES: Final = [
     'RMW_IMPLEMENTATION',
     'ROS_AUTOMATIC_DISCOVERY_RANGE',
