@@ -1,1 +1,0 @@
-/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_typesupport_fastrtps_cpp/ros2cli_test_interfaces/msg/detail/short_varied__rosidl_typesupport_fastrtps_cpp.hpp

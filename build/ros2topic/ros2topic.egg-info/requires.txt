@@ -1,4 +1,0 @@
-ros2cli
-
-[test]
-pytest

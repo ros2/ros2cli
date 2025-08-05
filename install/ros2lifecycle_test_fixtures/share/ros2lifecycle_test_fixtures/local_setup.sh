@@ -1,1 +1,0 @@
-/home/rmc/ros2cli/build/ros2lifecycle_test_fixtures/ament_cmake_environment_hooks/local_setup.sh

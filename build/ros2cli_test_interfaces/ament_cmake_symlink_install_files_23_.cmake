@@ -1,1 +1,0 @@
-ament_cmake_symlink_install_files("/home/rmc/ros2cli/ros2cli_test_interfaces" FILES "/home/rmc/ros2cli/build/ros2cli_test_interfaces/ament_cmake_environment_hooks/ament_prefix_path.dsv" "DESTINATION" "share/ros2cli_test_interfaces/environment")

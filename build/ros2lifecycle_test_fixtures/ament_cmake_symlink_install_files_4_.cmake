@@ -1,1 +1,0 @@
-ament_cmake_symlink_install_files("/home/rmc/ros2cli/ros2lifecycle_test_fixtures" FILES "/opt/ros/rolling/share/ament_cmake_core/cmake/environment_hooks/environment/path.sh" "DESTINATION" "share/ros2lifecycle_test_fixtures/environment")
