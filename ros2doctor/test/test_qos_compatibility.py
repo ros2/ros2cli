@@ -122,6 +122,8 @@ class TestROS2DoctorQoSCompatibility(unittest.TestCase):
             filtered_rmw_implementation=rmw_implementation
         )
 
+        assert rmw_implementation == 'rmw_zenoh_cpp'
+
         # skip zenoh because of the QoS compatibility
         if rmw_implementation == 'rmw_zenoh_cpp':
             raise unittest.SkipTest()
