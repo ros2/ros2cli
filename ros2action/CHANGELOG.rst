@@ -2,6 +2,24 @@
 Changelog for package ros2action
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix ros2action send_goal signal handling. (`#1072 <https://github.com/ros2/ros2cli/issues/1072>`_) (`#1075 <https://github.com/ros2/ros2cli/issues/1075>`_)
+  (cherry picked from commit 87e88c8a2f756deb1652274ba4920c85f5b179f2)
+  Co-authored-by: Tomoya Fujita <Tomoya.Fujita@sony.com>
+* Fujitatomoya/ros2 action send goal timeout (backport `#1067 <https://github.com/ros2/ros2cli/issues/1067>`_) (`#1069 <https://github.com/ros2/ros2cli/issues/1069>`_)
+  Co-authored-by: Tomoya Fujita <Tomoya.Fujita@sony.com>
+* remove unnecessary '/' from ros2 action info. (backport `#1049 <https://github.com/ros2/ros2cli/issues/1049>`_) (`#1051 <https://github.com/ros2/ros2cli/issues/1051>`_)
+  * remove unnecessary '/' from ros2 action info. (`#1049 <https://github.com/ros2/ros2cli/issues/1049>`_)
+  (cherry picked from commit ad66780fd46d73368c82d8c6645505e6e600e0fb)
+  # Conflicts:
+  #	ros2action/ros2action/api/__init_\_.py
+  * Fixed merge
+  ---------
+  Co-authored-by: Tomoya Fujita <Tomoya.Fujita@sony.com>
+  Co-authored-by: Alejandro Hernandez Cordero <ahcorde@gmail.com>
+* Contributors: mergify[bot]
+
 0.32.4 (2025-04-24)
 -------------------
 
