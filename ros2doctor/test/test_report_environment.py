@@ -34,7 +34,6 @@ from ros2doctor.api.environment import EnvironmentReport
 @launch_testing.parametrize('rmw_implementation', get_available_rmw_implementations())
 @launch_testing.markers.keep_alive
 def generate_test_description(rmw_implementation: str):
-
     return LaunchDescription([
         # Always restart daemon to isolate tests.
         ExecuteProcess(
@@ -65,18 +64,17 @@ def generate_test_description(rmw_implementation: str):
 
 class TestROS2Environment(unittest.TestCase):
 
-    @classmethod
-    def setUpClass(cls, rmw_implementation: str) -> None:
-        cls.rmw_implementation = rmw_implementation
+    def setUp(self, rmw_implementation: str) -> None:
+        self.rmw_implementation = rmw_implementation
 
         if rmw_implementation == 'rmw_cyclonedds_cpp':
-            cls.expected_line = 'CYCLONEDDS_URI=CYCLONEBOO'
+            self.expected_line = 'CYCLONEDDS_URI=CYCLONEBOO'
         elif rmw_implementation == 'rmw_connext_cpp':
-            cls.expected_line = 'RMW_CONNEXT_INITIAL_PEERS=CONNEXTBOO'
+            self.expected_line = 'RMW_CONNEXT_INITIAL_PEERS=CONNEXTBOO'
         elif rmw_implementation == 'rmw_zenoh_cpp':
-            cls.expected_line = 'ZENOH_CONFIG_OVERRIDE=ZENOHBOO'
+            self.expected_line = 'ZENOH_CONFIG_OVERRIDE=ZENOHBOO'
         elif rmw_implementation == 'rmw_fastrtps_cpp':
-            cls.expected_line = 'FASTDDS_BUILTIN_TRANSPORTS=FASTBOO'
+            self.expected_line = 'FASTDDS_BUILTIN_TRANSPORTS=FASTBOO'
         else:
             raise ValueError(f'Unsupported rmw={rmw_implementation}')
 
