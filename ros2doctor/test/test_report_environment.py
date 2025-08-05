@@ -19,7 +19,9 @@ from launch.actions import ExecuteProcess
 from launch.actions import SetEnvironmentVariable
 from launch.actions import UnsetEnvironmentVariable
 
+import launch_testing
 import launch_testing.actions
+import launch_testing.markers
 
 import pytest
 
@@ -30,6 +32,7 @@ from ros2doctor.api.environment import EnvironmentReport
 
 @pytest.mark.rostest
 @launch_testing.parametrize('rmw_implementation', get_available_rmw_implementations())
+@launch_testing.markers.keep_alive
 def generate_test_description(rmw_implementation: str):
 
     return LaunchDescription([
@@ -63,26 +66,28 @@ def generate_test_description(rmw_implementation: str):
 
 class TestROS2Environment(unittest.TestCase):
 
-    def test_environment_check_rmw_cyclonedds(self) -> None:
-        self._check_env('rmw_cyclonedds_cpp', 'CYCLONEDDS_URI=CYCLONEBOO')
+    @classmethod
+    def setUpClass(cls, rmw_implementation: str) -> None:
+        cls.rmw_implementation = rmw_implementation
 
-    def test_environment_check_rmw_connext(self) -> None:
-        self._check_env('rmw_connext_cpp', 'RMW_CONNEXT_INITIAL_PEERS=CONNEXTBOO')
+        if rmw_implementation == 'rmw_cyclonedds_cpp':
+            cls.expected_line = 'CYCLONEDDS_URI=CYCLONEBOO'
+        elif rmw_implementation == 'rmw_connext_cpp':
+            cls.expected_line = 'RMW_CONNEXT_INITIAL_PEERS=CONNEXTBOO'
+        elif rmw_implementation == 'rmw_zenoh_cpp':
+            cls.expected_line = 'ZENOH_CONFIG_OVERRIDE=ZENOHBOO'
+        elif rmw_implementation == 'rmw_fastrtps_cpp':
+            cls.expected_line = 'FASTDDS_BUILTIN_TRANSPORTS=FASTBOO'
 
-    def test_environment_check_rmw_zenoh(self) -> None:
-        self._check_env('rmw_zenoh_cpp', 'ZENOH_CONFIG_OVERRIDE=ZENOHBOO')
-
-    def test_environment_check_rmw_fastrtps(self) -> None:
-        self._check_env('rmw_fastrtps_cpp', 'FASTDDS_BUILTIN_TRANSPORTS=FASTBOO')
-
-    def _check_env(self, rmw: str, expected_rmw_vars_line: str) -> None:
+    def test_environment_check(self) -> None:
+        rmw = self.rmw_implementation
         environment_report = EnvironmentReport().report()
         expected_report = Report('ROS ENVIRONMENT')
         expected_report.add_to_report('ros environment variables',
-                                      f'ROS_HOME=BAR, ROS_LOG_DIR=BAZ, RMW_IMPLEMETNATION={rmw}')
+                                      f'ROS_HOME=BAR, ROS_LOG_DIR=BAZ, RMW_IMPLEMENTATION={rmw}')
         expected_report.add_to_report('rcutils environment variables',
                                       'RCUTILS_COLORIZED_OUTPUT=FOO')
-        expected_report.add_to_report(f'{rmw} environment variables', expected_rmw_vars_line)
+        expected_report.add_to_report(f'{rmw} environment variables', self.expected_line)
         self.assertEqual(environment_report.name, expected_report.name)
         self.assertEqual(environment_report.items, expected_report.items)
         self.assertEqual(environment_report, expected_report)

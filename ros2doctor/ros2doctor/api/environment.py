@@ -17,13 +17,13 @@ from typing import Literal
 
 from rclpy.utilities import get_rmw_implementation_identifier
 from ros2doctor.api import DoctorReport
-from ros2doctor.api import RCL_ENVIRONMENT_VARIABLES
 from ros2doctor.api import RCUTILS_ENVIRONMENT_VARIABLES
 from ros2doctor.api import Report
 from ros2doctor.api import RMW_CONNEXTDDS_ENVIRONMENT_VARIABLES
 from ros2doctor.api import RMW_CYCLONEDDS_ENVIRONMENT_VARIABLES
 from ros2doctor.api import RMW_FASTRTPS_ENVIRONMENT_VARIABLES
 from ros2doctor.api import RMW_ZENOH_CPP_ENVIRONMENT_VARIABLES
+from ros2doctor.api import ROS_ENVIRONMENT_VARIABLES
 
 
 class EnvironmentReport(DoctorReport):
@@ -53,7 +53,7 @@ class EnvironmentReport(DoctorReport):
         rcutils_variable_list: list[str] = []
 
         for key, value in os.environ.items():
-            if key in RCL_ENVIRONMENT_VARIABLES:
+            if key in ROS_ENVIRONMENT_VARIABLES:
                 ros_variable_list.append(f'{key}={value}')
             if key in RCUTILS_ENVIRONMENT_VARIABLES:
                 rcutils_variable_list.append(f'{key}={value}')

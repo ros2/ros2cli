@@ -30,7 +30,7 @@ from ros2doctor.api.format import doctor_warn
 # List of Environment Variables compiled from github.com/ros2/ros2cli/issues/1046
 # TODO(@fujitatomoya): In the future maybe get from centralized storage via rcl/rmw interfaces.
 # NOTE: In alphabetical order for ease of searching.
-RCL_ENVIRONMENT_VARIABLES: Final = [
+ROS_ENVIRONMENT_VARIABLES: Final = [
     'RCL_LOGGING_SPDLOG_EXPERIMENTAL_OLD_FLUSHING_BEHAVIOR',
     'ROS_AUTOMATIC_DISCOVERY_RANGE',
     'ROS_DISABLE_LOANED_MESSAGES',
@@ -99,7 +99,7 @@ RMW_CYCLONEDDS_ENVIRONMENT_VARIABLES: Final = [
 
 
 ALL_ENVIRONMENT_VARIABLES: Final = [
-    *RCL_ENVIRONMENT_VARIABLES,
+    *ROS_ENVIRONMENT_VARIABLES,
     *RCUTILS_ENVIRONMENT_VARIABLES,
     *RMW_FASTRTPS_ENVIRONMENT_VARIABLES,
     *RMW_ZENOH_CPP_ENVIRONMENT_VARIABLES,
