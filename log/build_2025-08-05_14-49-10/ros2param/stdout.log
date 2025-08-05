@@ -1,0 +1,21 @@
+running develop
+running egg_info
+creating ros2param.egg-info
+writing ros2param.egg-info/PKG-INFO
+writing dependency_links to ros2param.egg-info/dependency_links.txt
+writing entry points to ros2param.egg-info/entry_points.txt
+writing requirements to ros2param.egg-info/requires.txt
+writing top-level names to ros2param.egg-info/top_level.txt
+writing manifest file 'ros2param.egg-info/SOURCES.txt'
+reading manifest file 'ros2param.egg-info/SOURCES.txt'
+writing manifest file 'ros2param.egg-info/SOURCES.txt'
+running build_ext
+Creating /home/rmc/ros2cli/install/ros2param/lib/python3.12/site-packages/ros2param.egg-link (link to .)
+
+Installed /home/rmc/ros2cli/build/ros2param
+running symlink_data
+symbolically linking /home/rmc/ros2cli/build/ros2param/package.xml -> /home/rmc/ros2cli/install/ros2param/share/ros2param
+creating /home/rmc/ros2cli/install/ros2param/share/ament_index
+creating /home/rmc/ros2cli/install/ros2param/share/ament_index/resource_index
+creating /home/rmc/ros2cli/install/ros2param/share/ament_index/resource_index/packages
+symbolically linking /home/rmc/ros2cli/build/ros2param/resource/ros2param -> /home/rmc/ros2cli/install/ros2param/share/ament_index/resource_index/packages

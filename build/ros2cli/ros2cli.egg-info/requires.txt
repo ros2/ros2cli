@@ -1,0 +1,6 @@
+
+[completion]
+argcomplete
+
+[test]
+pytest

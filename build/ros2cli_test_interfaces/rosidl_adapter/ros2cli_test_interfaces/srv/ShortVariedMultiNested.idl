@@ -1,0 +1,24 @@
+// generated from rosidl_adapter/resource/srv.idl.em
+// with input from ros2cli_test_interfaces/srv/ShortVariedMultiNested.srv
+// generated code does not contain a copyright notice
+
+#include "ros2cli_test_interfaces/msg/ShortVariedNested.idl"
+
+module ros2cli_test_interfaces {
+  module srv {
+    @verbatim (language="comment", text=
+      "Request")
+    struct ShortVariedMultiNested_Request {
+      @verbatim (language="comment", text=
+        "Comment - Nesting Level 3: 1 of 2")
+      ros2cli_test_interfaces::msg::ShortVariedNested short_varied_nested;
+    };
+    @verbatim (language="comment", text=
+      "Response")
+    struct ShortVariedMultiNested_Response {
+      @verbatim (language="comment", text=
+        "Comment - Nesting Level 3: 2 of 2")
+      boolean bool_value;
+    };
+  };
+};

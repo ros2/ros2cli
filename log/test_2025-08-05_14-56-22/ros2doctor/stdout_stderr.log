@@ -1,0 +1,134 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0
+cachedir: build/ros2doctor/.pytest_cache
+rootdir: /home/rmc/ros2cli
+configfile: pytest.ini
+plugins: ament-lint-0.20.2, ament-flake8-0.20.2, ament-pep257-0.20.2, ament-mypy-0.20.2, ament-xmllint-0.20.2, ament-copyright-0.20.2, launch-testing-ros-0.29.2, launch-testing-3.9.2, timeout-2.2.0, cov-4.1.0, colcon-core-0.20.0, mock-3.12.0
+timeout: 900.0s
+timeout method: thread
+timeout func_only: False
+[1mcollecting ... [0m[1m
+collected 9 items                                                              [0m
+
+test/test_api.py [32m.[0m[32m                                                       [ 11%][0m
+test/test_cli.py [32m.[0m[32m                                                       [ 22%][0m
+test/test_copyright.py [32m.[0m[32m                                                 [ 33%][0m
+test/test_flake8.py [32m.[0m[32m                                                    [ 44%][0m
+test/test_pep257.py [32m.[0m[32m                                                    [ 55%][0m
+test/test_qos_compatibility.py [31mF[0m[31m                                         [ 66%][0m
+test/test_report.py [31mF[0m[31m                                                    [ 77%][0m
+test/test_report_environment.py [31mF[0m[31m                                        [ 88%][0m
+test/test_xmllint.py [32m.[0m[31m                                                   [100%][0m
+
+=================================== FAILURES ===================================
+[31m[1m_____________________ launch tests: test_qos_compatibility _____________________[0m
+
+===========================================================
+FAIL: test_qos_compatibility.TestROS2DoctorQoSCompatibility.test_check[rmw_fastrtps_cpp]
+-----------------------------------------------------------
+Exception: Launch stopped before the active tests finished.
+
+
+===========================================================
+FAIL: test_qos_compatibility.TestROS2DoctorQoSCompatibility.test_report[rmw_fastrtps_cpp]
+-----------------------------------------------------------
+Exception: Launch stopped before the active tests finished.
+----------------------------- Captured stdout call -----------------------------
+
+Starting test run test_qos_compatibility[rmw_fastrtps_cpp]
+[INFO] [launch]: All log files can be found below /home/rmc/.ros/log/2025-08-05-14-56-23-140826-rmc-Legion-Pro-7-16IRX9H-94455
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [daemon-stop-4]: process started with pid [94679]
+[INFO] [daemon-stop-4]: process has finished cleanly [pid 94679]
+[INFO] [daemon-start-5]: process started with pid [94682]
+[INFO] [daemon-start-5]: process has finished cleanly [pid 94682]
+[INFO] [python3-6]: process started with pid [94685]
+[INFO] [python3-7]: process started with pid [94686]
+[INFO] [python3-8]: process started with pid [94687]
+[INFO] [python3-9]: process started with pid [94688]
+[INFO] [ros2doctor-cli-10]: process started with pid [94689]
+[python3-7] [WARN] [1754430989.322406655] [listener]: New publisher discovered on topic 'chatter', offering incompatible QoS. No messages will be received from it. Last incompatible policy: RELIABILITY
+[python3-6] [WARN] [1754430989.322960309] [talker_node]: New subscription discovered on topic 'chatter', requesting incompatible QoS. No messages will be sent to it. Last incompatible policy: RELIABILITY
+[python3-9] [INFO] [1754430990.256968322] [listener]: I heard: [Hello World: 1]
+[ros2doctor-cli-10] /home/rmc/ros2cli/build/ros2doctor/ros2doctor/api/package.py: 122: UserWarning: rosidl_generator_py has been updated to a new version. local: 0.25.0 < latest: 0.26.0
+[python3-9] [INFO] [1754430991.235995454] [listener]: I heard: [Hello World: 2]
+[ros2doctor-cli-10] /home/rmc/ros2cli/build/ros2doctor/ros2doctor/api/qos_compatibility.py: 51: UserWarning: ERROR: QoS compatibility error found on topic '/incompatible_chatter': Best effort publisher and reliable subscription;
+[python3-9] [INFO] [1754430992.236508425] [listener]: I heard: [Hello World: 3]
+[ros2doctor-cli-10] 
+[ros2doctor-cli-10] 1/5 check(s) failed
+[ros2doctor-cli-10] 
+[ros2doctor-cli-10] Failed modules: middleware
+[python3-9] [INFO] [1754430993.236844212] [listener]: I heard: [Hello World: 4]
+[INFO] [ros2doctor-cli-10]: process has finished cleanly [pid 94689]
+[INFO] [ros2doctor-cli-11]: process started with pid [94851]
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [python3-7]: process has finished cleanly [pid 94686]
+[INFO] [python3-6]: process has finished cleanly [pid 94685]
+[INFO] [python3-9]: process has finished cleanly [pid 94688]
+[INFO] [python3-8]: process has finished cleanly [pid 94687]
+[ERROR] [ros2doctor-cli-11]: process has died [pid 94851, exit code 2, cmd 'ros2 doctor -r'].
+Processes under test stopped before tests completed
+Process 'ros2doctor-cli-11' exited with 2
+##### 'ros2doctor-cli-11' output #####
+######################################
+----------------------------- Captured stderr call -----------------------------
+test_check[rmw_fastrtps_cpp] (test_qos_compatibility.TestROS2DoctorQoSCompatibility.test_check[rmw_fastrtps_cpp]) ... ok
+test_report[rmw_fastrtps_cpp] (test_qos_compatibility.TestROS2DoctorQoSCompatibility.test_report[rmw_fastrtps_cpp]) ... 
+[31m[1m__________________________ launch tests: test_report ___________________________[0m
+
+===========================================================
+FAIL: test_report.TestROS2DoctorReport.test_check[rmw_fastrtps_cpp]
+-----------------------------------------------------------
+Exception: Launch stopped before the active tests finished.
+
+
+===========================================================
+FAIL: test_report.TestROS2DoctorReport.test_report[rmw_fastrtps_cpp]
+-----------------------------------------------------------
+Exception: Launch stopped before the active tests finished.
+----------------------------- Captured stdout call -----------------------------
+
+Starting test run test_report[rmw_fastrtps_cpp]
+[INFO] [launch]: All log files can be found below /home/rmc/.ros/log/2025-08-05-14-56-23-140826-rmc-Legion-Pro-7-16IRX9H-94455
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [daemon-stop-12]: process started with pid [94880]
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[ERROR] [daemon-stop-12]: process has died [pid 94880, exit code -2, cmd 'ros2 daemon stop'].
+Processes under test stopped before tests completed
+Process 'daemon-stop-12' exited with -2
+##### 'daemon-stop-12' output #####
+###################################
+[31m[1m____________________ launch tests: test_report_environment _____________________[0m
+
+===========================================================
+FAIL: test_report_environment.TestROS2Environment.test_environment_check[rmw_fastrtps_cpp]
+-----------------------------------------------------------
+Exception: Launch stopped before the active tests finished.
+----------------------------- Captured stdout call -----------------------------
+
+Starting test run test_report_environment[rmw_fastrtps_cpp]
+[INFO] [launch]: All log files can be found below /home/rmc/.ros/log/2025-08-05-14-56-23-140826-rmc-Legion-Pro-7-16IRX9H-94455
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [daemon-stop-14]: process started with pid [94883]
+[INFO] [daemon-stop-14]: process has finished cleanly [pid 94883]
+[INFO] [daemon-start-15]: process started with pid [94886]
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[ERROR] [daemon-start-15]: process has died [pid 94886, exit code 2, cmd 'ros2 daemon start'].
+Processes under test stopped before tests completed
+Process 'daemon-start-15' exited with 2
+##### 'daemon-start-15' output #####
+####################################
+----------------------------- Captured stderr call -----------------------------
+test_environment_check[rmw_fastrtps_cpp] (test_report_environment.TestROS2Environment.test_environment_check[rmw_fastrtps_cpp]) ... ok
+--------------------------- Captured stderr teardown ---------------------------
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+OK
+------ generated xml file: /home/rmc/ros2cli/build/ros2doctor/pytest.xml -------
+[36m[1m=========================== short test summary info ============================[0m
+[31mFAILED[0m test/test_qos_compatibility.py::[1mtest_qos_compatibility[0m - test_qos_compatibility.TestROS2DoctorQoSCompatibility.test_check[rmw_fastrt...
+[31mFAILED[0m test/test_report.py::[1mtest_report[0m - test_report.TestROS2DoctorReport.test_check[rmw_fastrtps_cpp] failed
+[31mFAILED[0m test/test_report_environment.py::[1mtest_report_environment[0m - test_report_environment.TestROS2Environment.test_environment_check[rmw_fast...
+[31m========================= [31m[1m3 failed[0m, [32m6 passed[0m[31m in 11.60s[0m[31m =========================[0m

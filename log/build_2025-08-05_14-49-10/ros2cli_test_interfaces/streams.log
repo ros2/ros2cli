@@ -1,0 +1,323 @@
+[0.109s] Invoking command in '/home/rmc/ros2cli/build/ros2cli_test_interfaces': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/rolling DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/rmc/ros2cli/ros2cli_test_interfaces -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/rmc/ros2cli/install/ros2cli_test_interfaces
+[0.144s] -- The C compiler identification is GNU 13.3.0
+[0.176s] -- The CXX compiler identification is GNU 13.3.0
+[0.188s] -- Detecting C compiler ABI info
+[0.250s] -- Detecting C compiler ABI info - done
+[0.254s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.254s] -- Detecting C compile features
+[0.255s] -- Detecting C compile features - done
+[0.261s] -- Detecting CXX compiler ABI info
+[0.324s] -- Detecting CXX compiler ABI info - done
+[0.330s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.330s] -- Detecting CXX compile features
+[0.330s] -- Detecting CXX compile features - done
+[0.332s] -- Found ament_cmake: 2.8.4 (/opt/ros/rolling/share/ament_cmake/cmake)
+[0.431s] -- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter 
+[0.473s] -- Override CMake install command with custom implementation using symlinks instead of copying resources
+[0.493s] -- Found rosidl_default_generators: 1.8.1 (/opt/ros/rolling/share/rosidl_default_generators/cmake)
+[0.496s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.521s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[0.540s] -- Found rosidl_adapter: 5.0.1 (/opt/ros/rolling/share/rosidl_adapter/cmake)
+[0.966s] -- Found ament_cmake_cppcheck: 0.20.2 (/opt/ros/rolling/share/ament_cmake_cppcheck/cmake)
+[0.967s] -- Found ament_cmake_cpplint: 0.20.2 (/opt/ros/rolling/share/ament_cmake_cpplint/cmake)
+[0.969s] -- Found ament_cmake_uncrustify: 0.20.2 (/opt/ros/rolling/share/ament_cmake_uncrustify/cmake)
+[0.971s] -- Found ament_cmake_ros_core: 0.15.2 (/opt/ros/rolling/share/ament_cmake_ros_core/cmake)
+[1.291s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[1.730s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[2.092s] -- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter Development NumPy Development.Module Development.Embed 
+[2.126s] -- Found ament_cmake_flake8: 0.20.2 (/opt/ros/rolling/share/ament_cmake_flake8/cmake)
+[2.130s] -- Found ament_cmake_pep257: 0.20.2 (/opt/ros/rolling/share/ament_cmake_pep257/cmake)
+[2.142s] -- Configuring done (2.0s)
+[2.186s] -- Generating done (0.0s)
+[2.197s] -- Build files have been written to: /home/rmc/ros2cli/build/ros2cli_test_interfaces
+[2.205s] Invoked command in '/home/rmc/ros2cli/build/ros2cli_test_interfaces' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/rolling DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/rmc/ros2cli/ros2cli_test_interfaces -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/rmc/ros2cli/install/ros2cli_test_interfaces
+[2.206s] Invoking command in '/home/rmc/ros2cli/build/ros2cli_test_interfaces': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/rolling DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/rmc/ros2cli/build/ros2cli_test_interfaces -- -j32 -l32
+[2.254s] [  1%] [34m[1mGenerating type hashes for ROS interfaces[0m
+[2.261s] [  1%] Built target ament_cmake_python_symlink_ros2cli_test_interfaces
+[2.465s] [  1%] Built target ros2cli_test_interfaces__rosidl_generator_type_description
+[2.468s] running egg_info
+[2.468s] creating ros2cli_test_interfaces.egg-info
+[2.473s] [  2%] [34m[1mGenerating C code for ROS interfaces[0m
+[2.481s] writing ros2cli_test_interfaces.egg-info/PKG-INFO
+[2.481s] writing dependency_links to ros2cli_test_interfaces.egg-info/dependency_links.txt
+[2.481s] writing top-level names to ros2cli_test_interfaces.egg-info/top_level.txt
+[2.481s] writing manifest file 'ros2cli_test_interfaces.egg-info/SOURCES.txt'
+[2.482s] [  4%] [34m[1mGenerating C++ code for ROS interfaces[0m
+[2.519s] reading manifest file 'ros2cli_test_interfaces.egg-info/SOURCES.txt'
+[2.520s] writing manifest file 'ros2cli_test_interfaces.egg-info/SOURCES.txt'
+[2.539s] [  4%] Built target ament_cmake_python_build_ros2cli_test_interfaces_egg
+[2.830s] [  4%] Built target ros2cli_test_interfaces__cpp
+[2.910s] [  5%] [32mBuilding C object CMakeFiles/ros2cli_test_interfaces__rosidl_generator_c.dir/rosidl_generator_c/ros2cli_test_interfaces/action/detail/short_varied_multi_nested__description.c.o[0m
+[2.910s] [  6%] [32mBuilding C object CMakeFiles/ros2cli_test_interfaces__rosidl_generator_c.dir/rosidl_generator_c/ros2cli_test_interfaces/msg/detail/short_varied_multi_nested__functions.c.o[0m
+[2.910s] [  8%] [32mBuilding C object CMakeFiles/ros2cli_test_interfaces__rosidl_generator_c.dir/rosidl_generator_c/ros2cli_test_interfaces/msg/detail/short_varied_multi_nested__type_support.c.o[0m
+[2.911s] [ 10%] [32mBuilding C object CMakeFiles/ros2cli_test_interfaces__rosidl_generator_c.dir/rosidl_generator_c/ros2cli_test_interfaces/action/detail/short_varied_multi_nested__type_support.c.o[0m
+[2.911s] [ 10%] [32mBuilding C object CMakeFiles/ros2cli_test_interfaces__rosidl_generator_c.dir/rosidl_generator_c/ros2cli_test_interfaces/action/detail/short_varied_multi_nested__functions.c.o[0m
+[2.911s] [ 13%] [32mBuilding C object CMakeFiles/ros2cli_test_interfaces__rosidl_generator_c.dir/rosidl_generator_c/ros2cli_test_interfaces/msg/detail/short_varied__description.c.o[0m
+[2.911s] [ 13%] [32mBuilding C object CMakeFiles/ros2cli_test_interfaces__rosidl_generator_c.dir/rosidl_generator_c/ros2cli_test_interfaces/msg/detail/short_varied__functions.c.o[0m
+[2.912s] [ 16%] [32mBuilding C object CMakeFiles/ros2cli_test_interfaces__rosidl_generator_c.dir/rosidl_generator_c/ros2cli_test_interfaces/msg/detail/short_varied__type_support.c.o[0m
+[2.912s] [ 16%] [32mBuilding C object CMakeFiles/ros2cli_test_interfaces__rosidl_generator_c.dir/rosidl_generator_c/ros2cli_test_interfaces/msg/detail/short_varied_multi_nested__description.c.o[0m
+[2.913s] [ 17%] [32mBuilding C object CMakeFiles/ros2cli_test_interfaces__rosidl_generator_c.dir/rosidl_generator_c/ros2cli_test_interfaces/msg/detail/short_varied_nested__description.c.o[0m
+[2.913s] [ 18%] [32mBuilding C object CMakeFiles/ros2cli_test_interfaces__rosidl_generator_c.dir/rosidl_generator_c/ros2cli_test_interfaces/msg/detail/short_varied_nested__functions.c.o[0m
+[2.913s] [ 20%] [32mBuilding C object CMakeFiles/ros2cli_test_interfaces__rosidl_generator_c.dir/rosidl_generator_c/ros2cli_test_interfaces/msg/detail/short_varied_nested__type_support.c.o[0m
+[2.913s] [ 21%] [32mBuilding C object CMakeFiles/ros2cli_test_interfaces__rosidl_generator_c.dir/rosidl_generator_c/ros2cli_test_interfaces/srv/detail/short_varied_multi_nested__description.c.o[0m
+[2.913s] [ 22%] [32mBuilding C object CMakeFiles/ros2cli_test_interfaces__rosidl_generator_c.dir/rosidl_generator_c/ros2cli_test_interfaces/srv/detail/short_varied_multi_nested__functions.c.o[0m
+[2.914s] [ 24%] [32mBuilding C object CMakeFiles/ros2cli_test_interfaces__rosidl_generator_c.dir/rosidl_generator_c/ros2cli_test_interfaces/srv/detail/short_varied_multi_nested__type_support.c.o[0m
+[3.008s] [ 25%] [32m[1mLinking C shared library libros2cli_test_interfaces__rosidl_generator_c.so[0m
+[3.041s] [ 25%] Built target ros2cli_test_interfaces__rosidl_generator_c
+[3.048s] [ 27%] [34m[1mGenerating C++ type support dispatch for ROS interfaces[0m
+[3.049s] [ 28%] [34m[1mGenerating C++ introspection for ROS interfaces[0m
+[3.050s] [ 31%] [34m[1mGenerating C type support for eProsima Fast-RTPS[0m
+[3.050s] [ 31%] [34m[1mGenerating C++ type support for eProsima Fast-RTPS[0m
+[3.050s] [ 33%] [34m[1mGenerating C type support dispatch for ROS interfaces[0m
+[3.050s] [ 33%] [34m[1mGenerating C introspection for ROS interfaces[0m
+[3.329s] [ 37%] [32mBuilding CXX object CMakeFiles/ros2cli_test_interfaces__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/ros2cli_test_interfaces/action/short_varied_multi_nested__type_support.cpp.o[0m
+[3.329s] [ 37%] [32mBuilding CXX object CMakeFiles/ros2cli_test_interfaces__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/ros2cli_test_interfaces/msg/short_varied_multi_nested__type_support.cpp.o[0m
+[3.329s] [ 37%] [32mBuilding CXX object CMakeFiles/ros2cli_test_interfaces__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/ros2cli_test_interfaces/msg/short_varied__type_support.cpp.o[0m
+[3.332s] [ 40%] [32mBuilding CXX object CMakeFiles/ros2cli_test_interfaces__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/ros2cli_test_interfaces/srv/short_varied_multi_nested__type_support.cpp.o[0m
+[3.332s] [ 40%] [32mBuilding CXX object CMakeFiles/ros2cli_test_interfaces__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/ros2cli_test_interfaces/msg/short_varied_nested__type_support.cpp.o[0m
+[3.479s] [ 47%] [32mBuilding CXX object CMakeFiles/ros2cli_test_interfaces__rosidl_typesupport_c.dir/rosidl_typesupport_c/ros2cli_test_interfaces/srv/short_varied_multi_nested__type_support.cpp.o[0m
+[3.479s] [ 47%] [32mBuilding CXX object CMakeFiles/ros2cli_test_interfaces__rosidl_typesupport_c.dir/rosidl_typesupport_c/ros2cli_test_interfaces/msg/short_varied_multi_nested__type_support.cpp.o[0m
+[3.480s] [ 47%] [32mBuilding CXX object CMakeFiles/ros2cli_test_interfaces__rosidl_typesupport_c.dir/rosidl_typesupport_c/ros2cli_test_interfaces/msg/short_varied__type_support.cpp.o[0m
+[3.480s] [ 47%] [32mBuilding CXX object CMakeFiles/ros2cli_test_interfaces__rosidl_typesupport_c.dir/rosidl_typesupport_c/ros2cli_test_interfaces/msg/short_varied_nested__type_support.cpp.o[0m
+[3.480s] [ 47%] [32mBuilding CXX object CMakeFiles/ros2cli_test_interfaces__rosidl_typesupport_c.dir/rosidl_typesupport_c/ros2cli_test_interfaces/action/short_varied_multi_nested__type_support.cpp.o[0m
+[3.515s] [ 48%] [32mBuilding CXX object CMakeFiles/ros2cli_test_interfaces__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/ros2cli_test_interfaces/action/detail/short_varied_multi_nested__type_support.cpp.o[0m
+[3.517s] [ 50%] [32mBuilding CXX object CMakeFiles/ros2cli_test_interfaces__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/ros2cli_test_interfaces/msg/detail/short_varied__type_support.cpp.o[0m
+[3.517s] [ 54%] [32mBuilding CXX object CMakeFiles/ros2cli_test_interfaces__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/ros2cli_test_interfaces/msg/detail/short_varied_nested__type_support.cpp.o[0m
+[3.517s] [ 54%] [32mBuilding CXX object CMakeFiles/ros2cli_test_interfaces__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/ros2cli_test_interfaces/srv/detail/short_varied_multi_nested__type_support.cpp.o[0m
+[3.517s] [ 54%] [32mBuilding CXX object CMakeFiles/ros2cli_test_interfaces__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/ros2cli_test_interfaces/msg/detail/short_varied_multi_nested__type_support.cpp.o[0m
+[3.540s] [ 55%] [32m[1mLinking CXX shared library libros2cli_test_interfaces__rosidl_typesupport_c.so[0m
+[3.562s] [ 58%] [32mBuilding CXX object CMakeFiles/ros2cli_test_interfaces__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/ros2cli_test_interfaces/msg/detail/dds_fastrtps/short_varied_nested__type_support.cpp.o[0m
+[3.563s] [ 58%] [32mBuilding CXX object CMakeFiles/ros2cli_test_interfaces__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/ros2cli_test_interfaces/action/detail/dds_fastrtps/short_varied_multi_nested__type_support.cpp.o[0m
+[3.565s] [ 62%] [32mBuilding CXX object CMakeFiles/ros2cli_test_interfaces__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/ros2cli_test_interfaces/msg/detail/dds_fastrtps/short_varied__type_support.cpp.o[0m
+[3.565s] [ 62%] [32mBuilding CXX object CMakeFiles/ros2cli_test_interfaces__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/ros2cli_test_interfaces/srv/detail/dds_fastrtps/short_varied_multi_nested__type_support.cpp.o[0m
+[3.565s] [ 62%] [32mBuilding CXX object CMakeFiles/ros2cli_test_interfaces__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/ros2cli_test_interfaces/msg/detail/dds_fastrtps/short_varied_multi_nested__type_support.cpp.o[0m
+[3.573s] [ 63%] [32mBuilding C object CMakeFiles/ros2cli_test_interfaces__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/ros2cli_test_interfaces/msg/detail/short_varied__type_support.c.o[0m
+[3.576s] [ 66%] [32mBuilding C object CMakeFiles/ros2cli_test_interfaces__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/ros2cli_test_interfaces/action/detail/short_varied_multi_nested__type_support.c.o[0m
+[3.576s] [ 66%] [32mBuilding C object CMakeFiles/ros2cli_test_interfaces__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/ros2cli_test_interfaces/srv/detail/short_varied_multi_nested__type_support.c.o[0m
+[3.576s] [ 67%] [32mBuilding C object CMakeFiles/ros2cli_test_interfaces__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/ros2cli_test_interfaces/msg/detail/short_varied_multi_nested__type_support.c.o[0m
+[3.576s] [ 68%] [32mBuilding C object CMakeFiles/ros2cli_test_interfaces__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/ros2cli_test_interfaces/msg/detail/short_varied_nested__type_support.c.o[0m
+[3.585s] [ 68%] Built target ros2cli_test_interfaces__rosidl_typesupport_c
+[3.630s] [ 70%] [32m[1mLinking C shared library libros2cli_test_interfaces__rosidl_typesupport_introspection_c.so[0m
+[3.658s] [ 70%] Built target ros2cli_test_interfaces__rosidl_typesupport_introspection_c
+[3.739s] [ 71%] [32mBuilding CXX object CMakeFiles/ros2cli_test_interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/ros2cli_test_interfaces/action/detail/short_varied_multi_nested__type_support_c.cpp.o[0m
+[3.739s] [ 72%] [32mBuilding CXX object CMakeFiles/ros2cli_test_interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/ros2cli_test_interfaces/srv/detail/short_varied_multi_nested__type_support_c.cpp.o[0m
+[3.739s] [ 74%] [32mBuilding CXX object CMakeFiles/ros2cli_test_interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/ros2cli_test_interfaces/msg/detail/short_varied_nested__type_support_c.cpp.o[0m
+[3.740s] [ 75%] [32mBuilding CXX object CMakeFiles/ros2cli_test_interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/ros2cli_test_interfaces/msg/detail/short_varied_multi_nested__type_support_c.cpp.o[0m
+[3.741s] [ 77%] [32mBuilding CXX object CMakeFiles/ros2cli_test_interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/ros2cli_test_interfaces/msg/detail/short_varied__type_support_c.cpp.o[0m
+[3.838s] [ 78%] [32m[1mLinking CXX shared library libros2cli_test_interfaces__rosidl_typesupport_cpp.so[0m
+[3.894s] [ 78%] Built target ros2cli_test_interfaces__rosidl_typesupport_cpp
+[4.116s] [ 79%] [32m[1mLinking CXX shared library libros2cli_test_interfaces__rosidl_typesupport_fastrtps_c.so[0m
+[4.153s] [ 81%] [32m[1mLinking CXX shared library libros2cli_test_interfaces__rosidl_typesupport_introspection_cpp.so[0m
+[4.153s] [ 81%] Built target ros2cli_test_interfaces__rosidl_typesupport_fastrtps_c
+[4.169s] [ 82%] [32m[1mLinking CXX shared library libros2cli_test_interfaces__rosidl_typesupport_fastrtps_cpp.so[0m
+[4.199s] [ 82%] Built target ros2cli_test_interfaces__rosidl_typesupport_introspection_cpp
+[4.221s] [ 82%] Built target ros2cli_test_interfaces__rosidl_typesupport_fastrtps_cpp
+[4.235s] [ 82%] Built target ros2cli_test_interfaces
+[4.252s] [ 83%] [34m[1mGenerating Python code for ROS interfaces[0m
+[4.815s] [ 83%] Built target ros2cli_test_interfaces__py
+[4.832s] [ 85%] [32mBuilding C object CMakeFiles/ros2cli_test_interfaces__rosidl_generator_py.dir/rosidl_generator_py/ros2cli_test_interfaces/msg/_short_varied_multi_nested_s.c.o[0m
+[4.833s] [ 87%] [32mBuilding C object CMakeFiles/ros2cli_test_interfaces__rosidl_generator_py.dir/rosidl_generator_py/ros2cli_test_interfaces/srv/_short_varied_multi_nested_s.c.o[0m
+[4.833s] [ 87%] [32mBuilding C object CMakeFiles/ros2cli_test_interfaces__rosidl_generator_py.dir/rosidl_generator_py/ros2cli_test_interfaces/msg/_short_varied_s.c.o[0m
+[4.833s] [ 90%] [32mBuilding C object CMakeFiles/ros2cli_test_interfaces__rosidl_generator_py.dir/rosidl_generator_py/ros2cli_test_interfaces/action/_short_varied_multi_nested_s.c.o[0m
+[4.833s] [ 90%] [32mBuilding C object CMakeFiles/ros2cli_test_interfaces__rosidl_generator_py.dir/rosidl_generator_py/ros2cli_test_interfaces/msg/_short_varied_nested_s.c.o[0m
+[4.947s] [ 91%] [32m[1mLinking C shared library libros2cli_test_interfaces__rosidl_generator_py.so[0m
+[4.983s] [ 91%] Built target ros2cli_test_interfaces__rosidl_generator_py
+[5.002s] [ 93%] [32mBuilding C object CMakeFiles/ros2cli_test_interfaces_s__rosidl_typesupport_fastrtps_c.dir/rosidl_generator_py/ros2cli_test_interfaces/_ros2cli_test_interfaces_s.ep.rosidl_typesupport_fastrtps_c.c.o[0m
+[5.003s] [ 95%] [32mBuilding C object CMakeFiles/ros2cli_test_interfaces_s__rosidl_typesupport_c.dir/rosidl_generator_py/ros2cli_test_interfaces/_ros2cli_test_interfaces_s.ep.rosidl_typesupport_c.c.o[0m
+[5.003s] [ 95%] [32mBuilding C object CMakeFiles/ros2cli_test_interfaces_s__rosidl_typesupport_introspection_c.dir/rosidl_generator_py/ros2cli_test_interfaces/_ros2cli_test_interfaces_s.ep.rosidl_typesupport_introspection_c.c.o[0m
+[5.082s] [ 97%] [32m[1mLinking C shared module rosidl_generator_py/ros2cli_test_interfaces/ros2cli_test_interfaces_s__rosidl_typesupport_fastrtps_c.so[0m
+[5.082s] [ 98%] [32m[1mLinking C shared module rosidl_generator_py/ros2cli_test_interfaces/ros2cli_test_interfaces_s__rosidl_typesupport_c.so[0m
+[5.084s] [100%] [32m[1mLinking C shared module rosidl_generator_py/ros2cli_test_interfaces/ros2cli_test_interfaces_s__rosidl_typesupport_introspection_c.so[0m
+[5.106s] [100%] Built target ros2cli_test_interfaces_s__rosidl_typesupport_c
+[5.106s] [100%] Built target ros2cli_test_interfaces_s__rosidl_typesupport_fastrtps_c
+[5.107s] [100%] Built target ros2cli_test_interfaces_s__rosidl_typesupport_introspection_c
+[5.118s] Invoked command in '/home/rmc/ros2cli/build/ros2cli_test_interfaces' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/rolling DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/rmc/ros2cli/build/ros2cli_test_interfaces -- -j32 -l32
+[5.119s] Invoking command in '/home/rmc/ros2cli/build/ros2cli_test_interfaces': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/rolling DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/rmc/ros2cli/build/ros2cli_test_interfaces
+[5.124s] -- Install configuration: ""
+[5.125s] -- Execute custom install script
+[5.125s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ament_index/resource_index/rosidl_interfaces/ros2cli_test_interfaces
+[5.131s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/action/ShortVariedMultiNested.json
+[5.137s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/msg/ShortVaried.json
+[5.145s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/msg/ShortVariedMultiNested.json
+[5.152s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/msg/ShortVariedNested.json
+[5.160s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/srv/ShortVariedMultiNested.json
+[5.165s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/action/detail/short_varied_multi_nested__functions.h
+[5.173s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/action/detail/short_varied_multi_nested__struct.h
+[5.177s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/action/detail/short_varied_multi_nested__type_support.h
+[5.183s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/action/short_varied_multi_nested.h
+[5.189s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/detail/short_varied__functions.h
+[5.195s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/detail/short_varied__struct.h
+[5.201s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/detail/short_varied__type_support.h
+[5.206s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/detail/short_varied_multi_nested__functions.h
+[5.213s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/detail/short_varied_multi_nested__struct.h
+[5.219s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/detail/short_varied_multi_nested__type_support.h
+[5.225s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/detail/short_varied_nested__functions.h
+[5.231s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/detail/short_varied_nested__struct.h
+[5.238s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/detail/short_varied_nested__type_support.h
+[5.245s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/rosidl_generator_c__visibility_control.h
+[5.250s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/short_varied.h
+[5.256s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/short_varied_multi_nested.h
+[5.264s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/short_varied_nested.h
+[5.271s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/srv/detail/short_varied_multi_nested__functions.h
+[5.277s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/srv/detail/short_varied_multi_nested__struct.h
+[5.282s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/srv/detail/short_varied_multi_nested__type_support.h
+[5.287s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/srv/short_varied_multi_nested.h
+[5.292s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/environment/library_path.sh
+[5.298s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/environment/library_path.dsv
+[5.305s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/action/detail/short_varied_multi_nested__rosidl_typesupport_fastrtps_c.h
+[5.312s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/detail/short_varied__rosidl_typesupport_fastrtps_c.h
+[5.319s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/detail/short_varied_multi_nested__rosidl_typesupport_fastrtps_c.h
+[5.327s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/detail/short_varied_nested__rosidl_typesupport_fastrtps_c.h
+[5.334s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/rosidl_typesupport_fastrtps_c__visibility_control.h
+[5.341s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/srv/detail/short_varied_multi_nested__rosidl_typesupport_fastrtps_c.h
+[5.346s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/action/detail/short_varied_multi_nested__rosidl_typesupport_introspection_c.h
+[5.351s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/detail/short_varied__rosidl_typesupport_introspection_c.h
+[5.357s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/detail/short_varied_multi_nested__rosidl_typesupport_introspection_c.h
+[5.362s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/detail/short_varied_nested__rosidl_typesupport_introspection_c.h
+[5.368s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/rosidl_typesupport_introspection_c__visibility_control.h
+[5.374s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/srv/detail/short_varied_multi_nested__rosidl_typesupport_introspection_c.h
+[5.380s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/action/detail/short_varied_multi_nested__builder.hpp
+[5.388s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/action/detail/short_varied_multi_nested__struct.hpp
+[5.393s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/action/detail/short_varied_multi_nested__traits.hpp
+[5.399s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/action/detail/short_varied_multi_nested__type_support.hpp
+[5.406s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/action/short_varied_multi_nested.hpp
+[5.414s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/detail/short_varied__builder.hpp
+[5.420s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/detail/short_varied__struct.hpp
+[5.426s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/detail/short_varied__traits.hpp
+[5.432s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/detail/short_varied__type_support.hpp
+[5.437s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/detail/short_varied_multi_nested__builder.hpp
+[5.442s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/detail/short_varied_multi_nested__struct.hpp
+[5.448s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/detail/short_varied_multi_nested__traits.hpp
+[5.454s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/detail/short_varied_multi_nested__type_support.hpp
+[5.459s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/detail/short_varied_nested__builder.hpp
+[5.465s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/detail/short_varied_nested__struct.hpp
+[5.472s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/detail/short_varied_nested__traits.hpp
+[5.479s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/detail/short_varied_nested__type_support.hpp
+[5.486s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/rosidl_generator_cpp__visibility_control.hpp
+[5.491s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/short_varied.hpp
+[5.499s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/short_varied_multi_nested.hpp
+[5.506s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/short_varied_nested.hpp
+[5.510s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/srv/detail/short_varied_multi_nested__builder.hpp
+[5.519s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/srv/detail/short_varied_multi_nested__struct.hpp
+[5.524s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/srv/detail/short_varied_multi_nested__traits.hpp
+[5.532s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/srv/detail/short_varied_multi_nested__type_support.hpp
+[5.540s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/srv/short_varied_multi_nested.hpp
+[5.546s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/action/detail/short_varied_multi_nested__rosidl_typesupport_fastrtps_cpp.hpp
+[5.552s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/detail/short_varied__rosidl_typesupport_fastrtps_cpp.hpp
+[5.560s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/detail/short_varied_multi_nested__rosidl_typesupport_fastrtps_cpp.hpp
+[5.568s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/detail/short_varied_nested__rosidl_typesupport_fastrtps_cpp.hpp
+[5.576s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/rosidl_typesupport_fastrtps_cpp__visibility_control.h
+[5.582s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/srv/detail/short_varied_multi_nested__rosidl_typesupport_fastrtps_cpp.hpp
+[5.589s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/action/detail/short_varied_multi_nested__rosidl_typesupport_introspection_cpp.hpp
+[5.596s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/detail/short_varied__rosidl_typesupport_introspection_cpp.hpp
+[5.602s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/detail/short_varied_multi_nested__rosidl_typesupport_introspection_cpp.hpp
+[5.608s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/msg/detail/short_varied_nested__rosidl_typesupport_introspection_cpp.hpp
+[5.615s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/include/ros2cli_test_interfaces/ros2cli_test_interfaces/srv/detail/short_varied_multi_nested__rosidl_typesupport_introspection_cpp.hpp
+[5.622s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/environment/pythonpath.sh
+[5.630s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/environment/pythonpath.dsv
+[5.637s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces-0.40.0-py3.12.egg-info/PKG-INFO
+[5.644s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces-0.40.0-py3.12.egg-info/SOURCES.txt
+[5.650s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces-0.40.0-py3.12.egg-info/dependency_links.txt
+[5.655s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces-0.40.0-py3.12.egg-info/top_level.txt
+[5.663s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces/__init__.py
+[5.671s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces/_ros2cli_test_interfaces_s.ep.rosidl_typesupport_c.c
+[5.678s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces/_ros2cli_test_interfaces_s.ep.rosidl_typesupport_fastrtps_c.c
+[5.686s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces/_ros2cli_test_interfaces_s.ep.rosidl_typesupport_introspection_c.c
+[5.694s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces/action/__init__.py
+[5.701s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces/action/_short_varied_multi_nested.py
+[5.709s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces/action/_short_varied_multi_nested_s.c
+[5.717s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces/msg/__init__.py
+[5.723s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces/msg/_short_varied.py
+[5.731s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces/msg/_short_varied_multi_nested.py
+[5.738s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces/msg/_short_varied_multi_nested_s.c
+[5.744s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces/msg/_short_varied_nested.py
+[5.750s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces/msg/_short_varied_nested_s.c
+[5.757s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces/msg/_short_varied_s.c
+[5.764s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces/ros2cli_test_interfaces_s__rosidl_typesupport_c.so
+[5.770s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces/ros2cli_test_interfaces_s__rosidl_typesupport_fastrtps_c.so
+[5.775s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces/ros2cli_test_interfaces_s__rosidl_typesupport_introspection_c.so
+[5.782s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces/srv/__init__.py
+[5.790s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces/srv/_short_varied_multi_nested.py
+[5.798s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces/srv/_short_varied_multi_nested_s.c
+[5.805s] -- Up-to-date symlink: /home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces/ros2cli_test_interfaces_s__rosidl_typesupport_fastrtps_c.so
+[5.805s] -- Up-to-date symlink: /home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces/ros2cli_test_interfaces_s__rosidl_typesupport_introspection_c.so
+[5.806s] -- Up-to-date symlink: /home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces/ros2cli_test_interfaces_s__rosidl_typesupport_c.so
+[5.806s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/action/ShortVariedMultiNested.idl
+[5.814s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/msg/ShortVaried.idl
+[5.823s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/msg/ShortVariedMultiNested.idl
+[5.831s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/msg/ShortVariedNested.idl
+[5.839s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/srv/ShortVariedMultiNested.idl
+[5.847s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/action/ShortVariedMultiNested.action
+[5.852s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/msg/ShortVaried.msg
+[5.860s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/msg/ShortVariedMultiNested.msg
+[5.866s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/msg/ShortVariedNested.msg
+[5.871s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/srv/ShortVariedMultiNested.srv
+[5.878s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ament_index/resource_index/package_run_dependencies/ros2cli_test_interfaces
+[5.884s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ament_index/resource_index/parent_prefix_path/ros2cli_test_interfaces
+[5.890s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/environment/ament_prefix_path.sh
+[5.897s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/environment/ament_prefix_path.dsv
+[5.903s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/environment/path.sh
+[5.911s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/environment/path.dsv
+[5.917s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/local_setup.bash
+[5.923s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/local_setup.sh
+[5.928s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/local_setup.zsh
+[5.935s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/local_setup.dsv
+[5.941s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/package.dsv
+[5.949s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ament_index/resource_index/packages/ros2cli_test_interfaces
+[5.955s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/cmake/rosidl_cmake-extras.cmake
+[5.963s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/cmake/ament_cmake_export_dependencies-extras.cmake
+[5.971s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/cmake/ament_cmake_export_include_directories-extras.cmake
+[5.978s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/cmake/ament_cmake_export_libraries-extras.cmake
+[5.986s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/cmake/ament_cmake_export_targets-extras.cmake
+[5.993s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/cmake/rosidl_cmake_export_typesupport_targets-extras.cmake
+[5.999s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/cmake/rosidl_cmake_export_typesupport_libraries-extras.cmake
+[6.005s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/cmake/ros2cli_test_interfacesConfig.cmake
+[6.013s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/cmake/ros2cli_test_interfacesConfig-version.cmake
+[6.020s] -- Symlinking: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/package.xml
+[6.028s] -- Installing: /home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/libros2cli_test_interfaces__rosidl_generator_c.so
+[6.028s] -- Set non-toolchain portion of runtime path of "/home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/libros2cli_test_interfaces__rosidl_generator_c.so" to ""
+[6.028s] -- Installing: /home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/libros2cli_test_interfaces__rosidl_typesupport_fastrtps_c.so
+[6.028s] -- Set non-toolchain portion of runtime path of "/home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/libros2cli_test_interfaces__rosidl_typesupport_fastrtps_c.so" to ""
+[6.028s] -- Installing: /home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/libros2cli_test_interfaces__rosidl_typesupport_introspection_c.so
+[6.028s] -- Set non-toolchain portion of runtime path of "/home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/libros2cli_test_interfaces__rosidl_typesupport_introspection_c.so" to ""
+[6.028s] -- Installing: /home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/libros2cli_test_interfaces__rosidl_typesupport_c.so
+[6.028s] -- Set non-toolchain portion of runtime path of "/home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/libros2cli_test_interfaces__rosidl_typesupport_c.so" to ""
+[6.028s] -- Installing: /home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/libros2cli_test_interfaces__rosidl_typesupport_fastrtps_cpp.so
+[6.029s] -- Set non-toolchain portion of runtime path of "/home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/libros2cli_test_interfaces__rosidl_typesupport_fastrtps_cpp.so" to ""
+[6.029s] -- Installing: /home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/libros2cli_test_interfaces__rosidl_typesupport_introspection_cpp.so
+[6.029s] -- Set non-toolchain portion of runtime path of "/home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/libros2cli_test_interfaces__rosidl_typesupport_introspection_cpp.so" to ""
+[6.029s] -- Installing: /home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/libros2cli_test_interfaces__rosidl_typesupport_cpp.so
+[6.029s] -- Set non-toolchain portion of runtime path of "/home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/libros2cli_test_interfaces__rosidl_typesupport_cpp.so" to ""
+[6.059s] Listing '/home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces'...
+[6.059s] Compiling '/home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces/__init__.py'...
+[6.059s] Listing '/home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces/action'...
+[6.059s] Compiling '/home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces/action/__init__.py'...
+[6.059s] Compiling '/home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces/action/_short_varied_multi_nested.py'...
+[6.059s] Listing '/home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces/msg'...
+[6.059s] Compiling '/home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces/msg/__init__.py'...
+[6.059s] Compiling '/home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces/msg/_short_varied.py'...
+[6.059s] Compiling '/home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces/msg/_short_varied_multi_nested.py'...
+[6.059s] Compiling '/home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces/msg/_short_varied_nested.py'...
+[6.059s] Listing '/home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces/srv'...
+[6.060s] Compiling '/home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces/srv/__init__.py'...
+[6.060s] Compiling '/home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages/ros2cli_test_interfaces/srv/_short_varied_multi_nested.py'...
+[6.063s] -- Installing: /home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/libros2cli_test_interfaces__rosidl_generator_py.so
+[6.063s] -- Set non-toolchain portion of runtime path of "/home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/libros2cli_test_interfaces__rosidl_generator_py.so" to ""
+[6.063s] -- Installing: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/cmake/export_ros2cli_test_interfaces__rosidl_generator_cExport.cmake
+[6.063s] -- Installing: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/cmake/export_ros2cli_test_interfaces__rosidl_generator_cExport-noconfig.cmake
+[6.063s] -- Installing: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/cmake/export_ros2cli_test_interfaces__rosidl_typesupport_fastrtps_cExport.cmake
+[6.063s] -- Installing: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/cmake/export_ros2cli_test_interfaces__rosidl_typesupport_fastrtps_cExport-noconfig.cmake
+[6.063s] -- Installing: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/cmake/ros2cli_test_interfaces__rosidl_typesupport_introspection_cExport.cmake
+[6.063s] -- Installing: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/cmake/ros2cli_test_interfaces__rosidl_typesupport_introspection_cExport-noconfig.cmake
+[6.063s] -- Installing: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/cmake/ros2cli_test_interfaces__rosidl_typesupport_cExport.cmake
+[6.063s] -- Installing: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/cmake/ros2cli_test_interfaces__rosidl_typesupport_cExport-noconfig.cmake
+[6.063s] -- Installing: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/cmake/export_ros2cli_test_interfaces__rosidl_generator_cppExport.cmake
+[6.063s] -- Installing: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/cmake/export_ros2cli_test_interfaces__rosidl_typesupport_fastrtps_cppExport.cmake
+[6.063s] -- Installing: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/cmake/export_ros2cli_test_interfaces__rosidl_typesupport_fastrtps_cppExport-noconfig.cmake
+[6.063s] -- Installing: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/cmake/ros2cli_test_interfaces__rosidl_typesupport_introspection_cppExport.cmake
+[6.063s] -- Installing: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/cmake/ros2cli_test_interfaces__rosidl_typesupport_introspection_cppExport-noconfig.cmake
+[6.063s] -- Installing: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/cmake/ros2cli_test_interfaces__rosidl_typesupport_cppExport.cmake
+[6.063s] -- Installing: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/cmake/ros2cli_test_interfaces__rosidl_typesupport_cppExport-noconfig.cmake
+[6.064s] -- Installing: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/cmake/export_ros2cli_test_interfaces__rosidl_generator_pyExport.cmake
+[6.064s] -- Installing: /home/rmc/ros2cli/install/ros2cli_test_interfaces/share/ros2cli_test_interfaces/cmake/export_ros2cli_test_interfaces__rosidl_generator_pyExport-noconfig.cmake
+[6.065s] Invoked command in '/home/rmc/ros2cli/build/ros2cli_test_interfaces' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/rolling DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/rmc/ros2cli/build/ros2cli_test_interfaces

@@ -1,0 +1,70 @@
+{
+  "package_name": "ros2cli_test_interfaces",
+  "output_dir": "/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_generator_c/ros2cli_test_interfaces",
+  "template_dir": "/opt/ros/rolling/share/rosidl_generator_c/cmake/../resource",
+  "idl_tuples": [
+    "/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_adapter/ros2cli_test_interfaces:action/ShortVariedMultiNested.idl",
+    "/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_adapter/ros2cli_test_interfaces:msg/ShortVaried.idl",
+    "/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_adapter/ros2cli_test_interfaces:msg/ShortVariedMultiNested.idl",
+    "/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_adapter/ros2cli_test_interfaces:msg/ShortVariedNested.idl",
+    "/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_adapter/ros2cli_test_interfaces:srv/ShortVariedMultiNested.idl"
+  ],
+  "ros_interface_files": [
+    "/home/rmc/ros2cli/ros2cli_test_interfaces/action/ShortVariedMultiNested.action",
+    "/home/rmc/ros2cli/ros2cli_test_interfaces/msg/ShortVaried.msg",
+    "/home/rmc/ros2cli/ros2cli_test_interfaces/msg/ShortVariedMultiNested.msg",
+    "/home/rmc/ros2cli/ros2cli_test_interfaces/msg/ShortVariedNested.msg",
+    "/home/rmc/ros2cli/ros2cli_test_interfaces/srv/ShortVariedMultiNested.srv"
+  ],
+  "ros_interface_dependencies": [
+    "service_msgs:/opt/ros/rolling/share/service_msgs/msg/ServiceEventInfo.idl",
+    "builtin_interfaces:/opt/ros/rolling/share/builtin_interfaces/msg/Duration.idl",
+    "builtin_interfaces:/opt/ros/rolling/share/builtin_interfaces/msg/Time.idl",
+    "action_msgs:/opt/ros/rolling/share/action_msgs/msg/GoalInfo.idl",
+    "action_msgs:/opt/ros/rolling/share/action_msgs/msg/GoalStatus.idl",
+    "action_msgs:/opt/ros/rolling/share/action_msgs/msg/GoalStatusArray.idl",
+    "action_msgs:/opt/ros/rolling/share/action_msgs/srv/CancelGoal.idl",
+    "unique_identifier_msgs:/opt/ros/rolling/share/unique_identifier_msgs/msg/UUID.idl"
+  ],
+  "target_dependencies": [
+    "/opt/ros/rolling/share/rosidl_generator_c/cmake/../../../lib/rosidl_generator_c/rosidl_generator_c",
+    "/opt/ros/rolling/share/rosidl_generator_c/cmake/../../../lib/python3.12/site-packages/rosidl_generator_c/__init__.py",
+    "/opt/ros/rolling/share/rosidl_generator_c/cmake/../resource/action__type_support.h.em",
+    "/opt/ros/rolling/share/rosidl_generator_c/cmake/../resource/action__type_support.c.em",
+    "/opt/ros/rolling/share/rosidl_generator_c/cmake/../resource/empty__description.c.em",
+    "/opt/ros/rolling/share/rosidl_generator_c/cmake/../resource/full__description.c.em",
+    "/opt/ros/rolling/share/rosidl_generator_c/cmake/../resource/idl.h.em",
+    "/opt/ros/rolling/share/rosidl_generator_c/cmake/../resource/idl__description.c.em",
+    "/opt/ros/rolling/share/rosidl_generator_c/cmake/../resource/idl__functions.c.em",
+    "/opt/ros/rolling/share/rosidl_generator_c/cmake/../resource/idl__functions.h.em",
+    "/opt/ros/rolling/share/rosidl_generator_c/cmake/../resource/idl__struct.h.em",
+    "/opt/ros/rolling/share/rosidl_generator_c/cmake/../resource/idl__type_support.c.em",
+    "/opt/ros/rolling/share/rosidl_generator_c/cmake/../resource/idl__type_support.h.em",
+    "/opt/ros/rolling/share/rosidl_generator_c/cmake/../resource/msg__functions.c.em",
+    "/opt/ros/rolling/share/rosidl_generator_c/cmake/../resource/msg__functions.h.em",
+    "/opt/ros/rolling/share/rosidl_generator_c/cmake/../resource/msg__struct.h.em",
+    "/opt/ros/rolling/share/rosidl_generator_c/cmake/../resource/msg__type_support.h.em",
+    "/opt/ros/rolling/share/rosidl_generator_c/cmake/../resource/srv__type_support.c.em",
+    "/opt/ros/rolling/share/rosidl_generator_c/cmake/../resource/srv__type_support.h.em",
+    "/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_adapter/ros2cli_test_interfaces/action/ShortVariedMultiNested.idl",
+    "/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_adapter/ros2cli_test_interfaces/msg/ShortVaried.idl",
+    "/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_adapter/ros2cli_test_interfaces/msg/ShortVariedMultiNested.idl",
+    "/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_adapter/ros2cli_test_interfaces/msg/ShortVariedNested.idl",
+    "/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_adapter/ros2cli_test_interfaces/srv/ShortVariedMultiNested.idl",
+    "/opt/ros/rolling/share/service_msgs/msg/ServiceEventInfo.idl",
+    "/opt/ros/rolling/share/builtin_interfaces/msg/Duration.idl",
+    "/opt/ros/rolling/share/builtin_interfaces/msg/Time.idl",
+    "/opt/ros/rolling/share/action_msgs/msg/GoalInfo.idl",
+    "/opt/ros/rolling/share/action_msgs/msg/GoalStatus.idl",
+    "/opt/ros/rolling/share/action_msgs/msg/GoalStatusArray.idl",
+    "/opt/ros/rolling/share/action_msgs/srv/CancelGoal.idl",
+    "/opt/ros/rolling/share/unique_identifier_msgs/msg/UUID.idl"
+  ],
+  "type_description_tuples": [
+    "action/ShortVariedMultiNested.idl:/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_generator_type_description/ros2cli_test_interfaces/action/ShortVariedMultiNested.json",
+    "msg/ShortVaried.idl:/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_generator_type_description/ros2cli_test_interfaces/msg/ShortVaried.json",
+    "msg/ShortVariedMultiNested.idl:/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_generator_type_description/ros2cli_test_interfaces/msg/ShortVariedMultiNested.json",
+    "msg/ShortVariedNested.idl:/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_generator_type_description/ros2cli_test_interfaces/msg/ShortVariedNested.json",
+    "srv/ShortVariedMultiNested.idl:/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_generator_type_description/ros2cli_test_interfaces/srv/ShortVariedMultiNested.json"
+  ]
+}

@@ -1,0 +1,25 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from ros2cli_test_interfaces/msg/ShortVaried.msg
+// generated code does not contain a copyright notice
+
+
+module ros2cli_test_interfaces {
+  module msg {
+    module ShortVaried_Constants {
+      @verbatim (language="comment", text=
+        "Comment - Nesting Level 1: 1 of 2")
+      const boolean BOOL_CONST = TRUE;
+    };
+    @verbatim (language="comment", text=
+      "A constant")
+    struct ShortVaried {
+      @verbatim (language="comment", text=
+        "Bool and array of bools")
+      boolean bool_value;
+
+      @verbatim (language="comment", text=
+        "Comment - Nesting Level 1: 2 of 2")
+      sequence<boolean, 3> bool_values;
+    };
+  };
+};

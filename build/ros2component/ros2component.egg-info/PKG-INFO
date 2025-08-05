@@ -1,0 +1,17 @@
+Metadata-Version: 2.1
+Name: ros2component
+Version: 0.40.0
+Summary: The component command for ROS 2 command line tools.
+Home-page: https://github.com/ros2/ros2cli/tree/master/ros2component
+Download-URL: https://github.com/ros2/ros2cli/releases
+Author: Michel Hidalgo
+Author-email: michel@ekumenlabs.com
+Maintainer: Audrow Nash, Geoffrey Biggs
+Maintainer-email: audrow@openrobotics.org, geoff@openrobotics.org
+License: Apache License, Version 2.0
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python
+Provides-Extra: test
+
+The package provides the component command for the ROS 2 command line tools.

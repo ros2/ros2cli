@@ -47,6 +47,8 @@ class EnvironmentReport(DoctorReport):
             rmw_environment_variables = RMW_ZENOH_CPP_ENVIRONMENT_VARIABLES
         elif rmw_name == 'rmw_fastrtps_cpp':
             rmw_environment_variables = RMW_FASTRTPS_ENVIRONMENT_VARIABLES
+        else:
+            raise Warning(f'Using unsported rmw={rmw_name}')
 
         ros_variable_list: list[str] = []
         rmw_variable_list: list[str] = []

@@ -1,0 +1,17 @@
+{
+  "package_name": "ros2cli_test_interfaces",
+  "output_dir": "/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_generator_type_description/ros2cli_test_interfaces",
+  "idl_tuples": [
+    "/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_adapter/ros2cli_test_interfaces:action/ShortVariedMultiNested.idl",
+    "/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_adapter/ros2cli_test_interfaces:msg/ShortVaried.idl",
+    "/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_adapter/ros2cli_test_interfaces:msg/ShortVariedMultiNested.idl",
+    "/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_adapter/ros2cli_test_interfaces:msg/ShortVariedNested.idl",
+    "/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_adapter/ros2cli_test_interfaces:srv/ShortVariedMultiNested.idl"
+  ],
+  "include_paths": [
+    "service_msgs:/opt/ros/rolling/share/service_msgs/",
+    "builtin_interfaces:/opt/ros/rolling/share/builtin_interfaces/",
+    "action_msgs:/opt/ros/rolling/share/action_msgs/",
+    "unique_identifier_msgs:/opt/ros/rolling/share/unique_identifier_msgs/"
+  ]
+}

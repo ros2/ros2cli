@@ -1,0 +1,1 @@
+ament_cmake_symlink_install_targets("TARGET_FILES" "/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_generator_py/ros2cli_test_interfaces/ros2cli_test_interfaces_s__rosidl_typesupport_introspection_c.so" "TARGETS" "ros2cli_test_interfaces_s__rosidl_typesupport_introspection_c" "DESTINATION" "lib/python3.12/site-packages/ros2cli_test_interfaces")

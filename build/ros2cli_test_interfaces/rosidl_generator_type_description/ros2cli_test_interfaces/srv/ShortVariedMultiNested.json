@@ -1,0 +1,250 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "ros2cli_test_interfaces/srv/ShortVariedMultiNested",
+      "fields": [
+        {
+          "name": "request_message",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "ros2cli_test_interfaces/srv/ShortVariedMultiNested_Request"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "response_message",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "ros2cli_test_interfaces/srv/ShortVariedMultiNested_Response"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "event_message",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "ros2cli_test_interfaces/srv/ShortVariedMultiNested_Event"
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": [
+      {
+        "type_name": "builtin_interfaces/msg/Time",
+        "fields": [
+          {
+            "name": "sec",
+            "type": {
+              "type_id": 6,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "nanosec",
+            "type": {
+              "type_id": 7,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "ros2cli_test_interfaces/msg/ShortVaried",
+        "fields": [
+          {
+            "name": "bool_value",
+            "type": {
+              "type_id": 15,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "bool_values",
+            "type": {
+              "type_id": 111,
+              "capacity": 3,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "ros2cli_test_interfaces/msg/ShortVariedNested",
+        "fields": [
+          {
+            "name": "short_varied",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "ros2cli_test_interfaces/msg/ShortVaried"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "ros2cli_test_interfaces/srv/ShortVariedMultiNested_Event",
+        "fields": [
+          {
+            "name": "info",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "service_msgs/msg/ServiceEventInfo"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "request",
+            "type": {
+              "type_id": 97,
+              "capacity": 1,
+              "string_capacity": 0,
+              "nested_type_name": "ros2cli_test_interfaces/srv/ShortVariedMultiNested_Request"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "response",
+            "type": {
+              "type_id": 97,
+              "capacity": 1,
+              "string_capacity": 0,
+              "nested_type_name": "ros2cli_test_interfaces/srv/ShortVariedMultiNested_Response"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "ros2cli_test_interfaces/srv/ShortVariedMultiNested_Request",
+        "fields": [
+          {
+            "name": "short_varied_nested",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "ros2cli_test_interfaces/msg/ShortVariedNested"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "ros2cli_test_interfaces/srv/ShortVariedMultiNested_Response",
+        "fields": [
+          {
+            "name": "bool_value",
+            "type": {
+              "type_id": 15,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "service_msgs/msg/ServiceEventInfo",
+        "fields": [
+          {
+            "name": "event_type",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "stamp",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "builtin_interfaces/msg/Time"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "client_gid",
+            "type": {
+              "type_id": 51,
+              "capacity": 16,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "sequence_number",
+            "type": {
+              "type_id": 8,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      }
+    ]
+  },
+  "type_hashes": [
+    {
+      "type_name": "ros2cli_test_interfaces/srv/ShortVariedMultiNested",
+      "hash_string": "RIHS01_450d494224ad6a6ea3526fb99e9a56cf0c4cf12c278e9c1f764a2706706d3803"
+    },
+    {
+      "type_name": "builtin_interfaces/msg/Time",
+      "hash_string": "RIHS01_b106235e25a4c5ed35098aa0a61a3ee9c9b18d197f398b0e4206cea9acf9c197"
+    },
+    {
+      "type_name": "ros2cli_test_interfaces/msg/ShortVaried",
+      "hash_string": "RIHS01_f187205b0b7eaf6fc97dfdacf8d6dad2d420842c002b6e9269b9e3cd2d19c5c2"
+    },
+    {
+      "type_name": "ros2cli_test_interfaces/msg/ShortVariedNested",
+      "hash_string": "RIHS01_d2393cfcf7842e12c37e033af072c9299a5885b98ec785b80d492a805edd5b2f"
+    },
+    {
+      "type_name": "ros2cli_test_interfaces/srv/ShortVariedMultiNested_Event",
+      "hash_string": "RIHS01_9172c541a8f7d05d72ee259b9889cc049505c59afcc673c284114a40139c7fbc"
+    },
+    {
+      "type_name": "ros2cli_test_interfaces/srv/ShortVariedMultiNested_Request",
+      "hash_string": "RIHS01_054938253a6883b21406917908368a210ac43e5384f95fac48d2c5b67337923c"
+    },
+    {
+      "type_name": "ros2cli_test_interfaces/srv/ShortVariedMultiNested_Response",
+      "hash_string": "RIHS01_e2b3491b14e0e2a88c4a47768ff034cab1b1cb227dab6e2599581d6f84c959d2"
+    },
+    {
+      "type_name": "service_msgs/msg/ServiceEventInfo",
+      "hash_string": "RIHS01_41bcbbe07a75c9b52bc96bfd5c24d7f0fc0a08c0cb7921b3373c5732345a6f45"
+    }
+  ]
+}

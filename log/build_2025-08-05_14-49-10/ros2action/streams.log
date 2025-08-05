@@ -1,0 +1,23 @@
+[1.345s] Invoking command in '/home/rmc/ros2cli/build/ros2action': AMENT_PREFIX_PATH=/home/rmc/ros2cli/install/ros2cli:${AMENT_PREFIX_PATH} DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PATH=/home/rmc/ros2cli/install/ros2cli/bin:${PATH} PYTHONPATH=/home/rmc/ros2cli/build/ros2action/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/rmc/ros2cli/install/ros2action/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2cli:/home/rmc/ros2cli/install/ros2cli/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/rmc/ros2cli/build/ros2action/build --no-deps symlink_data
+[1.547s] running develop
+[1.675s] running egg_info
+[1.675s] creating ros2action.egg-info
+[1.688s] writing ros2action.egg-info/PKG-INFO
+[1.688s] writing dependency_links to ros2action.egg-info/dependency_links.txt
+[1.688s] writing entry points to ros2action.egg-info/entry_points.txt
+[1.688s] writing requirements to ros2action.egg-info/requires.txt
+[1.688s] writing top-level names to ros2action.egg-info/top_level.txt
+[1.688s] writing manifest file 'ros2action.egg-info/SOURCES.txt'
+[1.713s] reading manifest file 'ros2action.egg-info/SOURCES.txt'
+[1.713s] writing manifest file 'ros2action.egg-info/SOURCES.txt'
+[1.727s] running build_ext
+[1.727s] Creating /home/rmc/ros2cli/install/ros2action/lib/python3.12/site-packages/ros2action.egg-link (link to .)
+[1.727s] 
+[1.727s] Installed /home/rmc/ros2cli/build/ros2action
+[1.727s] running symlink_data
+[1.727s] symbolically linking /home/rmc/ros2cli/build/ros2action/package.xml -> /home/rmc/ros2cli/install/ros2action/share/ros2action
+[1.727s] creating /home/rmc/ros2cli/install/ros2action/share/ament_index
+[1.727s] creating /home/rmc/ros2cli/install/ros2action/share/ament_index/resource_index
+[1.727s] creating /home/rmc/ros2cli/install/ros2action/share/ament_index/resource_index/packages
+[1.727s] symbolically linking /home/rmc/ros2cli/build/ros2action/resource/ros2action -> /home/rmc/ros2cli/install/ros2action/share/ament_index/resource_index/packages
+[1.791s] Invoked command in '/home/rmc/ros2cli/build/ros2action' returned '0': AMENT_PREFIX_PATH=/home/rmc/ros2cli/install/ros2cli:${AMENT_PREFIX_PATH} DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PATH=/home/rmc/ros2cli/install/ros2cli/bin:${PATH} PYTHONPATH=/home/rmc/ros2cli/build/ros2action/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/rmc/ros2cli/install/ros2action/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2cli:/home/rmc/ros2cli/install/ros2cli/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/rmc/ros2cli/build/ros2action/build --no-deps symlink_data

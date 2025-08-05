@@ -1,0 +1,620 @@
+[0.000000] (-) TimerEvent: {}
+[0.000111] (ros2doctor) JobQueued: {'identifier': 'ros2doctor', 'dependencies': OrderedDict({'ros2cli': '/home/rmc/ros2cli/install/ros2cli', 'ros2action': '/home/rmc/ros2cli/install/ros2action', 'ros2doctor': '/home/rmc/ros2cli/install/ros2doctor'})}
+[0.000165] (ros2doctor) JobStarted: {'identifier': 'ros2doctor'}
+[0.099510] (-) TimerEvent: {}
+[0.118270] (ros2doctor) Command: {'cmd': ['/usr/bin/python3', '-m', 'pytest'], 'cwd': '/home/rmc/ros2cli/ros2doctor', 'env': {'GJS_DEBUG_TOPICS': 'JS ERROR;JS LOG', 'LESSOPEN': '| /usr/bin/lesspipe %s', 'GZ_SIM_RESOURCE_PATH': '/opt/ros/rolling/share', 'USER': 'rmc', 'GZ_CONFIG_PATH': '/opt/ros/rolling/opt/gz_sim_vendor/share/gz:/opt/ros/rolling/opt/sdformat_vendor/share/gz:/opt/ros/rolling/opt/gz_gui_vendor/share/gz:/opt/ros/rolling/opt/gz_transport_vendor/share/gz:/opt/ros/rolling/opt/gz_rendering_vendor/share/gz:/opt/ros/rolling/opt/gz_plugin_vendor/share/gz:/opt/ros/rolling/opt/gz_fuel_tools_vendor/share/gz:/opt/ros/rolling/opt/gz_msgs_vendor/share/gz:/opt/ros/rolling/opt/gz_common_vendor/share/gz', 'XDG_SESSION_TYPE': 'x11', 'GIT_ASKPASS': '/usr/share/code/resources/app/extensions/git/dist/askpass.sh', 'CLUTTER_DISABLE_MIPMAPPED_TEXT': '1', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/opt/ros/rolling/opt/zenoh_cpp_vendor/lib:/opt/ros/rolling/opt/gz_sim_vendor/lib:/opt/ros/rolling/opt/gz_sensors_vendor/lib:/opt/ros/rolling/opt/gz_physics_vendor/lib:/opt/ros/rolling/opt/sdformat_vendor/lib:/opt/ros/rolling/opt/gz_gui_vendor/lib:/opt/ros/rolling/opt/gz_transport_vendor/lib:/opt/ros/rolling/opt/gz_rendering_vendor/lib:/opt/ros/rolling/opt/gz_plugin_vendor/lib:/opt/ros/rolling/opt/gz_fuel_tools_vendor/lib:/opt/ros/rolling/opt/gz_msgs_vendor/lib:/opt/ros/rolling/opt/gz_common_vendor/lib:/opt/ros/rolling/opt/gz_math_vendor/lib:/opt/ros/rolling/opt/gz_utils_vendor/lib:/opt/ros/rolling/opt/rviz_ogre_vendor/lib:/opt/ros/rolling/lib/x86_64-linux-gnu:/opt/ros/rolling/opt/mimick_vendor/lib:/opt/ros/rolling/opt/gz_tools_vendor/lib:/opt/ros/rolling/opt/gz_ogre_next_vendor/lib:/opt/ros/rolling/opt/gz_dartsim_vendor/lib:/opt/ros/rolling/opt/gz_cmake_vendor/lib:/opt/ros/rolling/lib', 'HOME': '/home/rmc', 'CHROME_DESKTOP': 'code.desktop', 'TERM_PROGRAM_VERSION': '1.102.3', 'DESKTOP_SESSION': 'ubuntu', 'GIO_LAUNCHED_DESKTOP_FILE': '/usr/share/applications/code.desktop', 'ROS_PYTHON_VERSION': '3', 'GNOME_SHELL_SESSION_MODE': 'ubuntu', 'GTK_MODULES': 'gail:atk-bridge', 'VSCODE_GIT_ASKPASS_MAIN': '/usr/share/code/resources/app/extensions/git/dist/askpass-main.js', 'VSCODE_GIT_ASKPASS_NODE': '/usr/share/code/code', 'MANAGERPID': '1996', 'PYDEVD_DISABLE_FILE_VALIDATION': '1', 'SYSTEMD_EXEC_PID': '2619', 'BUNDLED_DEBUGPY_PATH': '/home/rmc/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/libs/debugpy', 'GSM_SKIP_SSH_AGENT_WORKAROUND': 'true', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLORTERM': 'truecolor', 'GIO_LAUNCHED_DESKTOP_FILE_PID': '3421', 'DEBUGINFOD_URLS': 'https://debuginfod.ubuntu.com', 'ROS_DISTRO': 'rolling', 'LOGNAME': 'rmc', 'JOURNAL_STREAM': '9:2834', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'MEMORY_PRESSURE_WATCH': '/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/session.slice/org.gnome.Shell@x11.service/memory.pressure', 'XDG_SESSION_CLASS': 'user', 'USERNAME': 'rmc', 'TERM': 'xterm-256color', 'GNOME_DESKTOP_SESSION_ID': 'this-is-deprecated', 'WINDOWPATH': '2', 'PATH': '/home/rmc/ros2cli/install/ros2cli/bin:/opt/ros/rolling/opt/gz_msgs_vendor/bin:/opt/ros/rolling/opt/gz_tools_vendor/bin:/opt/ros/rolling/opt/gz_ogre_next_vendor/bin:/opt/ros/rolling/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/home/rmc/.local/share/JetBrains/Toolbox/scripts:/home/rmc/.local/share/JetBrains/Toolbox/scripts:/home/rmc/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts', 'SESSION_MANAGER': 'local/rmc-Legion-Pro-7-16IRX9H:@/tmp/.ICE-unix/2515,unix/rmc-Legion-Pro-7-16IRX9H:/tmp/.ICE-unix/2515', 'INVOCATION_ID': '37d3f9ea32044f0aa2f27a5dabcca76f', 'XDG_MENU_PREFIX': 'gnome-', 'XDG_RUNTIME_DIR': '/run/user/1000', 'GDK_BACKEND': 'x11', 'DISPLAY': ':0', 'VSCODE_DEBUGPY_ADAPTER_ENDPOINTS': '/home/rmc/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/.noConfigDebugAdapterEndpoints/endpoint-f2f48112f900c48d.txt', 'LANG': 'en_US.UTF-8', 'XDG_CURRENT_DESKTOP': 'Unity', 'XMODIFIERS': '@im=ibus', 'XDG_SESSION_DESKTOP': 'ubuntu', 'XAUTHORITY': '/run/user/1000/gdm/Xauthority', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:', 'VSCODE_GIT_IPC_HANDLE': '/run/user/1000/vscode-git-6da5c3064a.sock', 'TERM_PROGRAM': 'vscode', 'SSH_AUTH_SOCK': '/run/user/1000/keyring/ssh', 'AMENT_PREFIX_PATH': '/home/rmc/ros2cli/install/ros2doctor:/home/rmc/ros2cli/install/ros2action:/home/rmc/ros2cli/install/ros2cli:/opt/ros/rolling', 'ORIGINAL_XDG_CURRENT_DESKTOP': 'ubuntu:GNOME', 'SHELL': '/bin/bash', 'QT_ACCESSIBILITY': '1', 'GDMSESSION': 'ubuntu', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'GPG_AGENT_INFO': '/run/user/1000/gnupg/S.gpg-agent:0:1', 'GJS_DEBUG_OUTPUT': 'stderr', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'QT_IM_MODULE': 'ibus', 'PWD': '/home/rmc/ros2cli/build/ros2doctor', 'LC_ALL': 'en_US.UTF-8', 'XDG_CONFIG_DIRS': '/etc/xdg/xdg-ubuntu:/etc/xdg', 'XDG_DATA_DIRS': '/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/rmc/ros2cli/build/ros2doctor:/home/rmc/ros2cli/install/ros2doctor/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2action:/home/rmc/ros2cli/install/ros2action/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2cli:/home/rmc/ros2cli/install/ros2cli/lib/python3.12/site-packages:/opt/ros/rolling/lib/python3.12/site-packages', 'COLCON': '1', 'MEMORY_PRESSURE_WRITE': 'c29tZSAyMDAwMDAgMjAwMDAwMAA=', 'CMAKE_PREFIX_PATH': '/opt/ros/rolling/opt/gz_sim_vendor:/opt/ros/rolling/opt/gz_sensors_vendor:/opt/ros/rolling/opt/gz_physics_vendor:/opt/ros/rolling/opt/sdformat_vendor:/opt/ros/rolling/opt/gz_gui_vendor:/opt/ros/rolling/opt/gz_transport_vendor:/opt/ros/rolling/opt/gz_rendering_vendor:/opt/ros/rolling/opt/gz_plugin_vendor:/opt/ros/rolling/opt/gz_fuel_tools_vendor:/opt/ros/rolling/opt/gz_msgs_vendor:/opt/ros/rolling/opt/gz_common_vendor:/opt/ros/rolling/opt/gz_math_vendor:/opt/ros/rolling/opt/gz_utils_vendor:/opt/ros/rolling/opt/gz_tools_vendor:/opt/ros/rolling/opt/gz_ogre_next_vendor:/opt/ros/rolling/opt/gz_dartsim_vendor:/opt/ros/rolling/opt/gz_cmake_vendor', 'PYTHONDONTWRITEBYTECODE': '1', 'PYTEST_ADDOPTS': '--tb=short --junit-xml=/home/rmc/ros2cli/build/ros2doctor/pytest.xml --junit-prefix=ros2doctor -o cache_dir=/home/rmc/ros2cli/build/ros2doctor/.pytest_cache'}, 'shell': False}
+[0.199695] (-) TimerEvent: {}
+[0.278435] (ros2doctor) StdoutLine: {'line': b'\x1b[1m============================= test session starts ==============================\x1b[0m\n'}
+[0.278588] (ros2doctor) StdoutLine: {'line': b'platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0\n'}
+[0.280918] (ros2doctor) StdoutLine: {'line': b'cachedir: build/ros2doctor/.pytest_cache\n'}
+[0.281002] (ros2doctor) StdoutLine: {'line': b'rootdir: /home/rmc/ros2cli\n'}
+[0.281034] (ros2doctor) StdoutLine: {'line': b'configfile: pytest.ini\n'}
+[0.281062] (ros2doctor) StdoutLine: {'line': b'plugins: ament-lint-0.20.2, ament-flake8-0.20.2, ament-pep257-0.20.2, ament-mypy-0.20.2, ament-xmllint-0.20.2, ament-copyright-0.20.2, launch-testing-ros-0.29.2, launch-testing-3.9.2, timeout-2.2.0, cov-4.1.0, colcon-core-0.20.0, mock-3.12.0\n'}
+[0.281092] (ros2doctor) StdoutLine: {'line': b'timeout: 900.0s\n'}
+[0.281120] (ros2doctor) StdoutLine: {'line': b'timeout method: thread\n'}
+[0.281145] (ros2doctor) StdoutLine: {'line': b'timeout func_only: False\n'}
+[0.299769] (-) TimerEvent: {}
+[0.399933] (-) TimerEvent: {}
+[0.498558] (ros2doctor) StdoutLine: {'line': b'\x1b[1mcollecting ... \x1b[0m\x1b[1m\n'}
+[0.498701] (ros2doctor) StdoutLine: {'line': b'collected 9 items                                                              \x1b[0m\n'}
+[0.499007] (ros2doctor) StdoutLine: {'line': b'\n'}
+[0.500000] (-) TimerEvent: {}
+[0.600137] (-) TimerEvent: {}
+[0.700547] (-) TimerEvent: {}
+[0.800854] (-) TimerEvent: {}
+[0.901304] (-) TimerEvent: {}
+[1.001782] (-) TimerEvent: {}
+[1.102233] (-) TimerEvent: {}
+[1.202669] (-) TimerEvent: {}
+[1.303026] (-) TimerEvent: {}
+[1.403418] (-) TimerEvent: {}
+[1.503815] (-) TimerEvent: {}
+[1.604292] (-) TimerEvent: {}
+[1.704693] (-) TimerEvent: {}
+[1.805052] (-) TimerEvent: {}
+[1.905442] (-) TimerEvent: {}
+[2.005839] (-) TimerEvent: {}
+[2.106221] (-) TimerEvent: {}
+[2.206710] (-) TimerEvent: {}
+[2.307103] (-) TimerEvent: {}
+[2.407526] (-) TimerEvent: {}
+[2.507937] (-) TimerEvent: {}
+[2.608250] (-) TimerEvent: {}
+[2.708429] (-) TimerEvent: {}
+[2.808697] (-) TimerEvent: {}
+[2.908856] (-) TimerEvent: {}
+[3.009129] (-) TimerEvent: {}
+[3.109378] (-) TimerEvent: {}
+[3.209845] (-) TimerEvent: {}
+[3.310233] (-) TimerEvent: {}
+[3.410683] (-) TimerEvent: {}
+[3.511053] (-) TimerEvent: {}
+[3.611473] (-) TimerEvent: {}
+[3.711840] (-) TimerEvent: {}
+[3.812190] (-) TimerEvent: {}
+[3.912677] (-) TimerEvent: {}
+[4.013109] (-) TimerEvent: {}
+[4.113566] (-) TimerEvent: {}
+[4.214034] (-) TimerEvent: {}
+[4.314548] (-) TimerEvent: {}
+[4.414945] (-) TimerEvent: {}
+[4.515441] (-) TimerEvent: {}
+[4.615862] (-) TimerEvent: {}
+[4.716261] (-) TimerEvent: {}
+[4.816603] (-) TimerEvent: {}
+[4.916923] (-) TimerEvent: {}
+[5.017260] (-) TimerEvent: {}
+[5.117648] (-) TimerEvent: {}
+[5.218042] (-) TimerEvent: {}
+[5.318257] (-) TimerEvent: {}
+[5.418855] (-) TimerEvent: {}
+[5.444667] (ros2doctor) StdoutLine: {'line': b'test/test_api.py \x1b[32m.\x1b[0m\x1b[32m                                                       [ 11%]\x1b[0m\n'}
+[5.519019] (-) TimerEvent: {}
+[5.619289] (-) TimerEvent: {}
+[5.719530] (-) TimerEvent: {}
+[5.819759] (-) TimerEvent: {}
+[5.920171] (-) TimerEvent: {}
+[6.020688] (-) TimerEvent: {}
+[6.121181] (-) TimerEvent: {}
+[6.221653] (-) TimerEvent: {}
+[6.321935] (-) TimerEvent: {}
+[6.329899] (ros2doctor) StdoutLine: {'line': b'test/test_cli.py \x1b[32m.\x1b[0m\x1b[32m                                                       [ 22%]\x1b[0m\n'}
+[6.370293] (ros2doctor) StdoutLine: {'line': b'test/test_copyright.py \x1b[32m.\x1b[0m\x1b[32m                                                 [ 33%]\x1b[0m\n'}
+[6.422075] (-) TimerEvent: {}
+[6.503554] (ros2doctor) StdoutLine: {'line': b'test/test_flake8.py \x1b[32m.\x1b[0m\x1b[32m                                                    [ 44%]\x1b[0m\n'}
+[6.522285] (-) TimerEvent: {}
+[6.553387] (ros2doctor) StdoutLine: {'line': b'test/test_pep257.py \x1b[32m.\x1b[0m\x1b[32m                                                    [ 55%]\x1b[0m\n'}
+[6.622505] (-) TimerEvent: {}
+[6.722853] (-) TimerEvent: {}
+[6.823159] (-) TimerEvent: {}
+[6.923320] (-) TimerEvent: {}
+[7.023489] (-) TimerEvent: {}
+[7.123688] (-) TimerEvent: {}
+[7.223937] (-) TimerEvent: {}
+[7.324188] (-) TimerEvent: {}
+[7.424500] (-) TimerEvent: {}
+[7.524913] (-) TimerEvent: {}
+[7.625392] (-) TimerEvent: {}
+[7.725835] (-) TimerEvent: {}
+[7.826321] (-) TimerEvent: {}
+[7.926646] (-) TimerEvent: {}
+[8.027027] (-) TimerEvent: {}
+[8.127412] (-) TimerEvent: {}
+[8.227739] (-) TimerEvent: {}
+[8.328199] (-) TimerEvent: {}
+[8.428684] (-) TimerEvent: {}
+[8.528977] (-) TimerEvent: {}
+[8.629147] (-) TimerEvent: {}
+[8.729396] (-) TimerEvent: {}
+[8.829772] (-) TimerEvent: {}
+[8.930000] (-) TimerEvent: {}
+[9.030449] (-) TimerEvent: {}
+[9.130880] (-) TimerEvent: {}
+[9.231396] (-) TimerEvent: {}
+[9.331740] (-) TimerEvent: {}
+[9.431942] (-) TimerEvent: {}
+[9.532145] (-) TimerEvent: {}
+[9.632378] (-) TimerEvent: {}
+[9.732777] (-) TimerEvent: {}
+[9.833226] (-) TimerEvent: {}
+[9.933627] (-) TimerEvent: {}
+[10.034039] (-) TimerEvent: {}
+[10.134385] (-) TimerEvent: {}
+[10.234670] (-) TimerEvent: {}
+[10.334854] (-) TimerEvent: {}
+[10.435075] (-) TimerEvent: {}
+[10.535376] (-) TimerEvent: {}
+[10.635740] (-) TimerEvent: {}
+[10.736285] (-) TimerEvent: {}
+[10.836811] (-) TimerEvent: {}
+[10.937245] (-) TimerEvent: {}
+[11.037689] (-) TimerEvent: {}
+[11.137996] (-) TimerEvent: {}
+[11.238529] (-) TimerEvent: {}
+[11.338967] (-) TimerEvent: {}
+[11.439350] (-) TimerEvent: {}
+[11.539558] (-) TimerEvent: {}
+[11.639801] (-) TimerEvent: {}
+[11.740106] (-) TimerEvent: {}
+[11.840655] (-) TimerEvent: {}
+[11.941288] (-) TimerEvent: {}
+[12.041799] (-) TimerEvent: {}
+[12.142297] (-) TimerEvent: {}
+[12.242657] (-) TimerEvent: {}
+[12.343032] (-) TimerEvent: {}
+[12.443513] (-) TimerEvent: {}
+[12.543989] (-) TimerEvent: {}
+[12.644266] (-) TimerEvent: {}
+[12.744576] (-) TimerEvent: {}
+[12.844945] (-) TimerEvent: {}
+[12.945444] (-) TimerEvent: {}
+[13.045896] (-) TimerEvent: {}
+[13.146397] (-) TimerEvent: {}
+[13.246761] (-) TimerEvent: {}
+[13.347092] (-) TimerEvent: {}
+[13.447597] (-) TimerEvent: {}
+[13.548073] (-) TimerEvent: {}
+[13.648619] (-) TimerEvent: {}
+[13.749026] (-) TimerEvent: {}
+[13.849470] (-) TimerEvent: {}
+[13.949964] (-) TimerEvent: {}
+[14.050481] (-) TimerEvent: {}
+[14.150939] (-) TimerEvent: {}
+[14.251316] (-) TimerEvent: {}
+[14.351787] (-) TimerEvent: {}
+[14.452049] (-) TimerEvent: {}
+[14.552349] (-) TimerEvent: {}
+[14.652581] (-) TimerEvent: {}
+[14.752993] (-) TimerEvent: {}
+[14.853419] (-) TimerEvent: {}
+[14.953897] (-) TimerEvent: {}
+[15.054422] (-) TimerEvent: {}
+[15.154750] (-) TimerEvent: {}
+[15.255013] (-) TimerEvent: {}
+[15.355398] (-) TimerEvent: {}
+[15.455815] (-) TimerEvent: {}
+[15.556293] (-) TimerEvent: {}
+[15.656603] (-) TimerEvent: {}
+[15.756991] (-) TimerEvent: {}
+[15.857307] (-) TimerEvent: {}
+[15.957826] (-) TimerEvent: {}
+[16.058249] (-) TimerEvent: {}
+[16.158512] (-) TimerEvent: {}
+[16.258855] (-) TimerEvent: {}
+[16.359301] (-) TimerEvent: {}
+[16.459826] (-) TimerEvent: {}
+[16.560306] (-) TimerEvent: {}
+[16.660812] (-) TimerEvent: {}
+[16.761321] (-) TimerEvent: {}
+[16.861794] (-) TimerEvent: {}
+[16.962260] (-) TimerEvent: {}
+[17.062804] (-) TimerEvent: {}
+[17.163441] (-) TimerEvent: {}
+[17.263881] (-) TimerEvent: {}
+[17.364447] (-) TimerEvent: {}
+[17.464943] (-) TimerEvent: {}
+[17.565458] (-) TimerEvent: {}
+[17.665950] (-) TimerEvent: {}
+[17.766330] (-) TimerEvent: {}
+[17.866710] (-) TimerEvent: {}
+[17.967118] (-) TimerEvent: {}
+[18.067280] (-) TimerEvent: {}
+[18.167445] (-) TimerEvent: {}
+[18.267685] (-) TimerEvent: {}
+[18.368048] (-) TimerEvent: {}
+[18.468417] (-) TimerEvent: {}
+[18.568863] (-) TimerEvent: {}
+[18.669211] (-) TimerEvent: {}
+[18.769592] (-) TimerEvent: {}
+[18.869792] (-) TimerEvent: {}
+[18.969983] (-) TimerEvent: {}
+[19.070198] (-) TimerEvent: {}
+[19.170432] (-) TimerEvent: {}
+[19.196170] (ros2doctor) StdoutLine: {'line': b'test/test_qos_compatibility.py \x1b[32m.\x1b[0m\x1b[32m                                         [ 66%]\x1b[0m\n'}
+[19.270489] (-) TimerEvent: {}
+[19.370643] (-) TimerEvent: {}
+[19.470943] (-) TimerEvent: {}
+[19.571380] (-) TimerEvent: {}
+[19.671764] (-) TimerEvent: {}
+[19.772141] (-) TimerEvent: {}
+[19.872553] (-) TimerEvent: {}
+[19.972917] (-) TimerEvent: {}
+[20.073378] (-) TimerEvent: {}
+[20.173787] (-) TimerEvent: {}
+[20.274155] (-) TimerEvent: {}
+[20.374462] (-) TimerEvent: {}
+[20.474692] (-) TimerEvent: {}
+[20.574912] (-) TimerEvent: {}
+[20.675216] (-) TimerEvent: {}
+[20.775369] (-) TimerEvent: {}
+[20.875514] (-) TimerEvent: {}
+[20.975707] (-) TimerEvent: {}
+[21.076000] (-) TimerEvent: {}
+[21.176441] (-) TimerEvent: {}
+[21.276841] (-) TimerEvent: {}
+[21.377265] (-) TimerEvent: {}
+[21.477659] (-) TimerEvent: {}
+[21.578043] (-) TimerEvent: {}
+[21.678439] (-) TimerEvent: {}
+[21.778632] (-) TimerEvent: {}
+[21.878840] (-) TimerEvent: {}
+[21.979171] (-) TimerEvent: {}
+[22.079822] (-) TimerEvent: {}
+[22.180420] (-) TimerEvent: {}
+[22.280986] (-) TimerEvent: {}
+[22.381537] (-) TimerEvent: {}
+[22.482129] (-) TimerEvent: {}
+[22.582704] (-) TimerEvent: {}
+[22.683239] (-) TimerEvent: {}
+[22.783771] (-) TimerEvent: {}
+[22.884231] (-) TimerEvent: {}
+[22.984576] (-) TimerEvent: {}
+[23.084959] (-) TimerEvent: {}
+[23.185279] (-) TimerEvent: {}
+[23.285824] (-) TimerEvent: {}
+[23.386378] (-) TimerEvent: {}
+[23.487087] (-) TimerEvent: {}
+[23.587659] (-) TimerEvent: {}
+[23.688174] (-) TimerEvent: {}
+[23.788641] (-) TimerEvent: {}
+[23.888874] (-) TimerEvent: {}
+[23.989199] (-) TimerEvent: {}
+[24.089552] (-) TimerEvent: {}
+[24.189967] (-) TimerEvent: {}
+[24.290451] (-) TimerEvent: {}
+[24.390952] (-) TimerEvent: {}
+[24.491435] (-) TimerEvent: {}
+[24.591760] (-) TimerEvent: {}
+[24.692109] (-) TimerEvent: {}
+[24.792561] (-) TimerEvent: {}
+[24.893023] (-) TimerEvent: {}
+[24.993520] (-) TimerEvent: {}
+[25.093963] (-) TimerEvent: {}
+[25.194580] (-) TimerEvent: {}
+[25.294801] (-) TimerEvent: {}
+[25.395061] (-) TimerEvent: {}
+[25.495320] (-) TimerEvent: {}
+[25.595754] (-) TimerEvent: {}
+[25.696320] (-) TimerEvent: {}
+[25.796791] (-) TimerEvent: {}
+[25.897009] (-) TimerEvent: {}
+[25.997382] (-) TimerEvent: {}
+[26.097776] (-) TimerEvent: {}
+[26.198292] (-) TimerEvent: {}
+[26.298795] (-) TimerEvent: {}
+[26.399300] (-) TimerEvent: {}
+[26.499809] (-) TimerEvent: {}
+[26.600209] (-) TimerEvent: {}
+[26.700668] (-) TimerEvent: {}
+[26.801191] (-) TimerEvent: {}
+[26.901614] (-) TimerEvent: {}
+[27.002087] (-) TimerEvent: {}
+[27.102545] (-) TimerEvent: {}
+[27.202904] (-) TimerEvent: {}
+[27.303222] (-) TimerEvent: {}
+[27.403477] (-) TimerEvent: {}
+[27.503781] (-) TimerEvent: {}
+[27.604150] (-) TimerEvent: {}
+[27.704639] (-) TimerEvent: {}
+[27.805137] (-) TimerEvent: {}
+[27.905555] (-) TimerEvent: {}
+[28.005986] (-) TimerEvent: {}
+[28.106287] (-) TimerEvent: {}
+[28.206559] (-) TimerEvent: {}
+[28.307038] (-) TimerEvent: {}
+[28.407432] (-) TimerEvent: {}
+[28.507791] (-) TimerEvent: {}
+[28.608025] (-) TimerEvent: {}
+[28.708313] (-) TimerEvent: {}
+[28.808569] (-) TimerEvent: {}
+[28.909061] (-) TimerEvent: {}
+[29.009453] (-) TimerEvent: {}
+[29.109958] (-) TimerEvent: {}
+[29.210478] (-) TimerEvent: {}
+[29.310975] (-) TimerEvent: {}
+[29.411204] (-) TimerEvent: {}
+[29.511509] (-) TimerEvent: {}
+[29.611737] (-) TimerEvent: {}
+[29.712151] (-) TimerEvent: {}
+[29.812599] (-) TimerEvent: {}
+[29.913001] (-) TimerEvent: {}
+[30.013413] (-) TimerEvent: {}
+[30.113787] (-) TimerEvent: {}
+[30.214164] (-) TimerEvent: {}
+[30.314510] (-) TimerEvent: {}
+[30.414987] (-) TimerEvent: {}
+[30.515493] (-) TimerEvent: {}
+[30.615955] (-) TimerEvent: {}
+[30.716295] (-) TimerEvent: {}
+[30.816912] (-) TimerEvent: {}
+[30.917410] (-) TimerEvent: {}
+[31.017677] (-) TimerEvent: {}
+[31.117874] (-) TimerEvent: {}
+[31.218137] (-) TimerEvent: {}
+[31.318308] (-) TimerEvent: {}
+[31.418516] (-) TimerEvent: {}
+[31.518672] (-) TimerEvent: {}
+[31.618829] (-) TimerEvent: {}
+[31.718992] (-) TimerEvent: {}
+[31.819160] (-) TimerEvent: {}
+[31.919501] (-) TimerEvent: {}
+[32.019731] (-) TimerEvent: {}
+[32.120228] (-) TimerEvent: {}
+[32.220686] (-) TimerEvent: {}
+[32.321027] (-) TimerEvent: {}
+[32.421320] (-) TimerEvent: {}
+[32.521549] (-) TimerEvent: {}
+[32.621725] (-) TimerEvent: {}
+[32.721926] (-) TimerEvent: {}
+[32.822244] (-) TimerEvent: {}
+[32.922671] (-) TimerEvent: {}
+[33.023154] (-) TimerEvent: {}
+[33.123479] (-) TimerEvent: {}
+[33.223638] (-) TimerEvent: {}
+[33.323820] (-) TimerEvent: {}
+[33.424126] (-) TimerEvent: {}
+[33.524569] (-) TimerEvent: {}
+[33.625070] (-) TimerEvent: {}
+[33.725531] (-) TimerEvent: {}
+[33.826018] (-) TimerEvent: {}
+[33.926475] (-) TimerEvent: {}
+[34.026808] (-) TimerEvent: {}
+[34.127279] (-) TimerEvent: {}
+[34.227731] (-) TimerEvent: {}
+[34.328129] (-) TimerEvent: {}
+[34.428554] (-) TimerEvent: {}
+[34.529056] (-) TimerEvent: {}
+[34.629498] (-) TimerEvent: {}
+[34.729857] (-) TimerEvent: {}
+[34.830381] (-) TimerEvent: {}
+[34.930730] (-) TimerEvent: {}
+[35.031226] (-) TimerEvent: {}
+[35.131675] (-) TimerEvent: {}
+[35.232178] (-) TimerEvent: {}
+[35.332689] (-) TimerEvent: {}
+[35.433155] (-) TimerEvent: {}
+[35.533511] (-) TimerEvent: {}
+[35.633880] (-) TimerEvent: {}
+[35.734273] (-) TimerEvent: {}
+[35.834712] (-) TimerEvent: {}
+[35.935186] (-) TimerEvent: {}
+[36.035626] (-) TimerEvent: {}
+[36.136034] (-) TimerEvent: {}
+[36.236511] (-) TimerEvent: {}
+[36.336991] (-) TimerEvent: {}
+[36.437484] (-) TimerEvent: {}
+[36.537973] (-) TimerEvent: {}
+[36.638467] (-) TimerEvent: {}
+[36.738971] (-) TimerEvent: {}
+[36.839412] (-) TimerEvent: {}
+[36.939833] (-) TimerEvent: {}
+[37.040309] (-) TimerEvent: {}
+[37.140756] (-) TimerEvent: {}
+[37.241162] (-) TimerEvent: {}
+[37.341587] (-) TimerEvent: {}
+[37.441984] (-) TimerEvent: {}
+[37.542436] (-) TimerEvent: {}
+[37.642857] (-) TimerEvent: {}
+[37.743241] (-) TimerEvent: {}
+[37.843611] (-) TimerEvent: {}
+[37.944011] (-) TimerEvent: {}
+[38.044451] (-) TimerEvent: {}
+[38.145014] (-) TimerEvent: {}
+[38.245547] (-) TimerEvent: {}
+[38.345988] (-) TimerEvent: {}
+[38.446493] (-) TimerEvent: {}
+[38.546987] (-) TimerEvent: {}
+[38.647417] (-) TimerEvent: {}
+[38.747768] (-) TimerEvent: {}
+[38.822917] (ros2doctor) StdoutLine: {'line': b'test/test_report.py \x1b[32m.\x1b[0m\x1b[32m                                                    [ 77%]\x1b[0m\n'}
+[38.847862] (-) TimerEvent: {}
+[38.948052] (-) TimerEvent: {}
+[39.048227] (-) TimerEvent: {}
+[39.148510] (-) TimerEvent: {}
+[39.248930] (-) TimerEvent: {}
+[39.349429] (-) TimerEvent: {}
+[39.449936] (-) TimerEvent: {}
+[39.550376] (-) TimerEvent: {}
+[39.650844] (-) TimerEvent: {}
+[39.751232] (-) TimerEvent: {}
+[39.851631] (-) TimerEvent: {}
+[39.952082] (-) TimerEvent: {}
+[40.052542] (-) TimerEvent: {}
+[40.152945] (-) TimerEvent: {}
+[40.253429] (-) TimerEvent: {}
+[40.353957] (-) TimerEvent: {}
+[40.454454] (-) TimerEvent: {}
+[40.554807] (-) TimerEvent: {}
+[40.655189] (-) TimerEvent: {}
+[40.755580] (-) TimerEvent: {}
+[40.855947] (-) TimerEvent: {}
+[40.956436] (-) TimerEvent: {}
+[41.056922] (-) TimerEvent: {}
+[41.157420] (-) TimerEvent: {}
+[41.257917] (-) TimerEvent: {}
+[41.358333] (-) TimerEvent: {}
+[41.458738] (-) TimerEvent: {}
+[41.559258] (-) TimerEvent: {}
+[41.659707] (-) TimerEvent: {}
+[41.760126] (-) TimerEvent: {}
+[41.860564] (-) TimerEvent: {}
+[41.961033] (-) TimerEvent: {}
+[42.061552] (-) TimerEvent: {}
+[42.161926] (-) TimerEvent: {}
+[42.262396] (-) TimerEvent: {}
+[42.362776] (-) TimerEvent: {}
+[42.463119] (-) TimerEvent: {}
+[42.563604] (-) TimerEvent: {}
+[42.663950] (-) TimerEvent: {}
+[42.764133] (-) TimerEvent: {}
+[42.864322] (-) TimerEvent: {}
+[42.964497] (-) TimerEvent: {}
+[43.064664] (-) TimerEvent: {}
+[43.164851] (-) TimerEvent: {}
+[43.265015] (-) TimerEvent: {}
+[43.365315] (-) TimerEvent: {}
+[43.465756] (-) TimerEvent: {}
+[43.566262] (-) TimerEvent: {}
+[43.666712] (-) TimerEvent: {}
+[43.767114] (-) TimerEvent: {}
+[43.867615] (-) TimerEvent: {}
+[43.968160] (-) TimerEvent: {}
+[44.068670] (-) TimerEvent: {}
+[44.169178] (-) TimerEvent: {}
+[44.269616] (-) TimerEvent: {}
+[44.370038] (-) TimerEvent: {}
+[44.470566] (-) TimerEvent: {}
+[44.571058] (-) TimerEvent: {}
+[44.671441] (-) TimerEvent: {}
+[44.771829] (-) TimerEvent: {}
+[44.872279] (-) TimerEvent: {}
+[44.972728] (-) TimerEvent: {}
+[45.073123] (-) TimerEvent: {}
+[45.173402] (-) TimerEvent: {}
+[45.273732] (-) TimerEvent: {}
+[45.374086] (-) TimerEvent: {}
+[45.474427] (-) TimerEvent: {}
+[45.574817] (-) TimerEvent: {}
+[45.675255] (-) TimerEvent: {}
+[45.775631] (-) TimerEvent: {}
+[45.876022] (-) TimerEvent: {}
+[45.976390] (-) TimerEvent: {}
+[46.076741] (-) TimerEvent: {}
+[46.176930] (-) TimerEvent: {}
+[46.277116] (-) TimerEvent: {}
+[46.377299] (-) TimerEvent: {}
+[46.450116] (ros2doctor) StdoutLine: {'line': b'test/test_report_environment.py \x1b[31mF\x1b[0m\x1b[31m                                        [ 88%]\x1b[0m\n'}
+[46.477428] (-) TimerEvent: {}
+[46.544147] (ros2doctor) StdoutLine: {'line': b'test/test_xmllint.py \x1b[32m.\x1b[0m\x1b[31m                                                   [100%]\x1b[0m\n'}
+[46.544571] (ros2doctor) StdoutLine: {'line': b'\n'}
+[46.545099] (ros2doctor) StdoutLine: {'line': b'=================================== FAILURES ===================================\n'}
+[46.545544] (ros2doctor) StdoutLine: {'line': b'\x1b[31m\x1b[1m____________________ launch tests: test_report_environment _____________________\x1b[0m\n'}
+[46.545702] (ros2doctor) StdoutLine: {'line': b'\n'}
+[46.545950] (ros2doctor) StdoutLine: {'line': b'============================================================================================================================================================================================\n'}
+[46.546102] (ros2doctor) StdoutLine: {'line': b'FAIL: test_report_environment.TestROS2Environment.test_environment_check[rmw_fastrtps_cpp]\n'}
+[46.546252] (ros2doctor) StdoutLine: {'line': b'--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n'}
+[46.546410] (ros2doctor) StdoutLine: {'line': b'Traceback (most recent call last):\n'}
+[46.546603] (ros2doctor) StdoutLine: {'line': b'  File "/home/rmc/ros2cli/ros2doctor/test/test_report_environment.py", line 94, in test_environment_check\n'}
+[46.546841] (ros2doctor) StdoutLine: {'line': b'    self.assertEqual(environment_report.items, expected_report.items)\n'}
+[46.547076] (ros2doctor) StdoutLine: {'line': b"AssertionError: Lists differ: [('ro[51 chars]R=BAZ'), ('rcutils environment variables', 'RC[106 chars]OO')] != [('ro[51 chars]R=BAZ, RMW_IMPLEMENTATION=rmw_fastrtps_cpp'), [143 chars]OO')]\n"}
+[46.547320] (ros2doctor) StdoutLine: {'line': b'\n'}
+[46.547531] (ros2doctor) StdoutLine: {'line': b'First differing element 0:\n'}
+[46.547674] (ros2doctor) StdoutLine: {'line': b"('ros[31 chars]OME=BAR, ROS_LOG_DIR=BAZ')\n"}
+[46.547836] (ros2doctor) StdoutLine: {'line': b"('ros[31 chars]OME=BAR, ROS_LOG_DIR=BAZ, RMW_IMPLEMENTATION=rmw_fastrtps_cpp')\n"}
+[46.547986] (ros2doctor) StdoutLine: {'line': b'\n'}
+[46.548135] (ros2doctor) StdoutLine: {'line': b"- [('ros environment variables', 'ROS_HOME=BAR, ROS_LOG_DIR=BAZ'),\n"}
+[46.548279] (ros2doctor) StdoutLine: {'line': b"+ [('ros environment variables',\n"}
+[46.548427] (ros2doctor) StdoutLine: {'line': b"+   'ROS_HOME=BAR, ROS_LOG_DIR=BAZ, RMW_IMPLEMENTATION=rmw_fastrtps_cpp'),\n"}
+[46.548578] (ros2doctor) StdoutLine: {'line': b"   ('rcutils environment variables', 'RCUTILS_COLORIZED_OUTPUT=FOO'),\n"}
+[46.548723] (ros2doctor) StdoutLine: {'line': b"   ('rmw_fastrtps_cpp environment variables',\n"}
+[46.548860] (ros2doctor) StdoutLine: {'line': b"    'FASTDDS_BUILTIN_TRANSPORTS=FASTBOO')]\n"}
+[46.548995] (ros2doctor) StdoutLine: {'line': b'\n'}
+[46.549134] (ros2doctor) StdoutLine: {'line': b'\n'}
+[46.549278] (ros2doctor) StdoutLine: {'line': b'============================================================================================================================================================================================\n'}
+[46.549426] (ros2doctor) StdoutLine: {'line': b'FAIL: test_report_environment.TestROS2Environment.test_environment_check[rmw_zenoh_cpp]\n'}
+[46.549567] (ros2doctor) StdoutLine: {'line': b'--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n'}
+[46.549704] (ros2doctor) StdoutLine: {'line': b'Traceback (most recent call last):\n'}
+[46.549840] (ros2doctor) StdoutLine: {'line': b'  File "/home/rmc/ros2cli/ros2doctor/test/test_report_environment.py", line 94, in test_environment_check\n'}
+[46.549996] (ros2doctor) StdoutLine: {'line': b'    self.assertEqual(environment_report.items, expected_report.items)\n'}
+[46.550132] (ros2doctor) StdoutLine: {'line': b"AssertionError: Lists differ: [('ro[51 chars]R=BAZ'), ('rcutils environment variables', 'RC[106 chars]OO')] != [('ro[51 chars]R=BAZ, RMW_IMPLEMENTATION=rmw_zenoh_cpp'), ('r[133 chars]OO')]\n"}
+[46.550270] (ros2doctor) StdoutLine: {'line': b'\n'}
+[46.550418] (ros2doctor) StdoutLine: {'line': b'First differing element 0:\n'}
+[46.550558] (ros2doctor) StdoutLine: {'line': b"('ros[28 chars]S_HOME=BAR, ROS_LOG_DIR=BAZ')\n"}
+[46.550698] (ros2doctor) StdoutLine: {'line': b"('ros[28 chars]S_HOME=BAR, ROS_LOG_DIR=BAZ, RMW_IMPLEMENTATION=rmw_zenoh_cpp')\n"}
+[46.550832] (ros2doctor) StdoutLine: {'line': b'\n'}
+[46.550969] (ros2doctor) StdoutLine: {'line': b"- [('ros environment variables', 'ROS_HOME=BAR, ROS_LOG_DIR=BAZ'),\n"}
+[46.551120] (ros2doctor) StdoutLine: {'line': b"+ [('ros environment variables',\n"}
+[46.551257] (ros2doctor) StdoutLine: {'line': b"+   'ROS_HOME=BAR, ROS_LOG_DIR=BAZ, RMW_IMPLEMENTATION=rmw_zenoh_cpp'),\n"}
+[46.551396] (ros2doctor) StdoutLine: {'line': b"   ('rcutils environment variables', 'RCUTILS_COLORIZED_OUTPUT=FOO'),\n"}
+[46.551527] (ros2doctor) StdoutLine: {'line': b"+  ('rmw_zenoh_cpp environment variables', 'ZENOH_CONFIG_OVERRIDE=ZENOHBOO')]\n"}
+[46.551662] (ros2doctor) StdoutLine: {'line': b"-  ('rmw_fastrtps_cpp environment variables',\n"}
+[46.551805] (ros2doctor) StdoutLine: {'line': b"-   'FASTDDS_BUILTIN_TRANSPORTS=FASTBOO')]\n"}
+[46.551940] (ros2doctor) StdoutLine: {'line': b'----------------------------- Captured stdout call -----------------------------\n'}
+[46.552083] (ros2doctor) StdoutLine: {'line': b'\n'}
+[46.552223] (ros2doctor) StdoutLine: {'line': b'Starting test run test_report_environment[rmw_fastrtps_cpp]\n'}
+[46.552362] (ros2doctor) StdoutLine: {'line': b'[INFO] [launch]: All log files can be found below /home/rmc/.ros/log/2025-08-05-14-52-21-820483-rmc-Legion-Pro-7-16IRX9H-89762\n'}
+[46.552496] (ros2doctor) StdoutLine: {'line': b'[INFO] [launch]: Default logging verbosity is set to INFO\n'}
+[46.552628] (ros2doctor) StdoutLine: {'line': b'[INFO] [daemon-stop-29]: process started with pid [90906]\n'}
+[46.552766] (ros2doctor) StdoutLine: {'line': b'[INFO] [daemon-stop-29]: process has finished cleanly [pid 90906]\n'}
+[46.552899] (ros2doctor) StdoutLine: {'line': b'[INFO] [daemon-start-30]: process started with pid [90970]\n'}
+[46.553035] (ros2doctor) StdoutLine: {'line': b'[INFO] [daemon-start-30]: process has finished cleanly [pid 90970]\n'}
+[46.553174] (ros2doctor) StdoutLine: {'line': b'\n'}
+[46.553311] (ros2doctor) StdoutLine: {'line': b'Starting test run test_report_environment[rmw_zenoh_cpp]\n'}
+[46.553453] (ros2doctor) StdoutLine: {'line': b'[INFO] [launch]: All log files can be found below /home/rmc/.ros/log/2025-08-05-14-52-21-820483-rmc-Legion-Pro-7-16IRX9H-89762\n'}
+[46.553568] (ros2doctor) StdoutLine: {'line': b'[INFO] [launch]: Default logging verbosity is set to INFO\n'}
+[46.553679] (ros2doctor) StdoutLine: {'line': b'[INFO] [daemon-stop-31]: process started with pid [90992]\n'}
+[46.553790] (ros2doctor) StdoutLine: {'line': b'[INFO] [daemon-stop-31]: process has finished cleanly [pid 90992]\n'}
+[46.553940] (ros2doctor) StdoutLine: {'line': b'[INFO] [daemon-start-32]: process started with pid [91048]\n'}
+[46.554087] (ros2doctor) StdoutLine: {'line': b'[INFO] [daemon-start-32]: process has finished cleanly [pid 91048]\n'}
+[46.554215] (ros2doctor) StdoutLine: {'line': b'----------------------------- Captured stderr call -----------------------------\n'}
+[46.554331] (ros2doctor) StdoutLine: {'line': b'test_environment_check[rmw_fastrtps_cpp] (test_report_environment.TestROS2Environment.test_environment_check[rmw_fastrtps_cpp]) ... FAIL\n'}
+[46.554455] (ros2doctor) StdoutLine: {'line': b'\n'}
+[46.554578] (ros2doctor) StdoutLine: {'line': b'======================================================================\n'}
+[46.554682] (ros2doctor) StdoutLine: {'line': b'FAIL: test_environment_check[rmw_fastrtps_cpp] (test_report_environment.TestROS2Environment.test_environment_check[rmw_fastrtps_cpp])\n'}
+[46.554783] (ros2doctor) StdoutLine: {'line': b'----------------------------------------------------------------------\n'}
+[46.554887] (ros2doctor) StdoutLine: {'line': b'Traceback (most recent call last):\n'}
+[46.554987] (ros2doctor) StdoutLine: {'line': b'  File "/home/rmc/ros2cli/ros2doctor/test/test_report_environment.py", line 94, in test_environment_check\n'}
+[46.555088] (ros2doctor) StdoutLine: {'line': b'    self.assertEqual(environment_report.items, expected_report.items)\n'}
+[46.555185] (ros2doctor) StdoutLine: {'line': b"AssertionError: Lists differ: [('ro[51 chars]R=BAZ'), ('rcutils environment variables', 'RC[106 chars]OO')] != [('ro[51 chars]R=BAZ, RMW_IMPLEMENTATION=rmw_fastrtps_cpp'), [143 chars]OO')]\n"}
+[46.555287] (ros2doctor) StdoutLine: {'line': b'\n'}
+[46.555401] (ros2doctor) StdoutLine: {'line': b'First differing element 0:\n'}
+[46.555494] (ros2doctor) StdoutLine: {'line': b"('ros[31 chars]OME=BAR, ROS_LOG_DIR=BAZ')\n"}
+[46.555593] (ros2doctor) StdoutLine: {'line': b"('ros[31 chars]OME=BAR, ROS_LOG_DIR=BAZ, RMW_IMPLEMENTATION=rmw_fastrtps_cpp')\n"}
+[46.555690] (ros2doctor) StdoutLine: {'line': b'\n'}
+[46.555791] (ros2doctor) StdoutLine: {'line': b"- [('ros environment variables', 'ROS_HOME=BAR, ROS_LOG_DIR=BAZ'),\n"}
+[46.555885] (ros2doctor) StdoutLine: {'line': b"+ [('ros environment variables',\n"}
+[46.555981] (ros2doctor) StdoutLine: {'line': b"+   'ROS_HOME=BAR, ROS_LOG_DIR=BAZ, RMW_IMPLEMENTATION=rmw_fastrtps_cpp'),\n"}
+[46.556074] (ros2doctor) StdoutLine: {'line': b"   ('rcutils environment variables', 'RCUTILS_COLORIZED_OUTPUT=FOO'),\n"}
+[46.556168] (ros2doctor) StdoutLine: {'line': b"   ('rmw_fastrtps_cpp environment variables',\n"}
+[46.556252] (ros2doctor) StdoutLine: {'line': b"    'FASTDDS_BUILTIN_TRANSPORTS=FASTBOO')]\n"}
+[46.556336] (ros2doctor) StdoutLine: {'line': b'\n'}
+[46.556430] (ros2doctor) StdoutLine: {'line': b'----------------------------------------------------------------------\n'}
+[46.556520] (ros2doctor) StdoutLine: {'line': b'Ran 1 test in 0.001s\n'}
+[46.556608] (ros2doctor) StdoutLine: {'line': b'\n'}
+[46.556701] (ros2doctor) StdoutLine: {'line': b'FAILED (failures=1)\n'}
+[46.556783] (ros2doctor) StdoutLine: {'line': b'\n'}
+[46.556863] (ros2doctor) StdoutLine: {'line': b'----------------------------------------------------------------------\n'}
+[46.556950] (ros2doctor) StdoutLine: {'line': b'Ran 0 tests in 0.000s\n'}
+[46.557031] (ros2doctor) StdoutLine: {'line': b'\n'}
+[46.557110] (ros2doctor) StdoutLine: {'line': b'NO TESTS RAN\n'}
+[46.557188] (ros2doctor) StdoutLine: {'line': b'test_environment_check[rmw_zenoh_cpp] (test_report_environment.TestROS2Environment.test_environment_check[rmw_zenoh_cpp]) ... FAIL\n'}
+[46.557274] (ros2doctor) StdoutLine: {'line': b'\n'}
+[46.557360] (ros2doctor) StdoutLine: {'line': b'======================================================================\n'}
+[46.557443] (ros2doctor) StdoutLine: {'line': b'FAIL: test_environment_check[rmw_zenoh_cpp] (test_report_environment.TestROS2Environment.test_environment_check[rmw_zenoh_cpp])\n'}
+[46.557522] (ros2doctor) StdoutLine: {'line': b'----------------------------------------------------------------------\n'}
+[46.557594] (ros2doctor) StdoutLine: {'line': b'Traceback (most recent call last):\n'}
+[46.557669] (ros2doctor) StdoutLine: {'line': b'  File "/home/rmc/ros2cli/ros2doctor/test/test_report_environment.py", line 94, in test_environment_check\n'}
+[46.557747] (ros2doctor) StdoutLine: {'line': b'    self.assertEqual(environment_report.items, expected_report.items)\n'}
+[46.557824] (ros2doctor) StdoutLine: {'line': b"AssertionError: Lists differ: [('ro[51 chars]R=BAZ'), ('rcutils environment variables', 'RC[106 chars]OO')] != [('ro[51 chars]R=BAZ, RMW_IMPLEMENTATION=rmw_zenoh_cpp'), ('r[133 chars]OO')]\n"}
+[46.557901] (ros2doctor) StdoutLine: {'line': b'\n'}
+[46.557974] (ros2doctor) StdoutLine: {'line': b'First differing element 0:\n'}
+[46.558049] (ros2doctor) StdoutLine: {'line': b"('ros[28 chars]S_HOME=BAR, ROS_LOG_DIR=BAZ')\n"}
+[46.558122] (ros2doctor) StdoutLine: {'line': b"('ros[28 chars]S_HOME=BAR, ROS_LOG_DIR=BAZ, RMW_IMPLEMENTATION=rmw_zenoh_cpp')\n"}
+[46.558196] (ros2doctor) StdoutLine: {'line': b'\n'}
+[46.558268] (ros2doctor) StdoutLine: {'line': b"- [('ros environment variables', 'ROS_HOME=BAR, ROS_LOG_DIR=BAZ'),\n"}
+[46.558366] (ros2doctor) StdoutLine: {'line': b"+ [('ros environment variables',\n"}
+[46.558441] (ros2doctor) StdoutLine: {'line': b"+   'ROS_HOME=BAR, ROS_LOG_DIR=BAZ, RMW_IMPLEMENTATION=rmw_zenoh_cpp'),\n"}
+[46.558512] (ros2doctor) StdoutLine: {'line': b"   ('rcutils environment variables', 'RCUTILS_COLORIZED_OUTPUT=FOO'),\n"}
+[46.558585] (ros2doctor) StdoutLine: {'line': b"+  ('rmw_zenoh_cpp environment variables', 'ZENOH_CONFIG_OVERRIDE=ZENOHBOO')]\n"}
+[46.558651] (ros2doctor) StdoutLine: {'line': b"-  ('rmw_fastrtps_cpp environment variables',\n"}
+[46.558720] (ros2doctor) StdoutLine: {'line': b"-   'FASTDDS_BUILTIN_TRANSPORTS=FASTBOO')]\n"}
+[46.558786] (ros2doctor) StdoutLine: {'line': b'\n'}
+[46.558856] (ros2doctor) StdoutLine: {'line': b'----------------------------------------------------------------------\n'}
+[46.558927] (ros2doctor) StdoutLine: {'line': b'Ran 1 test in 0.001s\n'}
+[46.558996] (ros2doctor) StdoutLine: {'line': b'\n'}
+[46.559062] (ros2doctor) StdoutLine: {'line': b'FAILED (failures=1)\n'}
+[46.559125] (ros2doctor) StdoutLine: {'line': b'\n'}
+[46.559188] (ros2doctor) StdoutLine: {'line': b'----------------------------------------------------------------------\n'}
+[46.559247] (ros2doctor) StdoutLine: {'line': b'Ran 0 tests in 0.000s\n'}
+[46.559306] (ros2doctor) StdoutLine: {'line': b'\n'}
+[46.559374] (ros2doctor) StdoutLine: {'line': b'NO TESTS RAN\n'}
+[46.559464] (ros2doctor) StdoutLine: {'line': b'------ generated xml file: /home/rmc/ros2cli/build/ros2doctor/pytest.xml -------\n'}
+[46.559530] (ros2doctor) StdoutLine: {'line': b'\x1b[36m\x1b[1m=========================== short test summary info ============================\x1b[0m\n'}
+[46.559610] (ros2doctor) StdoutLine: {'line': b'\x1b[31mFAILED\x1b[0m test/test_report_environment.py::\x1b[1mtest_report_environment\x1b[0m - test_report_environment.TestROS2Environment.test_environment_check[rmw_fast...\n'}
+[46.559673] (ros2doctor) StdoutLine: {'line': b'\x1b[31m========================= \x1b[31m\x1b[1m1 failed\x1b[0m, \x1b[32m8 passed\x1b[0m\x1b[31m in 46.27s\x1b[0m\x1b[31m =========================\x1b[0m\n'}
+[46.577501] (-) TimerEvent: {}
+[46.677728] (-) TimerEvent: {}
+[46.725904] (ros2doctor) CommandEnded: {'returncode': 1}
+[46.726133] (ros2doctor) TestFailure: {'identifier': 'ros2doctor'}
+[46.726147] (ros2doctor) JobEnded: {'identifier': 'ros2doctor', 'rc': 0}
+[46.726778] (-) EventReactorShutdown: {}

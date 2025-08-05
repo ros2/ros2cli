@@ -1,0 +1,147 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0
+cachedir: build/ros2doctor/.pytest_cache
+rootdir: /home/rmc/ros2cli
+configfile: pytest.ini
+plugins: ament-lint-0.20.2, ament-flake8-0.20.2, ament-pep257-0.20.2, ament-mypy-0.20.2, ament-xmllint-0.20.2, ament-copyright-0.20.2, launch-testing-ros-0.29.2, launch-testing-3.9.2, timeout-2.2.0, cov-4.1.0, colcon-core-0.20.0, mock-3.12.0
+timeout: 900.0s
+timeout method: thread
+timeout func_only: False
+[1mcollecting ... [0m[1m
+collected 9 items                                                              [0m
+
+test/test_api.py [32m.[0m[32m                                                       [ 11%][0m
+test/test_cli.py [32m.[0m[32m                                                       [ 22%][0m
+test/test_copyright.py [32m.[0m[32m                                                 [ 33%][0m
+test/test_flake8.py [32m.[0m[32m                                                    [ 44%][0m
+test/test_pep257.py [32m.[0m[32m                                                    [ 55%][0m
+test/test_qos_compatibility.py [32m.[0m[32m                                         [ 66%][0m
+test/test_report.py [32m.[0m[32m                                                    [ 77%][0m
+test/test_report_environment.py [31mF[0m[31m                                        [ 88%][0m
+test/test_xmllint.py [32m.[0m[31m                                                   [100%][0m
+
+=================================== FAILURES ===================================
+[31m[1m____________________ launch tests: test_report_environment _____________________[0m
+
+============================================================================================================================================================================================
+FAIL: test_report_environment.TestROS2Environment.test_environment_check[rmw_zenoh_cpp]
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rmc/ros2cli/ros2doctor/test/test_report_environment.py", line 92, in test_environment_check
+    self.assertEqual(environment_report.items, expected_report.items)
+AssertionError: Lists differ: [('ro[51 chars]R=BAZ'), ('rcutils environment variables', 'RC[106 chars]OO')] != [('ro[51 chars]R=BAZ, RMW_IMPLEMENTATION=rmw_zenoh_cpp'), ('r[133 chars]OO')]
+
+First differing element 0:
+('ros[28 chars]S_HOME=BAR, ROS_LOG_DIR=BAZ')
+('ros[28 chars]S_HOME=BAR, ROS_LOG_DIR=BAZ, RMW_IMPLEMENTATION=rmw_zenoh_cpp')
+
+- [('ros environment variables', 'ROS_HOME=BAR, ROS_LOG_DIR=BAZ'),
++ [('ros environment variables',
++   'ROS_HOME=BAR, ROS_LOG_DIR=BAZ, RMW_IMPLEMENTATION=rmw_zenoh_cpp'),
+   ('rcutils environment variables', 'RCUTILS_COLORIZED_OUTPUT=FOO'),
++  ('rmw_zenoh_cpp environment variables', 'ZENOH_CONFIG_OVERRIDE=ZENOHBOO')]
+-  ('rmw_fastrtps_cpp environment variables',
+-   'FASTDDS_BUILTIN_TRANSPORTS=FASTBOO')]
+
+
+============================================================================================================================================================================================
+FAIL: test_report_environment.TestROS2Environment.test_environment_check[rmw_fastrtps_cpp]
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rmc/ros2cli/ros2doctor/test/test_report_environment.py", line 92, in test_environment_check
+    self.assertEqual(environment_report.items, expected_report.items)
+AssertionError: Lists differ: [('ro[51 chars]R=BAZ'), ('rcutils environment variables', 'RC[106 chars]OO')] != [('ro[51 chars]R=BAZ, RMW_IMPLEMENTATION=rmw_fastrtps_cpp'), [143 chars]OO')]
+
+First differing element 0:
+('ros[31 chars]OME=BAR, ROS_LOG_DIR=BAZ')
+('ros[31 chars]OME=BAR, ROS_LOG_DIR=BAZ, RMW_IMPLEMENTATION=rmw_fastrtps_cpp')
+
+- [('ros environment variables', 'ROS_HOME=BAR, ROS_LOG_DIR=BAZ'),
++ [('ros environment variables',
++   'ROS_HOME=BAR, ROS_LOG_DIR=BAZ, RMW_IMPLEMENTATION=rmw_fastrtps_cpp'),
+   ('rcutils environment variables', 'RCUTILS_COLORIZED_OUTPUT=FOO'),
+   ('rmw_fastrtps_cpp environment variables',
+    'FASTDDS_BUILTIN_TRANSPORTS=FASTBOO')]
+----------------------------- Captured stdout call -----------------------------
+
+Starting test run test_report_environment[rmw_zenoh_cpp]
+[INFO] [launch]: All log files can be found below /home/rmc/.ros/log/2025-08-05-14-49-27-149700-rmc-Legion-Pro-7-16IRX9H-87011
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [daemon-stop-29]: process started with pid [88206]
+[INFO] [daemon-stop-29]: process has finished cleanly [pid 88206]
+[INFO] [daemon-start-30]: process started with pid [88209]
+[INFO] [daemon-start-30]: process has finished cleanly [pid 88209]
+
+Starting test run test_report_environment[rmw_fastrtps_cpp]
+[INFO] [launch]: All log files can be found below /home/rmc/.ros/log/2025-08-05-14-49-27-149700-rmc-Legion-Pro-7-16IRX9H-87011
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [daemon-stop-31]: process started with pid [88250]
+[INFO] [daemon-stop-31]: process has finished cleanly [pid 88250]
+[INFO] [daemon-start-32]: process started with pid [88266]
+[INFO] [daemon-start-32]: process has finished cleanly [pid 88266]
+----------------------------- Captured stderr call -----------------------------
+test_environment_check[rmw_zenoh_cpp] (test_report_environment.TestROS2Environment.test_environment_check[rmw_zenoh_cpp]) ... FAIL
+
+======================================================================
+FAIL: test_environment_check[rmw_zenoh_cpp] (test_report_environment.TestROS2Environment.test_environment_check[rmw_zenoh_cpp])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rmc/ros2cli/ros2doctor/test/test_report_environment.py", line 92, in test_environment_check
+    self.assertEqual(environment_report.items, expected_report.items)
+AssertionError: Lists differ: [('ro[51 chars]R=BAZ'), ('rcutils environment variables', 'RC[106 chars]OO')] != [('ro[51 chars]R=BAZ, RMW_IMPLEMENTATION=rmw_zenoh_cpp'), ('r[133 chars]OO')]
+
+First differing element 0:
+('ros[28 chars]S_HOME=BAR, ROS_LOG_DIR=BAZ')
+('ros[28 chars]S_HOME=BAR, ROS_LOG_DIR=BAZ, RMW_IMPLEMENTATION=rmw_zenoh_cpp')
+
+- [('ros environment variables', 'ROS_HOME=BAR, ROS_LOG_DIR=BAZ'),
++ [('ros environment variables',
++   'ROS_HOME=BAR, ROS_LOG_DIR=BAZ, RMW_IMPLEMENTATION=rmw_zenoh_cpp'),
+   ('rcutils environment variables', 'RCUTILS_COLORIZED_OUTPUT=FOO'),
++  ('rmw_zenoh_cpp environment variables', 'ZENOH_CONFIG_OVERRIDE=ZENOHBOO')]
+-  ('rmw_fastrtps_cpp environment variables',
+-   'FASTDDS_BUILTIN_TRANSPORTS=FASTBOO')]
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+FAILED (failures=1)
+
+----------------------------------------------------------------------
+Ran 0 tests in 0.000s
+
+NO TESTS RAN
+test_environment_check[rmw_fastrtps_cpp] (test_report_environment.TestROS2Environment.test_environment_check[rmw_fastrtps_cpp]) ... FAIL
+
+======================================================================
+FAIL: test_environment_check[rmw_fastrtps_cpp] (test_report_environment.TestROS2Environment.test_environment_check[rmw_fastrtps_cpp])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rmc/ros2cli/ros2doctor/test/test_report_environment.py", line 92, in test_environment_check
+    self.assertEqual(environment_report.items, expected_report.items)
+AssertionError: Lists differ: [('ro[51 chars]R=BAZ'), ('rcutils environment variables', 'RC[106 chars]OO')] != [('ro[51 chars]R=BAZ, RMW_IMPLEMENTATION=rmw_fastrtps_cpp'), [143 chars]OO')]
+
+First differing element 0:
+('ros[31 chars]OME=BAR, ROS_LOG_DIR=BAZ')
+('ros[31 chars]OME=BAR, ROS_LOG_DIR=BAZ, RMW_IMPLEMENTATION=rmw_fastrtps_cpp')
+
+- [('ros environment variables', 'ROS_HOME=BAR, ROS_LOG_DIR=BAZ'),
++ [('ros environment variables',
++   'ROS_HOME=BAR, ROS_LOG_DIR=BAZ, RMW_IMPLEMENTATION=rmw_fastrtps_cpp'),
+   ('rcutils environment variables', 'RCUTILS_COLORIZED_OUTPUT=FOO'),
+   ('rmw_fastrtps_cpp environment variables',
+    'FASTDDS_BUILTIN_TRANSPORTS=FASTBOO')]
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+FAILED (failures=1)
+
+----------------------------------------------------------------------
+Ran 0 tests in 0.000s
+
+NO TESTS RAN
+------ generated xml file: /home/rmc/ros2cli/build/ros2doctor/pytest.xml -------
+[36m[1m=========================== short test summary info ============================[0m
+[31mFAILED[0m test/test_report_environment.py::[1mtest_report_environment[0m - test_report_environment.TestROS2Environment.test_environment_check[rmw_zeno...
+[31m========================= [31m[1m1 failed[0m, [32m8 passed[0m[31m in 42.13s[0m[31m =========================[0m

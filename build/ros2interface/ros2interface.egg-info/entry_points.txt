@@ -1,0 +1,12 @@
+[ros2cli.command]
+interface = ros2interface.command.interface:InterfaceCommand
+
+[ros2cli.extension_point]
+ros2interface.verb = ros2interface.verb:VerbExtension
+
+[ros2interface.verb]
+list = ros2interface.verb.list:ListVerb
+package = ros2interface.verb.package:PackageVerb
+packages = ros2interface.verb.packages:PackagesVerb
+proto = ros2interface.verb.proto:ProtoVerb
+show = ros2interface.verb.show:ShowVerb

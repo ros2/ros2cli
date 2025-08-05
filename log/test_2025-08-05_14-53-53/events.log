@@ -1,0 +1,428 @@
+[0.000000] (-) TimerEvent: {}
+[0.000346] (ros2doctor) JobQueued: {'identifier': 'ros2doctor', 'dependencies': OrderedDict({'ros2cli': '/home/rmc/ros2cli/install/ros2cli', 'ros2action': '/home/rmc/ros2cli/install/ros2action', 'ros2doctor': '/home/rmc/ros2cli/install/ros2doctor'})}
+[0.000389] (ros2doctor) JobStarted: {'identifier': 'ros2doctor'}
+[0.100035] (-) TimerEvent: {}
+[0.119696] (ros2doctor) Command: {'cmd': ['/usr/bin/python3', '-m', 'pytest'], 'cwd': '/home/rmc/ros2cli/ros2doctor', 'env': {'GJS_DEBUG_TOPICS': 'JS ERROR;JS LOG', 'LESSOPEN': '| /usr/bin/lesspipe %s', 'GZ_SIM_RESOURCE_PATH': '/opt/ros/rolling/share', 'USER': 'rmc', 'GZ_CONFIG_PATH': '/opt/ros/rolling/opt/gz_sim_vendor/share/gz:/opt/ros/rolling/opt/sdformat_vendor/share/gz:/opt/ros/rolling/opt/gz_gui_vendor/share/gz:/opt/ros/rolling/opt/gz_transport_vendor/share/gz:/opt/ros/rolling/opt/gz_rendering_vendor/share/gz:/opt/ros/rolling/opt/gz_plugin_vendor/share/gz:/opt/ros/rolling/opt/gz_fuel_tools_vendor/share/gz:/opt/ros/rolling/opt/gz_msgs_vendor/share/gz:/opt/ros/rolling/opt/gz_common_vendor/share/gz', 'XDG_SESSION_TYPE': 'x11', 'GIT_ASKPASS': '/usr/share/code/resources/app/extensions/git/dist/askpass.sh', 'CLUTTER_DISABLE_MIPMAPPED_TEXT': '1', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/opt/ros/rolling/opt/zenoh_cpp_vendor/lib:/opt/ros/rolling/opt/gz_sim_vendor/lib:/opt/ros/rolling/opt/gz_sensors_vendor/lib:/opt/ros/rolling/opt/gz_physics_vendor/lib:/opt/ros/rolling/opt/sdformat_vendor/lib:/opt/ros/rolling/opt/gz_gui_vendor/lib:/opt/ros/rolling/opt/gz_transport_vendor/lib:/opt/ros/rolling/opt/gz_rendering_vendor/lib:/opt/ros/rolling/opt/gz_plugin_vendor/lib:/opt/ros/rolling/opt/gz_fuel_tools_vendor/lib:/opt/ros/rolling/opt/gz_msgs_vendor/lib:/opt/ros/rolling/opt/gz_common_vendor/lib:/opt/ros/rolling/opt/gz_math_vendor/lib:/opt/ros/rolling/opt/gz_utils_vendor/lib:/opt/ros/rolling/opt/rviz_ogre_vendor/lib:/opt/ros/rolling/lib/x86_64-linux-gnu:/opt/ros/rolling/opt/mimick_vendor/lib:/opt/ros/rolling/opt/gz_tools_vendor/lib:/opt/ros/rolling/opt/gz_ogre_next_vendor/lib:/opt/ros/rolling/opt/gz_dartsim_vendor/lib:/opt/ros/rolling/opt/gz_cmake_vendor/lib:/opt/ros/rolling/lib', 'HOME': '/home/rmc', 'CHROME_DESKTOP': 'code.desktop', 'TERM_PROGRAM_VERSION': '1.102.3', 'DESKTOP_SESSION': 'ubuntu', 'GIO_LAUNCHED_DESKTOP_FILE': '/usr/share/applications/code.desktop', 'ROS_PYTHON_VERSION': '3', 'GNOME_SHELL_SESSION_MODE': 'ubuntu', 'GTK_MODULES': 'gail:atk-bridge', 'VSCODE_GIT_ASKPASS_MAIN': '/usr/share/code/resources/app/extensions/git/dist/askpass-main.js', 'VSCODE_GIT_ASKPASS_NODE': '/usr/share/code/code', 'MANAGERPID': '1996', 'PYDEVD_DISABLE_FILE_VALIDATION': '1', 'SYSTEMD_EXEC_PID': '2619', 'BUNDLED_DEBUGPY_PATH': '/home/rmc/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/libs/debugpy', 'GSM_SKIP_SSH_AGENT_WORKAROUND': 'true', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLORTERM': 'truecolor', 'GIO_LAUNCHED_DESKTOP_FILE_PID': '3421', 'DEBUGINFOD_URLS': 'https://debuginfod.ubuntu.com', 'ROS_DISTRO': 'rolling', 'LOGNAME': 'rmc', 'JOURNAL_STREAM': '9:2834', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'MEMORY_PRESSURE_WATCH': '/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/session.slice/org.gnome.Shell@x11.service/memory.pressure', 'XDG_SESSION_CLASS': 'user', 'USERNAME': 'rmc', 'TERM': 'xterm-256color', 'GNOME_DESKTOP_SESSION_ID': 'this-is-deprecated', 'WINDOWPATH': '2', 'PATH': '/home/rmc/ros2cli/install/ros2cli/bin:/opt/ros/rolling/opt/gz_msgs_vendor/bin:/opt/ros/rolling/opt/gz_tools_vendor/bin:/opt/ros/rolling/opt/gz_ogre_next_vendor/bin:/opt/ros/rolling/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/home/rmc/.local/share/JetBrains/Toolbox/scripts:/home/rmc/.local/share/JetBrains/Toolbox/scripts:/home/rmc/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts', 'SESSION_MANAGER': 'local/rmc-Legion-Pro-7-16IRX9H:@/tmp/.ICE-unix/2515,unix/rmc-Legion-Pro-7-16IRX9H:/tmp/.ICE-unix/2515', 'INVOCATION_ID': '37d3f9ea32044f0aa2f27a5dabcca76f', 'XDG_MENU_PREFIX': 'gnome-', 'XDG_RUNTIME_DIR': '/run/user/1000', 'GDK_BACKEND': 'x11', 'DISPLAY': ':0', 'VSCODE_DEBUGPY_ADAPTER_ENDPOINTS': '/home/rmc/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/.noConfigDebugAdapterEndpoints/endpoint-f2f48112f900c48d.txt', 'LANG': 'en_US.UTF-8', 'XDG_CURRENT_DESKTOP': 'Unity', 'XMODIFIERS': '@im=ibus', 'XDG_SESSION_DESKTOP': 'ubuntu', 'XAUTHORITY': '/run/user/1000/gdm/Xauthority', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:', 'VSCODE_GIT_IPC_HANDLE': '/run/user/1000/vscode-git-6da5c3064a.sock', 'TERM_PROGRAM': 'vscode', 'SSH_AUTH_SOCK': '/run/user/1000/keyring/ssh', 'AMENT_PREFIX_PATH': '/home/rmc/ros2cli/install/ros2doctor:/home/rmc/ros2cli/install/ros2action:/home/rmc/ros2cli/install/ros2cli:/opt/ros/rolling', 'ORIGINAL_XDG_CURRENT_DESKTOP': 'ubuntu:GNOME', 'SHELL': '/bin/bash', 'QT_ACCESSIBILITY': '1', 'GDMSESSION': 'ubuntu', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'GPG_AGENT_INFO': '/run/user/1000/gnupg/S.gpg-agent:0:1', 'GJS_DEBUG_OUTPUT': 'stderr', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'QT_IM_MODULE': 'ibus', 'PWD': '/home/rmc/ros2cli/build/ros2doctor', 'LC_ALL': 'en_US.UTF-8', 'XDG_CONFIG_DIRS': '/etc/xdg/xdg-ubuntu:/etc/xdg', 'XDG_DATA_DIRS': '/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/rmc/ros2cli/build/ros2doctor:/home/rmc/ros2cli/install/ros2doctor/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2action:/home/rmc/ros2cli/install/ros2action/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2cli:/home/rmc/ros2cli/install/ros2cli/lib/python3.12/site-packages:/opt/ros/rolling/lib/python3.12/site-packages', 'COLCON': '1', 'MEMORY_PRESSURE_WRITE': 'c29tZSAyMDAwMDAgMjAwMDAwMAA=', 'CMAKE_PREFIX_PATH': '/opt/ros/rolling/opt/gz_sim_vendor:/opt/ros/rolling/opt/gz_sensors_vendor:/opt/ros/rolling/opt/gz_physics_vendor:/opt/ros/rolling/opt/sdformat_vendor:/opt/ros/rolling/opt/gz_gui_vendor:/opt/ros/rolling/opt/gz_transport_vendor:/opt/ros/rolling/opt/gz_rendering_vendor:/opt/ros/rolling/opt/gz_plugin_vendor:/opt/ros/rolling/opt/gz_fuel_tools_vendor:/opt/ros/rolling/opt/gz_msgs_vendor:/opt/ros/rolling/opt/gz_common_vendor:/opt/ros/rolling/opt/gz_math_vendor:/opt/ros/rolling/opt/gz_utils_vendor:/opt/ros/rolling/opt/gz_tools_vendor:/opt/ros/rolling/opt/gz_ogre_next_vendor:/opt/ros/rolling/opt/gz_dartsim_vendor:/opt/ros/rolling/opt/gz_cmake_vendor', 'PYTHONDONTWRITEBYTECODE': '1', 'PYTEST_ADDOPTS': '--tb=short --junit-xml=/home/rmc/ros2cli/build/ros2doctor/pytest.xml --junit-prefix=ros2doctor -o cache_dir=/home/rmc/ros2cli/build/ros2doctor/.pytest_cache'}, 'shell': False}
+[0.200201] (-) TimerEvent: {}
+[0.280539] (ros2doctor) StdoutLine: {'line': b'\x1b[1m============================= test session starts ==============================\x1b[0m\n'}
+[0.280676] (ros2doctor) StdoutLine: {'line': b'platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0\n'}
+[0.283253] (ros2doctor) StdoutLine: {'line': b'cachedir: build/ros2doctor/.pytest_cache\n'}
+[0.283336] (ros2doctor) StdoutLine: {'line': b'rootdir: /home/rmc/ros2cli\n'}
+[0.283367] (ros2doctor) StdoutLine: {'line': b'configfile: pytest.ini\n'}
+[0.283396] (ros2doctor) StdoutLine: {'line': b'plugins: ament-lint-0.20.2, ament-flake8-0.20.2, ament-pep257-0.20.2, ament-mypy-0.20.2, ament-xmllint-0.20.2, ament-copyright-0.20.2, launch-testing-ros-0.29.2, launch-testing-3.9.2, timeout-2.2.0, cov-4.1.0, colcon-core-0.20.0, mock-3.12.0\n'}
+[0.283426] (ros2doctor) StdoutLine: {'line': b'timeout: 900.0s\n'}
+[0.283452] (ros2doctor) StdoutLine: {'line': b'timeout method: thread\n'}
+[0.283478] (ros2doctor) StdoutLine: {'line': b'timeout func_only: False\n'}
+[0.300283] (-) TimerEvent: {}
+[0.400447] (-) TimerEvent: {}
+[0.499327] (ros2doctor) StdoutLine: {'line': b'\x1b[1mcollecting ... \x1b[0m\x1b[1m\n'}
+[0.499428] (ros2doctor) StdoutLine: {'line': b'collected 9 items                                                              \x1b[0m\n'}
+[0.499934] (ros2doctor) StdoutLine: {'line': b'\n'}
+[0.500537] (-) TimerEvent: {}
+[0.600700] (-) TimerEvent: {}
+[0.700907] (-) TimerEvent: {}
+[0.801164] (-) TimerEvent: {}
+[0.901362] (-) TimerEvent: {}
+[1.001541] (-) TimerEvent: {}
+[1.101803] (-) TimerEvent: {}
+[1.202094] (-) TimerEvent: {}
+[1.302357] (-) TimerEvent: {}
+[1.402764] (-) TimerEvent: {}
+[1.503150] (-) TimerEvent: {}
+[1.603598] (-) TimerEvent: {}
+[1.704163] (-) TimerEvent: {}
+[1.804587] (-) TimerEvent: {}
+[1.905062] (-) TimerEvent: {}
+[2.005510] (-) TimerEvent: {}
+[2.106031] (-) TimerEvent: {}
+[2.206479] (-) TimerEvent: {}
+[2.306950] (-) TimerEvent: {}
+[2.407381] (-) TimerEvent: {}
+[2.507914] (-) TimerEvent: {}
+[2.608347] (-) TimerEvent: {}
+[2.708741] (-) TimerEvent: {}
+[2.809198] (-) TimerEvent: {}
+[2.909413] (-) TimerEvent: {}
+[3.009678] (-) TimerEvent: {}
+[3.110121] (-) TimerEvent: {}
+[3.210442] (-) TimerEvent: {}
+[3.310925] (-) TimerEvent: {}
+[3.411379] (-) TimerEvent: {}
+[3.511811] (-) TimerEvent: {}
+[3.612222] (-) TimerEvent: {}
+[3.634176] (ros2doctor) StdoutLine: {'line': b'test/test_api.py \x1b[32m.\x1b[0m\x1b[32m                                                       [ 11%]\x1b[0m\n'}
+[3.712291] (-) TimerEvent: {}
+[3.812443] (-) TimerEvent: {}
+[3.912608] (-) TimerEvent: {}
+[4.012848] (-) TimerEvent: {}
+[4.113301] (-) TimerEvent: {}
+[4.213712] (-) TimerEvent: {}
+[4.314261] (-) TimerEvent: {}
+[4.414603] (-) TimerEvent: {}
+[4.515024] (-) TimerEvent: {}
+[4.520240] (ros2doctor) StdoutLine: {'line': b'test/test_cli.py \x1b[32m.\x1b[0m\x1b[32m                                                       [ 22%]\x1b[0m\n'}
+[4.558449] (ros2doctor) StdoutLine: {'line': b'test/test_copyright.py \x1b[32m.\x1b[0m\x1b[32m                                                 [ 33%]\x1b[0m\n'}
+[4.615189] (-) TimerEvent: {}
+[4.696058] (ros2doctor) StdoutLine: {'line': b'test/test_flake8.py \x1b[32m.\x1b[0m\x1b[32m                                                    [ 44%]\x1b[0m\n'}
+[4.715319] (-) TimerEvent: {}
+[4.758613] (ros2doctor) StdoutLine: {'line': b'test/test_pep257.py \x1b[32m.\x1b[0m\x1b[32m                                                    [ 55%]\x1b[0m\n'}
+[4.815402] (-) TimerEvent: {}
+[4.915569] (-) TimerEvent: {}
+[5.015772] (-) TimerEvent: {}
+[5.116081] (-) TimerEvent: {}
+[5.216549] (-) TimerEvent: {}
+[5.316946] (-) TimerEvent: {}
+[5.417420] (-) TimerEvent: {}
+[5.517865] (-) TimerEvent: {}
+[5.618308] (-) TimerEvent: {}
+[5.718531] (-) TimerEvent: {}
+[5.818741] (-) TimerEvent: {}
+[5.919043] (-) TimerEvent: {}
+[6.019451] (-) TimerEvent: {}
+[6.119727] (-) TimerEvent: {}
+[6.219895] (-) TimerEvent: {}
+[6.234463] (ros2doctor) StdoutLine: {'line': b'test/test_qos_compatibility.py \x1b[31mF\x1b[0m\x1b[31m                                         [ 66%]\x1b[0m\n'}
+[6.320011] (-) TimerEvent: {}
+[6.383322] (ros2doctor) StdoutLine: {'line': b'test/test_report.py \x1b[31mF\x1b[0m\x1b[31m                                                    [ 77%]\x1b[0m\n'}
+[6.420131] (-) TimerEvent: {}
+[6.520331] (-) TimerEvent: {}
+[6.620501] (-) TimerEvent: {}
+[6.647335] (ros2doctor) StderrLine: {'line': b'test_environment_check[rmw_zenoh_cpp] (test_report_environment.TestROS2Environment.test_environment_check[rmw_zenoh_cpp]) ... FAIL\n'}
+[6.647448] (ros2doctor) StderrLine: {'line': b'\n'}
+[6.647484] (ros2doctor) StderrLine: {'line': b'======================================================================\n'}
+[6.647513] (ros2doctor) StderrLine: {'line': b'FAIL: test_environment_check[rmw_zenoh_cpp] (test_report_environment.TestROS2Environment.test_environment_check[rmw_zenoh_cpp])\n'}
+[6.647540] (ros2doctor) StderrLine: {'line': b'----------------------------------------------------------------------\n'}
+[6.647566] (ros2doctor) StderrLine: {'line': b'Traceback (most recent call last):\n'}
+[6.647594] (ros2doctor) StderrLine: {'line': b'  File "/home/rmc/ros2cli/ros2doctor/test/test_report_environment.py", line 94, in test_environment_check\n'}
+[6.647625] (ros2doctor) StderrLine: {'line': b'    self.assertEqual(environment_report, expected_report)\n'}
+[6.647652] (ros2doctor) StderrLine: {'line': b"AssertionError: Lists differ: [('ro[26 chars]'ROS_DOMAIN_ID=58, ROS_HOME=BAR, ROS_LOG_DIR=B[149 chars]OO')] != [('ro[26 chars]'ROS_HOME=BAR, ROS_LOG_DIR=BAZ'), ('rcutils en[124 chars]OO')]\n"}
+[6.647679] (ros2doctor) StderrLine: {'line': b'\n'}
+[6.647704] (ros2doctor) StderrLine: {'line': b'First differing element 0:\n'}
+[6.647729] (ros2doctor) StderrLine: {'line': b"('ros environment variables', 'ROS_DOMAIN_ID=58, ROS_HOME=BAR, ROS_LOG_DIR=BAZ')\n"}
+[6.647754] (ros2doctor) StderrLine: {'line': b"('ros environment variables', 'ROS_HOME=BAR, ROS_LOG_DIR=BAZ')\n"}
+[6.647780] (ros2doctor) StderrLine: {'line': b'\n'}
+[6.647807] (ros2doctor) StderrLine: {'line': b"+ [('ros environment variables', 'ROS_HOME=BAR, ROS_LOG_DIR=BAZ'),\n"}
+[6.647833] (ros2doctor) StderrLine: {'line': b"- [('ros environment variables',\n"}
+[6.648030] (ros2doctor) StderrLine: {'line': b"-   'ROS_DOMAIN_ID=58, ROS_HOME=BAR, ROS_LOG_DIR=BAZ'),\n"}
+[6.648073] (ros2doctor) StderrLine: {'line': b"   ('rcutils environment variables', 'RCUTILS_COLORIZED_OUTPUT=FOO'),\n"}
+[6.648101] (ros2doctor) StderrLine: {'line': b"+  ('rmw_zenoh_cpp environment variables', 'ZENOH_CONFIG_OVERRIDE=ZENOHBOO')]\n"}
+[6.648126] (ros2doctor) StderrLine: {'line': b"-  ('rmw_fastrtps_cpp environment variables',\n"}
+[6.648151] (ros2doctor) StderrLine: {'line': b"-   'FASTDDS_BUILTIN_TRANSPORTS=FASTBOO')]\n"}
+[6.648184] (ros2doctor) StderrLine: {'line': b'\n'}
+[6.648214] (ros2doctor) StderrLine: {'line': b'----------------------------------------------------------------------\n'}
+[6.648238] (ros2doctor) StderrLine: {'line': b'Ran 1 test in 0.001s\n'}
+[6.648263] (ros2doctor) StderrLine: {'line': b'\n'}
+[6.648287] (ros2doctor) StderrLine: {'line': b'FAILED (failures=1)\n'}
+[6.648430] (ros2doctor) StdoutLine: {'line': b'test/test_report_environment.py \x1b[31mF\x1b[0m\x1b[31m                                        [ 88%]\x1b[0m\n'}
+[6.720576] (-) TimerEvent: {}
+[6.820868] (-) TimerEvent: {}
+[6.860157] (ros2doctor) StdoutLine: {'line': b'test/test_xmllint.py \x1b[32m.\x1b[0m\x1b[31m                                                   [100%]\x1b[0m\n'}
+[6.860590] (ros2doctor) StdoutLine: {'line': b'\n'}
+[6.860780] (ros2doctor) StdoutLine: {'line': b'=================================== FAILURES ===================================\n'}
+[6.860949] (ros2doctor) StdoutLine: {'line': b'\x1b[31m\x1b[1m_____________________ launch tests: test_qos_compatibility _____________________\x1b[0m\n'}
+[6.863419] (ros2doctor) StdoutLine: {'line': b'\n'}
+[6.863735] (ros2doctor) StdoutLine: {'line': b'===========================================================\n'}
+[6.864023] (ros2doctor) StdoutLine: {'line': b'FAIL: test_qos_compatibility.TestROS2DoctorQoSCompatibility.test_check[rmw_fastrtps_cpp]\n'}
+[6.864341] (ros2doctor) StdoutLine: {'line': b'-----------------------------------------------------------\n'}
+[6.864476] (ros2doctor) StdoutLine: {'line': b'Exception: Launch stopped before the active tests finished.\n'}
+[6.864536] (ros2doctor) StdoutLine: {'line': b'\n'}
+[6.864596] (ros2doctor) StdoutLine: {'line': b'\n'}
+[6.864653] (ros2doctor) StdoutLine: {'line': b'===========================================================\n'}
+[6.864713] (ros2doctor) StdoutLine: {'line': b'FAIL: test_qos_compatibility.TestROS2DoctorQoSCompatibility.test_report[rmw_fastrtps_cpp]\n'}
+[6.864771] (ros2doctor) StdoutLine: {'line': b'-----------------------------------------------------------\n'}
+[6.864829] (ros2doctor) StdoutLine: {'line': b'Exception: Launch stopped before the active tests finished.\n'}
+[6.864888] (ros2doctor) StdoutLine: {'line': b'----------------------------- Captured stdout call -----------------------------\n'}
+[6.864950] (ros2doctor) StdoutLine: {'line': b'\n'}
+[6.865009] (ros2doctor) StdoutLine: {'line': b'Starting test run test_qos_compatibility[rmw_zenoh_cpp]\n'}
+[6.865067] (ros2doctor) StdoutLine: {'line': b'[INFO] [launch]: All log files can be found below /home/rmc/.ros/log/2025-08-05-14-53-54-343447-rmc-Legion-Pro-7-16IRX9H-91609\n'}
+[6.865126] (ros2doctor) StdoutLine: {'line': b'[INFO] [launch]: Default logging verbosity is set to INFO\n'}
+[6.865190] (ros2doctor) StdoutLine: {'line': b'[INFO] [daemon-stop-4]: process started with pid [91830]\n'}
+[6.865254] (ros2doctor) StdoutLine: {'line': b'[INFO] [daemon-stop-4]: process has finished cleanly [pid 91830]\n'}
+[6.865314] (ros2doctor) StdoutLine: {'line': b'[INFO] [daemon-start-5]: process started with pid [91847]\n'}
+[6.865372] (ros2doctor) StdoutLine: {'line': b'[INFO] [daemon-start-5]: process has finished cleanly [pid 91847]\n'}
+[6.865429] (ros2doctor) StdoutLine: {'line': b'[INFO] [python3-6]: process started with pid [91871]\n'}
+[6.865488] (ros2doctor) StdoutLine: {'line': b'[INFO] [python3-7]: process started with pid [91872]\n'}
+[6.865545] (ros2doctor) StdoutLine: {'line': b'[INFO] [python3-8]: process started with pid [91873]\n'}
+[6.865603] (ros2doctor) StdoutLine: {'line': b'[INFO] [python3-9]: process started with pid [91874]\n'}
+[6.865661] (ros2doctor) StdoutLine: {'line': b"[INFO] [python3-9]: sending signal 'SIGINT' to process[python3-9]\n"}
+[6.865719] (ros2doctor) StdoutLine: {'line': b"[INFO] [python3-8]: sending signal 'SIGINT' to process[python3-8]\n"}
+[6.865778] (ros2doctor) StdoutLine: {'line': b"[INFO] [python3-7]: sending signal 'SIGINT' to process[python3-7]\n"}
+[6.865835] (ros2doctor) StdoutLine: {'line': b"[INFO] [python3-6]: sending signal 'SIGINT' to process[python3-6]\n"}
+[6.865892] (ros2doctor) StdoutLine: {'line': b'[python3-9] KeyboardInterrupt\n'}
+[6.865950] (ros2doctor) StdoutLine: {'line': b'[python3-8] Traceback (most recent call last):\n'}
+[6.866009] (ros2doctor) StdoutLine: {'line': b'[python3-8]   File "/home/rmc/ros2cli/ros2doctor/test/fixtures/talker_node_with_reliable_qos.py", line 15, in <module>\n'}
+[6.866067] (ros2doctor) StdoutLine: {'line': b'[python3-8]     import rclpy\n'}
+[6.866126] (ros2doctor) StdoutLine: {'line': b'[python3-8]   File "/opt/ros/rolling/lib/python3.12/site-packages/rclpy/__init__.py", line 44, in <module>\n'}
+[6.866189] (ros2doctor) StdoutLine: {'line': b'[python3-8]     from typing import Any\n'}
+[6.866249] (ros2doctor) StdoutLine: {'line': b'[python3-8]   File "/usr/lib/python3.12/typing.py", line 470, in <module>\n'}
+[6.866308] (ros2doctor) StdoutLine: {'line': b'[python3-8]     class _SpecialForm(_Final, _NotIterable, _root=True):\n'}
+[6.866365] (ros2doctor) StdoutLine: {'line': b'[python3-8] KeyboardInterrupt\n'}
+[6.866424] (ros2doctor) StdoutLine: {'line': b'[python3-6] Traceback (most recent call last):\n'}
+[6.866487] (ros2doctor) StdoutLine: {'line': b'[python3-6]   File "/home/rmc/ros2cli/ros2doctor/test/fixtures/talker_node_with_best_effort_qos.py", line 15, in <module>\n'}
+[6.866545] (ros2doctor) StdoutLine: {'line': b'[python3-6]     import rclpy\n'}
+[6.866604] (ros2doctor) StdoutLine: {'line': b'[python3-6]   File "/opt/ros/rolling/lib/python3.12/site-packages/rclpy/__init__.py", line 44, in <module>\n'}
+[6.866665] (ros2doctor) StdoutLine: {'line': b'[python3-6]     from typing import Any\n'}
+[6.866723] (ros2doctor) StdoutLine: {'line': b'[python3-6]   File "/usr/lib/python3.12/typing.py", line 2647, in <module>\n'}
+[6.866782] (ros2doctor) StdoutLine: {'line': b'[python3-6]     ItemsView = _alias(collections.abc.ItemsView, 2)\n'}
+[6.866840] (ros2doctor) StdoutLine: {'line': b'[python3-6]                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n'}
+[6.866897] (ros2doctor) StdoutLine: {'line': b'[python3-6]   File "/usr/lib/python3.12/typing.py", line 1442, in __init__\n'}
+[6.866956] (ros2doctor) StdoutLine: {'line': b'[python3-6]     super().__init__(origin, inst=inst, name=name)\n'}
+[6.867013] (ros2doctor) StdoutLine: {'line': b'[python3-6]   File "/usr/lib/python3.12/typing.py", line 1150, in __init__\n'}
+[6.867070] (ros2doctor) StdoutLine: {'line': b'[python3-6]     self.__origin__ = origin\n'}
+[6.867128] (ros2doctor) StdoutLine: {'line': b'[python3-6]     ^^^^^^^^^^^^^^^\n'}
+[6.867190] (ros2doctor) StdoutLine: {'line': b'[python3-6]   File "/usr/lib/python3.12/typing.py", line 1188, in __setattr__\n'}
+[6.867249] (ros2doctor) StdoutLine: {'line': b'[python3-6]     def __setattr__(self, attr, val):\n'}
+[6.867308] (ros2doctor) StdoutLine: {'line': b'[python3-6] \n'}
+[6.867365] (ros2doctor) StdoutLine: {'line': b'[python3-6] KeyboardInterrupt\n'}
+[6.867423] (ros2doctor) StdoutLine: {'line': b"[ERROR] [python3-9]: process has died [pid 91874, exit code 1, cmd '/usr/bin/python3 /home/rmc/ros2cli/ros2doctor/test/fixtures/listener_node_with_reliable_qos.py --ros-args -r chatter:=compatible_chatter'].\n"}
+[6.867487] (ros2doctor) StdoutLine: {'line': b'[python3-7] Traceback (most recent call last):\n'}
+[6.867545] (ros2doctor) StdoutLine: {'line': b'[python3-7]   File "/home/rmc/ros2cli/ros2doctor/test/fixtures/listener_node_with_reliable_qos.py", line 15, in <module>\n'}
+[6.867604] (ros2doctor) StdoutLine: {'line': b'[python3-7]     import rclpy\n'}
+[6.867662] (ros2doctor) StdoutLine: {'line': b'[python3-7] KeyboardInterrupt\n'}
+[6.867720] (ros2doctor) StdoutLine: {'line': b"[ERROR] [python3-8]: process has died [pid 91873, exit code -2, cmd '/usr/bin/python3 /home/rmc/ros2cli/ros2doctor/test/fixtures/talker_node_with_reliable_qos.py --ros-args -r chatter:=compatible_chatter'].\n"}
+[6.867781] (ros2doctor) StdoutLine: {'line': b"[ERROR] [python3-6]: process has died [pid 91871, exit code -2, cmd '/usr/bin/python3 /home/rmc/ros2cli/ros2doctor/test/fixtures/talker_node_with_best_effort_qos.py --ros-args -r chatter:=incompatible_chatter'].\n"}
+[6.867839] (ros2doctor) StdoutLine: {'line': b"[ERROR] [python3-7]: process has died [pid 91872, exit code -2, cmd '/usr/bin/python3 /home/rmc/ros2cli/ros2doctor/test/fixtures/listener_node_with_reliable_qos.py --ros-args -r chatter:=incompatible_chatter'].\n"}
+[6.867898] (ros2doctor) StdoutLine: {'line': b'\n'}
+[6.867957] (ros2doctor) StdoutLine: {'line': b'Starting test run test_qos_compatibility[rmw_fastrtps_cpp]\n'}
+[6.868014] (ros2doctor) StdoutLine: {'line': b'[INFO] [launch]: All log files can be found below /home/rmc/.ros/log/2025-08-05-14-53-54-343447-rmc-Legion-Pro-7-16IRX9H-91609\n'}
+[6.868074] (ros2doctor) StdoutLine: {'line': b'[INFO] [launch]: Default logging verbosity is set to INFO\n'}
+[6.868132] (ros2doctor) StdoutLine: {'line': b'[INFO] [daemon-stop-10]: process started with pid [91876]\n'}
+[6.868193] (ros2doctor) StdoutLine: {'line': b'[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)\n'}
+[6.868252] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10] Traceback (most recent call last):\n'}
+[6.868314] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10]   File "/home/rmc/ros2cli/install/ros2cli/bin/ros2", line 33, in <module>\n'}
+[6.868371] (ros2doctor) StdoutLine: {'line': b"[daemon-stop-10]     sys.exit(load_entry_point('ros2cli', 'console_scripts', 'ros2')())\n"}
+[6.868430] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n'}
+[6.868489] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10]   File "/home/rmc/ros2cli/build/ros2cli/ros2cli/cli.py", line 52, in main\n'}
+[6.868546] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10]     add_subparsers_on_demand(\n'}
+[6.868607] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10]   File "/home/rmc/ros2cli/build/ros2cli/ros2cli/command/__init__.py", line 183, in add_subparsers_on_demand\n'}
+[6.868665] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10]     extension.add_arguments(\n'}
+[6.868722] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10]   File "/home/rmc/ros2cli/build/ros2cli/ros2cli/command/daemon.py", line 26, in add_arguments\n'}
+[6.868782] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10]     add_subparsers_on_demand(\n'}
+[6.868839] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10]   File "/home/rmc/ros2cli/build/ros2cli/ros2cli/command/__init__.py", line 168, in add_subparsers_on_demand\n'}
+[6.868896] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10]     command_extensions = get_command_extensions(\n'}
+[6.868954] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10]                          ^^^^^^^^^^^^^^^^^^^^^^^\n'}
+[6.869011] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10]   File "/home/rmc/ros2cli/build/ros2cli/ros2cli/command/__init__.py", line 57, in get_command_extensions\n'}
+[6.869071] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10]     extensions = instantiate_extensions(\n'}
+[6.869128] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10]                  ^^^^^^^^^^^^^^^^^^^^^^^\n'}
+[6.869190] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10]   File "/home/rmc/ros2cli/build/ros2cli/ros2cli/plugin_system.py", line 40, in instantiate_extensions\n'}
+[6.869250] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10]     extension_types = load_entry_points(\n'}
+[6.869307] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10]                       ^^^^^^^^^^^^^^^^^^\n'}
+[6.869366] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10]   File "/home/rmc/ros2cli/build/ros2cli/ros2cli/entry_points.py", line 91, in load_entry_points\n'}
+[6.869425] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10]     extension_type = entry_point.load()\n'}
+[6.869484] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10]                      ^^^^^^^^^^^^^^^^^^\n'}
+[6.869544] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10]   File "/usr/lib/python3.12/importlib/metadata/__init__.py", line 205, in load\n'}
+[6.869602] (ros2doctor) StdoutLine: {'line': b"[daemon-stop-10]     module = import_module(match.group('module'))\n"}
+[6.869663] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n'}
+[6.869726] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10]   File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module\n'}
+[6.869784] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10]     return _bootstrap._gcd_import(name[level:], package, level)\n'}
+[6.869845] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n'}
+[6.869904] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10]   File "<frozen importlib._bootstrap>", line 1387, in _gcd_import\n'}
+[6.869962] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10]   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load\n'}
+[6.870025] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10]   File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked\n'}
+[6.870084] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10]   File "<frozen importlib._bootstrap>", line 935, in _load_unlocked\n'}
+[6.870145] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10]   File "<frozen importlib._bootstrap_external>", line 995, in exec_module\n'}
+[6.870211] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10]   File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed\n'}
+[6.870268] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10]   File "/home/rmc/ros2cli/build/ros2cli/ros2cli/verb/daemon/stop.py", line 15, in <module>\n'}
+[6.870328] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10]     from ros2cli.node.daemon import shutdown_daemon\n'}
+[6.870388] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10]   File "/home/rmc/ros2cli/build/ros2cli/ros2cli/node/__init__.py", line 14, in <module>\n'}
+[6.870446] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10]     from rclpy.node import HIDDEN_NODE_PREFIX\n'}
+[6.870506] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-10] KeyboardInterrupt\n'}
+[6.870564] (ros2doctor) StdoutLine: {'line': b"[ERROR] [daemon-stop-10]: process has died [pid 91876, exit code -2, cmd 'ros2 daemon stop'].\n"}
+[6.870622] (ros2doctor) StdoutLine: {'line': b'Processes under test stopped before tests completed\n'}
+[6.870682] (ros2doctor) StdoutLine: {'line': b"Process 'daemon-stop-10' exited with -2\n"}
+[6.870739] (ros2doctor) StdoutLine: {'line': b"##### 'daemon-stop-10' output #####\n"}
+[6.870798] (ros2doctor) StdoutLine: {'line': b'Traceback (most recent call last):\n'}
+[6.870857] (ros2doctor) StdoutLine: {'line': b'  File "/home/rmc/ros2cli/install/ros2cli/bin/ros2", line 33, in <module>\n'}
+[6.870915] (ros2doctor) StdoutLine: {'line': b'\n'}
+[6.870972] (ros2doctor) StdoutLine: {'line': b"    sys.exit(load_entry_point('ros2cli', 'console_scripts', 'ros2')())\n"}
+[6.871031] (ros2doctor) StdoutLine: {'line': b'             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n'}
+[6.871089] (ros2doctor) StdoutLine: {'line': b'  File "/home/rmc/ros2cli/build/ros2cli/ros2cli/cli.py", line 52, in main\n'}
+[6.871148] (ros2doctor) StdoutLine: {'line': b'    add_subparsers_on_demand(\n'}
+[6.871213] (ros2doctor) StdoutLine: {'line': b'  File "/home/rmc/ros2cli/build/ros2cli/ros2cli/command/__init__.py", line 183, in add_subparsers_on_demand\n'}
+[6.871272] (ros2doctor) StdoutLine: {'line': b'    extension.add_arguments(\n'}
+[6.871330] (ros2doctor) StdoutLine: {'line': b'  File "/home/rmc/ros2cli/build/ros2cli/ros2cli/command/daemon.py", line 26, in add_arguments\n'}
+[6.871389] (ros2doctor) StdoutLine: {'line': b'    add_subparsers_on_demand(\n'}
+[6.871448] (ros2doctor) StdoutLine: {'line': b'  File "/home/rmc/ros2cli/build/ros2cli/ros2cli/command/__init__.py", line 168, in add_subparsers_on_demand\n'}
+[6.871508] (ros2doctor) StdoutLine: {'line': b'    command_extensions = get_command_extensions(\n'}
+[6.871568] (ros2doctor) StdoutLine: {'line': b'                         ^^^^^^^^^^^^^^^^^^^^^^^\n'}
+[6.871626] (ros2doctor) StdoutLine: {'line': b'  File "/home/rmc/ros2cli/build/ros2cli/ros2cli/command/__init__.py", line 57, in get_command_extensions\n'}
+[6.871686] (ros2doctor) StdoutLine: {'line': b'    extensions = instantiate_extensions(\n'}
+[6.871746] (ros2doctor) StdoutLine: {'line': b'\n'}
+[6.871804] (ros2doctor) StdoutLine: {'line': b'                 ^^^^^^^^^^^^^^^^^^^^^\n'}
+[6.871864] (ros2doctor) StdoutLine: {'line': b'^^\n'}
+[6.871922] (ros2doctor) StdoutLine: {'line': b'  File "/home/rmc/ros2cli/build/ros2cli/ros2cli/plugin_system.py", line 40, in instantiate_extensions\n'}
+[6.871981] (ros2doctor) StdoutLine: {'line': b'    extension_types = load_entry_points(\n'}
+[6.872040] (ros2doctor) StdoutLine: {'line': b'                      ^^^^^^^^\n'}
+[6.872102] (ros2doctor) StdoutLine: {'line': b'^^^^^^^^^^\n'}
+[6.872161] (ros2doctor) StdoutLine: {'line': b'  File "/home/rmc/ros2cli/build/ros2cli/ros2cli/entry_points.py", line 91, in load_entry_points\n'}
+[6.872226] (ros2doctor) StdoutLine: {'line': b'    extension_type = entry_point.load()\n'}
+[6.872288] (ros2doctor) StdoutLine: {'line': b'                     ^^^^^^^^^^^^^^^^^^\n'}
+[6.872347] (ros2doctor) StdoutLine: {'line': b'  File "/usr/lib/python3.12/importlib/metadata/__init__.py", line 205, in load\n'}
+[6.872410] (ros2doctor) StdoutLine: {'line': b"    module = import_module(match.group('module'))\n"}
+[6.872469] (ros2doctor) StdoutLine: {'line': b'             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n'}
+[6.872527] (ros2doctor) StdoutLine: {'line': b'  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module\n'}
+[6.872587] (ros2doctor) StdoutLine: {'line': b'    return _bootstrap._gcd_import(name[level:], package, level)\n'}
+[6.872644] (ros2doctor) StdoutLine: {'line': b'           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n'}
+[6.872704] (ros2doctor) StdoutLine: {'line': b'  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import\n'}
+[6.872763] (ros2doctor) StdoutLine: {'line': b'  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load\n'}
+[6.872820] (ros2doctor) StdoutLine: {'line': b'  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked\n'}
+[6.872879] (ros2doctor) StdoutLine: {'line': b'  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked\n'}
+[6.872937] (ros2doctor) StdoutLine: {'line': b'  File "<frozen importlib._bootstrap_external>", line 995, in exec_module\n'}
+[6.872995] (ros2doctor) StdoutLine: {'line': b'  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed\n'}
+[6.873055] (ros2doctor) StdoutLine: {'line': b'  File "/home/rmc/ros2cli/build/ros2cli/ros2cli/verb/daemon/stop.py", line 15, in <module>\n'}
+[6.873114] (ros2doctor) StdoutLine: {'line': b'    from ros2cli.node.daemon import shutdown_daemon\n'}
+[6.873178] (ros2doctor) StdoutLine: {'line': b'  File "/home/rmc/ros2cli/build/ros2cli/ros2cli/node/__init__.py", line 14, in <module>\n'}
+[6.873240] (ros2doctor) StdoutLine: {'line': b'    from rclpy.node import HIDDEN_NODE_PREFIX\n'}
+[6.873297] (ros2doctor) StdoutLine: {'line': b'KeyboardInterrupt\n'}
+[6.873359] (ros2doctor) StdoutLine: {'line': b'\n'}
+[6.873418] (ros2doctor) StdoutLine: {'line': b'###################################\n'}
+[6.873478] (ros2doctor) StdoutLine: {'line': b'----------------------------- Captured stderr call -----------------------------\n'}
+[6.873545] (ros2doctor) StdoutLine: {'line': b"setUpClass (test_qos_compatibility.TestROS2DoctorQoSCompatibility) ... skipped ''\n"}
+[6.873607] (ros2doctor) StdoutLine: {'line': b'\n'}
+[6.873666] (ros2doctor) StdoutLine: {'line': b'----------------------------------------------------------------------\n'}
+[6.873728] (ros2doctor) StdoutLine: {'line': b'Ran 0 tests in 0.000s\n'}
+[6.873787] (ros2doctor) StdoutLine: {'line': b'\n'}
+[6.873847] (ros2doctor) StdoutLine: {'line': b'OK (skipped=1)\n'}
+[6.873907] (ros2doctor) StdoutLine: {'line': b'\n'}
+[6.873964] (ros2doctor) StdoutLine: {'line': b'----------------------------------------------------------------------\n'}
+[6.874025] (ros2doctor) StdoutLine: {'line': b'Ran 0 tests in 0.000s\n'}
+[6.874082] (ros2doctor) StdoutLine: {'line': b'\n'}
+[6.874140] (ros2doctor) StdoutLine: {'line': b'NO TESTS RAN\n'}
+[6.874204] (ros2doctor) StdoutLine: {'line': b'\x1b[31m\x1b[1m__________________________ launch tests: test_report ___________________________\x1b[0m\n'}
+[6.874264] (ros2doctor) StdoutLine: {'line': b'\n'}
+[6.874324] (ros2doctor) StdoutLine: {'line': b'===========================================================\n'}
+[6.874385] (ros2doctor) StdoutLine: {'line': b'FAIL: test_report.TestROS2DoctorReport.test_check[rmw_zenoh_cpp]\n'}
+[6.874442] (ros2doctor) StdoutLine: {'line': b'-----------------------------------------------------------\n'}
+[6.874504] (ros2doctor) StdoutLine: {'line': b'Exception: Launch stopped before the active tests finished.\n'}
+[6.874565] (ros2doctor) StdoutLine: {'line': b'\n'}
+[6.874621] (ros2doctor) StdoutLine: {'line': b'\n'}
+[6.874680] (ros2doctor) StdoutLine: {'line': b'===========================================================\n'}
+[6.874740] (ros2doctor) StdoutLine: {'line': b'FAIL: test_report.TestROS2DoctorReport.test_report[rmw_zenoh_cpp]\n'}
+[6.874796] (ros2doctor) StdoutLine: {'line': b'-----------------------------------------------------------\n'}
+[6.874861] (ros2doctor) StdoutLine: {'line': b'Exception: Launch stopped before the active tests finished.\n'}
+[6.874921] (ros2doctor) StdoutLine: {'line': b'----------------------------- Captured stdout call -----------------------------\n'}
+[6.874979] (ros2doctor) StdoutLine: {'line': b'\n'}
+[6.875037] (ros2doctor) StdoutLine: {'line': b'Starting test run test_report[rmw_zenoh_cpp]\n'}
+[6.875098] (ros2doctor) StdoutLine: {'line': b'[INFO] [launch]: All log files can be found below /home/rmc/.ros/log/2025-08-05-14-53-54-343447-rmc-Legion-Pro-7-16IRX9H-91609\n'}
+[6.875157] (ros2doctor) StdoutLine: {'line': b'[INFO] [launch]: Default logging verbosity is set to INFO\n'}
+[6.875223] (ros2doctor) StdoutLine: {'line': b'[INFO] [daemon-stop-12]: process started with pid [91891]\n'}
+[6.875284] (ros2doctor) StdoutLine: {'line': b'[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)\n'}
+[6.875345] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-12] Traceback (most recent call last):\n'}
+[6.875404] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-12]   File "/home/rmc/ros2cli/install/ros2cli/bin/ros2", line 33, in <module>\n'}
+[6.875466] (ros2doctor) StdoutLine: {'line': b"[daemon-stop-12]     sys.exit(load_entry_point('ros2cli', 'console_scripts', 'ros2')())\n"}
+[6.875523] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-12]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n'}
+[6.875584] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-12]   File "/home/rmc/ros2cli/build/ros2cli/ros2cli/cli.py", line 33, in main\n'}
+[6.875643] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-12]     parser = argparse.ArgumentParser(\n'}
+[6.875699] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-12]              ^^^^^^^^^^^^^^^^^^^^^^^^\n'}
+[6.875759] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-12]   File "/usr/lib/python3.12/argparse.py", line 1812, in __init__\n'}
+[6.875819] (ros2doctor) StdoutLine: {'line': b"[daemon-stop-12]     self._optionals = add_group(_('options'))\n"}
+[6.875876] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-12]                                 ^^^^^^^^^^^^\n'}
+[6.875937] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-12]   File "/usr/lib/python3.12/gettext.py", line 632, in gettext\n'}
+[6.875997] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-12]     return dgettext(_current_domain, message)\n'}
+[6.876056] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-12]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n'}
+[6.876116] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-12]   File "/usr/lib/python3.12/gettext.py", line 595, in dgettext\n'}
+[6.876178] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-12]     t = translation(domain, _localedirs.get(domain, None))\n'}
+[6.876239] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-12]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n'}
+[6.876505] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-12]   File "/usr/lib/python3.12/gettext.py", line 538, in translation\n'}
+[6.876569] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-12]     mofiles = find(domain, localedir, languages, all=True)\n'}
+[6.876597] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-12]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n'}
+[6.876629] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-12]   File "/usr/lib/python3.12/gettext.py", line 506, in find\n'}
+[6.876655] (ros2doctor) StdoutLine: {'line': b"[daemon-stop-12]     mofile = os.path.join(localedir, lang, 'LC_MESSAGES', '%s.mo' % domain)\n"}
+[6.876680] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-12]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n'}
+[6.876705] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-12]   File "<frozen posixpath>", line 85, in join\n'}
+[6.876729] (ros2doctor) StdoutLine: {'line': b'[daemon-stop-12] KeyboardInterrupt\n'}
+[6.876754] (ros2doctor) StdoutLine: {'line': b"[ERROR] [daemon-stop-12]: process has died [pid 91891, exit code -2, cmd 'ros2 daemon stop'].\n"}
+[6.876780] (ros2doctor) StdoutLine: {'line': b'Processes under test stopped before tests completed\n'}
+[6.876805] (ros2doctor) StdoutLine: {'line': b"Process 'daemon-stop-12' exited with -2\n"}
+[6.876829] (ros2doctor) StdoutLine: {'line': b"##### 'daemon-stop-12' output #####\n"}
+[6.876853] (ros2doctor) StdoutLine: {'line': b'Traceback (most recent call last):\n'}
+[6.876876] (ros2doctor) StdoutLine: {'line': b'  File "/home/rmc/ros2cli/install/ros2cli/bin/ros2", line 33, in <module>\n'}
+[6.876901] (ros2doctor) StdoutLine: {'line': b"    sys.exit(load_entry_point('ros2cli', 'console_scripts', 'ros2')())\n"}
+[6.876926] (ros2doctor) StdoutLine: {'line': b'             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n'}
+[6.876952] (ros2doctor) StdoutLine: {'line': b'  File "/home/rmc/ros2cli/build/ros2cli/ros2cli/cli.py", line 33, in main\n'}
+[6.876976] (ros2doctor) StdoutLine: {'line': b'    parser = argparse.ArgumentParser(\n'}
+[6.876999] (ros2doctor) StdoutLine: {'line': b'             ^^^^^^^^^^^^^^^^^^^^^^^^\n'}
+[6.877023] (ros2doctor) StdoutLine: {'line': b'  File "/usr/lib/python3.12/argparse.py", line 1812, in __init__\n'}
+[6.877047] (ros2doctor) StdoutLine: {'line': b"    self._optionals = add_group(_('options'))\n"}
+[6.877070] (ros2doctor) StdoutLine: {'line': b'                                ^^^^^^^^^^^^\n'}
+[6.877093] (ros2doctor) StdoutLine: {'line': b'  File "/usr/lib/python3.12/gettext.py", line 632, in gettext\n'}
+[6.877117] (ros2doctor) StdoutLine: {'line': b'\n'}
+[6.877141] (ros2doctor) StdoutLine: {'line': b'    return dgettext(_current_domain, message)\n'}
+[6.877166] (ros2doctor) StdoutLine: {'line': b'           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n'}
+[6.877194] (ros2doctor) StdoutLine: {'line': b'  File "/usr/lib/python3.12/gettext.py", line 595, in dgettext\n'}
+[6.877217] (ros2doctor) StdoutLine: {'line': b'\n'}
+[6.877241] (ros2doctor) StdoutLine: {'line': b'    t = translation(domain, _localedirs.get(domain, None))\n'}
+[6.877266] (ros2doctor) StdoutLine: {'line': b'        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n'}
+[6.877291] (ros2doctor) StdoutLine: {'line': b'  File "/usr/lib/python3.12/gettext.py", line 538, in translation\n'}
+[6.877315] (ros2doctor) StdoutLine: {'line': b'    mofiles = find(domain, localedir, languages, all=True)\n'}
+[6.877339] (ros2doctor) StdoutLine: {'line': b'              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n'}
+[6.877363] (ros2doctor) StdoutLine: {'line': b'  File "/usr/lib/python3.12/gettext.py", line 506, in find\n'}
+[6.877388] (ros2doctor) StdoutLine: {'line': b"    mofile = os.path.join(localedir, lang, 'LC_MESSAGES', '%s.mo' % domain)\n"}
+[6.877412] (ros2doctor) StdoutLine: {'line': b'\n'}
+[6.877436] (ros2doctor) StdoutLine: {'line': b'             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n'}
+[6.877462] (ros2doctor) StdoutLine: {'line': b'  File "<frozen posixpath>", line 85, in join\n'}
+[6.877486] (ros2doctor) StdoutLine: {'line': b'KeyboardInterrupt\n'}
+[6.877509] (ros2doctor) StdoutLine: {'line': b'\n'}
+[6.877534] (ros2doctor) StdoutLine: {'line': b'###################################\n'}
+[6.877558] (ros2doctor) StdoutLine: {'line': b'\x1b[31m\x1b[1m____________________ launch tests: test_report_environment _____________________\x1b[0m\n'}
+[6.877583] (ros2doctor) StdoutLine: {'line': b'\n'}
+[6.877608] (ros2doctor) StdoutLine: {'line': b'===========================================================\n'}
+[6.877631] (ros2doctor) StdoutLine: {'line': b'FAIL: test_report_environment.TestROS2Environment.test_environment_check[rmw_zenoh_cpp]\n'}
+[6.877655] (ros2doctor) StdoutLine: {'line': b'-----------------------------------------------------------\n'}
+[6.877678] (ros2doctor) StdoutLine: {'line': b'Exception: Launch stopped before the active tests finished.\n'}
+[6.877701] (ros2doctor) StdoutLine: {'line': b'----------------------------- Captured stdout call -----------------------------\n'}
+[6.877726] (ros2doctor) StdoutLine: {'line': b'\n'}
+[6.877749] (ros2doctor) StdoutLine: {'line': b'Starting test run test_report_environment[rmw_zenoh_cpp]\n'}
+[6.877780] (ros2doctor) StdoutLine: {'line': b'[INFO] [launch]: All log files can be found below /home/rmc/.ros/log/2025-08-05-14-53-54-343447-rmc-Legion-Pro-7-16IRX9H-91609\n'}
+[6.877805] (ros2doctor) StdoutLine: {'line': b'[INFO] [launch]: Default logging verbosity is set to INFO\n'}
+[6.877829] (ros2doctor) StdoutLine: {'line': b'[INFO] [daemon-stop-14]: process started with pid [91896]\n'}
+[6.877852] (ros2doctor) StdoutLine: {'line': b'[INFO] [daemon-stop-14]: process has finished cleanly [pid 91896]\n'}
+[6.877875] (ros2doctor) StdoutLine: {'line': b'[INFO] [daemon-start-15]: process started with pid [91899]\n'}
+[6.877898] (ros2doctor) StdoutLine: {'line': b'[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)\n'}
+[6.877921] (ros2doctor) StdoutLine: {'line': b'[daemon-start-15] Traceback (most recent call last):\n'}
+[6.877945] (ros2doctor) StdoutLine: {'line': b'[daemon-start-15]   File "/home/rmc/ros2cli/install/ros2cli/bin/ros2", line 10, in <module>\n'}
+[6.877968] (ros2doctor) StdoutLine: {'line': b'[daemon-start-15]     from importlib.metadata import distribution\n'}
+[6.877991] (ros2doctor) StdoutLine: {'line': b'[daemon-start-15]   File "/usr/lib/python3.12/importlib/metadata/__init__.py", line 17, in <module>\n'}
+[6.878014] (ros2doctor) StdoutLine: {'line': b'[daemon-start-15]     import inspect\n'}
+[6.878037] (ros2doctor) StdoutLine: {'line': b'[daemon-start-15]   File "/usr/lib/python3.12/inspect.py", line 145, in <module>\n'}
+[6.878061] (ros2doctor) StdoutLine: {'line': b'[daemon-start-15]     import ast\n'}
+[6.878085] (ros2doctor) StdoutLine: {'line': b'[daemon-start-15]   File "/usr/lib/python3.12/ast.py", line 688, in <module>\n'}
+[6.878108] (ros2doctor) StdoutLine: {'line': b'[daemon-start-15]     @_simple_enum(IntEnum)\n'}
+[6.878132] (ros2doctor) StdoutLine: {'line': b'[daemon-start-15]      ^^^^^^^^^^^^^^^^^^^^^\n'}
+[6.878155] (ros2doctor) StdoutLine: {'line': b'[daemon-start-15]   File "/usr/lib/python3.12/enum.py", line 1762, in convert_class\n'}
+[6.878182] (ros2doctor) StdoutLine: {'line': b'[daemon-start-15]     enum_method = getattr(etype, name)\n'}
+[6.878205] (ros2doctor) StdoutLine: {'line': b'[daemon-start-15]                   ^^^^^^^^^^^^^^^^^^^^\n'}
+[6.878228] (ros2doctor) StdoutLine: {'line': b'[daemon-start-15] KeyboardInterrupt\n'}
+[6.878252] (ros2doctor) StdoutLine: {'line': b"[ERROR] [daemon-start-15]: process has died [pid 91899, exit code -2, cmd 'ros2 daemon start'].\n"}
+[6.878276] (ros2doctor) StdoutLine: {'line': b'Processes under test stopped before tests completed\n'}
+[6.878299] (ros2doctor) StdoutLine: {'line': b"Process 'daemon-start-15' exited with -2\n"}
+[6.878323] (ros2doctor) StdoutLine: {'line': b"##### 'daemon-start-15' output #####\n"}
+[6.878347] (ros2doctor) StdoutLine: {'line': b'Traceback (most recent call last):\n'}
+[6.878370] (ros2doctor) StdoutLine: {'line': b'  File "/home/rmc/ros2cli/install/ros2cli/bin/ros2", line 10, in <module>\n'}
+[6.878394] (ros2doctor) StdoutLine: {'line': b'    from importlib.metadata import distribution\n'}
+[6.878418] (ros2doctor) StdoutLine: {'line': b'  File "/usr/lib/python3.12/importlib/metadata/__init__.py", line 17, in <module>\n'}
+[6.878444] (ros2doctor) StdoutLine: {'line': b'    import inspect\n'}
+[6.878467] (ros2doctor) StdoutLine: {'line': b'  File "/usr/lib/python3.12/inspect.py", line 145, in <module>\n'}
+[6.878492] (ros2doctor) StdoutLine: {'line': b'    import ast\n'}
+[6.878517] (ros2doctor) StdoutLine: {'line': b'  File "/usr/lib/python3.12/ast.py", line 688, in <module>\n'}
+[6.878540] (ros2doctor) StdoutLine: {'line': b'\n'}
+[6.878564] (ros2doctor) StdoutLine: {'line': b'    @_simple_enum(IntEnum)\n'}
+[6.878588] (ros2doctor) StdoutLine: {'line': b'     ^^^^^^^^^^^^^^^^^^^^^\n'}
+[6.878612] (ros2doctor) StdoutLine: {'line': b'  File "/usr/lib/python3.12/enum.py", line 1762, in convert_class\n'}
+[6.878636] (ros2doctor) StdoutLine: {'line': b'    enum_method = getattr(etype, name)\n'}
+[6.878659] (ros2doctor) StdoutLine: {'line': b'                  ^^^^^^^^^^^^^^^^^^^^\n'}
+[6.878683] (ros2doctor) StdoutLine: {'line': b'KeyboardInterrupt\n'}
+[6.878707] (ros2doctor) StdoutLine: {'line': b'\n'}
+[6.878731] (ros2doctor) StdoutLine: {'line': b'####################################\n'}
+[6.878755] (ros2doctor) StdoutLine: {'line': b'------ generated xml file: /home/rmc/ros2cli/build/ros2doctor/pytest.xml -------\n'}
+[6.878779] (ros2doctor) StdoutLine: {'line': b'\x1b[36m\x1b[1m=========================== short test summary info ============================\x1b[0m\n'}
+[6.878803] (ros2doctor) StdoutLine: {'line': b'\x1b[31mFAILED\x1b[0m test/test_qos_compatibility.py::\x1b[1mtest_qos_compatibility\x1b[0m - test_qos_compatibility.TestROS2DoctorQoSCompatibility.test_check[rmw_fastrt...\n'}
+[6.878828] (ros2doctor) StdoutLine: {'line': b'\x1b[31mFAILED\x1b[0m test/test_report.py::\x1b[1mtest_report\x1b[0m - test_report.TestROS2DoctorReport.test_check[rmw_zenoh_cpp] failed\n'}
+[6.878852] (ros2doctor) StdoutLine: {'line': b'\x1b[31mFAILED\x1b[0m test/test_report_environment.py::\x1b[1mtest_report_environment\x1b[0m - test_report_environment.TestROS2Environment.test_environment_check[rmw_zeno...\n'}
+[6.878877] (ros2doctor) StdoutLine: {'line': b'\x1b[31m========================= \x1b[31m\x1b[1m3 failed\x1b[0m, \x1b[32m6 passed\x1b[0m\x1b[31m in 6.58s\x1b[0m\x1b[31m ==========================\x1b[0m\n'}
+[6.920931] (-) TimerEvent: {}
+[7.021265] (-) TimerEvent: {}
+[7.028967] (ros2doctor) CommandEnded: {'returncode': 1}
+[7.029190] (ros2doctor) TestFailure: {'identifier': 'ros2doctor'}
+[7.029203] (ros2doctor) JobEnded: {'identifier': 'ros2doctor', 'rc': 'SIGINT'}
+[7.040009] (-) EventReactorShutdown: {}

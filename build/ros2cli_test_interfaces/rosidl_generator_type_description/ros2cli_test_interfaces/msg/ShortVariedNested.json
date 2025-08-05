@@ -1,0 +1,56 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "ros2cli_test_interfaces/msg/ShortVariedNested",
+      "fields": [
+        {
+          "name": "short_varied",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "ros2cli_test_interfaces/msg/ShortVaried"
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": [
+      {
+        "type_name": "ros2cli_test_interfaces/msg/ShortVaried",
+        "fields": [
+          {
+            "name": "bool_value",
+            "type": {
+              "type_id": 15,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "bool_values",
+            "type": {
+              "type_id": 111,
+              "capacity": 3,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      }
+    ]
+  },
+  "type_hashes": [
+    {
+      "type_name": "ros2cli_test_interfaces/msg/ShortVariedNested",
+      "hash_string": "RIHS01_d2393cfcf7842e12c37e033af072c9299a5885b98ec785b80d492a805edd5b2f"
+    },
+    {
+      "type_name": "ros2cli_test_interfaces/msg/ShortVaried",
+      "hash_string": "RIHS01_f187205b0b7eaf6fc97dfdacf8d6dad2d420842c002b6e9269b9e3cd2d19c5c2"
+    }
+  ]
+}

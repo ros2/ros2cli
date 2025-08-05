@@ -1,0 +1,5 @@
+# Request
+ShortVariedNested short_varied_nested # Comment - Nesting Level 3: 1 of 2
+---
+# Response
+bool bool_value # Comment - Nesting Level 3: 2 of 2

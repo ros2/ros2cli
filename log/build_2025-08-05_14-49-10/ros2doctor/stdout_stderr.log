@@ -1,0 +1,21 @@
+running develop
+running egg_info
+creating ros2doctor.egg-info
+writing ros2doctor.egg-info/PKG-INFO
+writing dependency_links to ros2doctor.egg-info/dependency_links.txt
+writing entry points to ros2doctor.egg-info/entry_points.txt
+writing requirements to ros2doctor.egg-info/requires.txt
+writing top-level names to ros2doctor.egg-info/top_level.txt
+writing manifest file 'ros2doctor.egg-info/SOURCES.txt'
+reading manifest file 'ros2doctor.egg-info/SOURCES.txt'
+writing manifest file 'ros2doctor.egg-info/SOURCES.txt'
+running build_ext
+Creating /home/rmc/ros2cli/install/ros2doctor/lib/python3.12/site-packages/ros2doctor.egg-link (link to .)
+
+Installed /home/rmc/ros2cli/build/ros2doctor
+running symlink_data
+symbolically linking /home/rmc/ros2cli/build/ros2doctor/package.xml -> /home/rmc/ros2cli/install/ros2doctor/share/ros2doctor
+creating /home/rmc/ros2cli/install/ros2doctor/share/ament_index
+creating /home/rmc/ros2cli/install/ros2doctor/share/ament_index/resource_index
+creating /home/rmc/ros2cli/install/ros2doctor/share/ament_index/resource_index/packages
+symbolically linking /home/rmc/ros2cli/build/ros2doctor/resource/ros2doctor -> /home/rmc/ros2cli/install/ros2doctor/share/ament_index/resource_index/packages

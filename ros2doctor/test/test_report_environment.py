@@ -47,7 +47,6 @@ def generate_test_description(rmw_implementation: str):
                     on_exit=[
                         UnsetEnvironmentVariable('ROS_AUTOMATIC_DISCOVERY_RANGE'),
                         UnsetEnvironmentVariable('ROS_DISTRO'),
-                        SetEnvironmentVariable('RMW_IMPLEMENTATION', rmw_implementation),
                         SetEnvironmentVariable('ROS_HOME', 'BAR'),
                         SetEnvironmentVariable('ROS_LOG_DIR', 'BAZ'),
                         SetEnvironmentVariable('RCUTILS_COLORIZED_OUTPUT', 'FOO'),
@@ -78,13 +77,15 @@ class TestROS2Environment(unittest.TestCase):
             cls.expected_line = 'ZENOH_CONFIG_OVERRIDE=ZENOHBOO'
         elif rmw_implementation == 'rmw_fastrtps_cpp':
             cls.expected_line = 'FASTDDS_BUILTIN_TRANSPORTS=FASTBOO'
+        else:
+            raise ValueError(f'Unsupported rmw={rmw_implementation}')
 
     def test_environment_check(self) -> None:
         rmw = self.rmw_implementation
         environment_report = EnvironmentReport().report()
         expected_report = Report('ROS ENVIRONMENT')
         expected_report.add_to_report('ros environment variables',
-                                      f'ROS_HOME=BAR, ROS_LOG_DIR=BAZ, RMW_IMPLEMENTATION={rmw}')
+                                      'ROS_HOME=BAR, ROS_LOG_DIR=BAZ')
         expected_report.add_to_report('rcutils environment variables',
                                       'RCUTILS_COLORIZED_OUTPUT=FOO')
         expected_report.add_to_report(f'{rmw} environment variables', self.expected_line)

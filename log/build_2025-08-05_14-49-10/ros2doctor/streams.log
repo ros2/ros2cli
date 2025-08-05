@@ -1,0 +1,23 @@
+[0.690s] Invoking command in '/home/rmc/ros2cli/build/ros2doctor': AMENT_PREFIX_PATH=/home/rmc/ros2cli/install/ros2action:/home/rmc/ros2cli/install/ros2cli:${AMENT_PREFIX_PATH} DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PATH=/home/rmc/ros2cli/install/ros2cli/bin:${PATH} PYTHONPATH=/home/rmc/ros2cli/build/ros2doctor/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/rmc/ros2cli/install/ros2doctor/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2action:/home/rmc/ros2cli/install/ros2action/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2cli:/home/rmc/ros2cli/install/ros2cli/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/rmc/ros2cli/build/ros2doctor/build --no-deps symlink_data
+[0.932s] running develop
+[1.092s] running egg_info
+[1.092s] creating ros2doctor.egg-info
+[1.105s] writing ros2doctor.egg-info/PKG-INFO
+[1.105s] writing dependency_links to ros2doctor.egg-info/dependency_links.txt
+[1.105s] writing entry points to ros2doctor.egg-info/entry_points.txt
+[1.105s] writing requirements to ros2doctor.egg-info/requires.txt
+[1.106s] writing top-level names to ros2doctor.egg-info/top_level.txt
+[1.106s] writing manifest file 'ros2doctor.egg-info/SOURCES.txt'
+[1.134s] reading manifest file 'ros2doctor.egg-info/SOURCES.txt'
+[1.134s] writing manifest file 'ros2doctor.egg-info/SOURCES.txt'
+[1.150s] running build_ext
+[1.150s] Creating /home/rmc/ros2cli/install/ros2doctor/lib/python3.12/site-packages/ros2doctor.egg-link (link to .)
+[1.151s] 
+[1.151s] Installed /home/rmc/ros2cli/build/ros2doctor
+[1.151s] running symlink_data
+[1.151s] symbolically linking /home/rmc/ros2cli/build/ros2doctor/package.xml -> /home/rmc/ros2cli/install/ros2doctor/share/ros2doctor
+[1.151s] creating /home/rmc/ros2cli/install/ros2doctor/share/ament_index
+[1.151s] creating /home/rmc/ros2cli/install/ros2doctor/share/ament_index/resource_index
+[1.151s] creating /home/rmc/ros2cli/install/ros2doctor/share/ament_index/resource_index/packages
+[1.151s] symbolically linking /home/rmc/ros2cli/build/ros2doctor/resource/ros2doctor -> /home/rmc/ros2cli/install/ros2doctor/share/ament_index/resource_index/packages
+[1.178s] Invoked command in '/home/rmc/ros2cli/build/ros2doctor' returned '0': AMENT_PREFIX_PATH=/home/rmc/ros2cli/install/ros2action:/home/rmc/ros2cli/install/ros2cli:${AMENT_PREFIX_PATH} DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PATH=/home/rmc/ros2cli/install/ros2cli/bin:${PATH} PYTHONPATH=/home/rmc/ros2cli/build/ros2doctor/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/rmc/ros2cli/install/ros2doctor/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2action:/home/rmc/ros2cli/install/ros2action/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2cli:/home/rmc/ros2cli/install/ros2cli/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/rmc/ros2cli/build/ros2doctor/build --no-deps symlink_data

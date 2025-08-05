@@ -1,0 +1,136 @@
+[0.117s] Invoking command in '/home/rmc/ros2cli/ros2doctor': AMENT_PREFIX_PATH=/home/rmc/ros2cli/install/ros2doctor:/home/rmc/ros2cli/install/ros2action:/home/rmc/ros2cli/install/ros2cli:${AMENT_PREFIX_PATH} DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PATH=/home/rmc/ros2cli/install/ros2cli/bin:${PATH} PYTEST_ADDOPTS=--tb=short --junit-xml=/home/rmc/ros2cli/build/ros2doctor/pytest.xml --junit-prefix=ros2doctor -o cache_dir=/home/rmc/ros2cli/build/ros2doctor/.pytest_cache PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/home/rmc/ros2cli/build/ros2doctor:/home/rmc/ros2cli/install/ros2doctor/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2action:/home/rmc/ros2cli/install/ros2action/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2cli:/home/rmc/ros2cli/install/ros2cli/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -m pytest
+[0.286s] [1m============================= test session starts ==============================[0m
+[0.286s] platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0
+[0.289s] cachedir: build/ros2doctor/.pytest_cache
+[0.289s] rootdir: /home/rmc/ros2cli
+[0.289s] configfile: pytest.ini
+[0.289s] plugins: ament-lint-0.20.2, ament-flake8-0.20.2, ament-pep257-0.20.2, ament-mypy-0.20.2, ament-xmllint-0.20.2, ament-copyright-0.20.2, launch-testing-ros-0.29.2, launch-testing-3.9.2, timeout-2.2.0, cov-4.1.0, colcon-core-0.20.0, mock-3.12.0
+[0.289s] timeout: 900.0s
+[0.289s] timeout method: thread
+[0.289s] timeout func_only: False
+[0.505s] [1mcollecting ... [0m[1m
+[0.505s] collected 9 items                                                              [0m
+[0.505s] 
+[4.830s] test/test_api.py [32m.[0m[32m                                                       [ 11%][0m
+[5.701s] test/test_cli.py [32m.[0m[32m                                                       [ 22%][0m
+[5.739s] test/test_copyright.py [32m.[0m[32m                                                 [ 33%][0m
+[5.869s] test/test_flake8.py [32m.[0m[32m                                                    [ 44%][0m
+[5.917s] test/test_pep257.py [32m.[0m[32m                                                    [ 55%][0m
+[11.128s] test/test_qos_compatibility.py [31mF[0m[31m                                         [ 66%][0m
+[11.147s] test/test_report.py [31mF[0m[31m                                                    [ 77%][0m
+[11.724s] test/test_report_environment.py [31mF[0m[31m                                        [ 88%][0m
+[11.884s] test/test_xmllint.py [32m.[0m[31m                                                   [100%][0m
+[11.885s] 
+[11.885s] =================================== FAILURES ===================================
+[11.885s] [31m[1m_____________________ launch tests: test_qos_compatibility _____________________[0m
+[11.885s] 
+[11.885s] ===========================================================
+[11.885s] FAIL: test_qos_compatibility.TestROS2DoctorQoSCompatibility.test_check[rmw_fastrtps_cpp]
+[11.886s] -----------------------------------------------------------
+[11.886s] Exception: Launch stopped before the active tests finished.
+[11.886s] 
+[11.886s] 
+[11.886s] ===========================================================
+[11.886s] FAIL: test_qos_compatibility.TestROS2DoctorQoSCompatibility.test_report[rmw_fastrtps_cpp]
+[11.886s] -----------------------------------------------------------
+[11.887s] Exception: Launch stopped before the active tests finished.
+[11.887s] ----------------------------- Captured stdout call -----------------------------
+[11.887s] 
+[11.887s] Starting test run test_qos_compatibility[rmw_fastrtps_cpp]
+[11.887s] [INFO] [launch]: All log files can be found below /home/rmc/.ros/log/2025-08-05-14-56-23-140826-rmc-Legion-Pro-7-16IRX9H-94455
+[11.887s] [INFO] [launch]: Default logging verbosity is set to INFO
+[11.887s] [INFO] [daemon-stop-4]: process started with pid [94679]
+[11.887s] [INFO] [daemon-stop-4]: process has finished cleanly [pid 94679]
+[11.887s] [INFO] [daemon-start-5]: process started with pid [94682]
+[11.887s] [INFO] [daemon-start-5]: process has finished cleanly [pid 94682]
+[11.888s] [INFO] [python3-6]: process started with pid [94685]
+[11.888s] [INFO] [python3-7]: process started with pid [94686]
+[11.888s] [INFO] [python3-8]: process started with pid [94687]
+[11.888s] [INFO] [python3-9]: process started with pid [94688]
+[11.888s] [INFO] [ros2doctor-cli-10]: process started with pid [94689]
+[11.888s] [python3-7] [WARN] [1754430989.322406655] [listener]: New publisher discovered on topic 'chatter', offering incompatible QoS. No messages will be received from it. Last incompatible policy: RELIABILITY
+[11.888s] [python3-6] [WARN] [1754430989.322960309] [talker_node]: New subscription discovered on topic 'chatter', requesting incompatible QoS. No messages will be sent to it. Last incompatible policy: RELIABILITY
+[11.888s] [python3-9] [INFO] [1754430990.256968322] [listener]: I heard: [Hello World: 1]
+[11.888s] [ros2doctor-cli-10] /home/rmc/ros2cli/build/ros2doctor/ros2doctor/api/package.py: 122: UserWarning: rosidl_generator_py has been updated to a new version. local: 0.25.0 < latest: 0.26.0
+[11.888s] [python3-9] [INFO] [1754430991.235995454] [listener]: I heard: [Hello World: 2]
+[11.888s] [ros2doctor-cli-10] /home/rmc/ros2cli/build/ros2doctor/ros2doctor/api/qos_compatibility.py: 51: UserWarning: ERROR: QoS compatibility error found on topic '/incompatible_chatter': Best effort publisher and reliable subscription;
+[11.888s] [python3-9] [INFO] [1754430992.236508425] [listener]: I heard: [Hello World: 3]
+[11.888s] [ros2doctor-cli-10] 
+[11.889s] [ros2doctor-cli-10] 1/5 check(s) failed
+[11.889s] [ros2doctor-cli-10] 
+[11.889s] [ros2doctor-cli-10] Failed modules: middleware
+[11.889s] [python3-9] [INFO] [1754430993.236844212] [listener]: I heard: [Hello World: 4]
+[11.889s] [INFO] [ros2doctor-cli-10]: process has finished cleanly [pid 94689]
+[11.889s] [INFO] [ros2doctor-cli-11]: process started with pid [94851]
+[11.889s] [WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[11.889s] [INFO] [python3-7]: process has finished cleanly [pid 94686]
+[11.889s] [INFO] [python3-6]: process has finished cleanly [pid 94685]
+[11.889s] [INFO] [python3-9]: process has finished cleanly [pid 94688]
+[11.889s] [INFO] [python3-8]: process has finished cleanly [pid 94687]
+[11.889s] [ERROR] [ros2doctor-cli-11]: process has died [pid 94851, exit code 2, cmd 'ros2 doctor -r'].
+[11.889s] Processes under test stopped before tests completed
+[11.890s] Process 'ros2doctor-cli-11' exited with 2
+[11.890s] ##### 'ros2doctor-cli-11' output #####
+[11.890s] ######################################
+[11.890s] ----------------------------- Captured stderr call -----------------------------
+[11.890s] test_check[rmw_fastrtps_cpp] (test_qos_compatibility.TestROS2DoctorQoSCompatibility.test_check[rmw_fastrtps_cpp]) ... ok
+[11.890s] test_report[rmw_fastrtps_cpp] (test_qos_compatibility.TestROS2DoctorQoSCompatibility.test_report[rmw_fastrtps_cpp]) ... 
+[11.890s] [31m[1m__________________________ launch tests: test_report ___________________________[0m
+[11.890s] 
+[11.890s] ===========================================================
+[11.890s] FAIL: test_report.TestROS2DoctorReport.test_check[rmw_fastrtps_cpp]
+[11.890s] -----------------------------------------------------------
+[11.890s] Exception: Launch stopped before the active tests finished.
+[11.890s] 
+[11.890s] 
+[11.891s] ===========================================================
+[11.891s] FAIL: test_report.TestROS2DoctorReport.test_report[rmw_fastrtps_cpp]
+[11.891s] -----------------------------------------------------------
+[11.891s] Exception: Launch stopped before the active tests finished.
+[11.891s] ----------------------------- Captured stdout call -----------------------------
+[11.891s] 
+[11.891s] Starting test run test_report[rmw_fastrtps_cpp]
+[11.891s] [INFO] [launch]: All log files can be found below /home/rmc/.ros/log/2025-08-05-14-56-23-140826-rmc-Legion-Pro-7-16IRX9H-94455
+[11.891s] [INFO] [launch]: Default logging verbosity is set to INFO
+[11.891s] [INFO] [daemon-stop-12]: process started with pid [94880]
+[11.891s] [WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[11.891s] [ERROR] [daemon-stop-12]: process has died [pid 94880, exit code -2, cmd 'ros2 daemon stop'].
+[11.891s] Processes under test stopped before tests completed
+[11.892s] Process 'daemon-stop-12' exited with -2
+[11.892s] ##### 'daemon-stop-12' output #####
+[11.892s] ###################################
+[11.892s] [31m[1m____________________ launch tests: test_report_environment _____________________[0m
+[11.892s] 
+[11.892s] ===========================================================
+[11.892s] FAIL: test_report_environment.TestROS2Environment.test_environment_check[rmw_fastrtps_cpp]
+[11.892s] -----------------------------------------------------------
+[11.892s] Exception: Launch stopped before the active tests finished.
+[11.892s] ----------------------------- Captured stdout call -----------------------------
+[11.892s] 
+[11.892s] Starting test run test_report_environment[rmw_fastrtps_cpp]
+[11.892s] [INFO] [launch]: All log files can be found below /home/rmc/.ros/log/2025-08-05-14-56-23-140826-rmc-Legion-Pro-7-16IRX9H-94455
+[11.892s] [INFO] [launch]: Default logging verbosity is set to INFO
+[11.892s] [INFO] [daemon-stop-14]: process started with pid [94883]
+[11.893s] [INFO] [daemon-stop-14]: process has finished cleanly [pid 94883]
+[11.893s] [INFO] [daemon-start-15]: process started with pid [94886]
+[11.893s] [WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[11.893s] [ERROR] [daemon-start-15]: process has died [pid 94886, exit code 2, cmd 'ros2 daemon start'].
+[11.893s] Processes under test stopped before tests completed
+[11.893s] Process 'daemon-start-15' exited with 2
+[11.893s] ##### 'daemon-start-15' output #####
+[11.893s] ####################################
+[11.893s] ----------------------------- Captured stderr call -----------------------------
+[11.893s] test_environment_check[rmw_fastrtps_cpp] (test_report_environment.TestROS2Environment.test_environment_check[rmw_fastrtps_cpp]) ... ok
+[11.893s] --------------------------- Captured stderr teardown ---------------------------
+[11.893s] 
+[11.893s] ----------------------------------------------------------------------
+[11.893s] Ran 1 test in 0.001s
+[11.893s] 
+[11.893s] OK
+[11.893s] ------ generated xml file: /home/rmc/ros2cli/build/ros2doctor/pytest.xml -------
+[11.893s] [36m[1m=========================== short test summary info ============================[0m
+[11.894s] [31mFAILED[0m test/test_qos_compatibility.py::[1mtest_qos_compatibility[0m - test_qos_compatibility.TestROS2DoctorQoSCompatibility.test_check[rmw_fastrt...
+[11.894s] [31mFAILED[0m test/test_report.py::[1mtest_report[0m - test_report.TestROS2DoctorReport.test_check[rmw_fastrtps_cpp] failed
+[11.894s] [31mFAILED[0m test/test_report_environment.py::[1mtest_report_environment[0m - test_report_environment.TestROS2Environment.test_environment_check[rmw_fast...
+[11.894s] [31m========================= [31m[1m3 failed[0m, [32m6 passed[0m[31m in 11.60s[0m[31m =========================[0m
+[12.061s] Invoked command in '/home/rmc/ros2cli/ros2doctor' returned '1': AMENT_PREFIX_PATH=/home/rmc/ros2cli/install/ros2doctor:/home/rmc/ros2cli/install/ros2action:/home/rmc/ros2cli/install/ros2cli:${AMENT_PREFIX_PATH} DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PATH=/home/rmc/ros2cli/install/ros2cli/bin:${PATH} PYTEST_ADDOPTS=--tb=short --junit-xml=/home/rmc/ros2cli/build/ros2doctor/pytest.xml --junit-prefix=ros2doctor -o cache_dir=/home/rmc/ros2cli/build/ros2doctor/.pytest_cache PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/home/rmc/ros2cli/build/ros2doctor:/home/rmc/ros2cli/install/ros2doctor/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2action:/home/rmc/ros2cli/install/ros2action/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2cli:/home/rmc/ros2cli/install/ros2cli/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -m pytest

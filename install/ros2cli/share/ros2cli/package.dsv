@@ -1,0 +1,17 @@
+source;share/ros2cli/hook/path.ps1
+source;share/ros2cli/hook/path.dsv
+source;share/ros2cli/hook/path.sh
+source;share/ros2cli/hook/pythonpath.ps1
+source;share/ros2cli/hook/pythonpath.dsv
+source;share/ros2cli/hook/pythonpath.sh
+source;share/ros2cli/hook/pythonscriptspath.ps1
+source;share/ros2cli/hook/pythonscriptspath.dsv
+source;share/ros2cli/hook/pythonscriptspath.sh
+source;share/ros2cli/hook/ament_prefix_path.ps1
+source;share/ros2cli/hook/ament_prefix_path.dsv
+source;share/ros2cli/hook/ament_prefix_path.sh
+source;../../build/ros2cli/share/ros2cli/hook/pythonpath_develop.ps1
+source;../../build/ros2cli/share/ros2cli/hook/pythonpath_develop.dsv
+source;../../build/ros2cli/share/ros2cli/hook/pythonpath_develop.sh
+source;share/ros2cli/environment/ros2-argcomplete.bash
+source;share/ros2cli/environment/ros2-argcomplete.zsh

@@ -1,0 +1,29 @@
+[0.428s] Invoking command in '/home/rmc/ros2cli/build/ros2cli': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/rmc/ros2cli/build/ros2cli/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/rmc/ros2cli/install/ros2cli/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/rmc/ros2cli/build/ros2cli/build --no-deps symlink_data
+[0.603s] running develop
+[0.713s] running egg_info
+[0.713s] creating ros2cli.egg-info
+[0.732s] writing ros2cli.egg-info/PKG-INFO
+[0.732s] writing dependency_links to ros2cli.egg-info/dependency_links.txt
+[0.732s] writing entry points to ros2cli.egg-info/entry_points.txt
+[0.733s] writing requirements to ros2cli.egg-info/requires.txt
+[0.733s] writing top-level names to ros2cli.egg-info/top_level.txt
+[0.733s] writing manifest file 'ros2cli.egg-info/SOURCES.txt'
+[0.763s] reading manifest file 'ros2cli.egg-info/SOURCES.txt'
+[0.764s] writing manifest file 'ros2cli.egg-info/SOURCES.txt'
+[0.776s] running build_ext
+[0.776s] Creating /home/rmc/ros2cli/install/ros2cli/lib/python3.12/site-packages/ros2cli.egg-link (link to .)
+[0.776s] Installing _ros2_daemon script to /home/rmc/ros2cli/install/ros2cli/bin
+[0.776s] Installing ros2 script to /home/rmc/ros2cli/install/ros2cli/bin
+[0.777s] 
+[0.777s] Installed /home/rmc/ros2cli/build/ros2cli
+[0.777s] running symlink_data
+[0.777s] creating /home/rmc/ros2cli/install/ros2cli/share/ament_index
+[0.777s] creating /home/rmc/ros2cli/install/ros2cli/share/ament_index/resource_index
+[0.777s] creating /home/rmc/ros2cli/install/ros2cli/share/ament_index/resource_index/packages
+[0.777s] symbolically linking /home/rmc/ros2cli/build/ros2cli/resource/ros2cli -> /home/rmc/ros2cli/install/ros2cli/share/ament_index/resource_index/packages
+[0.777s] symbolically linking /home/rmc/ros2cli/build/ros2cli/package.xml -> /home/rmc/ros2cli/install/ros2cli/share/ros2cli
+[0.777s] symbolically linking /home/rmc/ros2cli/build/ros2cli/resource/package.dsv -> /home/rmc/ros2cli/install/ros2cli/share/ros2cli
+[0.777s] creating /home/rmc/ros2cli/install/ros2cli/share/ros2cli/environment
+[0.777s] symbolically linking /home/rmc/ros2cli/build/ros2cli/completion/ros2-argcomplete.bash -> /home/rmc/ros2cli/install/ros2cli/share/ros2cli/environment
+[0.777s] symbolically linking /home/rmc/ros2cli/build/ros2cli/completion/ros2-argcomplete.zsh -> /home/rmc/ros2cli/install/ros2cli/share/ros2cli/environment
+[0.798s] Invoked command in '/home/rmc/ros2cli/build/ros2cli' returned '0': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/rmc/ros2cli/build/ros2cli/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/rmc/ros2cli/install/ros2cli/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/rmc/ros2cli/build/ros2cli/build --no-deps symlink_data
