@@ -2,8 +2,8 @@
 Changelog for package ros2pkg
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.32.5 (2025-08-05)
+-------------------
 * Support empy4 and empy3 (`#921 <https://github.com/ros2/ros2cli/issues/921>`_) (`#1034 <https://github.com/ros2/ros2cli/issues/1034>`_)
   (cherry picked from commit f75f4e2499fcd0037eb4ae277d424b4618ae4af3)
   Co-authored-by: Alejandro Hernández Cordero <ahcorde@gmail.com>

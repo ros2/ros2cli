@@ -2,8 +2,8 @@
 Changelog for package ros2service
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.32.5 (2025-08-05)
+-------------------
 * add QoS option to ros2service/ros2action echo commands. (`#1039 <https://github.com/ros2/ros2cli/issues/1039>`_)
 * Contributors: Tomoya Fujita
 

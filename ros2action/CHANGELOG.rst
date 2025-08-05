@@ -2,8 +2,8 @@
 Changelog for package ros2action
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.32.5 (2025-08-05)
+-------------------
 * fix ros2action send_goal signal handling. (`#1072 <https://github.com/ros2/ros2cli/issues/1072>`_) (`#1075 <https://github.com/ros2/ros2cli/issues/1075>`_)
   (cherry picked from commit 87e88c8a2f756deb1652274ba4920c85f5b179f2)
   Co-authored-by: Tomoya Fujita <Tomoya.Fujita@sony.com>

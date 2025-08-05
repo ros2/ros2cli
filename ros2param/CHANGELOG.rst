@@ -2,8 +2,8 @@
 Changelog for package ros2param
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.32.5 (2025-08-05)
+-------------------
 * catch ConnectionRefusedError, so that it can fall back to DirectNode. (`#1014 <https://github.com/ros2/ros2cli/issues/1014>`_) (`#1021 <https://github.com/ros2/ros2cli/issues/1021>`_)
   (cherry picked from commit 0a5b5603d9651c8b98e574142325069a04f31101)
   Co-authored-by: Tomoya Fujita <Tomoya.Fujita@sony.com>
