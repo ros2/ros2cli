@@ -77,7 +77,7 @@ def generate_test_description(rmw_implementation: str) -> Tuple[LaunchDescriptio
                     on_exit=[
                         # UnsetEnvironmentVariable('ROS_AUTOMATIC_DISCOVERY_RANGE'),
                         SetEnvironmentVariable('ROS_DISTRO', 'rolling'),
-                        SetEnvironmentVariable('ROS_HOME', 'BAR'),
+                        SetEnvironmentVariable('ROS_DISABLE_LOANED_MESSAGES', '0'),
                         SetEnvironmentVariable('ROS_TRACE_DIR', 'BAZ'),
                         SetEnvironmentVariable('RCUTILS_COLORIZED_OUTPUT', '0'),
                         SetEnvironmentVariable('FASTDDS_BUILTIN_TRANSPORTS', 'UDPv6'),
@@ -156,7 +156,7 @@ class TestEnvironmentReport(unittest.TestCase):
 
             assert launch_testing.tools.expect_output(
                 expected_lines=[
-                    'ros environment variables                 : ROS_DISTRO=rolling, ROS_HOME=BAR, ROS_TRACE_DIR=BAZ',
+                    'ros environment variables                 : ROS_DISTRO=rolling, ROS_DISABLE_LOANED_MESSAGES=0, ROS_TRACE_DIR=BAZ',
                     'rcutils environment variables    : RCUTILS_COLORIZED_OUTPUT=0',
                     f'{self.rmw_implementation} environment variables : {self.expected_line}'
                 ],
