@@ -23,6 +23,8 @@ from launch import LaunchDescription
 from launch import LaunchService
 from launch.actions import ExecuteProcess
 from launch.actions import SetEnvironmentVariable
+from launch.conditions import IfCondition
+from launch_ros.actions import Node
 import launch_testing
 import launch_testing.actions
 import launch_testing.asserts
@@ -68,6 +70,12 @@ def generate_test_description(rmw_implementation: str) -> tuple[LaunchDescriptio
                     name='daemon-start',
                     additional_env=additional_env,
                     on_exit=[
+                        # Launches zenoh router if needed
+                        Node(
+                            package='rmw_zenoh_cpp',
+                            executable='zenohd',
+                            condintion=IfCondition(rmw_implementation == 'rmw_zenoh_cpp')
+                        ),
                         SetEnvironmentVariable('ROS_AUTOMATIC_DISCOVERY_RANGE', 'SUBNET'),
                         SetEnvironmentVariable('ROS_DISTRO', 'rolling'),
                         SetEnvironmentVariable('ROS_DISABLE_LOANED_MESSAGES', '0'),
@@ -130,7 +138,7 @@ class TestEnvironmentReport(unittest.TestCase):
             raise ValueError(f'Unsupported rmw={rmw_implementation}')
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
-    def test_report(self) -> None:
+    def test_environment_report(self) -> None:
 
         for argument in ['-r', '--report']:
             with self.launch_doctor_command(
