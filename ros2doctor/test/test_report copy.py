@@ -27,6 +27,7 @@ from launch.actions import ExecuteProcess
 
 from launch.actions import SetEnvironmentVariable
 from launch.actions import UnsetEnvironmentVariable
+from launch_testing_ros.actions import EnableRmwIsolation
 
 import launch_testing
 import launch_testing.actions
@@ -60,21 +61,24 @@ def generate_test_description(rmw_implementation: str) -> Tuple[LaunchDescriptio
     path_to_fixtures = os.path.join(os.path.dirname(__file__), 'fixtures')
     additional_env = get_rmw_additional_env(rmw_implementation)
     additional_env['PYTHONUNBUFFERED'] = '1'
+    set_env_actions = [SetEnvironmentVariable(k, v) for k, v in additional_env.items()]
 
     return LaunchDescription([
         ExecuteProcess(
             cmd=['ros2', 'daemon', 'stop'],
             name='daemon-stop',
             on_exit=[
+                *set_env_actions,
+                EnableRmwIsolation(),
                 ExecuteProcess(
                     cmd=['ros2', 'daemon', 'start'],
                     name='daemon-start',
                     additional_env=additional_env,
                     on_exit=[
-                        UnsetEnvironmentVariable('ROS_AUTOMATIC_DISCOVERY_RANGE'),
+                        # UnsetEnvironmentVariable('ROS_AUTOMATIC_DISCOVERY_RANGE'),
                         SetEnvironmentVariable('ROS_DISTRO', 'rolling'),
                         SetEnvironmentVariable('ROS_HOME', 'BAR'),
-                        SetEnvironmentVariable('ROS_LOG_DIR', 'BAZ'),
+                        SetEnvironmentVariable('ROS_TRACE_DIR', 'BAZ'),
                         SetEnvironmentVariable('RCUTILS_COLORIZED_OUTPUT', '0'),
                         SetEnvironmentVariable('FASTDDS_BUILTIN_TRANSPORTS', 'UDPv6'),
                         SetEnvironmentVariable('RUST_LOG', 'ZENOHBOO'),
@@ -140,8 +144,8 @@ class TestEnvironmentReport(unittest.TestCase):
     def test_report(self) -> None:
         # TODO(@fujitatomoya): rmw_zenoh_cpp is instable to find the endpoints, it does not
         # matter if DaemonNode or DirectNode is used. For now, skip the test for rmw_zenoh_cpp.
-        if self.rmw_implementation == 'rmw_zenoh_cpp':
-            raise unittest.SkipTest()
+        # if self.rmw_implementation == 'rmw_zenoh_cpp':
+        #     raise unittest.SkipTest()
 
         for argument in ['-r', '--report']:
             with self.launch_doctor_command(
@@ -152,7 +156,7 @@ class TestEnvironmentReport(unittest.TestCase):
 
             assert launch_testing.tools.expect_output(
                 expected_lines=[
-                    'ros environment variables                 : ROS_DISTRO=rolling, ROS_HOME=BAR, ROS_LOG_DIR=BAZ',
+                    'ros environment variables                 : ROS_DISTRO=rolling, ROS_HOME=BAR, ROS_TRACE_DIR=BAZ',
                     'rcutils environment variables    : RCUTILS_COLORIZED_OUTPUT=0',
                     f'{self.rmw_implementation} environment variables : {self.expected_line}'
                 ],
