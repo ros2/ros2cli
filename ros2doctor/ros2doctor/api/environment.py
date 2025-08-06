@@ -54,7 +54,7 @@ class EnvironmentReport(DoctorReport):
         rmw_variable_list: list[str] = []
         rcutils_variable_list: list[str] = []
 
-        for key, value in os.environ.items():
+        for key, value in sorted(os.environ.items()):
             if key in ROS_ENVIRONMENT_VARIABLES:
                 ros_variable_list.append(f'{key}={value}')
             if key in RCUTILS_ENVIRONMENT_VARIABLES:
@@ -69,6 +69,6 @@ class EnvironmentReport(DoctorReport):
 
         if rmw_environment_variables:
             environment_report.add_to_report(
-                f'{rmw_name} environment variables',
+                'rmw environment variables',
                 ', '.join(rmw_variable_list))
         return environment_report

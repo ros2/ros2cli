@@ -26,7 +26,6 @@ from launch import LaunchService
 from launch.actions import ExecuteProcess
 
 from launch.actions import SetEnvironmentVariable
-from launch.actions import UnsetEnvironmentVariable
 from launch_testing_ros.actions import EnableRmwIsolation
 
 import launch_testing
@@ -34,7 +33,6 @@ import launch_testing.actions
 import launch_testing.asserts
 import launch_testing.markers
 import launch_testing.tools
-import launch_testing_ros.tools
 
 import pytest
 
@@ -75,10 +73,9 @@ def generate_test_description(rmw_implementation: str) -> Tuple[LaunchDescriptio
                     name='daemon-start',
                     additional_env=additional_env,
                     on_exit=[
-                        # UnsetEnvironmentVariable('ROS_AUTOMATIC_DISCOVERY_RANGE'),
+                        SetEnvironmentVariable('ROS_AUTOMATIC_DISCOVERY_RANGE', 'SUBNET'),
                         SetEnvironmentVariable('ROS_DISTRO', 'rolling'),
                         SetEnvironmentVariable('ROS_DISABLE_LOANED_MESSAGES', '0'),
-                        SetEnvironmentVariable('ROS_TRACE_DIR', 'BAZ'),
                         SetEnvironmentVariable('RCUTILS_COLORIZED_OUTPUT', '0'),
                         SetEnvironmentVariable('FASTDDS_BUILTIN_TRANSPORTS', 'UDPv6'),
                         SetEnvironmentVariable('RUST_LOG', 'ZENOHBOO'),
@@ -103,10 +100,10 @@ class TestEnvironmentReport(unittest.TestCase):
             rmw_implementation: str,
     ) -> None:
         cls.rmw_implementation = rmw_implementation
-        rmw_implementation_filter = launch_testing_ros.tools.basic_output_filter(
-            filtered_patterns=['WARNING: topic .* does not appear to be published yet'],
-            filtered_rmw_implementation=rmw_implementation
-        )
+        # rmw_implementation_filter = launch_testing_ros.tools.basic_output_filter(
+        #     filtered_patterns=['WARNING: topic .* does not appear to be published yet'],
+        #     filtered_rmw_implementation=rmw_implementation
+        # )
 
         @contextlib.contextmanager
         def launch_doctor_command(
@@ -118,12 +115,12 @@ class TestEnvironmentReport(unittest.TestCase):
             doctor_command_action = ExecuteProcess(
                 cmd=['ros2', 'doctor', *arguments],
                 additional_env=additional_env,
-                name='ros2doctor-cli',
+                name='ros2doctor-environment-report',
                 output='screen'
             )
             with launch_testing.tools.launch_process(
                     launch_service, doctor_command_action, proc_info, proc_output,
-                    output_filter=rmw_implementation_filter
+                    # output_filter=rmw_implementation_filter
             ) as doctor_command:
                 yield doctor_command
 
@@ -154,11 +151,15 @@ class TestEnvironmentReport(unittest.TestCase):
                 assert doctor_command.wait_for_shutdown(timeout=10)
             assert doctor_command.exit_code == launch_testing.asserts.EXIT_OK
 
+            # Due to isolation ROS_DOMAIN_ID is unique
+            domain_id = os.environ['ROS_DOMAIN_ID']
             assert launch_testing.tools.expect_output(
                 expected_lines=[
-                    'ros environment variables                 : ROS_DISTRO=rolling, ROS_DISABLE_LOANED_MESSAGES=0, ROS_TRACE_DIR=BAZ',
+                    'ros environment variables        : ROS_AUTOMATIC_DISCOVERY_RANGE=SUBNET, '
+                    'ROS_DISABLE_LOANED_MESSAGES=0, ROS_DISTRO=rolling, '
+                    f'ROS_DOMAIN_ID={domain_id}',
                     'rcutils environment variables    : RCUTILS_COLORIZED_OUTPUT=0',
-                    f'{self.rmw_implementation} environment variables : {self.expected_line}'
+                    f'rmw environment variables        : {self.expected_line}'
                 ],
                 text=doctor_command.output
             )
