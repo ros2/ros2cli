@@ -1,0 +1,1 @@
+ament_cmake_symlink_install_files("/home/rmc/ros2cli/ros2cli_test_interfaces" FILES "/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_generator_type_description/ros2cli_test_interfaces/msg/ShortVariedNested.json" "DESTINATION" "share/ros2cli_test_interfaces/msg")

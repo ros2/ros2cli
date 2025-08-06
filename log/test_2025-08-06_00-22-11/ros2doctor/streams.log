@@ -1,0 +1,1619 @@
+[0.127s] Invoking command in '/home/rmc/ros2cli/ros2doctor': AMENT_PREFIX_PATH=/home/rmc/ros2cli/install/ros2doctor:/home/rmc/ros2cli/install/ros2action:/home/rmc/ros2cli/install/ros2cli:/home/rmc/ros2cli/install/ros2topic:/home/rmc/ros2cli/install/ros2component:/home/rmc/ros2cli/install/ros2param:/home/rmc/ros2cli/install/ros2lifecycle:/home/rmc/ros2cli/install/ros2service:/home/rmc/ros2cli/install/ros2run:/home/rmc/ros2cli/install/ros2pkg:/home/rmc/ros2cli/install/ros2node:/home/rmc/ros2cli/install/ros2multicast:/home/rmc/ros2cli/install/ros2lifecycle_test_fixtures:/home/rmc/ros2cli/install/ros2interface:/home/rmc/ros2cli/install/ros2cli_test_interfaces:/opt/ros/rolling DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTEST_ADDOPTS=--tb=short --junit-xml=/home/rmc/ros2cli/build/ros2doctor/pytest.xml --junit-prefix=ros2doctor -o cache_dir=/home/rmc/ros2cli/build/ros2doctor/.pytest_cache -vvclear PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/home/rmc/ros2cli/build/ros2doctor:/home/rmc/ros2cli/install/ros2doctor/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2action:/home/rmc/ros2cli/install/ros2action/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2cli:/home/rmc/ros2cli/install/ros2cli/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2topic:/home/rmc/ros2cli/install/ros2topic/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2component:/home/rmc/ros2cli/install/ros2component/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2param:/home/rmc/ros2cli/install/ros2param/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2lifecycle:/home/rmc/ros2cli/install/ros2lifecycle/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2service:/home/rmc/ros2cli/install/ros2service/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2run:/home/rmc/ros2cli/install/ros2run/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2pkg:/home/rmc/ros2cli/install/ros2pkg/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2node:/home/rmc/ros2cli/install/ros2node/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2multicast:/home/rmc/ros2cli/install/ros2multicast/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2interface:/home/rmc/ros2cli/install/ros2interface/lib/python3.12/site-packages:/home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages:/opt/ros/rolling/lib/python3.12/site-packages /usr/bin/python3 -m pytest
+[0.301s] [1m============================= test session starts ==============================[0m
+[0.301s] platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0 -- /usr/bin/python3
+[0.304s] cachedir: /home/rmc/ros2cli/build/ros2doctor/.pytest_cache
+[0.304s] rootdir: /home/rmc/ros2cli/ros2doctor
+[0.304s] configfile: lear
+[0.304s] plugins: ament-lint-0.20.2, ament-flake8-0.20.2, ament-pep257-0.20.2, ament-mypy-0.20.2, ament-xmllint-0.20.2, ament-copyright-0.20.2, launch-testing-ros-0.29.2, launch-testing-3.9.2, timeout-2.2.0, cov-4.1.0, colcon-core-0.20.0, mock-3.12.0
+[0.522s] [1mcollecting ... [0m[1m
+[0.522s] collected 9 items                                                              [0m
+[0.522s] 
+[11.271s] test/test_api.py::test_api [32mPASSED[0m[32m                                        [ 11%][0m
+[15.248s] test/test_cli.py::test_cli [32mPASSED[0m[32m                                        [ 22%][0m
+[15.280s] test/test_copyright.py::test_copyright [32mPASSED[0m[32m                            [ 33%][0m
+[15.436s] test/test_flake8.py::test_flake8 [31mFAILED[0m[31m                                  [ 44%][0m
+[15.491s] test/test_pep257.py::test_pep257 [32mPASSED[0m[31m                                  [ 55%][0m
+[37.093s] test/test_qos_compatibility.py::test_qos_compatibility [32mPASSED[0m[31m            [ 66%][0m
+[49.322s] test/test_report copy.py::test_report copy [31mFAILED[0m[31m                        [ 77%][0m
+[49.485s] test/test_report.py::test_report [31mFAILED[0m[31m                                  [ 88%][0m
+[49.683s] test/test_xmllint.py::test_xmllint 
+[49.683s] 
+[49.683s] =================================== FAILURES ===================================
+[49.683s] [31m[1m_________________________________ test_flake8 __________________________________[0m
+[49.683s] [1m[31mtest/test_flake8.py[0m:23: in test_flake8
+[49.699s]     [94massert[39;49;00m rc == [94m0[39;49;00m, \
+[49.699s] [1m[31mE   AssertionError: Found 2 code style errors / warnings:[0m
+[49.699s] [1m[31mE     ./test/test_report copy.py:19:1: F401 'typing.Dict' imported but unused[0m
+[49.699s] [1m[31mE     ./test/test_report copy.py:21:1: F401 'typing.Tuple' imported but unused[0m
+[49.699s] [1m[31mE   assert 1 == 0[0m
+[49.699s] ----------------------------- Captured stdout call -----------------------------
+[49.699s] 
+[49.699s] ./test/test_report copy.py:19:1: F401 'typing.Dict' imported but unused
+[49.699s] from typing import Dict
+[49.699s] ^
+[49.699s] 
+[49.699s] ./test/test_report copy.py:21:1: F401 'typing.Tuple' imported but unused
+[49.699s] from typing import Tuple
+[49.699s] ^
+[49.700s] 
+[49.700s] 2     F401 'typing.Dict' imported but unused
+[49.700s] 
+[49.700s] 33 files checked
+[49.700s] 2 errors
+[49.700s] 
+[49.700s] 'F'-type errors: 2
+[49.700s] 
+[49.700s] Checked files:
+[49.700s] 
+[49.700s] * ./setup.py
+[49.700s] * ./ros2doctor/__init__.py
+[49.700s] * ./ros2doctor/api/package.py
+[49.700s] * ./ros2doctor/api/topic.py
+[49.700s] * ./ros2doctor/api/format.py
+[49.700s] * ./ros2doctor/api/__init__.py
+[49.700s] * ./ros2doctor/api/qos_compatibility.py
+[49.700s] * ./ros2doctor/api/service.py
+[49.700s] * ./ros2doctor/api/network.py
+[49.700s] * ./ros2doctor/api/platform.py
+[49.700s] * ./ros2doctor/api/action.py
+[49.700s] * ./ros2doctor/api/rmw.py
+[49.700s] * ./ros2doctor/api/environment.py
+[49.700s] * ./ros2doctor/command/doctor.py
+[49.700s] * ./ros2doctor/command/__init__.py
+[49.700s] * ./ros2doctor/verb/__init__.py
+[49.700s] * ./ros2doctor/verb/hello.py
+[49.700s] * ./test/test_xmllint.py
+[49.700s] * ./test/test_pep257.py
+[49.700s] * ./test/test_api.py
+[49.700s] * ./test/test_copyright.py
+[49.700s] * ./test/test_flake8.py
+[49.700s] * ./test/test_cli.py
+[49.700s] * ./test/test_report copy.py
+[49.700s] * ./test/test_report.py
+[49.700s] * ./test/test_qos_compatibility.py
+[49.701s] * ./test/test_report_environment.py
+[49.702s] * ./test/common.py
+[49.702s] * ./test/test_report_environment copy.py
+[49.702s] * ./test/fixtures/listener_node_with_reliable_qos.py
+[49.702s] * ./test/fixtures/talker_node_with_best_effort_qos.py
+[49.702s] * ./test/fixtures/talker_node_with_reliable_qos.py
+[49.702s] * ./test/fixtures/report_node.py
+[49.702s] [31m[1m________________________ launch tests: test_report copy ________________________[0m
+[49.702s] 
+[49.702s] ===========================================================
+[49.702s] FAIL: test_report copy.TestEnvironmentReport.test_report[rmw_cyclonedds_cpp]
+[49.702s] -----------------------------------------------------------
+[49.702s] Exception: Launch stopped before the active tests finished.
+[49.702s] ----------------------------- Captured stdout call -----------------------------
+[49.702s] 
+[49.702s] Starting test run test_report copy[rmw_fastrtps_cpp]
+[49.702s] [DEBUG] [launch.launch_context]: emitting event synchronously: 'launch.events.IncludeLaunchDescription'
+[49.702s] [INFO] [launch]: All log files can be found below /home/rmc/.ros/log/2025-08-06-00-22-12-310469-rmc-Legion-Pro-7-16IRX9H-34827
+[49.702s] [INFO] [launch]: Default logging verbosity is set to DEBUG
+[49.702s] [DEBUG] [launch]: processing event: '<launch.events.include_launch_description.IncludeLaunchDescription object at 0x71e47e101d00>'
+[49.702s] [DEBUG] [launch]: processing event: '<launch.events.include_launch_description.IncludeLaunchDescription object at 0x71e47e101d00>' ✓ '<launch.event_handlers.on_include_launch_description.OnIncludeLaunchDescription object at 0x71e47e3e3d70>'
+[49.702s] [INFO] [daemon-stop-28]: process started with pid [35687]
+[49.702s] [DEBUG] [launch.launch_context]: emitting event: 'launch.events.process.ProcessStarted'
+[49.702s] [DEBUG] [launch]: processing event: '<launch.events.process.process_started.ProcessStarted object at 0x71e47e102db0>'
+[49.703s] [DEBUG] [launch]: processing event: '<launch.events.process.process_started.ProcessStarted object at 0x71e47e102db0>' ✓ '<launch.event_handlers.on_process_start.OnProcessStart object at 0x71e47e102f30>'
+[49.703s] [DEBUG] [launch]: processing event: '<launch.events.process.process_started.ProcessStarted object at 0x71e47e102db0>' ✓ '<launch.event_handlers.on_process_start.OnProcessStart object at 0x71e47e102210>'
+[49.703s] [DEBUG] [launch.launch_context]: emitting event synchronously: 'launch.events.process.ProcessStdout'
+[49.703s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e102e70>'
+[49.703s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e102e70>' ✓ '<launch.event_handlers.on_process_io.OnProcessIO object at 0x71e47e1010d0>'
+[49.703s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e102e70>' ✓ '<launch.event_handlers.on_process_io.OnProcessIO object at 0x71e47e103860>'
+[49.703s] [INFO] [daemon-stop-28]: process has finished cleanly [pid 35687]
+[49.703s] [DEBUG] [launch.launch_context]: emitting event: 'launch.events.process.ProcessExited'
+[49.703s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e47e100cb0>'
+[49.703s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e47e100cb0>' ✓ '<launch.event_handlers.on_process_exit.OnProcessExit object at 0x71e47e100590>'
+[49.703s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e47e100cb0>' ✓ '<launch.event_handlers.on_process_exit.OnProcessExit object at 0x71e47e1027e0>'
+[49.703s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e47e100cb0>' ✓ '<launch.event_handlers.on_process_exit.OnProcessExit object at 0x71e47e102690>'
+[49.703s] [INFO] [daemon-start-29]: process started with pid [35700]
+[49.703s] [DEBUG] [launch.launch_context]: emitting event: 'launch.events.process.ProcessStarted'
+[49.703s] [DEBUG] [launch]: processing event: '<launch.events.process.process_started.ProcessStarted object at 0x71e47e101310>'
+[49.703s] [DEBUG] [launch]: processing event: '<launch.events.process.process_started.ProcessStarted object at 0x71e47e101310>' ✓ '<launch.event_handlers.on_process_start.OnProcessStart object at 0x71e47e102f30>'
+[49.703s] [DEBUG] [launch]: processing event: '<launch.events.process.process_started.ProcessStarted object at 0x71e47e101310>' ✓ '<launch.event_handlers.on_process_start.OnProcessStart object at 0x71e47e102210>'
+[49.703s] [DEBUG] [launch.launch_context]: emitting event synchronously: 'launch.events.process.ProcessStdout'
+[49.703s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e103080>'
+[49.703s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e103080>' ✓ '<launch.event_handlers.on_process_io.OnProcessIO object at 0x71e47e150680>'
+[49.703s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e103080>' ✓ '<launch.event_handlers.on_process_io.OnProcessIO object at 0x71e47e103860>'
+[49.703s] [INFO] [daemon-start-29]: process has finished cleanly [pid 35700]
+[49.703s] [DEBUG] [launch.launch_context]: emitting event: 'launch.events.process.ProcessExited'
+[49.703s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e47e102a80>'
+[49.703s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e47e102a80>' ✓ '<launch.event_handlers.on_process_exit.OnProcessExit object at 0x71e47e153200>'
+[49.703s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e47e102a80>' ✓ '<launch.event_handlers.on_process_exit.OnProcessExit object at 0x71e47e151250>'
+[49.703s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e47e102a80>' ✓ '<launch.event_handlers.on_process_exit.OnProcessExit object at 0x71e47e102690>'
+[49.703s] [DEBUG] [launch.launch_context]: emitting event: 'launch.events.IncludeLaunchDescription'
+[49.703s] [DEBUG] [launch]: processing event: '<launch.events.include_launch_description.IncludeLaunchDescription object at 0x71e47e153260>'
+[49.703s] [DEBUG] [launch]: processing event: '<launch.events.include_launch_description.IncludeLaunchDescription object at 0x71e47e153260>' ✓ '<launch.event_handlers.on_include_launch_description.OnIncludeLaunchDescription object at 0x71e47e3e3d70>'
+[49.703s] [INFO] [ros2doctor-environment-report-30]: process started with pid [35721]
+[49.703s] [DEBUG] [launch.launch_context]: emitting event: 'launch.events.process.ProcessStarted'
+[49.703s] [DEBUG] [launch]: processing event: '<launch.events.process.process_started.ProcessStarted object at 0x71e47e1501a0>'
+[49.703s] [DEBUG] [launch]: processing event: '<launch.events.process.process_started.ProcessStarted object at 0x71e47e1501a0>' ✓ '<launch.event_handlers.on_process_start.OnProcessStart object at 0x71e47e102f30>'
+[49.703s] [DEBUG] [launch]: processing event: '<launch.events.process.process_started.ProcessStarted object at 0x71e47e1501a0>' ✓ '<launch.event_handlers.on_process_start.OnProcessStart object at 0x71e47e102210>'
+[49.703s] [DEBUG] [launch.launch_context]: emitting event synchronously: 'launch.events.process.ProcessStdout'
+[49.704s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e100b60>'
+[49.704s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e100b60>' ✓ '<launch.event_handlers.on_process_io.OnProcessIO object at 0x71e47e1285f0>'
+[49.704s] [ros2doctor-environment-report-30] 
+[49.704s] [ros2doctor-environment-report-30]    ACTION LIST
+[49.704s] [ros2doctor-environment-report-30] action                 : none
+[49.704s] [ros2doctor-environment-report-30] action server count    : 0
+[49.704s] [ros2doctor-environment-report-30] action client count    : 0
+[49.704s] [ros2doctor-environment-report-30] 
+[49.704s] [ros2doctor-environment-report-30]    ROS ENVIRONMENT
+[49.704s] [ros2doctor-environment-report-30] ros environment variables        : ROS_AUTOMATIC_DISCOVERY_RANGE=SUBNET, ROS_DISABLE_LOANED_MESSAGES=0, ROS_DISTRO=rolling, ROS_DOMAIN_ID=13
+[49.704s] [ros2doctor-environment-report-30] rcutils environment variables    : RCUTILS_COLORIZED_OUTPUT=0
+[49.704s] [ros2doctor-environment-report-30] rmw environment variables        : FASTDDS_BUILTIN_TRANSPORTS=UDPv6
+[49.704s] [ros2doctor-environment-report-30] 
+[49.704s] [ros2doctor-environment-report-30]    NETWORK CONFIGURATION
+[49.704s] [ros2doctor-environment-report-30] inet         : 127.0.0.1
+[49.704s] [ros2doctor-environment-report-30] inet4        : ['127.0.0.1']
+[49.704s] [ros2doctor-environment-report-30] inet6        : ['::1']
+[49.704s] [ros2doctor-environment-report-30] netmask      : 255.0.0.0
+[49.705s] [ros2doctor-environment-report-30] device       : lo
+[49.705s] [ros2doctor-environment-report-30] flags        : UP,LOOPBACK,RUNNING
+[49.705s] [ros2doctor-environment-report-30] mtu          : 65536
+[49.705s] [ros2doctor-environment-report-30] inet         : 192.168.86.64
+[49.705s] [ros2doctor-environment-report-30] inet4        : ['192.168.2.1', '192.168.86.64']
+[49.705s] [ros2doctor-environment-report-30] ether        : c4:ef:bb:e4:ea:e8
+[49.705s] [ros2doctor-environment-report-30] netmask      : 255.255.255.0
+[49.705s] [ros2doctor-environment-report-30] device       : enp118s0
+[49.705s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e100b60>' ✓ '<launch.event_handlers.on_process_io.OnProcessIO object at 0x71e47e103860>'
+[49.705s] [DEBUG] [launch.launch_context]: emitting event synchronously: 'launch.events.process.ProcessStdout'
+[49.705s] [DEBUG] [launch.launch_context]: emitting event synchronously: 'launch.events.process.ProcessStdout'
+[49.705s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e59bec0>'
+[49.705s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e59bec0>' ✓ '<launch.event_handlers.on_process_io.OnProcessIO object at 0x71e47e1285f0>'
+[49.705s] [ros2doctor-environment-report-30] flags        : UP,BROADCAST,RUNNING,MULTICAST
+[49.705s] [ros2doctor-environment-report-30] mtu          : 1500
+[49.705s] [ros2doctor-environment-report-30] broadcast    : 192.168.86.255
+[49.705s] [ros2doctor-environment-report-30] inet         : 192.168.86.20
+[49.705s] [ros2doctor-environment-report-30] inet4        : ['192.168.86.20']
+[49.705s] [ros2doctor-environment-report-30] ether        : ec:4c:8c:8f:c1:22
+[49.705s] [ros2doctor-environment-report-30] inet6        : ['fdf9:45bd:5a6:cb2f:ac0a:4c75:1482:bc2a', 'fdf9:45bd:5a6:cb2f:c361:2681:71db:2bdd', 'fe80::6be5:3f88:abdd:7291%wlp0s20f3']
+[49.705s] [ros2doctor-environment-report-30] netmask      : 255.255.255.0
+[49.705s] [ros2doctor-environment-report-30] device       : wlp0s20f3
+[49.705s] [ros2doctor-environment-report-30] flags        : UP,BROADCAST,RUNNING,MULTICAST
+[49.705s] [ros2doctor-environment-report-30] mtu          : 1500
+[49.705s] [ros2doctor-environment-report-30] broadcast    : 192.168.86.255
+[49.705s] [ros2doctor-environment-report-30] inet         : 172.17.0.1
+[49.705s] [ros2doctor-environment-report-30] inet4        : ['172.17.0.1']
+[49.705s] [ros2doctor-environment-report-30] ether        : 06:76:96:a0:38:ad
+[49.705s] [ros2doctor-environment-report-30] netmask      : 255.255.0.0
+[49.705s] [ros2doctor-environment-report-30] device       : docker0
+[49.705s] [ros2doctor-environment-report-30] flags        : UP,BROADCAST,MULTICAST
+[49.705s] [ros2doctor-environment-report-30] mtu          : 1500
+[49.705s] [ros2doctor-environment-report-30] broadcast    : 172.17.255.255
+[49.705s] [ros2doctor-environment-report-30] 
+[49.705s] [ros2doctor-environment-report-30]    PACKAGE VERSIONS
+[49.706s] [ros2doctor-environment-report-30] ros2doctor                                : latest=0.40.0, local=0.40.0
+[49.706s] [ros2doctor-environment-report-30] ros2action                                : latest=0.40.0, local=0.40.0
+[49.706s] [ros2doctor-environment-report-30] ros2cli                                   : latest=0.40.0, local=0.40.0
+[49.706s] [ros2doctor-environment-report-30] ros2topic                                 : latest=0.40.0, local=0.40.0
+[49.706s] [ros2doctor-environment-report-30] ros2component                             : latest=0.40.0, local=0.40.0
+[49.706s] [ros2doctor-environment-report-30] ros2param                                 : latest=0.40.0, local=0.40.0
+[49.706s] [ros2doctor-environment-report-30] ros2lifecycle                             : latest=0.40.0, local=0.40.0
+[49.706s] [ros2doctor-environment-report-30] ros2service                               : latest=0.40.0, local=0.40.0
+[49.706s] [ros2doctor-environment-report-30] ros2run                                   : latest=0.40.0, local=0.40.0
+[49.706s] [ros2doctor-environment-report-30] ros2pkg                                   : latest=0.40.0, local=0.40.0
+[49.706s] [ros2doctor-environment-report-30] ros2node                                  : latest=0.40.0, local=0.40.0
+[49.706s] [ros2doctor-environment-report-30] ros2multicast                             : latest=0.40.0, local=0.40.0
+[49.706s] [ros2doctor-environment-report-30] ros2lifecycle_test_fixtures               : latest=0.40.0, local=0.40.0
+[49.706s] [ros2doctor-environment-report-30] ros2interface                             : latest=0.40.0, local=0.40.0
+[49.706s] [ros2doctor-environment-report-30] ros2cli_test_interfaces                   : latest=0.40.0, local=0.40.0
+[49.706s] [ros2doctor-environment-report-30] ros2bag                                   : latest=0.33.0, local=0.33.0
+[49.706s] [ros2doctor-environment-report-30] ament_cmake_include_directories           : latest=2.8.4, local=2.8.4
+[49.706s] [ros2doctor-environment-report-30] launch_xml                                : latest=3.9.2, local=3.9.2
+[49.706s] [ros2doctor-environment-report-30] composition_interfaces                    : latest=2.4.2, local=2.4.2
+[49.706s] [ros2doctor-environment-report-30] demo_nodes_cpp                            : latest=0.37.2, local=0.37.2
+[49.706s] [ros2doctor-environment-report-30] ament_cmake_xmllint                       : latest=0.20.2, local=0.20.2
+[49.706s] [ros2doctor-environment-report-30] angles                                    : latest=1.16.0, local=1.16.0
+[49.706s] [ros2doctor-environment-report-30] pybind11_vendor                           : latest=3.3.1, local=3.3.1
+[49.706s] [ros2doctor-environment-report-30] rosidl_runtime_cpp                        : latest=5.0.1, local=5.0.1
+[49.706s] [ros2doctor-environment-report-30] statistics_msgs                           : latest=2.4.2, local=2.4.2
+[49.706s] [ros2doctor-environment-report-30] uncrustify_vendor                         : latest=3.2.0, local=3.2.0
+[49.706s] [ros2doctor-environment-report-30] flir_camera_msgs                          : latest=3.0.3, local=3.0.3
+[49.706s] [ros2doctor-environment-report-30] service_msgs                              : latest=2.4.2, local=2.4.2
+[49.706s] [ros2doctor-environment-report-30] ament_cmake_target_dependencies           : latest=2.8.4, local=2.8.4
+[49.706s] [ros2doctor-environment-report-30] ament_cmake_export_libraries              : latest=2.8.4, local=2.8.4
+[49.706s] [ros2doctor-environment-report-30] rosbag2_cpp                               : latest=0.33.0, local=0.33.0
+[49.706s] [ros2doctor-environment-report-30] launch_ros                                : latest=0.29.2, local=0.29.2
+[49.706s] [ros2doctor-environment-report-30] rosidl_adapter                            : latest=5.0.1, local=5.0.1
+[49.706s] [ros2doctor-environment-report-30] rqt_py_common                             : latest=1.10.0, local=1.10.0
+[49.706s] [ros2doctor-environment-report-30] rmw_fastrtps_shared_cpp                   : latest=9.4.2, local=9.4.2
+[49.706s] [ros2doctor-environment-report-30] ament_lint_cmake                          : latest=0.20.2, local=0.20.2
+[49.706s] [ros2doctor-environment-report-30] sros2_cmake                               : latest=0.16.2, local=0.16.2
+[49.706s] [ros2doctor-environment-report-30] launch_testing_ros                        : latest=0.29.2, local=0.29.2
+[49.706s] [ros2doctor-environment-report-30] tango_icons_vendor                        : latest=0.5.1, local=0.5.1
+[49.706s] [ros2doctor-environment-report-30] liblz4_vendor                             : latest=0.33.0, local=0.33.0
+[49.707s] [ros2doctor-environment-report-30] orocos_kdl_vendor                         : latest=0.8.0, local=0.8.0
+[49.707s] [ros2doctor-environment-report-30] rpyutils                                  : latest=0.7.1, local=0.7.1
+[49.707s] [ros2doctor-environment-report-30] rcl_yaml_param_parser                     : latest=10.2.3, local=10.2.3
+[49.707s] [ros2doctor-environment-report-30] tf2_eigen_kdl                             : latest=0.44.0, local=0.44.0
+[49.707s] [ros2doctor-environment-report-30] tf2_ros                                   : latest=0.44.0, local=0.44.0
+[49.707s] [ros2doctor-environment-report-30] compressed_image_transport                : latest=6.1.0, local=6.1.0
+[49.707s] [ros2doctor-environment-report-30] image_transport                           : latest=6.3.0, local=6.3.0
+[49.707s] [ros2doctor-environment-report-30] rosbag2_storage_default_plugins           : latest=0.33.0, local=0.33.0
+[49.707s] [ros2doctor-environment-report-30] ament_cmake_export_definitions            : latest=2.8.4, local=2.8.4
+[49.707s] [ros2doctor-environment-report-30] qt_gui_cpp                                : latest=2.10.1, local=2.10.1
+[49.707s] [ros2doctor-environment-report-30] rcl_action                                : latest=10.2.3, local=10.2.3
+[49.707s] [ros2doctor-environment-report-30] example_interfaces                        : latest=0.14.1, local=0.14.1
+[49.707s] [ros2doctor-environment-report-30] rosidl_typesupport_c                      : latest=3.4.0, local=3.4.0
+[49.707s] [ros2doctor-environment-report-30] launch_testing                            : latest=3.9.2, local=3.9.2
+[49.707s] [ros2doctor-environment-report-30] qt_gui                                    : latest=2.10.1, local=2.10.1
+[49.707s] [ros2doctor-environment-report-30] sensor_msgs                               : latest=5.8.2, local=5.8.2
+[49.707s] [ros2doctor-environment-report-30] xacro                                     : latest=2.0.13, local=2.0.13
+[49.707s] [ros2doctor-environment-report-30] ament_cmake_pytest                        : latest=2.8.4, local=2.8.4
+[49.707s] [ros2doctor-environment-report-30] rosidl_default_generators                 : latest=1.8.1, local=1.8.1
+[49.707s] [ros2doctor-environment-report-30] ament_cmake_google_benchmark              : latest=2.8.4, local=2.8.4
+[49.707s] [ros2doctor-environment-report-30] ament_cmake_python                        : latest=2.8.4, local=2.8.4
+[49.707s] [ros2doctor-environment-report-30] yaml_cpp_vendor                           : latest=9.2.0, local=9.2.0
+[49.707s] [ros2doctor-environment-report-30] ament_cmake_vendor_package                : latest=2.8.4, local=2.8.4
+[49.707s] [ros2doctor-environment-report-30] rosidl_cmake                              : latest=5.0.1, local=5.0.1
+[49.707s] [ros2doctor-environment-report-30] stereo_msgs                               : latest=5.8.2, local=5.8.2
+[49.707s] [ros2doctor-environment-report-30] joy                                       : latest=3.3.0, local=3.3.0
+[49.707s] [ros2doctor-environment-report-30] theora_image_transport                    : latest=6.1.0, local=6.1.0
+[49.707s] [ros2doctor-environment-report-30] rosidl_typesupport_cpp                    : latest=3.4.0, local=3.4.0
+[49.707s] [ros2doctor-environment-report-30] unique_identifier_msgs                    : latest=2.8.1, local=2.8.1
+[49.707s] [ros2doctor-environment-report-30] ament_cpplint                             : latest=0.20.2, local=0.20.2
+[49.707s] [ros2doctor-environment-report-30] builtin_interfaces                        : latest=2.4.2, local=2.4.2
+[49.707s] [ros2doctor-environment-report-30] rcl                                       : latest=10.2.3, local=10.2.3
+[49.707s] [ros2doctor-environment-report-30] rviz_ogre_vendor                          : latest=15.1.7, local=15.1.7
+[49.707s] [ros2doctor-environment-report-30] ros_gz_sim_demos                          : latest=3.0.3, local=3.0.3
+[49.707s] [ros2doctor-environment-report-30] rcpputils                                 : latest=2.14.2, local=2.14.2
+[49.707s] [ros2doctor-environment-report-30] rosbag2_storage                           : latest=0.33.0, local=0.33.0
+[49.707s] [ros2doctor-environment-report-30] rqt_gui_cpp                               : latest=1.10.0, local=1.10.0
+[49.707s] [ros2doctor-environment-report-30] rcl_interfaces                            : latest=2.4.2, local=2.4.2
+[49.707s] [ros2doctor-environment-report-30] ament_lint_common                         : latest=0.20.2, local=0.20.2
+[49.707s] [ros2doctor-environment-report-30] ament_copyright                           : latest=0.20.2, local=0.20.2
+[49.708s] [ros2doctor-environment-report-30] visualization_msgs                        : latest=5.8.2, local=5.8.2
+[49.708s] [ros2doctor-environment-report-30] cv_bridge                                 : latest=4.1.0, local=4.1.0
+[49.708s] [ros2doctor-environment-report-30] ament_cmake_flake8                        : latest=0.20.2, local=0.20.2
+[49.708s] [ros2doctor-environment-report-30] gz_physics_vendor                         : latest=0.2.2, local=0.2.2
+[49.708s] [ros2doctor-environment-report-30] rviz_resource_interfaces                  : latest=15.1.7, local=15.1.7
+[49.708s] [ros2doctor-environment-report-30] rosbag2_interfaces                        : latest=0.33.0, local=0.33.0
+[49.708s] [ros2doctor-environment-report-30] rviz_rendering                            : latest=15.1.7, local=15.1.7
+[49.708s] [ros2doctor-environment-report-30] rosbag2_compression                       : latest=0.33.0, local=0.33.0
+[49.708s] [ros2doctor-environment-report-30] rcl_logging_spdlog                        : latest=3.3.0, local=3.3.0
+[49.708s] [ros2doctor-environment-report-30] sdformat_urdf                             : latest=2.0.2, local=2.0.2
+[49.708s] [ros2doctor-environment-report-30] gz_msgs_vendor                            : latest=0.2.3, local=0.2.3
+[49.708s] [ros2doctor-environment-report-30] rosidl_parser                             : latest=5.0.1, local=5.0.1
+[49.708s] [ros2doctor-environment-report-30] rosidl_pycommon                           : latest=5.0.1, local=5.0.1
+[49.708s] [ros2doctor-environment-report-30] rmw_fastrtps_cpp                          : latest=9.4.2, local=9.4.2
+[49.708s] [ros2doctor-environment-report-30] ament_pep257                              : latest=0.20.2, local=0.20.2
+[49.708s] [ros2doctor-environment-report-30] ros2cli_common_extensions                 : latest=0.5.1, local=0.5.1
+[49.708s] [ros2doctor-environment-report-30] keyboard_handler                          : latest=0.5.0, local=0.5.0
+[49.708s] [ros2doctor-environment-report-30] action_msgs                               : latest=2.4.2, local=2.4.2
+[49.708s] [ros2doctor-environment-report-30] rviz2                                     : latest=15.1.7, local=15.1.7
+[49.708s] [ros2doctor-environment-report-30] diagnostic_updater                        : latest=4.4.6, local=4.4.6
+[49.708s] [ros2doctor-environment-report-30] ament_clang_format                        : latest=0.20.2, local=0.20.2
+[49.708s] [ros2doctor-environment-report-30] spinnaker_camera_driver                   : latest=3.0.3, local=3.0.3
+[49.708s] [ros2doctor-environment-report-30] geometry2                                 : latest=0.44.0, local=0.44.0
+[49.708s] [ros2doctor-environment-report-30] sdformat_vendor                           : latest=0.2.5, local=0.2.5
+[49.708s] [ros2doctor-environment-report-30] ros2test                                  : latest=0.9.1, local=0.9.1
+[49.708s] [ros2doctor-environment-report-30] map_msgs                                  : latest=2.6.0, local=2.6.0
+[49.708s] [ros2doctor-environment-report-30] sqlite3_vendor                            : latest=0.33.0, local=0.33.0
+[49.708s] [ros2doctor-environment-report-30] common_interfaces                         : latest=5.8.2, local=5.8.2
+[49.708s] [ros2doctor-environment-report-30] rosbag2_compression_zstd                  : latest=0.33.0, local=0.33.0
+[49.708s] [ros2doctor-environment-report-30] ament_mypy                                : latest=0.20.2, local=0.20.2
+[49.708s] [ros2doctor-environment-report-30] rqt_plot                                  : latest=1.7.2, local=1.7.2
+[49.708s] [ros2doctor-environment-report-30] tf2_eigen                                 : latest=0.44.0, local=0.44.0
+[49.708s] [ros2doctor-environment-report-30] gz_transport_vendor                       : latest=0.2.2, local=0.2.2
+[49.708s] [ros2doctor-environment-report-30] type_description_interfaces               : latest=2.4.2, local=2.4.2
+[49.708s] [ros2doctor-environment-report-30] rmw_implementation_cmake                  : latest=7.9.0, local=7.9.0
+[49.708s] [ros2doctor-environment-report-30] ament_cmake_core                          : latest=2.8.4, local=2.8.4
+[49.708s] [ros2doctor-environment-report-30] ament_flake8                              : latest=0.20.2, local=0.20.2
+[49.708s] [ros2doctor-environment-report-30] ament_package                             : latest=0.18.1, local=0.18.1
+[49.708s] [ros2doctor-environment-report-30] zenoh_security_tools                      : latest=0.8.2, local=0.8.2
+[49.708s] [ros2doctor-environment-report-30] gz_cmake_vendor                           : latest=0.3.1, local=0.3.1
+[49.708s] [ros2doctor-environment-report-30] message_filters                           : latest=7.3.0, local=7.3.0
+[49.709s] [ros2doctor-environment-report-30] rosidl_generator_cpp                      : latest=5.0.1, local=5.0.1
+[49.709s] [ros2doctor-environment-report-30] eigen3_cmake_module                       : latest=0.5.1, local=0.5.1
+[49.709s] [ros2doctor-environment-report-30] rosidl_typesupport_interface              : latest=5.0.1, local=5.0.1
+[49.709s] [ros2doctor-environment-report-30] rosidl_default_runtime                    : latest=1.8.1, local=1.8.1
+[49.709s] [ros2doctor-environment-report-30] class_loader                              : latest=2.9.0, local=2.9.0
+[49.709s] [ros2doctor-environment-report-30] rosidl_typesupport_introspection_cpp      : latest=5.0.1, local=5.0.1
+[49.709s] [ros2doctor-environment-report-30] ros_base                                  : latest=0.13.0, local=0.13.0
+[49.709s] [ros2doctor-environment-report-30] ament_cmake_copyright                     : latest=0.20.2, local=0.20.2
+[49.709s] [ros2doctor-environment-report-30] tracetools                                : latest=8.8.1, local=8.8.1
+[49.709s] [ros2doctor-environment-report-30] demo_nodes_py                             : latest=0.37.2, local=0.37.2
+[49.709s] [ros2doctor-environment-report-30] rcutils                                   : latest=7.0.1, local=7.0.1
+[49.709s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e59bec0>' ✓ '<launch.event_handlers.on_process_io.OnProcessIO object at 0x71e47e103860>'
+[49.709s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e151490>'
+[49.709s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e151490>' ✓ '<launch.event_handlers.on_process_io.OnProcessIO object at 0x71e47e1285f0>'
+[49.709s] [ros2doctor-environment-report-30] tf2_py                                    : latest=0.44.0, local=0.44.0
+[49.709s] [ros2doctor-environment-report-30] rcl_lifecycle                             : latest=10.2.3, local=10.2.3
+[49.709s] [ros2doctor-environment-report-30] std_msgs                                  : latest=5.8.2, local=5.8.2
+[49.709s] [ros2doctor-environment-report-30] gz_sim_vendor                             : latest=0.2.1, local=0.2.1
+[49.709s] [ros2doctor-environment-report-30] qt_gui_py_common                          : latest=2.10.1, local=2.10.1
+[49.709s] [ros2doctor-environment-report-30] ros_workspace                             : latest=1.0.3, local=1.0.3
+[49.709s] [ros2doctor-environment-report-30] ament_cmake_export_targets                : latest=2.8.4, local=2.8.4
+[49.709s] [ros2doctor-environment-report-30] tf2_tools                                 : latest=0.44.0, local=0.44.0
+[49.709s] [ros2doctor-environment-report-30] libyaml_vendor                            : latest=1.8.0, local=1.8.0
+[49.709s] [ros2doctor-environment-report-30] libstatistics_collector                   : latest=2.1.1, local=2.1.1
+[49.709s] [ros2doctor-environment-report-30] launch_testing_ament_cmake                : latest=3.9.2, local=3.9.2
+[49.709s] [ros2doctor-environment-report-30] actuator_msgs                             : latest=0.0.1, local=0.0.1
+[49.709s] [ros2doctor-environment-report-30] kdl_parser                                : latest=3.0.0, local=3.0.0
+[49.709s] [ros2doctor-environment-report-30] gps_msgs                                  : latest=2.1.1, local=2.1.1
+[49.709s] [ros2doctor-environment-report-30] eigen_stl_containers                      : latest=1.1.0, local=1.1.0
+[49.709s] [ros2doctor-environment-report-30] rmw_dds_common                            : latest=4.0.0, local=4.0.0
+[49.709s] [ros2doctor-environment-report-30] gz_utils_vendor                           : latest=0.3.0, local=0.3.0
+[49.709s] [ros2doctor-environment-report-30] tf2_sensor_msgs                           : latest=0.44.0, local=0.44.0
+[49.709s] [ros2doctor-environment-report-30] gz_plugin_vendor                          : latest=0.2.2, local=0.2.2
+[49.709s] [ros2doctor-environment-report-30] ament_cppcheck                            : latest=0.20.2, local=0.20.2
+[49.709s] [ros2doctor-environment-report-30] gz_math_vendor                            : latest=0.3.1, local=0.3.1
+[49.709s] [ros2doctor-environment-report-30] tf2_kdl                                   : latest=0.44.0, local=0.44.0
+[49.710s] [ros2doctor-environment-report-30] gz_fuel_tools_vendor                      : latest=0.2.2, local=0.2.2
+[49.710s] [ros2doctor-environment-report-30] ros_gz_bridge                             : latest=3.0.3, local=3.0.3
+[49.710s] [ros2doctor-environment-report-30] urdf                                      : latest=2.13.0, local=2.13.0
+[49.710s] [ros2doctor-environment-report-30] python_cmake_module                       : latest=0.12.0, local=0.12.0
+[49.710s] [ros2doctor-environment-report-30] mimick_vendor                             : latest=0.9.0, local=0.9.0
+[49.710s] [ros2doctor-environment-report-30] sensor_msgs_py                            : latest=5.8.2, local=5.8.2
+[49.710s] [ros2doctor-environment-report-30] ament_cmake_version                       : latest=2.8.4, local=2.8.4
+[49.710s] [ros2doctor-environment-report-30] rosidl_generator_c                        : latest=5.0.1, local=5.0.1
+[49.710s] [ros2doctor-environment-report-30] rosidl_dynamic_typesupport_fastrtps       : latest=0.5.0, local=0.5.0
+[49.710s] [ros2doctor-environment-report-30] ament_lint                                : latest=0.20.2, local=0.20.2
+[49.710s] [ros2doctor-environment-report-30] rosidl_generator_py                       : latest=0.26.0, local=0.25.0
+[49.710s] [ros2doctor-environment-report-30] gz_rendering_vendor                       : latest=0.2.3, local=0.2.3
+[49.710s] [ros2doctor-environment-report-30] rosbag2_storage_mcap                      : latest=0.33.0, local=0.33.0
+[49.710s] [ros2doctor-environment-report-30] python_qt_binding                         : latest=2.4.0, local=2.4.0
+[49.710s] [ros2doctor-environment-report-30] ament_cmake_export_include_directories    : latest=2.8.4, local=2.8.4
+[49.710s] [ros2doctor-environment-report-30] rosgraph_msgs                             : latest=2.4.2, local=2.4.2
+[49.710s] [ros2doctor-environment-report-30] rosidl_typesupport_fastrtps_cpp           : latest=3.9.1, local=3.9.1
+[49.710s] [ros2doctor-environment-report-30] trajectory_msgs                           : latest=5.8.2, local=5.8.2
+[49.710s] [ros2doctor-environment-report-30] ament_cmake_gen_version_h                 : latest=2.8.4, local=2.8.4
+[49.710s] [ros2doctor-environment-report-30] rviz_assimp_vendor                        : latest=15.1.7, local=15.1.7
+[49.710s] [ros2doctor-environment-report-30] sdl2_vendor                               : latest=3.3.0, local=3.3.0
+[49.710s] [ros2doctor-environment-report-30] ament_cmake_auto                          : latest=2.8.4, local=2.8.4
+[49.710s] [ros2doctor-environment-report-30] ament_cmake_lint_cmake                    : latest=0.20.2, local=0.20.2
+[49.710s] [ros2doctor-environment-report-30] nav_msgs                                  : latest=5.8.2, local=5.8.2
+[49.710s] [ros2doctor-environment-report-30] tf2_ros_py                                : latest=0.44.0, local=0.44.0
+[49.710s] [ros2doctor-environment-report-30] ros_gz_interfaces                         : latest=3.0.3, local=3.0.3
+[49.710s] [ros2doctor-environment-report-30] ros_core                                  : latest=0.13.0, local=0.13.0
+[49.710s] [ros2doctor-environment-report-30] composition                               : latest=0.37.2, local=0.37.2
+[49.710s] [ros2doctor-environment-report-30] ament_cmake_gtest                         : latest=2.8.4, local=2.8.4
+[49.710s] [ros2doctor-environment-report-30] mcap_vendor                               : latest=0.33.0, local=0.33.0
+[49.710s] [ros2doctor-environment-report-30] console_bridge_vendor                     : latest=1.9.1, local=1.9.1
+[49.710s] [ros2doctor-environment-report-30] test_interface_files                      : latest=0.14.1, local=0.14.1
+[49.710s] [ros2doctor-environment-report-30] rqt_topic                                 : latest=1.9.1, local=1.9.1
+[49.710s] [ros2doctor-environment-report-30] rclcpp_action                             : latest=30.1.0, local=30.1.0
+[49.710s] [ros2doctor-environment-report-30] rqt_gui                                   : latest=1.10.0, local=1.10.0
+[49.710s] [ros2doctor-environment-report-30] rosidl_typesupport_introspection_c        : latest=5.0.1, local=5.0.1
+[49.710s] [ros2doctor-environment-report-30] gz_common_vendor                          : latest=0.2.4, local=0.2.4
+[49.711s] [ros2doctor-environment-report-30] libcurl_vendor                            : latest=3.8.2, local=3.8.2
+[49.711s] [ros2doctor-environment-report-30] ament_cmake_export_dependencies           : latest=2.8.4, local=2.8.4
+[49.711s] [ros2doctor-environment-report-30] camera_info_manager                       : latest=6.3.0, local=6.3.0
+[49.711s] [ros2doctor-environment-report-30] ament_cmake_pep257                        : latest=0.20.2, local=0.20.2
+[49.711s] [ros2doctor-environment-report-30] ament_cmake_cppcheck                      : latest=0.20.2, local=0.20.2
+[49.711s] [ros2doctor-environment-report-30] ament_cmake_mypy                          : latest=0.20.2, local=0.20.2
+[49.711s] [ros2doctor-environment-report-30] rviz_common                               : latest=15.1.7, local=15.1.7
+[49.711s] [ros2doctor-environment-report-30] rmw_cyclonedds_cpp                        : latest=4.1.1, local=4.1.1
+[49.711s] [ros2doctor-environment-report-30] camera_calibration_parsers                : latest=6.3.0, local=6.3.0
+[49.711s] [ros2doctor-environment-report-30] rosbag2_storage_sqlite3                   : latest=0.33.0, local=0.33.0
+[49.711s] [ros2doctor-environment-report-30] tf2_geometry_msgs                         : latest=0.44.0, local=0.44.0
+[49.711s] [ros2doctor-environment-report-30] ament_cmake                               : latest=2.8.4, local=2.8.4
+[49.711s] [ros2doctor-environment-report-30] gz_gui_vendor                             : latest=0.2.1, local=0.2.1
+[49.711s] [ros2doctor-environment-report-30] point_cloud_transport                     : latest=5.3.0, local=5.3.0
+[49.711s] [ros2doctor-environment-report-30] rclcpp                                    : latest=30.1.0, local=30.1.0
+[49.711s] [ros2doctor-environment-report-30] rclpy                                     : latest=10.0.0, local=10.0.0
+[49.711s] [ros2doctor-environment-report-30] ros_testing                               : latest=0.9.1, local=0.9.1
+[49.711s] [ros2doctor-environment-report-30] ament_uncrustify                          : latest=0.20.2, local=0.20.2
+[49.711s] [ros2doctor-environment-report-30] rviz_default_plugins                      : latest=15.1.7, local=15.1.7
+[49.711s] [ros2doctor-environment-report-30] vision_msgs                               : latest=4.2.0, local=4.2.0
+[49.711s] [ros2doctor-environment-report-30] gz_tools_vendor                           : latest=0.1.2, local=0.1.2
+[49.711s] [ros2doctor-environment-report-30] tf2_bullet                                : latest=0.44.0, local=0.44.0
+[49.711s] [ros2doctor-environment-report-30] laser_geometry                            : latest=2.11.1, local=2.11.1
+[49.711s] [ros2doctor-environment-report-30] urdf_parser_plugin                        : latest=2.13.0, local=2.13.0
+[49.711s] [ros2doctor-environment-report-30] geometry_msgs                             : latest=5.8.2, local=5.8.2
+[49.711s] [ros2doctor-environment-report-30] ament_xmllint                             : latest=0.20.2, local=0.20.2
+[49.711s] [ros2doctor-environment-report-30] gz_ogre_next_vendor                       : latest=0.1.0, local=0.1.0
+[49.711s] [ros2doctor-environment-report-30] tinyxml2_vendor                           : latest=0.11.2, local=0.11.2
+[49.711s] [ros2doctor-environment-report-30] ros_environment                           : latest=4.4.1, local=4.4.1
+[49.711s] [ros2doctor-environment-report-30] gz_dartsim_vendor                         : latest=0.1.2, local=0.1.2
+[49.711s] [ros2doctor-environment-report-30] shape_msgs                                : latest=5.8.2, local=5.8.2
+[49.711s] [ros2doctor-environment-report-30] rosidl_core_runtime                       : latest=0.4.0, local=0.4.0
+[49.711s] [ros2doctor-environment-report-30] rmw_test_fixture_implementation           : latest=0.15.2, local=0.15.2
+[49.711s] [ros2doctor-environment-report-30] osrf_pycommon                             : latest=2.1.7, local=2.1.7
+[49.711s] [ros2doctor-environment-report-30] rosidl_runtime_c                          : latest=5.0.1, local=5.0.1
+[49.711s] [ros2doctor-environment-report-30] ros_gz_image                              : latest=3.0.3, local=3.0.3
+[49.711s] [ros2doctor-environment-report-30] ament_cmake_cpplint                       : latest=0.20.2, local=0.20.2
+[49.711s] [ros2doctor-environment-report-30] ament_cmake_export_link_flags             : latest=2.8.4, local=2.8.4
+[49.711s] [ros2doctor-environment-report-30] rosbag2_py                                : latest=0.33.0, local=0.33.0
+[49.711s] [ros2doctor-environment-report-30] rmw                                       : latest=7.9.0, local=7.9.0
+[49.711s] [ros2doctor-environment-report-30] zenoh_cpp_vendor                          : latest=0.8.2, local=0.8.2
+[49.712s] [ros2doctor-environment-report-30] python_orocos_kdl_vendor                  : latest=0.8.0, local=0.8.0
+[49.712s] [ros2doctor-environment-report-30] rosidl_runtime_py                         : latest=0.15.1, local=0.15.1
+[49.712s] [ros2doctor-environment-report-30] rosbag2_transport                         : latest=0.33.0, local=0.33.0
+[49.712s] [ros2doctor-environment-report-30] rosidl_generator_type_description         : latest=5.0.1, local=5.0.1
+[49.712s] [ros2doctor-environment-report-30] ament_cmake_libraries                     : latest=2.8.4, local=2.8.4
+[49.712s] [ros2doctor-environment-report-30] ament_cmake_ros                           : latest=0.15.2, local=0.15.2
+[49.712s] [ros2doctor-environment-report-30] rmw_test_fixture                          : latest=0.15.2, local=0.15.2
+[49.712s] [ros2doctor-environment-report-30] ros_gz                                    : latest=3.0.3, local=3.0.3
+[49.712s] [ros2doctor-environment-report-30] rclcpp_components                         : latest=30.1.0, local=30.1.0
+[49.712s] [ros2doctor-environment-report-30] rviz_imu_plugin                           : latest=2.2.1, local=2.2.1
+[49.713s] [ros2doctor-environment-report-30] rcl_logging_interface                     : latest=3.3.0, local=3.3.0
+[49.713s] [ros2doctor-environment-report-30] zstd_image_transport                      : latest=6.1.0, local=6.1.0
+[49.713s] [ros2doctor-environment-report-30] ament_cmake_clang_format                  : latest=0.20.2, local=0.20.2
+[49.713s] [ros2doctor-environment-report-30] ament_cmake_test                          : latest=2.8.4, local=2.8.4
+[49.713s] [ros2doctor-environment-report-30] v4l2_camera                               : latest=0.7.1, local=0.7.1
+[49.713s] [ros2doctor-environment-report-30] ros_gz_sim                                : latest=3.0.3, local=3.0.3
+[49.713s] [ros2doctor-environment-report-30] geographic_msgs                           : latest=1.0.6, local=1.0.6
+[49.713s] [ros2doctor-environment-report-30] interactive_markers                       : latest=2.8.0, local=2.8.0
+[49.713s] [ros2doctor-environment-report-30] launch                                    : latest=3.9.2, local=3.9.2
+[49.713s] [ros2doctor-environment-report-30] sros2                                     : latest=0.16.2, local=0.16.2
+[49.713s] [ros2doctor-environment-report-30] std_srvs                                  : latest=5.8.2, local=5.8.2
+[49.713s] [ros2doctor-environment-report-30] ament_index_cpp                           : latest=1.12.1, local=1.12.1
+[49.713s] [ros2doctor-environment-report-30] rmw_implementation                        : latest=3.1.2, local=3.1.2
+[49.713s] [ros2doctor-environment-report-30] zstd_vendor                               : latest=0.33.0, local=0.33.0
+[49.713s] [ros2doctor-environment-report-30] image_transport_plugins                   : latest=6.1.0, local=6.1.0
+[49.713s] [ros2doctor-environment-report-30] ament_cmake_uncrustify                    : latest=0.20.2, local=0.20.2
+[49.713s] [ros2doctor-environment-report-30] compressed_depth_image_transport          : latest=6.1.0, local=6.1.0
+[49.713s] [ros2doctor-environment-report-30] rosidl_dynamic_typesupport                : latest=0.4.0, local=0.4.0
+[49.713s] [ros2doctor-environment-report-30] rqt_gui_py                                : latest=1.10.0, local=1.10.0
+[49.713s] [ros2doctor-environment-report-30] robot_state_publisher                     : latest=3.5.2, local=3.5.2
+[49.713s] [ros2doctor-environment-report-30] rmw_zenoh_cpp                             : latest=0.8.2, local=0.8.2
+[49.713s] [ros2doctor-environment-report-30] rosidl_typesupport_fastrtps_c             : latest=3.9.1, local=3.9.1
+[49.713s] [ros2doctor-environment-report-30] lifecycle                                 : latest=0.37.2, local=0.37.2
+[49.713s] [ros2doctor-environment-report-30] rosidl_cli                                : latest=5.0.1, local=5.0.1
+[49.713s] [ros2doctor-environment-report-30] rqt_image_view                            : latest=2.0.2, local=2.0.2
+[49.713s] [ros2doctor-environment-report-30] rmw_security_common                       : latest=7.9.0, local=7.9.0
+[49.713s] [ros2doctor-environment-report-30] test_msgs                                 : latest=2.4.2, local=2.4.2
+[49.713s] [ros2doctor-environment-report-30] rclcpp_lifecycle                          : latest=30.1.0, local=30.1.0
+[49.713s] [ros2doctor-environment-report-30] ament_cmake_ros_core                      : latest=0.15.2, local=0.15.2
+[49.714s] [ros2doctor-environment-report-30] tf2                                       : latest=0.44.0, local=0.44.0
+[49.714s] [ros2doctor-environment-report-30] performance_test_fixture                  : latest=0.4.1, local=0.4.1
+[49.714s] [ros2doctor-environment-report-30] launch_yaml                               : latest=3.9.2, local=3.9.2
+[49.714s] [ros2doctor-environment-report-30] ament_cmake_gmock                         : latest=2.8.4, local=2.8.4
+[49.714s] [ros2doctor-environment-report-30] tf2_msgs                                  : latest=0.44.0, local=0.44.0
+[49.714s] [ros2doctor-environment-report-30] rosbag2                                   : latest=0.33.0, local=0.33.0
+[49.714s] [ros2doctor-environment-report-30] ament_lint_auto                           : latest=0.20.2, local=0.20.2
+[49.714s] [ros2doctor-environment-report-30] gz_sensors_vendor                         : latest=0.2.2, local=0.2.2
+[49.714s] [ros2doctor-environment-report-30] resource_retriever                        : latest=3.8.2, local=3.8.2
+[49.714s] [ros2doctor-environment-report-30] spdlog_vendor                             : latest=1.8.0, local=1.8.0
+[49.714s] [ros2doctor-environment-report-30] domain_coordinator                        : latest=0.15.2, local=0.15.2
+[49.714s] [ros2doctor-environment-report-30] ament_index_python                        : latest=1.12.1, local=1.12.1
+[49.714s] [ros2doctor-environment-report-30] rosidl_core_generators                    : latest=0.4.0, local=0.4.0
+[49.714s] [ros2doctor-environment-report-30] lifecycle_msgs                            : latest=2.4.2, local=2.4.2
+[49.714s] [ros2doctor-environment-report-30] diagnostic_msgs                           : latest=5.8.2, local=5.8.2
+[49.714s] [ros2doctor-environment-report-30] pluginlib                                 : latest=5.7.0, local=5.7.0
+[49.714s] [ros2doctor-environment-report-30] ros2launch                                : latest=0.29.2, local=0.29.2
+[49.714s] [ros2doctor-environment-report-30] 
+[49.714s] [ros2doctor-environment-report-30]    PLATFORM INFORMATION
+[49.714s] [ros2doctor-environment-report-30] system           : Linux
+[49.714s] [ros2doctor-environment-report-30] platform info    : Linux-6.14.0-27-generic-x86_64-with-glibc2.39
+[49.714s] [ros2doctor-environment-report-30] release          : 6.14.0-27-generic
+[49.714s] [ros2doctor-environment-report-30] processor        : x86_64
+[49.714s] [ros2doctor-environment-report-30] 
+[49.714s] [ros2doctor-environment-report-30]    QOS COMPATIBILITY LIST
+[49.714s] [ros2doctor-environment-report-30] compatibility status    : No publisher/subscriber pairs found
+[49.714s] [ros2doctor-environment-report-30] 
+[49.714s] [ros2doctor-environment-report-30]    RMW MIDDLEWARE
+[49.714s] [ros2doctor-environment-report-30] middleware name    : rmw_fastrtps_cpp
+[49.714s] [ros2doctor-environment-report-30] 
+[49.714s] [ros2doctor-environment-report-30]    ROS 2 INFORMATION
+[49.714s] [ros2doctor-environment-report-30] distribution name      : rolling
+[49.714s] [ros2doctor-environment-report-30] distribution type      : ros2
+[49.714s] [ros2doctor-environment-report-30] distribution status    : rolling
+[49.714s] [ros2doctor-environment-report-30] release platforms      : {'debian': ['bookworm'], 'rhel': ['9'], 'ubuntu': ['noble']}
+[49.714s] [ros2doctor-environment-report-30] 
+[49.714s] [ros2doctor-environment-report-30]    SERVICE LIST
+[49.714s] [ros2doctor-environment-report-30] service          : none
+[49.714s] [ros2doctor-environment-report-30] service count    : 0
+[49.714s] [ros2doctor-environment-report-30] client count     : 0
+[49.715s] [ros2doctor-environment-report-30] 
+[49.715s] [ros2doctor-environment-report-30]    TOPIC LIST
+[49.715s] [ros2doctor-environment-report-30] topic               : none
+[49.715s] [ros2doctor-environment-report-30] publisher count     : 0
+[49.715s] [ros2doctor-environment-report-30] subscriber count    : 0
+[49.715s] [ros2doctor-environment-report-30] 
+[49.715s] [ros2doctor-environment-report-30] ================================================================================
+[49.715s] [ros2doctor-environment-report-30]                                 !!! WARNING !!!                                 
+[49.715s] [ros2doctor-environment-report-30] ================================================================================
+[49.715s] [ros2doctor-environment-report-30] The report includes all ROS 2 endpoint information and system platform information.
+[49.715s] [ros2doctor-environment-report-30] Please review the report before sharing, as it may contain sensitive or private data.
+[49.715s] [ros2doctor-environment-report-30] ================================================================================
+[49.715s] [ros2doctor-environment-report-30] 
+[49.715s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e151490>' ✓ '<launch.event_handlers.on_process_io.OnProcessIO object at 0x71e47e103860>'
+[49.715s] [INFO] [ros2doctor-environment-report-30]: process has finished cleanly [pid 35721]
+[49.715s] [DEBUG] [launch.launch_context]: emitting event: 'launch.events.process.ProcessExited'
+[49.715s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e47e59b200>'
+[49.715s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e47e59b200>' ✓ '<launch.event_handlers.on_process_exit.OnProcessExit object at 0x71e47e129ac0>'
+[49.715s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e47e59b200>' ✓ '<launch.event_handlers.on_process_exit.OnProcessExit object at 0x71e47e128680>'
+[49.715s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e47e59b200>' ✓ '<launch.event_handlers.on_process_exit.OnProcessExit object at 0x71e47e102690>'
+[49.715s] [DEBUG] [launch.launch_context]: emitting event: 'launch.events.IncludeLaunchDescription'
+[49.715s] [DEBUG] [launch]: processing event: '<launch.events.include_launch_description.IncludeLaunchDescription object at 0x71e47e128860>'
+[49.715s] [DEBUG] [launch]: processing event: '<launch.events.include_launch_description.IncludeLaunchDescription object at 0x71e47e128860>' ✓ '<launch.event_handlers.on_include_launch_description.OnIncludeLaunchDescription object at 0x71e47e3e3d70>'
+[49.715s] [INFO] [ros2doctor-environment-report-31]: process started with pid [35803]
+[49.715s] [DEBUG] [launch.launch_context]: emitting event: 'launch.events.process.ProcessStarted'
+[49.715s] [DEBUG] [launch]: processing event: '<launch.events.process.process_started.ProcessStarted object at 0x71e47e12b860>'
+[49.715s] [DEBUG] [launch]: processing event: '<launch.events.process.process_started.ProcessStarted object at 0x71e47e12b860>' ✓ '<launch.event_handlers.on_process_start.OnProcessStart object at 0x71e47e102f30>'
+[49.715s] [DEBUG] [launch]: processing event: '<launch.events.process.process_started.ProcessStarted object at 0x71e47e12b860>' ✓ '<launch.event_handlers.on_process_start.OnProcessStart object at 0x71e47e102210>'
+[49.715s] [DEBUG] [launch.launch_context]: emitting event synchronously: 'launch.events.process.ProcessStdout'
+[49.715s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e150110>'
+[49.715s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e150110>' ✓ '<launch.event_handlers.on_process_io.OnProcessIO object at 0x71e47e14db80>'
+[49.715s] [ros2doctor-environment-report-31] 
+[49.715s] [ros2doctor-environment-report-31]    ACTION LIST
+[49.715s] [ros2doctor-environment-report-31] action                 : none
+[49.715s] [ros2doctor-environment-report-31] action server count    : 0
+[49.715s] [ros2doctor-environment-report-31] action client count    : 0
+[49.715s] [ros2doctor-environment-report-31] 
+[49.715s] [ros2doctor-environment-report-31]    ROS ENVIRONMENT
+[49.715s] [ros2doctor-environment-report-31] ros environment variables        : ROS_AUTOMATIC_DISCOVERY_RANGE=SUBNET, ROS_DISABLE_LOANED_MESSAGES=0, ROS_DISTRO=rolling, ROS_DOMAIN_ID=13
+[49.715s] [ros2doctor-environment-report-31] rcutils environment variables    : RCUTILS_COLORIZED_OUTPUT=0
+[49.715s] [ros2doctor-environment-report-31] rmw environment variables        : FASTDDS_BUILTIN_TRANSPORTS=UDPv6
+[49.716s] [ros2doctor-environment-report-31] 
+[49.716s] [ros2doctor-environment-report-31]    NETWORK CONFIGURATION
+[49.716s] [ros2doctor-environment-report-31] inet         : 127.0.0.1
+[49.716s] [ros2doctor-environment-report-31] inet4        : ['127.0.0.1']
+[49.716s] [ros2doctor-environment-report-31] inet6        : ['::1']
+[49.716s] [ros2doctor-environment-report-31] netmask      : 255.0.0.0
+[49.716s] [ros2doctor-environment-report-31] device       : lo
+[49.716s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e150110>' ✓ '<launch.event_handlers.on_process_io.OnProcessIO object at 0x71e47e103860>'
+[49.716s] [DEBUG] [launch.launch_context]: emitting event synchronously: 'launch.events.process.ProcessStdout'
+[49.716s] [DEBUG] [launch.launch_context]: emitting event synchronously: 'launch.events.process.ProcessStdout'
+[49.716s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e12b5f0>'
+[49.716s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e12b5f0>' ✓ '<launch.event_handlers.on_process_io.OnProcessIO object at 0x71e47e14db80>'
+[49.716s] [ros2doctor-environment-report-31] flags        : UP,LOOPBACK,RUNNING
+[49.716s] [ros2doctor-environment-report-31] mtu          : 65536
+[49.716s] [ros2doctor-environment-report-31] inet         : 192.168.86.64
+[49.716s] [ros2doctor-environment-report-31] inet4        : ['192.168.2.1', '192.168.86.64']
+[49.716s] [ros2doctor-environment-report-31] ether        : c4:ef:bb:e4:ea:e8
+[49.716s] [ros2doctor-environment-report-31] netmask      : 255.255.255.0
+[49.716s] [ros2doctor-environment-report-31] device       : enp118s0
+[49.716s] [ros2doctor-environment-report-31] flags        : UP,BROADCAST,RUNNING,MULTICAST
+[49.716s] [ros2doctor-environment-report-31] mtu          : 1500
+[49.716s] [ros2doctor-environment-report-31] broadcast    : 192.168.86.255
+[49.716s] [ros2doctor-environment-report-31] inet         : 192.168.86.20
+[49.716s] [ros2doctor-environment-report-31] inet4        : ['192.168.86.20']
+[49.716s] [ros2doctor-environment-report-31] ether        : ec:4c:8c:8f:c1:22
+[49.716s] [ros2doctor-environment-report-31] inet6        : ['fdf9:45bd:5a6:cb2f:ac0a:4c75:1482:bc2a', 'fdf9:45bd:5a6:cb2f:c361:2681:71db:2bdd', 'fe80::6be5:3f88:abdd:7291%wlp0s20f3']
+[49.716s] [ros2doctor-environment-report-31] netmask      : 255.255.255.0
+[49.716s] [ros2doctor-environment-report-31] device       : wlp0s20f3
+[49.716s] [ros2doctor-environment-report-31] flags        : UP,BROADCAST,RUNNING,MULTICAST
+[49.716s] [ros2doctor-environment-report-31] mtu          : 1500
+[49.716s] [ros2doctor-environment-report-31] broadcast    : 192.168.86.255
+[49.716s] [ros2doctor-environment-report-31] inet         : 172.17.0.1
+[49.716s] [ros2doctor-environment-report-31] inet4        : ['172.17.0.1']
+[49.716s] [ros2doctor-environment-report-31] ether        : 06:76:96:a0:38:ad
+[49.716s] [ros2doctor-environment-report-31] netmask      : 255.255.0.0
+[49.716s] [ros2doctor-environment-report-31] device       : docker0
+[49.716s] [ros2doctor-environment-report-31] flags        : UP,BROADCAST,MULTICAST
+[49.716s] [ros2doctor-environment-report-31] mtu          : 1500
+[49.716s] [ros2doctor-environment-report-31] broadcast    : 172.17.255.255
+[49.716s] [ros2doctor-environment-report-31] 
+[49.716s] [ros2doctor-environment-report-31]    PACKAGE VERSIONS
+[49.716s] [ros2doctor-environment-report-31] ros2doctor                                : latest=0.40.0, local=0.40.0
+[49.717s] [ros2doctor-environment-report-31] ros2action                                : latest=0.40.0, local=0.40.0
+[49.717s] [ros2doctor-environment-report-31] ros2cli                                   : latest=0.40.0, local=0.40.0
+[49.717s] [ros2doctor-environment-report-31] ros2topic                                 : latest=0.40.0, local=0.40.0
+[49.717s] [ros2doctor-environment-report-31] ros2component                             : latest=0.40.0, local=0.40.0
+[49.717s] [ros2doctor-environment-report-31] ros2param                                 : latest=0.40.0, local=0.40.0
+[49.717s] [ros2doctor-environment-report-31] ros2lifecycle                             : latest=0.40.0, local=0.40.0
+[49.717s] [ros2doctor-environment-report-31] ros2service                               : latest=0.40.0, local=0.40.0
+[49.717s] [ros2doctor-environment-report-31] ros2run                                   : latest=0.40.0, local=0.40.0
+[49.717s] [ros2doctor-environment-report-31] ros2pkg                                   : latest=0.40.0, local=0.40.0
+[49.717s] [ros2doctor-environment-report-31] ros2node                                  : latest=0.40.0, local=0.40.0
+[49.717s] [ros2doctor-environment-report-31] ros2multicast                             : latest=0.40.0, local=0.40.0
+[49.717s] [ros2doctor-environment-report-31] ros2lifecycle_test_fixtures               : latest=0.40.0, local=0.40.0
+[49.717s] [ros2doctor-environment-report-31] ros2interface                             : latest=0.40.0, local=0.40.0
+[49.717s] [ros2doctor-environment-report-31] ros2cli_test_interfaces                   : latest=0.40.0, local=0.40.0
+[49.717s] [ros2doctor-environment-report-31] ros2bag                                   : latest=0.33.0, local=0.33.0
+[49.717s] [ros2doctor-environment-report-31] ament_cmake_include_directories           : latest=2.8.4, local=2.8.4
+[49.717s] [ros2doctor-environment-report-31] launch_xml                                : latest=3.9.2, local=3.9.2
+[49.717s] [ros2doctor-environment-report-31] composition_interfaces                    : latest=2.4.2, local=2.4.2
+[49.717s] [ros2doctor-environment-report-31] demo_nodes_cpp                            : latest=0.37.2, local=0.37.2
+[49.717s] [ros2doctor-environment-report-31] ament_cmake_xmllint                       : latest=0.20.2, local=0.20.2
+[49.717s] [ros2doctor-environment-report-31] angles                                    : latest=1.16.0, local=1.16.0
+[49.717s] [ros2doctor-environment-report-31] pybind11_vendor                           : latest=3.3.1, local=3.3.1
+[49.717s] [ros2doctor-environment-report-31] rosidl_runtime_cpp                        : latest=5.0.1, local=5.0.1
+[49.717s] [ros2doctor-environment-report-31] statistics_msgs                           : latest=2.4.2, local=2.4.2
+[49.717s] [ros2doctor-environment-report-31] uncrustify_vendor                         : latest=3.2.0, local=3.2.0
+[49.717s] [ros2doctor-environment-report-31] flir_camera_msgs                          : latest=3.0.3, local=3.0.3
+[49.717s] [ros2doctor-environment-report-31] service_msgs                              : latest=2.4.2, local=2.4.2
+[49.717s] [ros2doctor-environment-report-31] ament_cmake_target_dependencies           : latest=2.8.4, local=2.8.4
+[49.717s] [ros2doctor-environment-report-31] ament_cmake_export_libraries              : latest=2.8.4, local=2.8.4
+[49.717s] [ros2doctor-environment-report-31] rosbag2_cpp                               : latest=0.33.0, local=0.33.0
+[49.717s] [ros2doctor-environment-report-31] launch_ros                                : latest=0.29.2, local=0.29.2
+[49.717s] [ros2doctor-environment-report-31] rosidl_adapter                            : latest=5.0.1, local=5.0.1
+[49.717s] [ros2doctor-environment-report-31] rqt_py_common                             : latest=1.10.0, local=1.10.0
+[49.717s] [ros2doctor-environment-report-31] rmw_fastrtps_shared_cpp                   : latest=9.4.2, local=9.4.2
+[49.717s] [ros2doctor-environment-report-31] ament_lint_cmake                          : latest=0.20.2, local=0.20.2
+[49.717s] [ros2doctor-environment-report-31] sros2_cmake                               : latest=0.16.2, local=0.16.2
+[49.717s] [ros2doctor-environment-report-31] launch_testing_ros                        : latest=0.29.2, local=0.29.2
+[49.717s] [ros2doctor-environment-report-31] tango_icons_vendor                        : latest=0.5.1, local=0.5.1
+[49.717s] [ros2doctor-environment-report-31] liblz4_vendor                             : latest=0.33.0, local=0.33.0
+[49.717s] [ros2doctor-environment-report-31] orocos_kdl_vendor                         : latest=0.8.0, local=0.8.0
+[49.717s] [ros2doctor-environment-report-31] rpyutils                                  : latest=0.7.1, local=0.7.1
+[49.717s] [ros2doctor-environment-report-31] rcl_yaml_param_parser                     : latest=10.2.3, local=10.2.3
+[49.718s] [ros2doctor-environment-report-31] tf2_eigen_kdl                             : latest=0.44.0, local=0.44.0
+[49.718s] [ros2doctor-environment-report-31] tf2_ros                                   : latest=0.44.0, local=0.44.0
+[49.718s] [ros2doctor-environment-report-31] compressed_image_transport                : latest=6.1.0, local=6.1.0
+[49.718s] [ros2doctor-environment-report-31] image_transport                           : latest=6.3.0, local=6.3.0
+[49.718s] [ros2doctor-environment-report-31] rosbag2_storage_default_plugins           : latest=0.33.0, local=0.33.0
+[49.718s] [ros2doctor-environment-report-31] ament_cmake_export_definitions            : latest=2.8.4, local=2.8.4
+[49.718s] [ros2doctor-environment-report-31] qt_gui_cpp                                : latest=2.10.1, local=2.10.1
+[49.718s] [ros2doctor-environment-report-31] rcl_action                                : latest=10.2.3, local=10.2.3
+[49.718s] [ros2doctor-environment-report-31] example_interfaces                        : latest=0.14.1, local=0.14.1
+[49.718s] [ros2doctor-environment-report-31] rosidl_typesupport_c                      : latest=3.4.0, local=3.4.0
+[49.718s] [ros2doctor-environment-report-31] launch_testing                            : latest=3.9.2, local=3.9.2
+[49.718s] [ros2doctor-environment-report-31] qt_gui                                    : latest=2.10.1, local=2.10.1
+[49.718s] [ros2doctor-environment-report-31] sensor_msgs                               : latest=5.8.2, local=5.8.2
+[49.718s] [ros2doctor-environment-report-31] xacro                                     : latest=2.0.13, local=2.0.13
+[49.718s] [ros2doctor-environment-report-31] ament_cmake_pytest                        : latest=2.8.4, local=2.8.4
+[49.718s] [ros2doctor-environment-report-31] rosidl_default_generators                 : latest=1.8.1, local=1.8.1
+[49.718s] [ros2doctor-environment-report-31] ament_cmake_google_benchmark              : latest=2.8.4, local=2.8.4
+[49.718s] [ros2doctor-environment-report-31] ament_cmake_python                        : latest=2.8.4, local=2.8.4
+[49.718s] [ros2doctor-environment-report-31] yaml_cpp_vendor                           : latest=9.2.0, local=9.2.0
+[49.718s] [ros2doctor-environment-report-31] ament_cmake_vendor_package                : latest=2.8.4, local=2.8.4
+[49.718s] [ros2doctor-environment-report-31] rosidl_cmake                              : latest=5.0.1, local=5.0.1
+[49.718s] [ros2doctor-environment-report-31] stereo_msgs                               : latest=5.8.2, local=5.8.2
+[49.718s] [ros2doctor-environment-report-31] joy                                       : latest=3.3.0, local=3.3.0
+[49.718s] [ros2doctor-environment-report-31] theora_image_transport                    : latest=6.1.0, local=6.1.0
+[49.718s] [ros2doctor-environment-report-31] rosidl_typesupport_cpp                    : latest=3.4.0, local=3.4.0
+[49.718s] [ros2doctor-environment-report-31] unique_identifier_msgs                    : latest=2.8.1, local=2.8.1
+[49.718s] [ros2doctor-environment-report-31] ament_cpplint                             : latest=0.20.2, local=0.20.2
+[49.718s] [ros2doctor-environment-report-31] builtin_interfaces                        : latest=2.4.2, local=2.4.2
+[49.718s] [ros2doctor-environment-report-31] rcl                                       : latest=10.2.3, local=10.2.3
+[49.718s] [ros2doctor-environment-report-31] rviz_ogre_vendor                          : latest=15.1.7, local=15.1.7
+[49.718s] [ros2doctor-environment-report-31] ros_gz_sim_demos                          : latest=3.0.3, local=3.0.3
+[49.718s] [ros2doctor-environment-report-31] rcpputils                                 : latest=2.14.2, local=2.14.2
+[49.718s] [ros2doctor-environment-report-31] rosbag2_storage                           : latest=0.33.0, local=0.33.0
+[49.718s] [ros2doctor-environment-report-31] rqt_gui_cpp                               : latest=1.10.0, local=1.10.0
+[49.718s] [ros2doctor-environment-report-31] rcl_interfaces                            : latest=2.4.2, local=2.4.2
+[49.718s] [ros2doctor-environment-report-31] ament_lint_common                         : latest=0.20.2, local=0.20.2
+[49.718s] [ros2doctor-environment-report-31] ament_copyright                           : latest=0.20.2, local=0.20.2
+[49.718s] [ros2doctor-environment-report-31] visualization_msgs                        : latest=5.8.2, local=5.8.2
+[49.718s] [ros2doctor-environment-report-31] cv_bridge                                 : latest=4.1.0, local=4.1.0
+[49.718s] [ros2doctor-environment-report-31] ament_cmake_flake8                        : latest=0.20.2, local=0.20.2
+[49.718s] [ros2doctor-environment-report-31] gz_physics_vendor                         : latest=0.2.2, local=0.2.2
+[49.719s] [ros2doctor-environment-report-31] rviz_resource_interfaces                  : latest=15.1.7, local=15.1.7
+[49.719s] [ros2doctor-environment-report-31] rosbag2_interfaces                        : latest=0.33.0, local=0.33.0
+[49.719s] [ros2doctor-environment-report-31] rviz_rendering                            : latest=15.1.7, local=15.1.7
+[49.719s] [ros2doctor-environment-report-31] rosbag2_compression                       : latest=0.33.0, local=0.33.0
+[49.719s] [ros2doctor-environment-report-31] rcl_logging_spdlog                        : latest=3.3.0, local=3.3.0
+[49.719s] [ros2doctor-environment-report-31] sdformat_urdf                             : latest=2.0.2, local=2.0.2
+[49.719s] [ros2doctor-environment-report-31] gz_msgs_vendor                            : latest=0.2.3, local=0.2.3
+[49.719s] [ros2doctor-environment-report-31] rosidl_parser                             : latest=5.0.1, local=5.0.1
+[49.719s] [ros2doctor-environment-report-31] rosidl_pycommon                           : latest=5.0.1, local=5.0.1
+[49.719s] [ros2doctor-environment-report-31] rmw_fastrtps_cpp                          : latest=9.4.2, local=9.4.2
+[49.719s] [ros2doctor-environment-report-31] ament_pep257                              : latest=0.20.2, local=0.20.2
+[49.719s] [ros2doctor-environment-report-31] ros2cli_common_extensions                 : latest=0.5.1, local=0.5.1
+[49.719s] [ros2doctor-environment-report-31] keyboard_handler                          : latest=0.5.0, local=0.5.0
+[49.719s] [ros2doctor-environment-report-31] action_msgs                               : latest=2.4.2, local=2.4.2
+[49.719s] [ros2doctor-environment-report-31] rviz2                                     : latest=15.1.7, local=15.1.7
+[49.719s] [ros2doctor-environment-report-31] diagnostic_updater                        : latest=4.4.6, local=4.4.6
+[49.719s] [ros2doctor-environment-report-31] ament_clang_format                        : latest=0.20.2, local=0.20.2
+[49.719s] [ros2doctor-environment-report-31] spinnaker_camera_driver                   : latest=3.0.3, local=3.0.3
+[49.719s] [ros2doctor-environment-report-31] geometry2                                 : latest=0.44.0, local=0.44.0
+[49.719s] [ros2doctor-environment-report-31] sdformat_vendor                           : latest=0.2.5, local=0.2.5
+[49.719s] [ros2doctor-environment-report-31] ros2test                                  : latest=0.9.1, local=0.9.1
+[49.719s] [ros2doctor-environment-report-31] map_msgs                                  : latest=2.6.0, local=2.6.0
+[49.719s] [ros2doctor-environment-report-31] sqlite3_vendor                            : latest=0.33.0, local=0.33.0
+[49.719s] [ros2doctor-environment-report-31] common_interfaces                         : latest=5.8.2, local=5.8.2
+[49.719s] [ros2doctor-environment-report-31] rosbag2_compression_zstd                  : latest=0.33.0, local=0.33.0
+[49.719s] [ros2doctor-environment-report-31] ament_mypy                                : latest=0.20.2, local=0.20.2
+[49.719s] [ros2doctor-environment-report-31] rqt_plot                                  : latest=1.7.2, local=1.7.2
+[49.719s] [ros2doctor-environment-report-31] tf2_eigen                                 : latest=0.44.0, local=0.44.0
+[49.719s] [ros2doctor-environment-report-31] gz_transport_vendor                       : latest=0.2.2, local=0.2.2
+[49.719s] [ros2doctor-environment-report-31] type_description_interfaces               : latest=2.4.2, local=2.4.2
+[49.719s] [ros2doctor-environment-report-31] rmw_implementation_cmake                  : latest=7.9.0, local=7.9.0
+[49.719s] [ros2doctor-environment-report-31] ament_cmake_core                          : latest=2.8.4, local=2.8.4
+[49.719s] [ros2doctor-environment-report-31] ament_flake8                              : latest=0.20.2, local=0.20.2
+[49.719s] [ros2doctor-environment-report-31] ament_package                             : latest=0.18.1, local=0.18.1
+[49.719s] [ros2doctor-environment-report-31] zenoh_security_tools                      : latest=0.8.2, local=0.8.2
+[49.719s] [ros2doctor-environment-report-31] gz_cmake_vendor                           : latest=0.3.1, local=0.3.1
+[49.719s] [ros2doctor-environment-report-31] message_filters                           : latest=7.3.0, local=7.3.0
+[49.719s] [ros2doctor-environment-report-31] rosidl_generator_cpp                      : latest=5.0.1, local=5.0.1
+[49.719s] [ros2doctor-environment-report-31] eigen3_cmake_module                       : latest=0.5.1, local=0.5.1
+[49.719s] [ros2doctor-environment-report-31] rosidl_typesupport_interface              : latest=5.0.1, local=5.0.1
+[49.719s] [ros2doctor-environment-report-31] rosidl_default_runtime                    : latest=1.8.1, local=1.8.1
+[49.720s] [ros2doctor-environment-report-31] class_loader                              : latest=2.9.0, local=2.9.0
+[49.720s] [ros2doctor-environment-report-31] rosidl_typesupport_introspection_cpp      : latest=5.0.1, local=5.0.1
+[49.720s] [ros2doctor-environment-report-31] ros_base                                  : latest=0.13.0, local=0.13.0
+[49.720s] [ros2doctor-environment-report-31] ament_cmake_copyright                     : latest=0.20.2, local=0.20.2
+[49.720s] [ros2doctor-environment-report-31] tracetools                                : latest=8.8.1, local=8.8.1
+[49.720s] [ros2doctor-environment-report-31] demo_nodes_py                             : latest=0.37.2, local=0.37.2
+[49.720s] [ros2doctor-environment-report-31] rcutils                                   : latest=7.0.1, local=7.0.1
+[49.720s] [ros2doctor-environment-report-31] tf2_py                                    : latest=0.44.0, local=0.44.0
+[49.720s] [ros2doctor-environment-report-31] rcl_lifecycle                             : latest=10.2.3, local=10.2.3
+[49.720s] [ros2doctor-environment-report-31] std_msgs                                  : latest=5.8.2, local=5.8.2
+[49.720s] [ros2doctor-environment-report-31] gz_sim_vendor                             : latest=0.2.1, local=0.2.1
+[49.720s] [ros2doctor-environment-report-31] qt_gui_py_common                          : latest=2.10.1, local=2.10.1
+[49.720s] [ros2doctor-environment-report-31] ros_workspace                             : latest=1.0.3, local=1.0.3
+[49.720s] [ros2doctor-environment-report-31] ament_cmake_export_targets                : latest=2.8.4, local=2.8.4
+[49.720s] [ros2doctor-environment-report-31] tf2_tools                                 : latest=0.44.0, local=0.44.0
+[49.720s] [ros2doctor-environment-report-31] libyaml_vendor                            : latest=1.8.0, local=1.8.0
+[49.720s] [ros2doctor-environment-report-31] libstatistics_collector                   : latest=2.1.1, local=2.1.1
+[49.720s] [ros2doctor-environment-report-31] launch_testing_ament_cmake                : latest=3.9.2, local=3.9.2
+[49.720s] [ros2doctor-environment-report-31] actuator_msgs                             : latest=0.0.1, local=0.0.1
+[49.720s] [ros2doctor-environment-report-31] kdl_parser                                : latest=3.0.0, local=3.0.0
+[49.720s] [ros2doctor-environment-report-31] gps_msgs                                  : latest=2.1.1, local=2.1.1
+[49.720s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e12b5f0>' ✓ '<launch.event_handlers.on_process_io.OnProcessIO object at 0x71e47e103860>'
+[49.720s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e128770>'
+[49.720s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e128770>' ✓ '<launch.event_handlers.on_process_io.OnProcessIO object at 0x71e47e14db80>'
+[49.720s] [ros2doctor-environment-report-31] eigen_stl_containers                      : latest=1.1.0, local=1.1.0
+[49.720s] [ros2doctor-environment-report-31] rmw_dds_common                            : latest=4.0.0, local=4.0.0
+[49.720s] [ros2doctor-environment-report-31] gz_utils_vendor                           : latest=0.3.0, local=0.3.0
+[49.720s] [ros2doctor-environment-report-31] tf2_sensor_msgs                           : latest=0.44.0, local=0.44.0
+[49.720s] [ros2doctor-environment-report-31] gz_plugin_vendor                          : latest=0.2.2, local=0.2.2
+[49.720s] [ros2doctor-environment-report-31] ament_cppcheck                            : latest=0.20.2, local=0.20.2
+[49.720s] [ros2doctor-environment-report-31] gz_math_vendor                            : latest=0.3.1, local=0.3.1
+[49.720s] [ros2doctor-environment-report-31] tf2_kdl                                   : latest=0.44.0, local=0.44.0
+[49.720s] [ros2doctor-environment-report-31] gz_fuel_tools_vendor                      : latest=0.2.2, local=0.2.2
+[49.720s] [ros2doctor-environment-report-31] ros_gz_bridge                             : latest=3.0.3, local=3.0.3
+[49.720s] [ros2doctor-environment-report-31] urdf                                      : latest=2.13.0, local=2.13.0
+[49.720s] [ros2doctor-environment-report-31] python_cmake_module                       : latest=0.12.0, local=0.12.0
+[49.720s] [ros2doctor-environment-report-31] mimick_vendor                             : latest=0.9.0, local=0.9.0
+[49.720s] [ros2doctor-environment-report-31] sensor_msgs_py                            : latest=5.8.2, local=5.8.2
+[49.720s] [ros2doctor-environment-report-31] ament_cmake_version                       : latest=2.8.4, local=2.8.4
+[49.720s] [ros2doctor-environment-report-31] rosidl_generator_c                        : latest=5.0.1, local=5.0.1
+[49.720s] [ros2doctor-environment-report-31] rosidl_dynamic_typesupport_fastrtps       : latest=0.5.0, local=0.5.0
+[49.721s] [ros2doctor-environment-report-31] ament_lint                                : latest=0.20.2, local=0.20.2
+[49.721s] [ros2doctor-environment-report-31] rosidl_generator_py                       : latest=0.26.0, local=0.25.0
+[49.721s] [ros2doctor-environment-report-31] gz_rendering_vendor                       : latest=0.2.3, local=0.2.3
+[49.721s] [ros2doctor-environment-report-31] rosbag2_storage_mcap                      : latest=0.33.0, local=0.33.0
+[49.721s] [ros2doctor-environment-report-31] python_qt_binding                         : latest=2.4.0, local=2.4.0
+[49.721s] [ros2doctor-environment-report-31] ament_cmake_export_include_directories    : latest=2.8.4, local=2.8.4
+[49.721s] [ros2doctor-environment-report-31] rosgraph_msgs                             : latest=2.4.2, local=2.4.2
+[49.721s] [ros2doctor-environment-report-31] rosidl_typesupport_fastrtps_cpp           : latest=3.9.1, local=3.9.1
+[49.721s] [ros2doctor-environment-report-31] trajectory_msgs                           : latest=5.8.2, local=5.8.2
+[49.721s] [ros2doctor-environment-report-31] ament_cmake_gen_version_h                 : latest=2.8.4, local=2.8.4
+[49.721s] [ros2doctor-environment-report-31] rviz_assimp_vendor                        : latest=15.1.7, local=15.1.7
+[49.721s] [ros2doctor-environment-report-31] sdl2_vendor                               : latest=3.3.0, local=3.3.0
+[49.721s] [ros2doctor-environment-report-31] ament_cmake_auto                          : latest=2.8.4, local=2.8.4
+[49.721s] [ros2doctor-environment-report-31] ament_cmake_lint_cmake                    : latest=0.20.2, local=0.20.2
+[49.721s] [ros2doctor-environment-report-31] nav_msgs                                  : latest=5.8.2, local=5.8.2
+[49.721s] [ros2doctor-environment-report-31] tf2_ros_py                                : latest=0.44.0, local=0.44.0
+[49.721s] [ros2doctor-environment-report-31] ros_gz_interfaces                         : latest=3.0.3, local=3.0.3
+[49.721s] [ros2doctor-environment-report-31] ros_core                                  : latest=0.13.0, local=0.13.0
+[49.721s] [ros2doctor-environment-report-31] composition                               : latest=0.37.2, local=0.37.2
+[49.721s] [ros2doctor-environment-report-31] ament_cmake_gtest                         : latest=2.8.4, local=2.8.4
+[49.721s] [ros2doctor-environment-report-31] mcap_vendor                               : latest=0.33.0, local=0.33.0
+[49.721s] [ros2doctor-environment-report-31] console_bridge_vendor                     : latest=1.9.1, local=1.9.1
+[49.721s] [ros2doctor-environment-report-31] test_interface_files                      : latest=0.14.1, local=0.14.1
+[49.721s] [ros2doctor-environment-report-31] rqt_topic                                 : latest=1.9.1, local=1.9.1
+[49.721s] [ros2doctor-environment-report-31] rclcpp_action                             : latest=30.1.0, local=30.1.0
+[49.721s] [ros2doctor-environment-report-31] rqt_gui                                   : latest=1.10.0, local=1.10.0
+[49.721s] [ros2doctor-environment-report-31] rosidl_typesupport_introspection_c        : latest=5.0.1, local=5.0.1
+[49.721s] [ros2doctor-environment-report-31] gz_common_vendor                          : latest=0.2.4, local=0.2.4
+[49.721s] [ros2doctor-environment-report-31] libcurl_vendor                            : latest=3.8.2, local=3.8.2
+[49.721s] [ros2doctor-environment-report-31] ament_cmake_export_dependencies           : latest=2.8.4, local=2.8.4
+[49.721s] [ros2doctor-environment-report-31] camera_info_manager                       : latest=6.3.0, local=6.3.0
+[49.721s] [ros2doctor-environment-report-31] ament_cmake_pep257                        : latest=0.20.2, local=0.20.2
+[49.721s] [ros2doctor-environment-report-31] ament_cmake_cppcheck                      : latest=0.20.2, local=0.20.2
+[49.721s] [ros2doctor-environment-report-31] ament_cmake_mypy                          : latest=0.20.2, local=0.20.2
+[49.721s] [ros2doctor-environment-report-31] rviz_common                               : latest=15.1.7, local=15.1.7
+[49.721s] [ros2doctor-environment-report-31] rmw_cyclonedds_cpp                        : latest=4.1.1, local=4.1.1
+[49.721s] [ros2doctor-environment-report-31] camera_calibration_parsers                : latest=6.3.0, local=6.3.0
+[49.721s] [ros2doctor-environment-report-31] rosbag2_storage_sqlite3                   : latest=0.33.0, local=0.33.0
+[49.721s] [ros2doctor-environment-report-31] tf2_geometry_msgs                         : latest=0.44.0, local=0.44.0
+[49.721s] [ros2doctor-environment-report-31] ament_cmake                               : latest=2.8.4, local=2.8.4
+[49.722s] [ros2doctor-environment-report-31] gz_gui_vendor                             : latest=0.2.1, local=0.2.1
+[49.722s] [ros2doctor-environment-report-31] point_cloud_transport                     : latest=5.3.0, local=5.3.0
+[49.722s] [ros2doctor-environment-report-31] rclcpp                                    : latest=30.1.0, local=30.1.0
+[49.722s] [ros2doctor-environment-report-31] rclpy                                     : latest=10.0.0, local=10.0.0
+[49.722s] [ros2doctor-environment-report-31] ros_testing                               : latest=0.9.1, local=0.9.1
+[49.722s] [ros2doctor-environment-report-31] ament_uncrustify                          : latest=0.20.2, local=0.20.2
+[49.722s] [ros2doctor-environment-report-31] rviz_default_plugins                      : latest=15.1.7, local=15.1.7
+[49.722s] [ros2doctor-environment-report-31] vision_msgs                               : latest=4.2.0, local=4.2.0
+[49.722s] [ros2doctor-environment-report-31] gz_tools_vendor                           : latest=0.1.2, local=0.1.2
+[49.722s] [ros2doctor-environment-report-31] tf2_bullet                                : latest=0.44.0, local=0.44.0
+[49.722s] [ros2doctor-environment-report-31] laser_geometry                            : latest=2.11.1, local=2.11.1
+[49.722s] [ros2doctor-environment-report-31] urdf_parser_plugin                        : latest=2.13.0, local=2.13.0
+[49.722s] [ros2doctor-environment-report-31] geometry_msgs                             : latest=5.8.2, local=5.8.2
+[49.722s] [ros2doctor-environment-report-31] ament_xmllint                             : latest=0.20.2, local=0.20.2
+[49.722s] [ros2doctor-environment-report-31] gz_ogre_next_vendor                       : latest=0.1.0, local=0.1.0
+[49.722s] [ros2doctor-environment-report-31] tinyxml2_vendor                           : latest=0.11.2, local=0.11.2
+[49.722s] [ros2doctor-environment-report-31] ros_environment                           : latest=4.4.1, local=4.4.1
+[49.722s] [ros2doctor-environment-report-31] gz_dartsim_vendor                         : latest=0.1.2, local=0.1.2
+[49.722s] [ros2doctor-environment-report-31] shape_msgs                                : latest=5.8.2, local=5.8.2
+[49.722s] [ros2doctor-environment-report-31] rosidl_core_runtime                       : latest=0.4.0, local=0.4.0
+[49.722s] [ros2doctor-environment-report-31] rmw_test_fixture_implementation           : latest=0.15.2, local=0.15.2
+[49.722s] [ros2doctor-environment-report-31] osrf_pycommon                             : latest=2.1.7, local=2.1.7
+[49.722s] [ros2doctor-environment-report-31] rosidl_runtime_c                          : latest=5.0.1, local=5.0.1
+[49.722s] [ros2doctor-environment-report-31] ros_gz_image                              : latest=3.0.3, local=3.0.3
+[49.722s] [ros2doctor-environment-report-31] ament_cmake_cpplint                       : latest=0.20.2, local=0.20.2
+[49.722s] [ros2doctor-environment-report-31] ament_cmake_export_link_flags             : latest=2.8.4, local=2.8.4
+[49.722s] [ros2doctor-environment-report-31] rosbag2_py                                : latest=0.33.0, local=0.33.0
+[49.722s] [ros2doctor-environment-report-31] rmw                                       : latest=7.9.0, local=7.9.0
+[49.722s] [ros2doctor-environment-report-31] zenoh_cpp_vendor                          : latest=0.8.2, local=0.8.2
+[49.722s] [ros2doctor-environment-report-31] python_orocos_kdl_vendor                  : latest=0.8.0, local=0.8.0
+[49.722s] [ros2doctor-environment-report-31] rosidl_runtime_py                         : latest=0.15.1, local=0.15.1
+[49.722s] [ros2doctor-environment-report-31] rosbag2_transport                         : latest=0.33.0, local=0.33.0
+[49.722s] [ros2doctor-environment-report-31] rosidl_generator_type_description         : latest=5.0.1, local=5.0.1
+[49.722s] [ros2doctor-environment-report-31] ament_cmake_libraries                     : latest=2.8.4, local=2.8.4
+[49.722s] [ros2doctor-environment-report-31] ament_cmake_ros                           : latest=0.15.2, local=0.15.2
+[49.722s] [ros2doctor-environment-report-31] rmw_test_fixture                          : latest=0.15.2, local=0.15.2
+[49.722s] [ros2doctor-environment-report-31] ros_gz                                    : latest=3.0.3, local=3.0.3
+[49.722s] [ros2doctor-environment-report-31] rclcpp_components                         : latest=30.1.0, local=30.1.0
+[49.722s] [ros2doctor-environment-report-31] rviz_imu_plugin                           : latest=2.2.1, local=2.2.1
+[49.722s] [ros2doctor-environment-report-31] rcl_logging_interface                     : latest=3.3.0, local=3.3.0
+[49.722s] [ros2doctor-environment-report-31] zstd_image_transport                      : latest=6.1.0, local=6.1.0
+[49.723s] [ros2doctor-environment-report-31] ament_cmake_clang_format                  : latest=0.20.2, local=0.20.2
+[49.723s] [ros2doctor-environment-report-31] ament_cmake_test                          : latest=2.8.4, local=2.8.4
+[49.723s] [ros2doctor-environment-report-31] v4l2_camera                               : latest=0.7.1, local=0.7.1
+[49.723s] [ros2doctor-environment-report-31] ros_gz_sim                                : latest=3.0.3, local=3.0.3
+[49.723s] [ros2doctor-environment-report-31] geographic_msgs                           : latest=1.0.6, local=1.0.6
+[49.723s] [ros2doctor-environment-report-31] interactive_markers                       : latest=2.8.0, local=2.8.0
+[49.723s] [ros2doctor-environment-report-31] launch                                    : latest=3.9.2, local=3.9.2
+[49.723s] [ros2doctor-environment-report-31] sros2                                     : latest=0.16.2, local=0.16.2
+[49.723s] [ros2doctor-environment-report-31] std_srvs                                  : latest=5.8.2, local=5.8.2
+[49.723s] [ros2doctor-environment-report-31] ament_index_cpp                           : latest=1.12.1, local=1.12.1
+[49.723s] [ros2doctor-environment-report-31] rmw_implementation                        : latest=3.1.2, local=3.1.2
+[49.723s] [ros2doctor-environment-report-31] zstd_vendor                               : latest=0.33.0, local=0.33.0
+[49.723s] [ros2doctor-environment-report-31] image_transport_plugins                   : latest=6.1.0, local=6.1.0
+[49.723s] [ros2doctor-environment-report-31] ament_cmake_uncrustify                    : latest=0.20.2, local=0.20.2
+[49.723s] [ros2doctor-environment-report-31] compressed_depth_image_transport          : latest=6.1.0, local=6.1.0
+[49.723s] [ros2doctor-environment-report-31] rosidl_dynamic_typesupport                : latest=0.4.0, local=0.4.0
+[49.723s] [ros2doctor-environment-report-31] rqt_gui_py                                : latest=1.10.0, local=1.10.0
+[49.723s] [ros2doctor-environment-report-31] robot_state_publisher                     : latest=3.5.2, local=3.5.2
+[49.723s] [ros2doctor-environment-report-31] rmw_zenoh_cpp                             : latest=0.8.2, local=0.8.2
+[49.723s] [ros2doctor-environment-report-31] rosidl_typesupport_fastrtps_c             : latest=3.9.1, local=3.9.1
+[49.723s] [ros2doctor-environment-report-31] lifecycle                                 : latest=0.37.2, local=0.37.2
+[49.723s] [ros2doctor-environment-report-31] rosidl_cli                                : latest=5.0.1, local=5.0.1
+[49.723s] [ros2doctor-environment-report-31] rqt_image_view                            : latest=2.0.2, local=2.0.2
+[49.723s] [ros2doctor-environment-report-31] rmw_security_common                       : latest=7.9.0, local=7.9.0
+[49.723s] [ros2doctor-environment-report-31] test_msgs                                 : latest=2.4.2, local=2.4.2
+[49.723s] [ros2doctor-environment-report-31] rclcpp_lifecycle                          : latest=30.1.0, local=30.1.0
+[49.723s] [ros2doctor-environment-report-31] ament_cmake_ros_core                      : latest=0.15.2, local=0.15.2
+[49.723s] [ros2doctor-environment-report-31] tf2                                       : latest=0.44.0, local=0.44.0
+[49.723s] [ros2doctor-environment-report-31] performance_test_fixture                  : latest=0.4.1, local=0.4.1
+[49.723s] [ros2doctor-environment-report-31] launch_yaml                               : latest=3.9.2, local=3.9.2
+[49.723s] [ros2doctor-environment-report-31] ament_cmake_gmock                         : latest=2.8.4, local=2.8.4
+[49.723s] [ros2doctor-environment-report-31] tf2_msgs                                  : latest=0.44.0, local=0.44.0
+[49.723s] [ros2doctor-environment-report-31] rosbag2                                   : latest=0.33.0, local=0.33.0
+[49.723s] [ros2doctor-environment-report-31] ament_lint_auto                           : latest=0.20.2, local=0.20.2
+[49.723s] [ros2doctor-environment-report-31] gz_sensors_vendor                         : latest=0.2.2, local=0.2.2
+[49.723s] [ros2doctor-environment-report-31] resource_retriever                        : latest=3.8.2, local=3.8.2
+[49.723s] [ros2doctor-environment-report-31] spdlog_vendor                             : latest=1.8.0, local=1.8.0
+[49.723s] [ros2doctor-environment-report-31] domain_coordinator                        : latest=0.15.2, local=0.15.2
+[49.723s] [ros2doctor-environment-report-31] ament_index_python                        : latest=1.12.1, local=1.12.1
+[49.723s] [ros2doctor-environment-report-31] rosidl_core_generators                    : latest=0.4.0, local=0.4.0
+[49.723s] [ros2doctor-environment-report-31] lifecycle_msgs                            : latest=2.4.2, local=2.4.2
+[49.724s] [ros2doctor-environment-report-31] diagnostic_msgs                           : latest=5.8.2, local=5.8.2
+[49.724s] [ros2doctor-environment-report-31] pluginlib                                 : latest=5.7.0, local=5.7.0
+[49.724s] [ros2doctor-environment-report-31] ros2launch                                : latest=0.29.2, local=0.29.2
+[49.724s] [ros2doctor-environment-report-31] 
+[49.724s] [ros2doctor-environment-report-31]    PLATFORM INFORMATION
+[49.724s] [ros2doctor-environment-report-31] system           : Linux
+[49.724s] [ros2doctor-environment-report-31] platform info    : Linux-6.14.0-27-generic-x86_64-with-glibc2.39
+[49.724s] [ros2doctor-environment-report-31] release          : 6.14.0-27-generic
+[49.724s] [ros2doctor-environment-report-31] processor        : x86_64
+[49.724s] [ros2doctor-environment-report-31] 
+[49.724s] [ros2doctor-environment-report-31]    QOS COMPATIBILITY LIST
+[49.724s] [ros2doctor-environment-report-31] compatibility status    : No publisher/subscriber pairs found
+[49.724s] [ros2doctor-environment-report-31] 
+[49.724s] [ros2doctor-environment-report-31]    RMW MIDDLEWARE
+[49.724s] [ros2doctor-environment-report-31] middleware name    : rmw_fastrtps_cpp
+[49.724s] [ros2doctor-environment-report-31] 
+[49.724s] [ros2doctor-environment-report-31]    ROS 2 INFORMATION
+[49.724s] [ros2doctor-environment-report-31] distribution name      : rolling
+[49.724s] [ros2doctor-environment-report-31] distribution type      : ros2
+[49.724s] [ros2doctor-environment-report-31] distribution status    : rolling
+[49.724s] [ros2doctor-environment-report-31] release platforms      : {'debian': ['bookworm'], 'rhel': ['9'], 'ubuntu': ['noble']}
+[49.724s] [ros2doctor-environment-report-31] 
+[49.724s] [ros2doctor-environment-report-31]    SERVICE LIST
+[49.724s] [ros2doctor-environment-report-31] service          : none
+[49.724s] [ros2doctor-environment-report-31] service count    : 0
+[49.724s] [ros2doctor-environment-report-31] client count     : 0
+[49.724s] [ros2doctor-environment-report-31] 
+[49.724s] [ros2doctor-environment-report-31]    TOPIC LIST
+[49.724s] [ros2doctor-environment-report-31] topic               : none
+[49.724s] [ros2doctor-environment-report-31] publisher count     : 0
+[49.724s] [ros2doctor-environment-report-31] subscriber count    : 0
+[49.724s] [ros2doctor-environment-report-31] 
+[49.724s] [ros2doctor-environment-report-31] ================================================================================
+[49.724s] [ros2doctor-environment-report-31]                                 !!! WARNING !!!                                 
+[49.724s] [ros2doctor-environment-report-31] ================================================================================
+[49.724s] [ros2doctor-environment-report-31] The report includes all ROS 2 endpoint information and system platform information.
+[49.724s] [ros2doctor-environment-report-31] Please review the report before sharing, as it may contain sensitive or private data.
+[49.724s] [ros2doctor-environment-report-31] ================================================================================
+[49.724s] [ros2doctor-environment-report-31] 
+[49.724s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e128770>' ✓ '<launch.event_handlers.on_process_io.OnProcessIO object at 0x71e47e103860>'
+[49.724s] [INFO] [ros2doctor-environment-report-31]: process has finished cleanly [pid 35803]
+[49.725s] [DEBUG] [launch.launch_context]: emitting event: 'launch.events.process.ProcessExited'
+[49.725s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e47e1526f0>'
+[49.725s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e47e1526f0>' ✓ '<launch.event_handlers.on_process_exit.OnProcessExit object at 0x71e47e14c560>'
+[49.725s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e47e1526f0>' ✓ '<launch.event_handlers.on_process_exit.OnProcessExit object at 0x71e47e14ec30>'
+[49.725s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e47e1526f0>' ✓ '<launch.event_handlers.on_process_exit.OnProcessExit object at 0x71e47e102690>'
+[49.725s] [DEBUG] [launch.launch_context]: emitting event: 'launch.events.Shutdown'
+[49.725s] [DEBUG] [launch]: processing event: '<launch.events.shutdown.Shutdown object at 0x71e49e579040>'
+[49.725s] [DEBUG] [launch]: processing event: '<launch.events.shutdown.Shutdown object at 0x71e49e579040>' ✓ '<launch.event_handlers.on_shutdown.OnShutdown object at 0x71e47e14fa10>'
+[49.725s] [DEBUG] [launch]: processing event: '<launch.events.shutdown.Shutdown object at 0x71e49e579040>' ✓ '<launch.event_handlers.on_shutdown.OnShutdown object at 0x71e47e128c20>'
+[49.725s] [DEBUG] [launch]: processing event: '<launch.events.shutdown.Shutdown object at 0x71e49e579040>' ✓ '<launch.event_handlers.on_shutdown.OnShutdown object at 0x71e47e1512b0>'
+[49.725s] [DEBUG] [launch]: processing event: '<launch.events.shutdown.Shutdown object at 0x71e49e579040>' ✓ '<launch.event_handlers.on_shutdown.OnShutdown object at 0x71e49dc01310>'
+[49.725s] [DEBUG] [launch]: processing event: '<launch.events.shutdown.Shutdown object at 0x71e49e579040>' ✓ '<launch.event_handlers.on_shutdown.OnShutdown object at 0x71e47e103800>'
+[49.725s] [DEBUG] [launch]: processing event: '<launch.events.shutdown.Shutdown object at 0x71e49e579040>' ✓ '<launch.event_handlers.on_shutdown.OnShutdown object at 0x71e47e3e1f40>'
+[49.725s] 
+[49.725s] Starting test run test_report copy[rmw_cyclonedds_cpp]
+[49.725s] [DEBUG] [launch.launch_context]: emitting event synchronously: 'launch.events.IncludeLaunchDescription'
+[49.725s] [INFO] [launch]: All log files can be found below /home/rmc/.ros/log/2025-08-06-00-22-12-310469-rmc-Legion-Pro-7-16IRX9H-34827
+[49.725s] [INFO] [launch]: Default logging verbosity is set to DEBUG
+[49.725s] [DEBUG] [launch]: processing event: '<launch.events.include_launch_description.IncludeLaunchDescription object at 0x71e47e14c200>'
+[49.725s] [DEBUG] [launch]: processing event: '<launch.events.include_launch_description.IncludeLaunchDescription object at 0x71e47e14c200>' ✓ '<launch.event_handlers.on_include_launch_description.OnIncludeLaunchDescription object at 0x71e47e1021e0>'
+[49.725s] [INFO] [daemon-stop-32]: process started with pid [35866]
+[49.725s] [DEBUG] [launch.launch_context]: emitting event: 'launch.events.process.ProcessStarted'
+[49.725s] [DEBUG] [launch]: processing event: '<launch.events.process.process_started.ProcessStarted object at 0x71e47e14c740>'
+[49.725s] [DEBUG] [launch]: processing event: '<launch.events.process.process_started.ProcessStarted object at 0x71e47e14c740>' ✓ '<launch.event_handlers.on_process_start.OnProcessStart object at 0x71e47e14f800>'
+[49.725s] [DEBUG] [launch]: processing event: '<launch.events.process.process_started.ProcessStarted object at 0x71e47e14c740>' ✓ '<launch.event_handlers.on_process_start.OnProcessStart object at 0x71e47e5a8440>'
+[49.725s] [DEBUG] [launch.launch_context]: emitting event synchronously: 'launch.events.process.ProcessStdout'
+[49.725s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e14d550>'
+[49.725s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e14d550>' ✓ '<launch.event_handlers.on_process_io.OnProcessIO object at 0x71e47e344d70>'
+[49.725s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e14d550>' ✓ '<launch.event_handlers.on_process_io.OnProcessIO object at 0x71e47e14d400>'
+[49.725s] [INFO] [daemon-stop-32]: process has finished cleanly [pid 35866]
+[49.725s] [DEBUG] [launch.launch_context]: emitting event: 'launch.events.process.ProcessExited'
+[49.725s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e47e14cfe0>'
+[49.725s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e47e14cfe0>' ✓ '<launch.event_handlers.on_process_exit.OnProcessExit object at 0x71e47e346810>'
+[49.725s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e47e14cfe0>' ✓ '<launch.event_handlers.on_process_exit.OnProcessExit object at 0x71e47e3456d0>'
+[49.725s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e47e14cfe0>' ✓ '<launch.event_handlers.on_process_exit.OnProcessExit object at 0x71e47e14e720>'
+[49.725s] [INFO] [daemon-start-33]: process started with pid [35869]
+[49.725s] [DEBUG] [launch.launch_context]: emitting event: 'launch.events.process.ProcessStarted'
+[49.725s] [DEBUG] [launch]: processing event: '<launch.events.process.process_started.ProcessStarted object at 0x71e47e347440>'
+[49.725s] [DEBUG] [launch]: processing event: '<launch.events.process.process_started.ProcessStarted object at 0x71e47e347440>' ✓ '<launch.event_handlers.on_process_start.OnProcessStart object at 0x71e47e14f800>'
+[49.725s] [DEBUG] [launch]: processing event: '<launch.events.process.process_started.ProcessStarted object at 0x71e47e347440>' ✓ '<launch.event_handlers.on_process_start.OnProcessStart object at 0x71e47e5a8440>'
+[49.726s] [DEBUG] [launch.launch_context]: emitting event synchronously: 'launch.events.process.ProcessStdout'
+[49.726s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e2e8740>'
+[49.726s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e2e8740>' ✓ '<launch.event_handlers.on_process_io.OnProcessIO object at 0x71e47e3442c0>'
+[49.726s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e2e8740>' ✓ '<launch.event_handlers.on_process_io.OnProcessIO object at 0x71e47e14d400>'
+[49.726s] [INFO] [daemon-start-33]: process has finished cleanly [pid 35869]
+[49.726s] [DEBUG] [launch.launch_context]: emitting event: 'launch.events.process.ProcessExited'
+[49.726s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e47e3448c0>'
+[49.726s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e47e3448c0>' ✓ '<launch.event_handlers.on_process_exit.OnProcessExit object at 0x71e47e345c40>'
+[49.726s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e47e3448c0>' ✓ '<launch.event_handlers.on_process_exit.OnProcessExit object at 0x71e47e345f70>'
+[49.726s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e47e3448c0>' ✓ '<launch.event_handlers.on_process_exit.OnProcessExit object at 0x71e47e14e720>'
+[49.726s] [DEBUG] [launch.launch_context]: emitting event: 'launch.events.IncludeLaunchDescription'
+[49.726s] [DEBUG] [launch]: processing event: '<launch.events.include_launch_description.IncludeLaunchDescription object at 0x71e47e19ec30>'
+[49.726s] [DEBUG] [launch]: processing event: '<launch.events.include_launch_description.IncludeLaunchDescription object at 0x71e47e19ec30>' ✓ '<launch.event_handlers.on_include_launch_description.OnIncludeLaunchDescription object at 0x71e47e1021e0>'
+[49.726s] [INFO] [ros2doctor-environment-report-34]: process started with pid [35885]
+[49.726s] [DEBUG] [launch.launch_context]: emitting event: 'launch.events.process.ProcessStarted'
+[49.726s] [DEBUG] [launch]: processing event: '<launch.events.process.process_started.ProcessStarted object at 0x71e47e19e540>'
+[49.726s] [DEBUG] [launch]: processing event: '<launch.events.process.process_started.ProcessStarted object at 0x71e47e19e540>' ✓ '<launch.event_handlers.on_process_start.OnProcessStart object at 0x71e47e14f800>'
+[49.726s] [DEBUG] [launch]: processing event: '<launch.events.process.process_started.ProcessStarted object at 0x71e47e19e540>' ✓ '<launch.event_handlers.on_process_start.OnProcessStart object at 0x71e47e5a8440>'
+[49.726s] [DEBUG] [launch.launch_context]: emitting event synchronously: 'launch.events.process.ProcessStdout'
+[49.726s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e19ff20>'
+[49.726s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e19ff20>' ✓ '<launch.event_handlers.on_process_io.OnProcessIO object at 0x71e47e19fa10>'
+[49.726s] [ros2doctor-environment-report-34] 
+[49.726s] [ros2doctor-environment-report-34]    ACTION LIST
+[49.726s] [ros2doctor-environment-report-34] action                 : none
+[49.726s] [ros2doctor-environment-report-34] action server count    : 0
+[49.726s] [ros2doctor-environment-report-34] action client count    : 0
+[49.726s] [ros2doctor-environment-report-34] 
+[49.726s] [ros2doctor-environment-report-34]    ROS ENVIRONMENT
+[49.726s] [ros2doctor-environment-report-34] ros environment variables        : ROS_AUTOMATIC_DISCOVERY_RANGE=SUBNET, ROS_DISABLE_LOANED_MESSAGES=0, ROS_DISTRO=rolling, ROS_DOMAIN_ID=85
+[49.726s] [ros2doctor-environment-report-34] rcutils environment variables    : RCUTILS_COLORIZED_OUTPUT=0
+[49.726s] [ros2doctor-environment-report-34] rmw environment variables        : CYCLONEDDS_URI=<CycloneDDS><Domain><General></General></Domain></CycloneDDS>
+[49.726s] [ros2doctor-environment-report-34] 
+[49.726s] [ros2doctor-environment-report-34]    NETWORK CONFIGURATION
+[49.726s] [ros2doctor-environment-report-34] inet         : 127.0.0.1
+[49.726s] [ros2doctor-environment-report-34] inet4        : ['127.0.0.1']
+[49.726s] [ros2doctor-environment-report-34] inet6        : ['::1']
+[49.726s] [ros2doctor-environment-report-34] netmask      : 255.0.0.0
+[49.726s] [ros2doctor-environment-report-34] device       : lo
+[49.726s] [ros2doctor-environment-report-34] flags        : UP,LOOPBACK,RUNNING
+[49.726s] [ros2doctor-environment-report-34] mtu          : 65536
+[49.726s] [ros2doctor-environment-report-34] inet         : 192.168.86.64
+[49.727s] [ros2doctor-environment-report-34] inet4        : ['192.168.2.1', '192.168.86.64']
+[49.727s] [ros2doctor-environment-report-34] ether        : c4:ef:bb:e4:ea:e8
+[49.727s] [ros2doctor-environment-report-34] netmask      : 255.255.255.0
+[49.727s] [ros2doctor-environment-report-34] device       : enp118s0
+[49.727s] [ros2doctor-environment-report-34] flags        : UP,BROADCAST,RUNNING,MULTICAST
+[49.727s] [ros2doctor-environment-report-34] mtu          : 1500
+[49.727s] [ros2doctor-environment-report-34] broadcast    : 192.168.86.255
+[49.727s] [ros2doctor-environment-report-34] inet         : 192.168.86.20
+[49.727s] [ros2doctor-environment-report-34] inet4        : ['192.168.86.20']
+[49.727s] [ros2doctor-environment-report-34] ether        : ec:4c:8c:8f:c1:22
+[49.727s] [ros2doctor-environment-report-34] inet6        : ['fdf9:45bd:5a6:cb2f:ac0a:4c75:1482:bc2a', 'fdf9:45bd:5a6:cb2f:c361:2681:71db:2bdd', 'fe80::6be5:3f88:abdd:7291%wlp0s20f3']
+[49.727s] [ros2doctor-environment-report-34] netmask      : 255.255.255.0
+[49.727s] [ros2doctor-environment-report-34] device       : wlp0s20f3
+[49.727s] [ros2doctor-environment-report-34] flags        : UP,BROADCAST,RUNNING,MULTICAST
+[49.727s] [ros2doctor-environment-report-34] mtu          : 1500
+[49.727s] [ros2doctor-environment-report-34] broadcast    : 192.168.86.255
+[49.727s] [ros2doctor-environment-report-34] inet         : 172.17.0.1
+[49.727s] [ros2doctor-environment-report-34] inet4        : ['172.17.0.1']
+[49.727s] [ros2doctor-environment-report-34] ether        : 06:76:96:a0:38:ad
+[49.727s] [ros2doctor-environment-report-34] netmask      : 255.255.0.0
+[49.727s] [ros2doctor-environment-report-34] device       : docker0
+[49.727s] [ros2doctor-environment-report-34] flags        : UP,BROADCAST,MULTICAST
+[49.727s] [ros2doctor-environment-report-34] mtu          : 1500
+[49.727s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e19ff20>' ✓ '<launch.event_handlers.on_process_io.OnProcessIO object at 0x71e47e14d400>'
+[49.727s] [DEBUG] [launch.launch_context]: emitting event synchronously: 'launch.events.process.ProcessStdout'
+[49.727s] [DEBUG] [launch.launch_context]: emitting event synchronously: 'launch.events.process.ProcessStdout'
+[49.727s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e19ec30>'
+[49.727s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e19ec30>' ✓ '<launch.event_handlers.on_process_io.OnProcessIO object at 0x71e47e19fa10>'
+[49.727s] [ros2doctor-environment-report-34] broadcast    : 172.17.255.255
+[49.727s] [ros2doctor-environment-report-34] 
+[49.727s] [ros2doctor-environment-report-34]    PACKAGE VERSIONS
+[49.727s] [ros2doctor-environment-report-34] ros2doctor                                : latest=0.40.0, local=0.40.0
+[49.727s] [ros2doctor-environment-report-34] ros2action                                : latest=0.40.0, local=0.40.0
+[49.727s] [ros2doctor-environment-report-34] ros2cli                                   : latest=0.40.0, local=0.40.0
+[49.727s] [ros2doctor-environment-report-34] ros2topic                                 : latest=0.40.0, local=0.40.0
+[49.727s] [ros2doctor-environment-report-34] ros2component                             : latest=0.40.0, local=0.40.0
+[49.727s] [ros2doctor-environment-report-34] ros2param                                 : latest=0.40.0, local=0.40.0
+[49.727s] [ros2doctor-environment-report-34] ros2lifecycle                             : latest=0.40.0, local=0.40.0
+[49.727s] [ros2doctor-environment-report-34] ros2service                               : latest=0.40.0, local=0.40.0
+[49.727s] [ros2doctor-environment-report-34] ros2run                                   : latest=0.40.0, local=0.40.0
+[49.727s] [ros2doctor-environment-report-34] ros2pkg                                   : latest=0.40.0, local=0.40.0
+[49.728s] [ros2doctor-environment-report-34] ros2node                                  : latest=0.40.0, local=0.40.0
+[49.728s] [ros2doctor-environment-report-34] ros2multicast                             : latest=0.40.0, local=0.40.0
+[49.728s] [ros2doctor-environment-report-34] ros2lifecycle_test_fixtures               : latest=0.40.0, local=0.40.0
+[49.728s] [ros2doctor-environment-report-34] ros2interface                             : latest=0.40.0, local=0.40.0
+[49.728s] [ros2doctor-environment-report-34] ros2cli_test_interfaces                   : latest=0.40.0, local=0.40.0
+[49.728s] [ros2doctor-environment-report-34] ros2bag                                   : latest=0.33.0, local=0.33.0
+[49.728s] [ros2doctor-environment-report-34] ament_cmake_include_directories           : latest=2.8.4, local=2.8.4
+[49.728s] [ros2doctor-environment-report-34] launch_xml                                : latest=3.9.2, local=3.9.2
+[49.728s] [ros2doctor-environment-report-34] composition_interfaces                    : latest=2.4.2, local=2.4.2
+[49.728s] [ros2doctor-environment-report-34] demo_nodes_cpp                            : latest=0.37.2, local=0.37.2
+[49.728s] [ros2doctor-environment-report-34] ament_cmake_xmllint                       : latest=0.20.2, local=0.20.2
+[49.728s] [ros2doctor-environment-report-34] angles                                    : latest=1.16.0, local=1.16.0
+[49.728s] [ros2doctor-environment-report-34] pybind11_vendor                           : latest=3.3.1, local=3.3.1
+[49.728s] [ros2doctor-environment-report-34] rosidl_runtime_cpp                        : latest=5.0.1, local=5.0.1
+[49.728s] [ros2doctor-environment-report-34] statistics_msgs                           : latest=2.4.2, local=2.4.2
+[49.728s] [ros2doctor-environment-report-34] uncrustify_vendor                         : latest=3.2.0, local=3.2.0
+[49.728s] [ros2doctor-environment-report-34] flir_camera_msgs                          : latest=3.0.3, local=3.0.3
+[49.728s] [ros2doctor-environment-report-34] service_msgs                              : latest=2.4.2, local=2.4.2
+[49.728s] [ros2doctor-environment-report-34] ament_cmake_target_dependencies           : latest=2.8.4, local=2.8.4
+[49.728s] [ros2doctor-environment-report-34] ament_cmake_export_libraries              : latest=2.8.4, local=2.8.4
+[49.728s] [ros2doctor-environment-report-34] rosbag2_cpp                               : latest=0.33.0, local=0.33.0
+[49.728s] [ros2doctor-environment-report-34] launch_ros                                : latest=0.29.2, local=0.29.2
+[49.728s] [ros2doctor-environment-report-34] rosidl_adapter                            : latest=5.0.1, local=5.0.1
+[49.728s] [ros2doctor-environment-report-34] rqt_py_common                             : latest=1.10.0, local=1.10.0
+[49.728s] [ros2doctor-environment-report-34] rmw_fastrtps_shared_cpp                   : latest=9.4.2, local=9.4.2
+[49.728s] [ros2doctor-environment-report-34] ament_lint_cmake                          : latest=0.20.2, local=0.20.2
+[49.728s] [ros2doctor-environment-report-34] sros2_cmake                               : latest=0.16.2, local=0.16.2
+[49.728s] [ros2doctor-environment-report-34] launch_testing_ros                        : latest=0.29.2, local=0.29.2
+[49.728s] [ros2doctor-environment-report-34] tango_icons_vendor                        : latest=0.5.1, local=0.5.1
+[49.728s] [ros2doctor-environment-report-34] liblz4_vendor                             : latest=0.33.0, local=0.33.0
+[49.728s] [ros2doctor-environment-report-34] orocos_kdl_vendor                         : latest=0.8.0, local=0.8.0
+[49.728s] [ros2doctor-environment-report-34] rpyutils                                  : latest=0.7.1, local=0.7.1
+[49.728s] [ros2doctor-environment-report-34] rcl_yaml_param_parser                     : latest=10.2.3, local=10.2.3
+[49.728s] [ros2doctor-environment-report-34] tf2_eigen_kdl                             : latest=0.44.0, local=0.44.0
+[49.728s] [ros2doctor-environment-report-34] tf2_ros                                   : latest=0.44.0, local=0.44.0
+[49.728s] [ros2doctor-environment-report-34] compressed_image_transport                : latest=6.1.0, local=6.1.0
+[49.728s] [ros2doctor-environment-report-34] image_transport                           : latest=6.3.0, local=6.3.0
+[49.728s] [ros2doctor-environment-report-34] rosbag2_storage_default_plugins           : latest=0.33.0, local=0.33.0
+[49.728s] [ros2doctor-environment-report-34] ament_cmake_export_definitions            : latest=2.8.4, local=2.8.4
+[49.728s] [ros2doctor-environment-report-34] qt_gui_cpp                                : latest=2.10.1, local=2.10.1
+[49.728s] [ros2doctor-environment-report-34] rcl_action                                : latest=10.2.3, local=10.2.3
+[49.729s] [ros2doctor-environment-report-34] example_interfaces                        : latest=0.14.1, local=0.14.1
+[49.729s] [ros2doctor-environment-report-34] rosidl_typesupport_c                      : latest=3.4.0, local=3.4.0
+[49.729s] [ros2doctor-environment-report-34] launch_testing                            : latest=3.9.2, local=3.9.2
+[49.729s] [ros2doctor-environment-report-34] qt_gui                                    : latest=2.10.1, local=2.10.1
+[49.729s] [ros2doctor-environment-report-34] sensor_msgs                               : latest=5.8.2, local=5.8.2
+[49.729s] [ros2doctor-environment-report-34] xacro                                     : latest=2.0.13, local=2.0.13
+[49.729s] [ros2doctor-environment-report-34] ament_cmake_pytest                        : latest=2.8.4, local=2.8.4
+[49.729s] [ros2doctor-environment-report-34] rosidl_default_generators                 : latest=1.8.1, local=1.8.1
+[49.729s] [ros2doctor-environment-report-34] ament_cmake_google_benchmark              : latest=2.8.4, local=2.8.4
+[49.729s] [ros2doctor-environment-report-34] ament_cmake_python                        : latest=2.8.4, local=2.8.4
+[49.729s] [ros2doctor-environment-report-34] yaml_cpp_vendor                           : latest=9.2.0, local=9.2.0
+[49.729s] [ros2doctor-environment-report-34] ament_cmake_vendor_package                : latest=2.8.4, local=2.8.4
+[49.729s] [ros2doctor-environment-report-34] rosidl_cmake                              : latest=5.0.1, local=5.0.1
+[49.729s] [ros2doctor-environment-report-34] stereo_msgs                               : latest=5.8.2, local=5.8.2
+[49.729s] [ros2doctor-environment-report-34] joy                                       : latest=3.3.0, local=3.3.0
+[49.729s] [ros2doctor-environment-report-34] theora_image_transport                    : latest=6.1.0, local=6.1.0
+[49.729s] [ros2doctor-environment-report-34] rosidl_typesupport_cpp                    : latest=3.4.0, local=3.4.0
+[49.729s] [ros2doctor-environment-report-34] unique_identifier_msgs                    : latest=2.8.1, local=2.8.1
+[49.729s] [ros2doctor-environment-report-34] ament_cpplint                             : latest=0.20.2, local=0.20.2
+[49.729s] [ros2doctor-environment-report-34] builtin_interfaces                        : latest=2.4.2, local=2.4.2
+[49.729s] [ros2doctor-environment-report-34] rcl                                       : latest=10.2.3, local=10.2.3
+[49.729s] [ros2doctor-environment-report-34] rviz_ogre_vendor                          : latest=15.1.7, local=15.1.7
+[49.729s] [ros2doctor-environment-report-34] ros_gz_sim_demos                          : latest=3.0.3, local=3.0.3
+[49.729s] [ros2doctor-environment-report-34] rcpputils                                 : latest=2.14.2, local=2.14.2
+[49.729s] [ros2doctor-environment-report-34] rosbag2_storage                           : latest=0.33.0, local=0.33.0
+[49.729s] [ros2doctor-environment-report-34] rqt_gui_cpp                               : latest=1.10.0, local=1.10.0
+[49.729s] [ros2doctor-environment-report-34] rcl_interfaces                            : latest=2.4.2, local=2.4.2
+[49.729s] [ros2doctor-environment-report-34] ament_lint_common                         : latest=0.20.2, local=0.20.2
+[49.729s] [ros2doctor-environment-report-34] ament_copyright                           : latest=0.20.2, local=0.20.2
+[49.729s] [ros2doctor-environment-report-34] visualization_msgs                        : latest=5.8.2, local=5.8.2
+[49.729s] [ros2doctor-environment-report-34] cv_bridge                                 : latest=4.1.0, local=4.1.0
+[49.729s] [ros2doctor-environment-report-34] ament_cmake_flake8                        : latest=0.20.2, local=0.20.2
+[49.729s] [ros2doctor-environment-report-34] gz_physics_vendor                         : latest=0.2.2, local=0.2.2
+[49.729s] [ros2doctor-environment-report-34] rviz_resource_interfaces                  : latest=15.1.7, local=15.1.7
+[49.729s] [ros2doctor-environment-report-34] rosbag2_interfaces                        : latest=0.33.0, local=0.33.0
+[49.729s] [ros2doctor-environment-report-34] rviz_rendering                            : latest=15.1.7, local=15.1.7
+[49.729s] [ros2doctor-environment-report-34] rosbag2_compression                       : latest=0.33.0, local=0.33.0
+[49.729s] [ros2doctor-environment-report-34] rcl_logging_spdlog                        : latest=3.3.0, local=3.3.0
+[49.729s] [ros2doctor-environment-report-34] sdformat_urdf                             : latest=2.0.2, local=2.0.2
+[49.729s] [ros2doctor-environment-report-34] gz_msgs_vendor                            : latest=0.2.3, local=0.2.3
+[49.729s] [ros2doctor-environment-report-34] rosidl_parser                             : latest=5.0.1, local=5.0.1
+[49.729s] [ros2doctor-environment-report-34] rosidl_pycommon                           : latest=5.0.1, local=5.0.1
+[49.730s] [ros2doctor-environment-report-34] rmw_fastrtps_cpp                          : latest=9.4.2, local=9.4.2
+[49.730s] [ros2doctor-environment-report-34] ament_pep257                              : latest=0.20.2, local=0.20.2
+[49.730s] [ros2doctor-environment-report-34] ros2cli_common_extensions                 : latest=0.5.1, local=0.5.1
+[49.730s] [ros2doctor-environment-report-34] keyboard_handler                          : latest=0.5.0, local=0.5.0
+[49.730s] [ros2doctor-environment-report-34] action_msgs                               : latest=2.4.2, local=2.4.2
+[49.730s] [ros2doctor-environment-report-34] rviz2                                     : latest=15.1.7, local=15.1.7
+[49.730s] [ros2doctor-environment-report-34] diagnostic_updater                        : latest=4.4.6, local=4.4.6
+[49.730s] [ros2doctor-environment-report-34] ament_clang_format                        : latest=0.20.2, local=0.20.2
+[49.730s] [ros2doctor-environment-report-34] spinnaker_camera_driver                   : latest=3.0.3, local=3.0.3
+[49.730s] [ros2doctor-environment-report-34] geometry2                                 : latest=0.44.0, local=0.44.0
+[49.730s] [ros2doctor-environment-report-34] sdformat_vendor                           : latest=0.2.5, local=0.2.5
+[49.730s] [ros2doctor-environment-report-34] ros2test                                  : latest=0.9.1, local=0.9.1
+[49.730s] [ros2doctor-environment-report-34] map_msgs                                  : latest=2.6.0, local=2.6.0
+[49.730s] [ros2doctor-environment-report-34] sqlite3_vendor                            : latest=0.33.0, local=0.33.0
+[49.730s] [ros2doctor-environment-report-34] common_interfaces                         : latest=5.8.2, local=5.8.2
+[49.730s] [ros2doctor-environment-report-34] rosbag2_compression_zstd                  : latest=0.33.0, local=0.33.0
+[49.730s] [ros2doctor-environment-report-34] ament_mypy                                : latest=0.20.2, local=0.20.2
+[49.730s] [ros2doctor-environment-report-34] rqt_plot                                  : latest=1.7.2, local=1.7.2
+[49.730s] [ros2doctor-environment-report-34] tf2_eigen                                 : latest=0.44.0, local=0.44.0
+[49.730s] [ros2doctor-environment-report-34] gz_transport_vendor                       : latest=0.2.2, local=0.2.2
+[49.730s] [ros2doctor-environment-report-34] type_description_interfaces               : latest=2.4.2, local=2.4.2
+[49.730s] [ros2doctor-environment-report-34] rmw_implementation_cmake                  : latest=7.9.0, local=7.9.0
+[49.730s] [ros2doctor-environment-report-34] ament_cmake_core                          : latest=2.8.4, local=2.8.4
+[49.730s] [ros2doctor-environment-report-34] ament_flake8                              : latest=0.20.2, local=0.20.2
+[49.730s] [ros2doctor-environment-report-34] ament_package                             : latest=0.18.1, local=0.18.1
+[49.730s] [ros2doctor-environment-report-34] zenoh_security_tools                      : latest=0.8.2, local=0.8.2
+[49.730s] [ros2doctor-environment-report-34] gz_cmake_vendor                           : latest=0.3.1, local=0.3.1
+[49.730s] [ros2doctor-environment-report-34] message_filters                           : latest=7.3.0, local=7.3.0
+[49.730s] [ros2doctor-environment-report-34] rosidl_generator_cpp                      : latest=5.0.1, local=5.0.1
+[49.730s] [ros2doctor-environment-report-34] eigen3_cmake_module                       : latest=0.5.1, local=0.5.1
+[49.730s] [ros2doctor-environment-report-34] rosidl_typesupport_interface              : latest=5.0.1, local=5.0.1
+[49.730s] [ros2doctor-environment-report-34] rosidl_default_runtime                    : latest=1.8.1, local=1.8.1
+[49.730s] [ros2doctor-environment-report-34] class_loader                              : latest=2.9.0, local=2.9.0
+[49.730s] [ros2doctor-environment-report-34] rosidl_typesupport_introspection_cpp      : latest=5.0.1, local=5.0.1
+[49.730s] [ros2doctor-environment-report-34] ros_base                                  : latest=0.13.0, local=0.13.0
+[49.730s] [ros2doctor-environment-report-34] ament_cmake_copyright                     : latest=0.20.2, local=0.20.2
+[49.730s] [ros2doctor-environment-report-34] tracetools                                : latest=8.8.1, local=8.8.1
+[49.730s] [ros2doctor-environment-report-34] demo_nodes_py                             : latest=0.37.2, local=0.37.2
+[49.730s] [ros2doctor-environment-report-34] rcutils                                   : latest=7.0.1, local=7.0.1
+[49.730s] [ros2doctor-environment-report-34] tf2_py                                    : latest=0.44.0, local=0.44.0
+[49.730s] [ros2doctor-environment-report-34] rcl_lifecycle                             : latest=10.2.3, local=10.2.3
+[49.731s] [ros2doctor-environment-report-34] std_msgs                                  : latest=5.8.2, local=5.8.2
+[49.731s] [ros2doctor-environment-report-34] gz_sim_vendor                             : latest=0.2.1, local=0.2.1
+[49.731s] [ros2doctor-environment-report-34] qt_gui_py_common                          : latest=2.10.1, local=2.10.1
+[49.731s] [ros2doctor-environment-report-34] ros_workspace                             : latest=1.0.3, local=1.0.3
+[49.731s] [ros2doctor-environment-report-34] ament_cmake_export_targets                : latest=2.8.4, local=2.8.4
+[49.731s] [ros2doctor-environment-report-34] tf2_tools                                 : latest=0.44.0, local=0.44.0
+[49.731s] [ros2doctor-environment-report-34] libyaml_vendor                            : latest=1.8.0, local=1.8.0
+[49.731s] [ros2doctor-environment-report-34] libstatistics_collector                   : latest=2.1.1, local=2.1.1
+[49.731s] [ros2doctor-environment-report-34] launch_testing_ament_cmake                : latest=3.9.2, local=3.9.2
+[49.731s] [ros2doctor-environment-report-34] actuator_msgs                             : latest=0.0.1, local=0.0.1
+[49.731s] [ros2doctor-environment-report-34] kdl_parser                                : latest=3.0.0, local=3.0.0
+[49.731s] [ros2doctor-environment-report-34] gps_msgs                                  : latest=2.1.1, local=2.1.1
+[49.731s] [ros2doctor-environment-report-34] eigen_stl_containers                      : latest=1.1.0, local=1.1.0
+[49.731s] [ros2doctor-environment-report-34] rmw_dds_common                            : latest=4.0.0, local=4.0.0
+[49.731s] [ros2doctor-environment-report-34] gz_utils_vendor                           : latest=0.3.0, local=0.3.0
+[49.731s] [ros2doctor-environment-report-34] tf2_sensor_msgs                           : latest=0.44.0, local=0.44.0
+[49.731s] [ros2doctor-environment-report-34] gz_plugin_vendor                          : latest=0.2.2, local=0.2.2
+[49.731s] [ros2doctor-environment-report-34] ament_cppcheck                            : latest=0.20.2, local=0.20.2
+[49.731s] [ros2doctor-environment-report-34] gz_math_vendor                            : latest=0.3.1, local=0.3.1
+[49.731s] [ros2doctor-environment-report-34] tf2_kdl                                   : latest=0.44.0, local=0.44.0
+[49.731s] [ros2doctor-environment-report-34] gz_fuel_tools_vendor                      : latest=0.2.2, local=0.2.2
+[49.731s] [ros2doctor-environment-report-34] ros_gz_bridge                             : latest=3.0.3, local=3.0.3
+[49.731s] [ros2doctor-environment-report-34] urdf                                      : latest=2.13.0, local=2.13.0
+[49.731s] [ros2doctor-environment-report-34] python_cmake_module                       : latest=0.12.0, local=0.12.0
+[49.731s] [ros2doctor-environment-report-34] mimick_vendor                             : latest=0.9.0, local=0.9.0
+[49.731s] [ros2doctor-environment-report-34] sensor_msgs_py                            : latest=5.8.2, local=5.8.2
+[49.731s] [ros2doctor-environment-report-34] ament_cmake_version                       : latest=2.8.4, local=2.8.4
+[49.731s] [ros2doctor-environment-report-34] rosidl_generator_c                        : latest=5.0.1, local=5.0.1
+[49.731s] [ros2doctor-environment-report-34] rosidl_dynamic_typesupport_fastrtps       : latest=0.5.0, local=0.5.0
+[49.731s] [ros2doctor-environment-report-34] ament_lint                                : latest=0.20.2, local=0.20.2
+[49.731s] [ros2doctor-environment-report-34] rosidl_generator_py                       : latest=0.26.0, local=0.25.0
+[49.731s] [ros2doctor-environment-report-34] gz_rendering_vendor                       : latest=0.2.3, local=0.2.3
+[49.731s] [ros2doctor-environment-report-34] rosbag2_storage_mcap                      : latest=0.33.0, local=0.33.0
+[49.731s] [ros2doctor-environment-report-34] python_qt_binding                         : latest=2.4.0, local=2.4.0
+[49.731s] [ros2doctor-environment-report-34] ament_cmake_export_include_directories    : latest=2.8.4, local=2.8.4
+[49.731s] [ros2doctor-environment-report-34] rosgraph_msgs                             : latest=2.4.2, local=2.4.2
+[49.731s] [ros2doctor-environment-report-34] rosidl_typesupport_fastrtps_cpp           : latest=3.9.1, local=3.9.1
+[49.731s] [ros2doctor-environment-report-34] trajectory_msgs                           : latest=5.8.2, local=5.8.2
+[49.731s] [ros2doctor-environment-report-34] ament_cmake_gen_version_h                 : latest=2.8.4, local=2.8.4
+[49.731s] [ros2doctor-environment-report-34] rviz_assimp_vendor                        : latest=15.1.7, local=15.1.7
+[49.732s] [ros2doctor-environment-report-34] sdl2_vendor                               : latest=3.3.0, local=3.3.0
+[49.732s] [ros2doctor-environment-report-34] ament_cmake_auto                          : latest=2.8.4, local=2.8.4
+[49.732s] [ros2doctor-environment-report-34] ament_cmake_lint_cmake                    : latest=0.20.2, local=0.20.2
+[49.732s] [ros2doctor-environment-report-34] nav_msgs                                  : latest=5.8.2, local=5.8.2
+[49.732s] [ros2doctor-environment-report-34] tf2_ros_py                                : latest=0.44.0, local=0.44.0
+[49.732s] [ros2doctor-environment-report-34] ros_gz_interfaces                         : latest=3.0.3, local=3.0.3
+[49.732s] [ros2doctor-environment-report-34] ros_core                                  : latest=0.13.0, local=0.13.0
+[49.732s] [ros2doctor-environment-report-34] composition                               : latest=0.37.2, local=0.37.2
+[49.732s] [ros2doctor-environment-report-34] ament_cmake_gtest                         : latest=2.8.4, local=2.8.4
+[49.732s] [ros2doctor-environment-report-34] mcap_vendor                               : latest=0.33.0, local=0.33.0
+[49.732s] [ros2doctor-environment-report-34] console_bridge_vendor                     : latest=1.9.1, local=1.9.1
+[49.732s] [ros2doctor-environment-report-34] test_interface_files                      : latest=0.14.1, local=0.14.1
+[49.732s] [ros2doctor-environment-report-34] rqt_topic                                 : latest=1.9.1, local=1.9.1
+[49.732s] [ros2doctor-environment-report-34] rclcpp_action                             : latest=30.1.0, local=30.1.0
+[49.732s] [ros2doctor-environment-report-34] rqt_gui                                   : latest=1.10.0, local=1.10.0
+[49.732s] [ros2doctor-environment-report-34] rosidl_typesupport_introspection_c        : latest=5.0.1, local=5.0.1
+[49.732s] [ros2doctor-environment-report-34] gz_common_vendor                          : latest=0.2.4, local=0.2.4
+[49.732s] [ros2doctor-environment-report-34] libcurl_vendor                            : latest=3.8.2, local=3.8.2
+[49.732s] [ros2doctor-environment-report-34] ament_cmake_export_dependencies           : latest=2.8.4, local=2.8.4
+[49.732s] [ros2doctor-environment-report-34] camera_info_manager                       : latest=6.3.0, local=6.3.0
+[49.732s] [ros2doctor-environment-report-34] ament_cmake_pep257                        : latest=0.20.2, local=0.20.2
+[49.732s] [ros2doctor-environment-report-34] ament_cmake_cppcheck                      : latest=0.20.2, local=0.20.2
+[49.732s] [ros2doctor-environment-report-34] ament_cmake_mypy                          : latest=0.20.2, local=0.20.2
+[49.732s] [ros2doctor-environment-report-34] rviz_common                               : latest=15.1.7, local=15.1.7
+[49.732s] [ros2doctor-environment-report-34] rmw_cyclonedds_cpp                        : latest=4.1.1, local=4.1.1
+[49.732s] [ros2doctor-environment-report-34] camera_calibration_parsers                : latest=6.3.0, local=6.3.0
+[49.732s] [ros2doctor-environment-report-34] rosbag2_storage_sqlite3                   : latest=0.33.0, local=0.33.0
+[49.732s] [ros2doctor-environment-report-34] tf2_geometry_msgs                         : latest=0.44.0, local=0.44.0
+[49.732s] [ros2doctor-environment-report-34] ament_cmake                               : latest=2.8.4, local=2.8.4
+[49.732s] [ros2doctor-environment-report-34] gz_gui_vendor                             : latest=0.2.1, local=0.2.1
+[49.732s] [ros2doctor-environment-report-34] point_cloud_transport                     : latest=5.3.0, local=5.3.0
+[49.732s] [ros2doctor-environment-report-34] rclcpp                                    : latest=30.1.0, local=30.1.0
+[49.732s] [ros2doctor-environment-report-34] rclpy                                     : latest=10.0.0, local=10.0.0
+[49.732s] [ros2doctor-environment-report-34] ros_testing                               : latest=0.9.1, local=0.9.1
+[49.732s] [ros2doctor-environment-report-34] ament_uncrustify                          : latest=0.20.2, local=0.20.2
+[49.732s] [ros2doctor-environment-report-34] rviz_default_plugins                      : latest=15.1.7, local=15.1.7
+[49.732s] [ros2doctor-environment-report-34] vision_msgs                               : latest=4.2.0, local=4.2.0
+[49.732s] [ros2doctor-environment-report-34] gz_tools_vendor                           : latest=0.1.2, local=0.1.2
+[49.732s] [ros2doctor-environment-report-34] tf2_bullet                                : latest=0.44.0, local=0.44.0
+[49.732s] [ros2doctor-environment-report-34] laser_geometry                            : latest=2.11.1, local=2.11.1
+[49.732s] [ros2doctor-environment-report-34] urdf_parser_plugin                        : latest=2.13.0, local=2.13.0
+[49.733s] [ros2doctor-environment-report-34] geometry_msgs                             : latest=5.8.2, local=5.8.2
+[49.733s] [ros2doctor-environment-report-34] ament_xmllint                             : latest=0.20.2, local=0.20.2
+[49.733s] [ros2doctor-environment-report-34] gz_ogre_next_vendor                       : latest=0.1.0, local=0.1.0
+[49.733s] [ros2doctor-environment-report-34] tinyxml2_vendor                           : latest=0.11.2, local=0.11.2
+[49.733s] [ros2doctor-environment-report-34] ros_environment                           : latest=4.4.1, local=4.4.1
+[49.733s] [ros2doctor-environment-report-34] gz_dartsim_vendor                         : latest=0.1.2, local=0.1.2
+[49.733s] [ros2doctor-environment-report-34] shape_msgs                                : latest=5.8.2, local=5.8.2
+[49.733s] [ros2doctor-environment-report-34] rosidl_core_runtime                       : latest=0.4.0, local=0.4.0
+[49.733s] [ros2doctor-environment-report-34] rmw_test_fixture_implementation           : latest=0.15.2, local=0.15.2
+[49.733s] [ros2doctor-environment-report-34] osrf_pycommon                             : latest=2.1.7, local=2.1.7
+[49.733s] [ros2doctor-environment-report-34] rosidl_runtime_c                          : latest=5.0.1, local=5.0.1
+[49.733s] [ros2doctor-environment-report-34] ros_gz_image                              : latest=3.0.3, local=3.0.3
+[49.733s] [ros2doctor-environment-report-34] ament_cmake_cpplint                       : latest=0.20.2, local=0.20.2
+[49.733s] [ros2doctor-environment-report-34] ament_cmake_export_link_flags             : latest=2.8.4, local=2.8.4
+[49.733s] [ros2doctor-environment-report-34] rosbag2_py                                : latest=0.33.0, local=0.33.0
+[49.733s] [ros2doctor-environment-report-34] rmw                                       : latest=7.9.0, local=7.9.0
+[49.733s] [ros2doctor-environment-report-34] zenoh_cpp_vendor                          : latest=0.8.2, local=0.8.2
+[49.733s] [ros2doctor-environment-report-34] python_orocos_kdl_vendor                  : latest=0.8.0, local=0.8.0
+[49.733s] [ros2doctor-environment-report-34] rosidl_runtime_py                         : latest=0.15.1, local=0.15.1
+[49.733s] [ros2doctor-environment-report-34] rosbag2_transport                         : latest=0.33.0, local=0.33.0
+[49.733s] [ros2doctor-environment-report-34] rosidl_generator_type_description         : latest=5.0.1, local=5.0.1
+[49.733s] [ros2doctor-environment-report-34] ament_cmake_libraries                     : latest=2.8.4, local=2.8.4
+[49.733s] [ros2doctor-environment-report-34] ament_cmake_ros                           : latest=0.15.2, local=0.15.2
+[49.733s] [ros2doctor-environment-report-34] rmw_test_fixture                          : latest=0.15.2, local=0.15.2
+[49.733s] [ros2doctor-environment-report-34] ros_gz                                    : latest=3.0.3, local=3.0.3
+[49.733s] [ros2doctor-environment-report-34] rclcpp_components                         : latest=30.1.0, local=30.1.0
+[49.733s] [ros2doctor-environment-report-34] rviz_imu_plugin                           : latest=2.2.1, local=2.2.1
+[49.733s] [ros2doctor-environment-report-34] rcl_logging_interface                     : latest=3.3.0, local=3.3.0
+[49.733s] [ros2doctor-environment-report-34] zstd_image_transport                      : latest=6.1.0, local=6.1.0
+[49.733s] [ros2doctor-environment-report-34] ament_cmake_clang_format                  : latest=0.20.2, local=0.20.2
+[49.733s] [ros2doctor-environment-report-34] ament_cmake_test                          : latest=2.8.4, local=2.8.4
+[49.733s] [ros2doctor-environment-report-34] v4l2_camera                               : latest=0.7.1, local=0.7.1
+[49.733s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e19ec30>' ✓ '<launch.event_handlers.on_process_io.OnProcessIO object at 0x71e47e14d400>'
+[49.733s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e19ec60>'
+[49.733s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e19ec60>' ✓ '<launch.event_handlers.on_process_io.OnProcessIO object at 0x71e47e19fa10>'
+[49.733s] [ros2doctor-environment-report-34] ros_gz_sim                                : latest=3.0.3, local=3.0.3
+[49.733s] [ros2doctor-environment-report-34] geographic_msgs                           : latest=1.0.6, local=1.0.6
+[49.733s] [ros2doctor-environment-report-34] interactive_markers                       : latest=2.8.0, local=2.8.0
+[49.733s] [ros2doctor-environment-report-34] launch                                    : latest=3.9.2, local=3.9.2
+[49.733s] [ros2doctor-environment-report-34] sros2                                     : latest=0.16.2, local=0.16.2
+[49.734s] [ros2doctor-environment-report-34] std_srvs                                  : latest=5.8.2, local=5.8.2
+[49.734s] [ros2doctor-environment-report-34] ament_index_cpp                           : latest=1.12.1, local=1.12.1
+[49.734s] [ros2doctor-environment-report-34] rmw_implementation                        : latest=3.1.2, local=3.1.2
+[49.734s] [ros2doctor-environment-report-34] zstd_vendor                               : latest=0.33.0, local=0.33.0
+[49.734s] [ros2doctor-environment-report-34] image_transport_plugins                   : latest=6.1.0, local=6.1.0
+[49.734s] [ros2doctor-environment-report-34] ament_cmake_uncrustify                    : latest=0.20.2, local=0.20.2
+[49.734s] [ros2doctor-environment-report-34] compressed_depth_image_transport          : latest=6.1.0, local=6.1.0
+[49.734s] [ros2doctor-environment-report-34] rosidl_dynamic_typesupport                : latest=0.4.0, local=0.4.0
+[49.734s] [ros2doctor-environment-report-34] rqt_gui_py                                : latest=1.10.0, local=1.10.0
+[49.734s] [ros2doctor-environment-report-34] robot_state_publisher                     : latest=3.5.2, local=3.5.2
+[49.734s] [ros2doctor-environment-report-34] rmw_zenoh_cpp                             : latest=0.8.2, local=0.8.2
+[49.734s] [ros2doctor-environment-report-34] rosidl_typesupport_fastrtps_c             : latest=3.9.1, local=3.9.1
+[49.734s] [ros2doctor-environment-report-34] lifecycle                                 : latest=0.37.2, local=0.37.2
+[49.734s] [ros2doctor-environment-report-34] rosidl_cli                                : latest=5.0.1, local=5.0.1
+[49.734s] [ros2doctor-environment-report-34] rqt_image_view                            : latest=2.0.2, local=2.0.2
+[49.734s] [ros2doctor-environment-report-34] rmw_security_common                       : latest=7.9.0, local=7.9.0
+[49.734s] [ros2doctor-environment-report-34] test_msgs                                 : latest=2.4.2, local=2.4.2
+[49.734s] [ros2doctor-environment-report-34] rclcpp_lifecycle                          : latest=30.1.0, local=30.1.0
+[49.734s] [ros2doctor-environment-report-34] ament_cmake_ros_core                      : latest=0.15.2, local=0.15.2
+[49.734s] [ros2doctor-environment-report-34] tf2                                       : latest=0.44.0, local=0.44.0
+[49.734s] [ros2doctor-environment-report-34] performance_test_fixture                  : latest=0.4.1, local=0.4.1
+[49.734s] [ros2doctor-environment-report-34] launch_yaml                               : latest=3.9.2, local=3.9.2
+[49.734s] [ros2doctor-environment-report-34] ament_cmake_gmock                         : latest=2.8.4, local=2.8.4
+[49.734s] [ros2doctor-environment-report-34] tf2_msgs                                  : latest=0.44.0, local=0.44.0
+[49.734s] [ros2doctor-environment-report-34] rosbag2                                   : latest=0.33.0, local=0.33.0
+[49.734s] [ros2doctor-environment-report-34] ament_lint_auto                           : latest=0.20.2, local=0.20.2
+[49.734s] [ros2doctor-environment-report-34] gz_sensors_vendor                         : latest=0.2.2, local=0.2.2
+[49.734s] [ros2doctor-environment-report-34] resource_retriever                        : latest=3.8.2, local=3.8.2
+[49.734s] [ros2doctor-environment-report-34] spdlog_vendor                             : latest=1.8.0, local=1.8.0
+[49.734s] [ros2doctor-environment-report-34] domain_coordinator                        : latest=0.15.2, local=0.15.2
+[49.734s] [ros2doctor-environment-report-34] ament_index_python                        : latest=1.12.1, local=1.12.1
+[49.734s] [ros2doctor-environment-report-34] rosidl_core_generators                    : latest=0.4.0, local=0.4.0
+[49.734s] [ros2doctor-environment-report-34] lifecycle_msgs                            : latest=2.4.2, local=2.4.2
+[49.734s] [ros2doctor-environment-report-34] diagnostic_msgs                           : latest=5.8.2, local=5.8.2
+[49.734s] [ros2doctor-environment-report-34] pluginlib                                 : latest=5.7.0, local=5.7.0
+[49.734s] [ros2doctor-environment-report-34] ros2launch                                : latest=0.29.2, local=0.29.2
+[49.734s] [ros2doctor-environment-report-34] 
+[49.734s] [ros2doctor-environment-report-34]    PLATFORM INFORMATION
+[49.734s] [ros2doctor-environment-report-34] system           : Linux
+[49.734s] [ros2doctor-environment-report-34] platform info    : Linux-6.14.0-27-generic-x86_64-with-glibc2.39
+[49.735s] [ros2doctor-environment-report-34] release          : 6.14.0-27-generic
+[49.735s] [ros2doctor-environment-report-34] processor        : x86_64
+[49.735s] [ros2doctor-environment-report-34] 
+[49.735s] [ros2doctor-environment-report-34]    QOS COMPATIBILITY LIST
+[49.735s] [ros2doctor-environment-report-34] compatibility status    : No publisher/subscriber pairs found
+[49.735s] [ros2doctor-environment-report-34] 
+[49.735s] [ros2doctor-environment-report-34]    RMW MIDDLEWARE
+[49.735s] [ros2doctor-environment-report-34] middleware name    : rmw_cyclonedds_cpp
+[49.735s] [ros2doctor-environment-report-34] 
+[49.735s] [ros2doctor-environment-report-34]    ROS 2 INFORMATION
+[49.735s] [ros2doctor-environment-report-34] distribution name      : rolling
+[49.735s] [ros2doctor-environment-report-34] distribution type      : ros2
+[49.735s] [ros2doctor-environment-report-34] distribution status    : rolling
+[49.735s] [ros2doctor-environment-report-34] release platforms      : {'debian': ['bookworm'], 'rhel': ['9'], 'ubuntu': ['noble']}
+[49.735s] [ros2doctor-environment-report-34] 
+[49.735s] [ros2doctor-environment-report-34]    SERVICE LIST
+[49.735s] [ros2doctor-environment-report-34] service          : none
+[49.735s] [ros2doctor-environment-report-34] service count    : 0
+[49.735s] [ros2doctor-environment-report-34] client count     : 0
+[49.735s] [ros2doctor-environment-report-34] 
+[49.735s] [ros2doctor-environment-report-34]    TOPIC LIST
+[49.735s] [ros2doctor-environment-report-34] topic               : none
+[49.735s] [ros2doctor-environment-report-34] publisher count     : 0
+[49.735s] [ros2doctor-environment-report-34] subscriber count    : 0
+[49.735s] [ros2doctor-environment-report-34] 
+[49.735s] [ros2doctor-environment-report-34] ================================================================================
+[49.735s] [ros2doctor-environment-report-34]                                 !!! WARNING !!!                                 
+[49.735s] [ros2doctor-environment-report-34] ================================================================================
+[49.735s] [ros2doctor-environment-report-34] The report includes all ROS 2 endpoint information and system platform information.
+[49.735s] [ros2doctor-environment-report-34] Please review the report before sharing, as it may contain sensitive or private data.
+[49.735s] [ros2doctor-environment-report-34] ================================================================================
+[49.735s] [ros2doctor-environment-report-34] 
+[49.735s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stdout.ProcessStdout object at 0x71e47e19ec60>' ✓ '<launch.event_handlers.on_process_io.OnProcessIO object at 0x71e47e14d400>'
+[49.735s] [INFO] [ros2doctor-environment-report-34]: process has finished cleanly [pid 35885]
+[49.735s] [DEBUG] [launch.launch_context]: emitting event: 'launch.events.process.ProcessExited'
+[49.735s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e47e19e720>'
+[49.735s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e47e19e720>' ✓ '<launch.event_handlers.on_process_exit.OnProcessExit object at 0x71e47e19e660>'
+[49.735s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e47e19e720>' ✓ '<launch.event_handlers.on_process_exit.OnProcessExit object at 0x71e47e19fb90>'
+[49.735s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e47e19e720>' ✓ '<launch.event_handlers.on_process_exit.OnProcessExit object at 0x71e47e14e720>'
+[49.735s] [DEBUG] [launch.launch_context]: emitting event: 'launch.events.IncludeLaunchDescription'
+[49.735s] [DEBUG] [launch]: processing event: '<launch.events.include_launch_description.IncludeLaunchDescription object at 0x71e47e1d35f0>'
+[49.736s] [DEBUG] [launch]: processing event: '<launch.events.include_launch_description.IncludeLaunchDescription object at 0x71e47e1d35f0>' ✓ '<launch.event_handlers.on_include_launch_description.OnIncludeLaunchDescription object at 0x71e47e1021e0>'
+[49.736s] [INFO] [ros2doctor-environment-report-35]: process started with pid [35951]
+[49.736s] [DEBUG] [launch.launch_context]: emitting event: 'launch.events.process.ProcessStarted'
+[49.736s] [DEBUG] [launch]: processing event: '<launch.events.process.process_started.ProcessStarted object at 0x71e47e1d1a60>'
+[49.736s] [DEBUG] [launch]: processing event: '<launch.events.process.process_started.ProcessStarted object at 0x71e47e1d1a60>' ✓ '<launch.event_handlers.on_process_start.OnProcessStart object at 0x71e47e14f800>'
+[49.736s] [DEBUG] [launch]: processing event: '<launch.events.process.process_started.ProcessStarted object at 0x71e47e1d1a60>' ✓ '<launch.event_handlers.on_process_start.OnProcessStart object at 0x71e47e5a8440>'
+[49.736s] [WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[49.736s] [DEBUG] [launch.launch_context]: emitting event synchronously: 'launch.events.Shutdown'
+[49.736s] [DEBUG] [launch]: processing event: '<launch.events.shutdown.Shutdown object at 0x71e47e1d1370>'
+[49.736s] [DEBUG] [launch]: processing event: '<launch.events.shutdown.Shutdown object at 0x71e47e1d1370>' ✓ '<launch.event_handlers.on_shutdown.OnShutdown object at 0x71e47e1d1340>'
+[49.736s] [DEBUG] [launch]: processing event: '<launch.events.shutdown.Shutdown object at 0x71e47e1d1370>' ✓ '<launch.event_handlers.on_shutdown.OnShutdown object at 0x71e47e19c650>'
+[49.736s] [DEBUG] [launch]: processing event: '<launch.events.shutdown.Shutdown object at 0x71e47e1d1370>' ✓ '<launch.event_handlers.on_shutdown.OnShutdown object at 0x71e47e344ef0>'
+[49.736s] [DEBUG] [launch]: processing event: '<launch.events.shutdown.Shutdown object at 0x71e47e1d1370>' ✓ '<launch.event_handlers.on_shutdown.OnShutdown object at 0x71e47e2e81d0>'
+[49.736s] [DEBUG] [launch]: processing event: '<launch.events.shutdown.Shutdown object at 0x71e47e1d1370>' ✓ '<launch.event_handlers.on_shutdown.OnShutdown object at 0x71e47e346000>'
+[49.736s] [DEBUG] [launch]: processing event: '<launch.events.shutdown.Shutdown object at 0x71e47e1d1370>' ✓ '<launch.event_handlers.on_shutdown.OnShutdown object at 0x71e47e14c140>'
+[49.736s] [DEBUG] [launch.launch_context]: emitting event synchronously: 'launch.events.process.ProcessStderr'
+[49.736s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stderr.ProcessStderr object at 0x71e47e118d40>'
+[49.736s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stderr.ProcessStderr object at 0x71e47e118d40>' ✓ '<launch.event_handlers.on_process_io.OnProcessIO object at 0x71e47e1d2540>'
+[49.736s] [ros2doctor-environment-report-35] Traceback (most recent call last):
+[49.736s] [ros2doctor-environment-report-35]   File "/home/rmc/ros2cli/install/ros2cli/bin/ros2", line 33, in <module>
+[49.736s] [ros2doctor-environment-report-35]     sys.exit(load_entry_point('ros2cli', 'console_scripts', 'ros2')())
+[49.736s] [ros2doctor-environment-report-35]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[49.736s] [ros2doctor-environment-report-35]   File "/home/rmc/ros2cli/install/ros2cli/bin/ros2", line 25, in importlib_load_entry_point
+[49.736s] [ros2doctor-environment-report-35]     return next(matches).load()
+[49.736s] [ros2doctor-environment-report-35]            ^^^^^^^^^^^^^^^^^^^^
+[49.736s] [ros2doctor-environment-report-35]   File "/usr/lib/python3.12/importlib/metadata/__init__.py", line 205, in load
+[49.736s] [ros2doctor-environment-report-35]     module = import_module(match.group('module'))
+[49.736s] [ros2doctor-environment-report-35]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[49.736s] [ros2doctor-environment-report-35]   File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+[49.736s] [ros2doctor-environment-report-35]     return _bootstrap._gcd_import(name[level:], package, level)
+[49.736s] [ros2doctor-environment-report-35]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[49.736s] [ros2doctor-environment-report-35]   File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+[49.736s] [ros2doctor-environment-report-35]   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+[49.736s] [ros2doctor-environment-report-35]   File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+[49.736s] [ros2doctor-environment-report-35]   File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+[49.736s] [ros2doctor-environment-report-35]   File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+[49.736s] [ros2doctor-environment-report-35]   File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+[49.736s] [ros2doctor-environment-report-35]   File "/home/rmc/ros2cli/build/ros2cli/ros2cli/cli.py", line 22, in <module>
+[49.736s] [ros2doctor-environment-report-35]     from rclpy.executors import ExternalShutdownException
+[49.736s] [ros2doctor-environment-report-35]   File "/opt/ros/rolling/lib/python3.12/site-packages/rclpy/executors.py", line 43, in <module>
+[49.736s] [ros2doctor-environment-report-35]     from rclpy.client import Client
+[49.737s] [ros2doctor-environment-report-35]   File "/opt/ros/rolling/lib/python3.12/site-packages/rclpy/client.py", line 31, in <module>
+[49.737s] [ros2doctor-environment-report-35]     from rclpy.type_support import Srv, SrvRequestT, SrvResponseT
+[49.737s] [ros2doctor-environment-report-35]   File "/opt/ros/rolling/lib/python3.12/site-packages/rclpy/type_support.py", line 19, in <module>
+[49.737s] [ros2doctor-environment-report-35]     from service_msgs.msg import ServiceEventInfo
+[49.737s] [ros2doctor-environment-report-35]   File "/opt/ros/rolling/lib/python3.12/site-packages/service_msgs/msg/__init__.py", line 1, in <module>
+[49.737s] [ros2doctor-environment-report-35]     from service_msgs.msg._service_event_info import ServiceEventInfo  # noqa: F401
+[49.737s] [ros2doctor-environment-report-35]     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[49.737s] [ros2doctor-environment-report-35]   File "/opt/ros/rolling/lib/python3.12/site-packages/service_msgs/msg/_service_event_info.py", line 18, in <module>
+[49.737s] [ros2doctor-environment-report-35]     import numpy  # noqa: E402, I100
+[49.737s] [ros2doctor-environment-report-35]     ^^^^^^^^^^^^
+[49.737s] [ros2doctor-environment-report-35]   File "/usr/lib/python3/dist-packages/numpy/__init__.py", line 159, in <module>
+[49.737s] [ros2doctor-environment-report-35]     from . import ma
+[49.737s] [ros2doctor-environment-report-35]   File "/usr/lib/python3/dist-packages/numpy/ma/__init__.py", line 45, in <module>
+[49.737s] [ros2doctor-environment-report-35]     from . import extras
+[49.737s] [ros2doctor-environment-report-35]   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+[49.737s] [ros2doctor-environment-report-35]   File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+[49.737s] [ros2doctor-environment-report-35]   File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+[49.737s] [ros2doctor-environment-report-35]   File "<frozen importlib._bootstrap_external>", line 991, in exec_module
+[49.737s] [ros2doctor-environment-report-35]   File "<frozen importlib._bootstrap_external>", line 1124, in get_code
+[49.737s] [ros2doctor-environment-report-35]   File "<frozen importlib._bootstrap_external>", line 753, in _compile_bytecode
+[49.737s] [ros2doctor-environment-report-35] KeyboardInterrupt
+[49.737s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stderr.ProcessStderr object at 0x71e47e118d40>' ✓ '<launch.event_handlers.on_process_io.OnProcessIO object at 0x71e47e14d400>'
+[49.737s] [ERROR] [ros2doctor-environment-report-35]: process has died [pid 35951, exit code -2, cmd 'ros2 doctor --report'].
+[49.737s] [DEBUG] [launch.launch_context]: emitting event: 'launch.events.process.ProcessExited'
+[49.737s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e4a8f15ee0>'
+[49.737s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e4a8f15ee0>' ✓ '<launch.event_handlers.on_process_exit.OnProcessExit object at 0x71e47e1d3c20>'
+[49.737s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e4a8f15ee0>' ✓ '<launch.event_handlers.on_process_exit.OnProcessExit object at 0x71e47e1d02c0>'
+[49.737s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e4a8f15ee0>' ✓ '<launch.event_handlers.on_process_exit.OnProcessExit object at 0x71e47e14e720>'
+[49.737s] Processes under test stopped before tests completed
+[49.737s] Process 'ros2doctor-environment-report-35' exited with -2
+[49.737s] ##### 'ros2doctor-environment-report-35' output #####
+[49.737s] Traceback (most recent call last):
+[49.737s]   File "/home/rmc/ros2cli/install/ros2cli/bin/ros2", line 33, in <module>
+[49.737s]     sys.exit(load_entry_point('ros2cli', 'console_scripts', 'ros2')())
+[49.737s]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[49.737s]   File "/home/rmc/ros2cli/install/ros2cli/bin/ros2", line 25, in importlib_load_entry_point
+[49.737s]     return next(matches).load()
+[49.737s]            ^^^^^^^^^^^^^^^^^^^^
+[49.737s]   File "/usr/lib/python3.12/importlib/metadata/__init__.py", line 205, in load
+[49.737s]     module = import_module(match.group('module'))
+[49.737s]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[49.738s]   File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+[49.738s]     return _bootstrap._gcd_import(name[level:], package, level)
+[49.738s]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[49.738s]   File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+[49.738s]   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+[49.738s]   File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+[49.738s]   File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+[49.738s]   File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+[49.738s]   File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+[49.738s]   File "/home/rmc/ros2cli/build/ros2cli/ros2cli/cli.py", line 22, in <module>
+[49.738s]     from rclpy.executors import ExternalShutdownException
+[49.738s]   File "/opt/ros/rolling/lib/python3.12/site-packages/rclpy/executors.py", line 43, in <module>
+[49.738s]     from rclpy.client import Client
+[49.738s]   File "/opt/ros/rolling/lib/python3.12/site-packages/rclpy/client.py", line 31, in <module>
+[49.738s]     from rclpy.type_support import Srv, SrvRequestT, SrvResponseT
+[49.738s]   File "/opt/ros/rolling/lib/python3.12/site-packages/rclpy/type_support.py", line 19, in <module>
+[49.738s]     from service_msgs.msg import ServiceEventInfo
+[49.738s]   File "/opt/ros/rolling/lib/python3.12/site-packages/service_msgs/msg/__init__.py", line 1, in <module>
+[49.738s]     from service_msgs.msg._service_event_info import ServiceEventInfo  # noqa: F401
+[49.738s]     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[49.738s]   File "/opt/ros/rolling/lib/python3.12/site-packages/service_msgs/msg/_service_event_info.py", line 18, in <module>
+[49.738s]     import numpy  # noqa: E402, I100
+[49.738s]     ^^^^^^^^^^^^
+[49.738s]   File "/usr/lib/python3/dist-packages/numpy/__init__.py", line 159, in <module>
+[49.738s]     from . import ma
+[49.738s]   File "/usr/lib/python3/dist-packages/numpy/ma/__init__.py", line 45, in <module>
+[49.738s]     from . import extras
+[49.738s]   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+[49.738s]   File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+[49.738s]   File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+[49.738s]   File "<frozen importlib._bootstrap_external>", line 991, in exec_module
+[49.738s]   File "<frozen importlib._bootstrap_external>", line 1124, in get_code
+[49.738s]   File "<frozen importlib._bootstrap_external>", line 753, in _compile_bytecode
+[49.738s] KeyboardInterrupt
+[49.738s] 
+[49.738s] #####################################################
+[49.738s] ----------------------------- Captured stderr call -----------------------------
+[49.738s] test_report[rmw_fastrtps_cpp] (test_report copy.TestEnvironmentReport.test_report[rmw_fastrtps_cpp]) ... ok
+[49.738s] 
+[49.738s] ----------------------------------------------------------------------
+[49.738s] Ran 1 test in 6.294s
+[49.739s] 
+[49.739s] OK
+[49.739s] 
+[49.739s] ----------------------------------------------------------------------
+[49.739s] Ran 0 tests in 0.000s
+[49.739s] 
+[49.739s] NO TESTS RAN
+[49.739s] test_report[rmw_cyclonedds_cpp] (test_report copy.TestEnvironmentReport.test_report[rmw_cyclonedds_cpp]) ... 
+[49.739s] [31m[1m__________________________ launch tests: test_report ___________________________[0m
+[49.739s] 
+[49.739s] ===========================================================
+[49.739s] FAIL: test_report.TestROS2DoctorReport.test_check[rmw_fastrtps_cpp]
+[49.739s] -----------------------------------------------------------
+[49.739s] Exception: Launch stopped before the active tests finished.
+[49.739s] 
+[49.739s] 
+[49.739s] ===========================================================
+[49.739s] FAIL: test_report.TestROS2DoctorReport.test_report[rmw_fastrtps_cpp]
+[49.739s] -----------------------------------------------------------
+[49.739s] Exception: Launch stopped before the active tests finished.
+[49.739s] ----------------------------- Captured stdout call -----------------------------
+[49.739s] 
+[49.739s] Starting test run test_report[rmw_fastrtps_cpp]
+[49.739s] [DEBUG] [launch.launch_context]: emitting event synchronously: 'launch.events.IncludeLaunchDescription'
+[49.739s] [INFO] [launch]: All log files can be found below /home/rmc/.ros/log/2025-08-06-00-22-12-310469-rmc-Legion-Pro-7-16IRX9H-34827
+[49.739s] [INFO] [launch]: Default logging verbosity is set to DEBUG
+[49.739s] [DEBUG] [launch]: processing event: '<launch.events.include_launch_description.IncludeLaunchDescription object at 0x71e47e17d250>'
+[49.739s] [DEBUG] [launch]: processing event: '<launch.events.include_launch_description.IncludeLaunchDescription object at 0x71e47e17d250>' ✓ '<launch.event_handlers.on_include_launch_description.OnIncludeLaunchDescription object at 0x71e47e11a2d0>'
+[49.739s] [INFO] [daemon-stop-36]: process started with pid [35955]
+[49.739s] [DEBUG] [launch.launch_context]: emitting event: 'launch.events.process.ProcessStarted'
+[49.739s] [DEBUG] [launch]: processing event: '<launch.events.process.process_started.ProcessStarted object at 0x71e47e17cec0>'
+[49.739s] [DEBUG] [launch]: processing event: '<launch.events.process.process_started.ProcessStarted object at 0x71e47e17cec0>' ✓ '<launch.event_handlers.on_process_start.OnProcessStart object at 0x71e47e17e660>'
+[49.739s] [DEBUG] [launch]: processing event: '<launch.events.process.process_started.ProcessStarted object at 0x71e47e17cec0>' ✓ '<launch.event_handlers.on_process_start.OnProcessStart object at 0x71e47e17d010>'
+[49.739s] [WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[49.739s] [DEBUG] [launch.launch_context]: emitting event synchronously: 'launch.events.Shutdown'
+[49.739s] [DEBUG] [launch.launch_context]: emitting event synchronously: 'launch.events.process.ProcessStderr'
+[49.739s] [DEBUG] [launch]: processing event: '<launch.events.shutdown.Shutdown object at 0x71e47e00be90>'
+[49.739s] [DEBUG] [launch]: processing event: '<launch.events.shutdown.Shutdown object at 0x71e47e00be90>' ✓ '<launch.event_handlers.on_shutdown.OnShutdown object at 0x71e47e00b110>'
+[49.739s] [DEBUG] [launch]: processing event: '<launch.events.shutdown.Shutdown object at 0x71e47e00be90>' ✓ '<launch.event_handlers.on_shutdown.OnShutdown object at 0x71e47e1d0770>'
+[49.739s] [DEBUG] [launch.launch_context]: emitting event synchronously: 'launch.events.process.ProcessStderr'
+[49.740s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stderr.ProcessStderr object at 0x71e47e1d12b0>'
+[49.740s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stderr.ProcessStderr object at 0x71e47e1d12b0>' ✓ '<launch.event_handlers.on_process_io.OnProcessIO object at 0x71e47e008200>'
+[49.740s] [daemon-stop-36] Traceback (most recent call last):
+[49.740s] [daemon-stop-36]   File "/home/rmc/ros2cli/install/ros2cli/bin/ros2", line 33, in <module>
+[49.740s] [daemon-stop-36]     sys.exit(load_entry_point('ros2cli', 'console_scripts', 'ros2')())
+[49.740s] [daemon-stop-36]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[49.740s] [daemon-stop-36]   File "/home/rmc/ros2cli/build/ros2cli/ros2cli/cli.py", line 52, in main
+[49.740s] [daemon-stop-36]     add_subparsers_on_demand(
+[49.740s] [33m=============================== warnings summary ===============================[0m
+[49.740s] test/test_flake8.py: 32 warnings
+[49.740s]   Warning: This process (pid=34827) is multi-threaded, use of fork() may lead to deadlocks in the child.
+[49.740s] 
+[49.740s] -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+[49.740s] [daemon-stop-36]   File "/home/rmc/ros2cli/build/ros2cli/ros2cli/command/__init__.py", line 121, in add_subparsers_on_demand
+[49.740s] [daemon-stop-36]     entry_points = get_entry_points(group_name)
+[49.740s] [daemon-stop-36]                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[49.740s] [daemon-stop-36]   File "/home/rmc/ros2cli/build/ros2cli/ros2cli/entry_points.py", line 66, in get_entry_points
+[49.740s] [daemon-stop-36]     entry_points_impl = importlib_metadata.entry_points()
+[49.740s] [daemon-stop-36]                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[49.740s] [daemon-stop-36]   File "/usr/lib/python3.12/importlib/metadata/__init__.py", line 913, in entry_points
+[49.740s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stderr.ProcessStderr object at 0x71e47e1d12b0>' ✓ '<launch.event_handlers.on_process_io.OnProcessIO object at 0x71e47e17e060>'
+[49.740s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stderr.ProcessStderr object at 0x71e47e00ba70>'
+[49.740s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stderr.ProcessStderr object at 0x71e47e00ba70>' ✓ '<launch.event_handlers.on_process_io.OnProcessIO object at 0x71e47e008200>'
+[49.740s] [daemon-stop-36]     return EntryPoints(eps).select(**params)
+[49.740s] [daemon-stop-36]            ^^^^^^^^^^^^^^^^
+[49.740s] [daemon-stop-36]   File "/usr/lib/python3.12/importlib/metadata/__init__.py", line 911, in <genexpr>
+[49.740s] [daemon-stop-36]     dist.entry_points for dist in _unique(distributions())
+[49.740s] [daemon-stop-36]     ^^^^^^^^^^^^^^^^^
+[49.740s] [daemon-stop-36]   File "/usr/lib/python3.12/importlib/metadata/__init__.py", line 471, in entry_points
+[49.740s] [daemon-stop-36]     return EntryPoints._from_text_for(self.read_text('entry_points.txt'), self)
+[49.740s] [daemon-stop-36]                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[49.740s] [daemon-stop-36]   File "/usr/lib/python3.12/importlib/metadata/__init__.py", line 819, in read_text
+[49.740s] [daemon-stop-36]     return self._path.joinpath(filename).read_text(encoding='utf-8')
+[49.740s] [daemon-stop-36]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[49.740s] [daemon-stop-36]   File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+[49.740s] [daemon-stop-36]     with self.open(mode='r', encoding=encoding, errors=errors) as f:
+[49.740s] [daemon-stop-36]          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[49.740s] [daemon-stop-36]   File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+[49.740s] [daemon-stop-36]     return io.open(self, mode, buffering, encoding, errors, newline)
+[49.740s] [daemon-stop-36]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[49.741s] [daemon-stop-36]   File "<frozen codecs>", line 309, in __init__
+[49.741s] [daemon-stop-36] KeyboardInterrupt
+[49.741s] [DEBUG] [launch]: processing event: '<launch.events.process.process_stderr.ProcessStderr object at 0x71e47e00ba70>' ✓ '<launch.event_handlers.on_process_io.OnProcessIO object at 0x71e47e17e060>'
+[49.741s] [ERROR] [daemon-stop-36]: process has died [pid 35955, exit code -2, cmd 'ros2 daemon stop'].
+[49.741s] [DEBUG] [launch.launch_context]: emitting event: 'launch.events.process.ProcessExited'
+[49.741s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e47e008770>'
+[49.741s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e47e008770>' ✓ '<launch.event_handlers.on_process_exit.OnProcessExit object at 0x71e47e00a270>'
+[49.741s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e47e008770>' ✓ '<launch.event_handlers.on_process_exit.OnProcessExit object at 0x71e47e008f80>'
+[49.741s] [DEBUG] [launch]: processing event: '<launch.events.process.process_exited.ProcessExited object at 0x71e47e008770>' ✓ '<launch.event_handlers.on_process_exit.OnProcessExit object at 0x71e47e17e810>'
+[49.741s] Processes under test stopped before tests completed
+[49.741s] Process 'daemon-stop-36' exited with -2
+[49.741s] ##### 'daemon-stop-36' output #####
+[49.741s] Traceback (most recent call last):
+[49.741s]   File "/home/rmc/ros2cli/install/ros2cli/bin/ros2", line 33, in <module>
+[49.741s]     sys.exit(load_entry_point('ros2cli', 'console_scripts', 'ros2')())
+[49.741s]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[49.741s]   File "/home/rmc/ros2cli/build/ros2cli/ros2cli/cli.py", line 52, in main
+[49.741s]     add_subparsers_on_demand(
+[49.741s]   File "/home/rmc/ros2cli/build/ros2cli/ros2cli/command/__init__.py", line 121, in add_subparsers_on_demand
+[49.741s]     entry_points = get_entry_points(group_name)
+[49.741s]                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[49.741s]   File "/home/rmc/ros2cli/build/ros2cli/ros2cli/entry_points.py", line 66, in get_entry_points
+[49.741s]     entry_points_impl = importlib_metadata.entry_points()
+[49.741s]                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[49.741s]   File "/usr/lib/python3.12/importlib/metadata/__init__.py", line 913, in entry_points
+[49.741s] 
+[49.741s]     return EntryPoints(eps).select(**params)
+[49.741s]            ^^^^^^^^^^^^^^^^
+[49.741s]   File "/usr/lib/python3.12/importlib/metadata/__init__.py", line 911, in <genexpr>
+[49.741s]     dist.entry_points for dist in _unique(distributions())
+[49.741s]     ^^^^^^^^^^^^^^^^^
+[49.741s]   File "/usr/lib/python3.12/importlib/metadata/__init__.py", line 471, in entry_points
+[49.741s]     return EntryPoints._from_text_for(self.read_text('entry_points.txt'), self)
+[49.741s]                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[49.741s]   File "/usr/lib/python3.12/importlib/metadata/__init__.py", line 819, in read_text
+[49.741s]     return self._path.joinpath(filename).read_text(encoding='utf-8')
+[49.741s]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[49.741s]   File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+[49.741s]     with self.open(mode='r', encoding=encoding, errors=errors) as f:
+[49.741s]          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[49.742s]   File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+[49.742s]     return io.open(self, mode, buffering, encoding, errors, newline)
+[49.742s]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[49.742s]   File "<frozen codecs>", line 309, in __init__
+[49.742s] KeyboardInterrupt
+[49.742s] 
+[49.742s] ###################################
+[49.742s] ------ generated xml file: /home/rmc/ros2cli/build/ros2doctor/pytest.xml -------
+[49.742s] [36m[1m=========================== short test summary info ============================[0m
+[49.742s] [31mFAILED[0m test/test_flake8.py::[1mtest_flake8[0m - AssertionError: Found 2 code style errors / warnings:
+[49.742s] [31mFAILED[0m test/test_report copy.py::[1mtest_report copy[0m - test_report copy.TestEnvironmentReport.test_report[rmw_cyclonedds_cpp] failed
+[49.742s] [31mFAILED[0m test/test_report.py::[1mtest_report[0m - test_report.TestROS2DoctorReport.test_check[rmw_fastrtps_cpp] failed
+[49.742s] !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! KeyboardInterrupt !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+[49.742s] [1m[31m/usr/lib/python3.12/subprocess.py[0m:1196: KeyboardInterrupt
+[49.742s] [33m(to show a full traceback on KeyboardInterrupt use --full-trace)[0m
+[49.742s] [31m================== [31m[1m3 failed[0m, [32m5 passed[0m, [33m32 warnings[0m[31m in 49.41s[0m[31m ===================[0m
+[49.771s] Invoked command in '/home/rmc/ros2cli/ros2doctor' returned '2': AMENT_PREFIX_PATH=/home/rmc/ros2cli/install/ros2doctor:/home/rmc/ros2cli/install/ros2action:/home/rmc/ros2cli/install/ros2cli:/home/rmc/ros2cli/install/ros2topic:/home/rmc/ros2cli/install/ros2component:/home/rmc/ros2cli/install/ros2param:/home/rmc/ros2cli/install/ros2lifecycle:/home/rmc/ros2cli/install/ros2service:/home/rmc/ros2cli/install/ros2run:/home/rmc/ros2cli/install/ros2pkg:/home/rmc/ros2cli/install/ros2node:/home/rmc/ros2cli/install/ros2multicast:/home/rmc/ros2cli/install/ros2lifecycle_test_fixtures:/home/rmc/ros2cli/install/ros2interface:/home/rmc/ros2cli/install/ros2cli_test_interfaces:/opt/ros/rolling DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTEST_ADDOPTS=--tb=short --junit-xml=/home/rmc/ros2cli/build/ros2doctor/pytest.xml --junit-prefix=ros2doctor -o cache_dir=/home/rmc/ros2cli/build/ros2doctor/.pytest_cache -vvclear PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/home/rmc/ros2cli/build/ros2doctor:/home/rmc/ros2cli/install/ros2doctor/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2action:/home/rmc/ros2cli/install/ros2action/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2cli:/home/rmc/ros2cli/install/ros2cli/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2topic:/home/rmc/ros2cli/install/ros2topic/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2component:/home/rmc/ros2cli/install/ros2component/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2param:/home/rmc/ros2cli/install/ros2param/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2lifecycle:/home/rmc/ros2cli/install/ros2lifecycle/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2service:/home/rmc/ros2cli/install/ros2service/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2run:/home/rmc/ros2cli/install/ros2run/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2pkg:/home/rmc/ros2cli/install/ros2pkg/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2node:/home/rmc/ros2cli/install/ros2node/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2multicast:/home/rmc/ros2cli/install/ros2multicast/lib/python3.12/site-packages:/home/rmc/ros2cli/build/ros2interface:/home/rmc/ros2cli/install/ros2interface/lib/python3.12/site-packages:/home/rmc/ros2cli/install/ros2cli_test_interfaces/lib/python3.12/site-packages:/opt/ros/rolling/lib/python3.12/site-packages /usr/bin/python3 -m pytest

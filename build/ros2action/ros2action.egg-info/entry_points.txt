@@ -1,0 +1,13 @@
+[ros2action.verb]
+echo = ros2action.verb.echo:EchoVerb
+find = ros2action.verb.find:FindVerb
+info = ros2action.verb.info:InfoVerb
+list = ros2action.verb.list:ListVerb
+send_goal = ros2action.verb.send_goal:SendGoalVerb
+type = ros2action.verb.type:TypeVerb
+
+[ros2cli.command]
+action = ros2action.command.action:ActionCommand
+
+[ros2cli.extension_point]
+ros2action.verb = ros2action.verb:VerbExtension

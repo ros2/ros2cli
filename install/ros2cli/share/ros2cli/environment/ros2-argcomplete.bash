@@ -1,0 +1,1 @@
+/home/rmc/ros2cli/build/ros2cli/completion/ros2-argcomplete.bash

@@ -1,0 +1,17 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from ros2cli_test_interfaces/msg/ShortVariedMultiNested.msg
+// generated code does not contain a copyright notice
+
+#include "ros2cli_test_interfaces/msg/ShortVariedNested.idl"
+
+module ros2cli_test_interfaces {
+  module msg {
+    @verbatim (language="comment", text=
+      "A short, varied, and nested type")
+    struct ShortVariedMultiNested {
+      @verbatim (language="comment", text=
+        "Comment - Nesting Level 3: 1 of 1")
+      ros2cli_test_interfaces::msg::ShortVariedNested short_varied_nested;
+    };
+  };
+};

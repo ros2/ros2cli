@@ -1,0 +1,9 @@
+[ros2cli.command]
+multicast = ros2multicast.command.multicast:MulticastCommand
+
+[ros2cli.extension_point]
+ros2multicast.verb = ros2multicast.verb:VerbExtension
+
+[ros2multicast.verb]
+receive = ros2multicast.verb.receive:ReceiveVerb
+send = ros2multicast.verb.send:SendVerb

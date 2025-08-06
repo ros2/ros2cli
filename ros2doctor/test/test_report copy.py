@@ -16,9 +16,7 @@ import contextlib
 import os
 import sys
 from typing import Any
-from typing import Dict
 from typing import Generator
-from typing import Tuple
 import unittest
 
 from launch import LaunchDescription
@@ -52,8 +50,8 @@ CYCLONEDDS_XML = '<CycloneDDS><Domain><General></General></Domain></CycloneDDS>'
 @pytest.mark.rostest
 @launch_testing.parametrize('rmw_implementation', get_available_rmw_implementations())
 @launch_testing.markers.keep_alive
-def generate_test_description(rmw_implementation: str) -> Tuple[LaunchDescription,
-                                                                Dict[str, Any]]:
+def generate_test_description(rmw_implementation: str) -> tuple[LaunchDescription,
+                                                                dict[str, Any]]:
     additional_env = get_rmw_additional_env(rmw_implementation)
     additional_env['PYTHONUNBUFFERED'] = '1'
     set_env_actions = [SetEnvironmentVariable(k, v) for k, v in additional_env.items()]
@@ -75,6 +73,7 @@ def generate_test_description(rmw_implementation: str) -> Tuple[LaunchDescriptio
                         SetEnvironmentVariable('ROS_DISABLE_LOANED_MESSAGES', '0'),
                         SetEnvironmentVariable('RCUTILS_COLORIZED_OUTPUT', '0'),
                         SetEnvironmentVariable('FASTDDS_BUILTIN_TRANSPORTS', 'UDPv6'),
+                        SetEnvironmentVariable('RUST_LOG', 'z=info'),
                         SetEnvironmentVariable('ZENOH_ROUTER_CHECK_ATTEMPTS', '10'),
                         SetEnvironmentVariable('RMW_CONNEXT_INITIAL_PEERS', 'CONNEXTBOO'),
                         SetEnvironmentVariable('CYCLONEDDS_URI', CYCLONEDDS_XML),
@@ -97,10 +96,6 @@ class TestEnvironmentReport(unittest.TestCase):
             rmw_implementation: str,
     ) -> None:
         cls.rmw_implementation = rmw_implementation
-        # rmw_implementation_filter = launch_testing_ros.tools.basic_output_filter(
-        #     filtered_patterns=['WARNING: topic .* does not appear to be published yet'],
-        #     filtered_rmw_implementation=rmw_implementation
-        # )
 
         @contextlib.contextmanager
         def launch_doctor_command(
@@ -116,8 +111,7 @@ class TestEnvironmentReport(unittest.TestCase):
                 output='screen'
             )
             with launch_testing.tools.launch_process(
-                    launch_service, doctor_command_action, proc_info, proc_output,
-                    # output_filter=rmw_implementation_filter
+                    launch_service, doctor_command_action, proc_info, proc_output
             ) as doctor_command:
                 yield doctor_command
 
@@ -128,7 +122,9 @@ class TestEnvironmentReport(unittest.TestCase):
         elif rmw_implementation == 'rmw_connext_cpp':
             cls.expected_line = 'RMW_CONNEXT_INITIAL_PEERS=CONNEXTBOO'
         elif rmw_implementation == 'rmw_zenoh_cpp':
-            cls.expected_line = 'ZENOH_ROUTER_CHECK_ATTEMPTS=10'
+            config = os.environ['ZENOH_CONFIG_OVERRIDE']
+            cls.expected_line = f'RUST_LOG=z=info, ZENOH_CONFIG_OVERRIDE={config}, '
+            'ZENOH_ROUTER_CHECK_ATTEMPTS=10'
         elif rmw_implementation == 'rmw_fastrtps_cpp':
             cls.expected_line = 'FASTDDS_BUILTIN_TRANSPORTS=UDPv6'
         else:
@@ -136,10 +132,6 @@ class TestEnvironmentReport(unittest.TestCase):
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_report(self) -> None:
-        # TODO(@fujitatomoya): rmw_zenoh_cpp is instable to find the endpoints, it does not
-        # matter if DaemonNode or DirectNode is used. For now, skip the test for rmw_zenoh_cpp.
-        # if self.rmw_implementation == 'rmw_zenoh_cpp':
-        #     raise unittest.SkipTest()
 
         for argument in ['-r', '--report']:
             with self.launch_doctor_command(

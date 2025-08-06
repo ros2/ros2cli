@@ -1,0 +1,5 @@
+[33m=============================== warnings summary ===============================[0m
+test/test_flake8.py: 32 warnings
+  Warning: This process (pid=34827) is multi-threaded, use of fork() may lead to deadlocks in the child.
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html

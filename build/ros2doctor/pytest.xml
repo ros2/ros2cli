@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ros2doctor" tests="1" failures="0" time="0" errors="1" skipped="0">
+  <testcase classname="ros2doctor" name="pytest.missing_result" time="0">
+    <failure message="The test invocation failed without generating a result file."/>
+  </testcase>
+</testsuite>

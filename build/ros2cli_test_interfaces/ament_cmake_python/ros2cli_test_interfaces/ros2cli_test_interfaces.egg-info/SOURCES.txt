@@ -1,0 +1,6 @@
+setup.py
+ros2cli_test_interfaces/__init__.py
+ros2cli_test_interfaces.egg-info/PKG-INFO
+ros2cli_test_interfaces.egg-info/SOURCES.txt
+ros2cli_test_interfaces.egg-info/dependency_links.txt
+ros2cli_test_interfaces.egg-info/top_level.txt

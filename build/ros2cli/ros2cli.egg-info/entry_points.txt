@@ -1,0 +1,17 @@
+[console_scripts]
+_ros2_daemon = ros2cli.daemon:main
+ros2 = ros2cli.cli:main
+
+[ros2cli.command]
+daemon = ros2cli.command.daemon:DaemonCommand
+extension_points = ros2cli.command.extension_points:ExtensionPointsCommand
+extensions = ros2cli.command.extensions:ExtensionsCommand
+
+[ros2cli.daemon.verb]
+start = ros2cli.verb.daemon.start:StartVerb
+status = ros2cli.verb.daemon.status:StatusVerb
+stop = ros2cli.verb.daemon.stop:StopVerb
+
+[ros2cli.extension_point]
+ros2cli.command = ros2cli.command:CommandExtension
+ros2cli.daemon.verb = ros2cli.verb.daemon:VerbExtension

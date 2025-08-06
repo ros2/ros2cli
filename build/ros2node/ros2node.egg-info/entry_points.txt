@@ -1,0 +1,9 @@
+[ros2cli.command]
+node = ros2node.command.node:NodeCommand
+
+[ros2cli.extension_point]
+ros2node.verb = ros2node.verb:VerbExtension
+
+[ros2node.verb]
+info = ros2node.verb.info:InfoVerb
+list = ros2node.verb.list:ListVerb

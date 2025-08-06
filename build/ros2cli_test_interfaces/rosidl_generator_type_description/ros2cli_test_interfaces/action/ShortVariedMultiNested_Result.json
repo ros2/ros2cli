@@ -1,0 +1,26 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "ros2cli_test_interfaces/action/ShortVariedMultiNested_Result",
+      "fields": [
+        {
+          "name": "bool_value",
+          "type": {
+            "type_id": 15,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": []
+  },
+  "type_hashes": [
+    {
+      "type_name": "ros2cli_test_interfaces/action/ShortVariedMultiNested_Result",
+      "hash_string": "RIHS01_63f1160dbb6cb26a1af3371c1b249562bb74b228b0a91981b3df2cf5fb233212"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "package_name": "ros2cli_test_interfaces",
+  "output_dir": "/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_typesupport_introspection_cpp/ros2cli_test_interfaces",
+  "template_dir": "/opt/ros/rolling/share/rosidl_typesupport_introspection_cpp/resource",
+  "idl_tuples": [
+    "/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_adapter/ros2cli_test_interfaces:action/ShortVariedMultiNested.idl",
+    "/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_adapter/ros2cli_test_interfaces:msg/ShortVaried.idl",
+    "/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_adapter/ros2cli_test_interfaces:msg/ShortVariedMultiNested.idl",
+    "/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_adapter/ros2cli_test_interfaces:msg/ShortVariedNested.idl",
+    "/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_adapter/ros2cli_test_interfaces:srv/ShortVariedMultiNested.idl"
+  ],
+  "ros_interface_dependencies": [
+    "service_msgs:/opt/ros/rolling/share/service_msgs/msg/ServiceEventInfo.idl",
+    "builtin_interfaces:/opt/ros/rolling/share/builtin_interfaces/msg/Duration.idl",
+    "builtin_interfaces:/opt/ros/rolling/share/builtin_interfaces/msg/Time.idl",
+    "action_msgs:/opt/ros/rolling/share/action_msgs/msg/GoalInfo.idl",
+    "action_msgs:/opt/ros/rolling/share/action_msgs/msg/GoalStatus.idl",
+    "action_msgs:/opt/ros/rolling/share/action_msgs/msg/GoalStatusArray.idl",
+    "action_msgs:/opt/ros/rolling/share/action_msgs/srv/CancelGoal.idl",
+    "unique_identifier_msgs:/opt/ros/rolling/share/unique_identifier_msgs/msg/UUID.idl"
+  ],
+  "target_dependencies": [
+    "/opt/ros/rolling/lib/rosidl_typesupport_introspection_cpp/rosidl_typesupport_introspection_cpp",
+    "/opt/ros/rolling/lib/python3.12/site-packages/rosidl_typesupport_introspection_cpp/__init__.py",
+    "/opt/ros/rolling/share/rosidl_typesupport_introspection_cpp/resource/idl__rosidl_typesupport_introspection_cpp.hpp.em",
+    "/opt/ros/rolling/share/rosidl_typesupport_introspection_cpp/resource/idl__type_support.cpp.em",
+    "/opt/ros/rolling/share/rosidl_typesupport_introspection_cpp/resource/msg__rosidl_typesupport_introspection_cpp.hpp.em",
+    "/opt/ros/rolling/share/rosidl_typesupport_introspection_cpp/resource/msg__type_support.cpp.em",
+    "/opt/ros/rolling/share/rosidl_typesupport_introspection_cpp/resource/srv__rosidl_typesupport_introspection_cpp.hpp.em",
+    "/opt/ros/rolling/share/rosidl_typesupport_introspection_cpp/resource/srv__type_support.cpp.em",
+    "/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_adapter/ros2cli_test_interfaces/action/ShortVariedMultiNested.idl",
+    "/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_adapter/ros2cli_test_interfaces/msg/ShortVaried.idl",
+    "/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_adapter/ros2cli_test_interfaces/msg/ShortVariedMultiNested.idl",
+    "/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_adapter/ros2cli_test_interfaces/msg/ShortVariedNested.idl",
+    "/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_adapter/ros2cli_test_interfaces/srv/ShortVariedMultiNested.idl",
+    "/opt/ros/rolling/share/service_msgs/msg/ServiceEventInfo.idl",
+    "/opt/ros/rolling/share/builtin_interfaces/msg/Duration.idl",
+    "/opt/ros/rolling/share/builtin_interfaces/msg/Time.idl",
+    "/opt/ros/rolling/share/action_msgs/msg/GoalInfo.idl",
+    "/opt/ros/rolling/share/action_msgs/msg/GoalStatus.idl",
+    "/opt/ros/rolling/share/action_msgs/msg/GoalStatusArray.idl",
+    "/opt/ros/rolling/share/action_msgs/srv/CancelGoal.idl",
+    "/opt/ros/rolling/share/unique_identifier_msgs/msg/UUID.idl"
+  ]
+}

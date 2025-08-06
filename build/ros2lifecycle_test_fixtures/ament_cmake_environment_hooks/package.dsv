@@ -1,0 +1,4 @@
+source;share/ros2lifecycle_test_fixtures/local_setup.bash
+source;share/ros2lifecycle_test_fixtures/local_setup.dsv
+source;share/ros2lifecycle_test_fixtures/local_setup.sh
+source;share/ros2lifecycle_test_fixtures/local_setup.zsh

@@ -1,0 +1,11 @@
+[ros2cli.command]
+lifecycle = ros2lifecycle.command.lifecycle:LifecycleCommand
+
+[ros2cli.extension_point]
+ros2lifecycle.verb = ros2lifecycle.verb:VerbExtension
+
+[ros2lifecycle.verb]
+get = ros2lifecycle.verb.get:GetVerb
+list = ros2lifecycle.verb.list:ListVerb
+nodes = ros2lifecycle.verb.nodes:NodesVerb
+set = ros2lifecycle.verb.set:SetVerb

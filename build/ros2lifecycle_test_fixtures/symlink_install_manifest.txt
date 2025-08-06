@@ -1,0 +1,16 @@
+/home/rmc/ros2cli/install/ros2lifecycle_test_fixtures/lib/ros2lifecycle_test_fixtures/simple_lifecycle_node
+/home/rmc/ros2cli/install/ros2lifecycle_test_fixtures/share/ament_index/resource_index/package_run_dependencies/ros2lifecycle_test_fixtures
+/home/rmc/ros2cli/install/ros2lifecycle_test_fixtures/share/ament_index/resource_index/parent_prefix_path/ros2lifecycle_test_fixtures
+/home/rmc/ros2cli/install/ros2lifecycle_test_fixtures/share/ros2lifecycle_test_fixtures/environment/ament_prefix_path.sh
+/home/rmc/ros2cli/install/ros2lifecycle_test_fixtures/share/ros2lifecycle_test_fixtures/environment/ament_prefix_path.dsv
+/home/rmc/ros2cli/install/ros2lifecycle_test_fixtures/share/ros2lifecycle_test_fixtures/environment/path.sh
+/home/rmc/ros2cli/install/ros2lifecycle_test_fixtures/share/ros2lifecycle_test_fixtures/environment/path.dsv
+/home/rmc/ros2cli/install/ros2lifecycle_test_fixtures/share/ros2lifecycle_test_fixtures/local_setup.bash
+/home/rmc/ros2cli/install/ros2lifecycle_test_fixtures/share/ros2lifecycle_test_fixtures/local_setup.sh
+/home/rmc/ros2cli/install/ros2lifecycle_test_fixtures/share/ros2lifecycle_test_fixtures/local_setup.zsh
+/home/rmc/ros2cli/install/ros2lifecycle_test_fixtures/share/ros2lifecycle_test_fixtures/local_setup.dsv
+/home/rmc/ros2cli/install/ros2lifecycle_test_fixtures/share/ros2lifecycle_test_fixtures/package.dsv
+/home/rmc/ros2cli/install/ros2lifecycle_test_fixtures/share/ament_index/resource_index/packages/ros2lifecycle_test_fixtures
+/home/rmc/ros2cli/install/ros2lifecycle_test_fixtures/share/ros2lifecycle_test_fixtures/cmake/ros2lifecycle_test_fixturesConfig.cmake
+/home/rmc/ros2cli/install/ros2lifecycle_test_fixtures/share/ros2lifecycle_test_fixtures/cmake/ros2lifecycle_test_fixturesConfig-version.cmake
+/home/rmc/ros2cli/install/ros2lifecycle_test_fixtures/share/ros2lifecycle_test_fixtures/package.xml

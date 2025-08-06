@@ -1,0 +1,12 @@
+[ros2cli.command]
+component = ros2component.command.component:ComponentCommand
+
+[ros2cli.extension_point]
+ros2component.verb = ros2component.verb:VerbExtension
+
+[ros2component.verb]
+list = ros2component.verb.list:ListVerb
+load = ros2component.verb.load:LoadVerb
+standalone = ros2component.verb.standalone:StandaloneVerb
+types = ros2component.verb.types:TypesVerb
+unload = ros2component.verb.unload:UnloadVerb
