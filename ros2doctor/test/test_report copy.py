@@ -75,7 +75,7 @@ def generate_test_description(rmw_implementation: str) -> Tuple[LaunchDescriptio
                         SetEnvironmentVariable('ROS_DISABLE_LOANED_MESSAGES', '0'),
                         SetEnvironmentVariable('RCUTILS_COLORIZED_OUTPUT', '0'),
                         SetEnvironmentVariable('FASTDDS_BUILTIN_TRANSPORTS', 'UDPv6'),
-                        SetEnvironmentVariable('RUST_LOG', 'ZENOHBOO'),
+                        SetEnvironmentVariable('ZENOH_ROUTER_CHECK_ATTEMPTS', '10'),
                         SetEnvironmentVariable('RMW_CONNEXT_INITIAL_PEERS', 'CONNEXTBOO'),
                         SetEnvironmentVariable('CYCLONEDDS_URI', CYCLONEDDS_XML),
                         launch_testing.actions.ReadyToTest()
@@ -128,7 +128,7 @@ class TestEnvironmentReport(unittest.TestCase):
         elif rmw_implementation == 'rmw_connext_cpp':
             cls.expected_line = 'RMW_CONNEXT_INITIAL_PEERS=CONNEXTBOO'
         elif rmw_implementation == 'rmw_zenoh_cpp':
-            cls.expected_line = 'RUST_LOG=ZENOHBOO'
+            cls.expected_line = 'ZENOH_ROUTER_CHECK_ATTEMPTS=10'
         elif rmw_implementation == 'rmw_fastrtps_cpp':
             cls.expected_line = 'FASTDDS_BUILTIN_TRANSPORTS=UDPv6'
         else:
