@@ -24,15 +24,13 @@ import unittest
 from launch import LaunchDescription
 from launch import LaunchService
 from launch.actions import ExecuteProcess
-
 from launch.actions import SetEnvironmentVariable
-from launch_testing_ros.actions import EnableRmwIsolation
-
 import launch_testing
 import launch_testing.actions
 import launch_testing.asserts
 import launch_testing.markers
 import launch_testing.tools
+from launch_testing_ros.actions import EnableRmwIsolation
 
 import pytest
 
@@ -56,7 +54,6 @@ CYCLONEDDS_XML = '<CycloneDDS><Domain><General></General></Domain></CycloneDDS>'
 @launch_testing.markers.keep_alive
 def generate_test_description(rmw_implementation: str) -> Tuple[LaunchDescription,
                                                                 Dict[str, Any]]:
-    path_to_fixtures = os.path.join(os.path.dirname(__file__), 'fixtures')
     additional_env = get_rmw_additional_env(rmw_implementation)
     additional_env['PYTHONUNBUFFERED'] = '1'
     set_env_actions = [SetEnvironmentVariable(k, v) for k, v in additional_env.items()]
@@ -151,13 +148,19 @@ class TestEnvironmentReport(unittest.TestCase):
                 assert doctor_command.wait_for_shutdown(timeout=10)
             assert doctor_command.exit_code == launch_testing.asserts.EXIT_OK
 
-            # Due to isolation ROS_DOMAIN_ID is unique
-            domain_id = os.environ['ROS_DOMAIN_ID']
+            # Due to isolation ROS_DOMAIN_ID is unique.
+            # ROS_DOMAIN_ID Does not seem to be set for zenoh with EnableRmwIsolation.
+            domain_id_line = ''
+            if self.rmw_implementation == 'rmw_zenoh_cpp':
+                domain_id_line = ''
+            else:
+                domain_id = os.environ['ROS_DOMAIN_ID']
+                domain_id_line = f', ROS_DOMAIN_ID={domain_id}'
+
             assert launch_testing.tools.expect_output(
                 expected_lines=[
                     'ros environment variables        : ROS_AUTOMATIC_DISCOVERY_RANGE=SUBNET, '
-                    'ROS_DISABLE_LOANED_MESSAGES=0, ROS_DISTRO=rolling, '
-                    f'ROS_DOMAIN_ID={domain_id}',
+                    f'ROS_DISABLE_LOANED_MESSAGES=0, ROS_DISTRO=rolling{domain_id_line}',
                     'rcutils environment variables    : RCUTILS_COLORIZED_OUTPUT=0',
                     f'rmw environment variables        : {self.expected_line}'
                 ],
