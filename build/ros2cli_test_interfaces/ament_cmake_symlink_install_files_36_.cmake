@@ -1,1 +1,0 @@
-ament_cmake_symlink_install_files("/home/rmc/ros2cli/ros2cli_test_interfaces" FILES "/home/rmc/ros2cli/build/ros2cli_test_interfaces/ament_cmake_export_targets/ament_cmake_export_targets-extras.cmake" "DESTINATION" "share/ros2cli_test_interfaces/cmake")

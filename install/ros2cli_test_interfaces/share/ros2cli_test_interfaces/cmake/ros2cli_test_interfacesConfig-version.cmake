@@ -1,1 +1,0 @@
-/home/rmc/ros2cli/build/ros2cli_test_interfaces/ament_cmake_core/ros2cli_test_interfacesConfig-version.cmake

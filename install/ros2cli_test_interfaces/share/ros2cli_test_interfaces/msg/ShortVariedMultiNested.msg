@@ -1,1 +1,0 @@
-/home/rmc/ros2cli/ros2cli_test_interfaces/msg/ShortVariedMultiNested.msg

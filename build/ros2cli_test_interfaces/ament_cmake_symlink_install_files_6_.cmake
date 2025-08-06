@@ -1,1 +1,0 @@
-ament_cmake_symlink_install_files("/home/rmc/ros2cli/ros2cli_test_interfaces" FILES "/opt/ros/rolling/lib/python3.12/site-packages/ament_package/template/environment_hook/library_path.sh" "DESTINATION" "share/ros2cli_test_interfaces/environment")

@@ -1,1 +1,0 @@
-ament_cmake_symlink_install_targets("TARGET_FILES" "/home/rmc/ros2cli/build/ros2lifecycle_test_fixtures/simple_lifecycle_node" "TARGETS" "simple_lifecycle_node" "DESTINATION" "lib/ros2lifecycle_test_fixtures")

@@ -1,5 +1,0 @@
-/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_adapter/ros2cli_test_interfaces:action/ShortVariedMultiNested.idl
-/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_adapter/ros2cli_test_interfaces:msg/ShortVaried.idl
-/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_adapter/ros2cli_test_interfaces:msg/ShortVariedMultiNested.idl
-/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_adapter/ros2cli_test_interfaces:msg/ShortVariedNested.idl
-/home/rmc/ros2cli/build/ros2cli_test_interfaces/rosidl_adapter/ros2cli_test_interfaces:srv/ShortVariedMultiNested.idl
