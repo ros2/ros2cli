@@ -15,6 +15,7 @@
 import argparse
 import os
 import time
+from urllib.parse import urlparse
 import uuid
 
 import rclpy
@@ -31,26 +32,45 @@ from ros2cli.xmlrpc.local_server import LocalXMLRPCServer
 from ros2cli.xmlrpc.local_server import SimpleXMLRPCRequestHandler
 
 
+def get_xmlrpc_server_url(address=None):
+    if address:
+        host, port = address
+    else:
+        host = '127.0.0.1'
+        port = 11511 + int(os.environ.get('ROS_DOMAIN_ID', 0))
+    return f'http://{host}:{port}/ros2cli/'
+
+
 def get_port():
-    base_port = 11511
-    base_port += int(os.environ.get('ROS_DOMAIN_ID', 0))
-    return base_port
+    url = get_xmlrpc_server_url()
+    return urlparse(url).port
 
 
 def get_address():
-    return '127.0.0.1', get_port()
+    url = get_xmlrpc_server_url()
+    parsed_url = urlparse(url)
+    return parsed_url.hostname, parsed_url.port
+
+
+def get_path():
+    url = get_xmlrpc_server_url()
+    return urlparse(url).path
 
 
 class RequestHandler(SimpleXMLRPCRequestHandler):
-    rpc_paths = ('/ros2cli/',)
 
+    class _GetRpcPaths(property):
+        """
+        Getter for the RPC paths value to use on the request handler.
 
-def get_xmlrpc_server_url(address=None):
-    if not address:
-        address = get_address()
-    host, port = address
-    path = RequestHandler.rpc_paths[0]
-    return f'http://{host}:{port}{path}'
+        We need this property to work when accessed from the class reference,
+        so we can't just use ``@property`` here.
+        """
+
+        def __get__(self, instance, owner):
+            return (get_path(),)
+
+    rpc_paths = _GetRpcPaths()
 
 
 def make_xmlrpc_server() -> LocalXMLRPCServer:
