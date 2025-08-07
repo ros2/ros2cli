@@ -107,6 +107,14 @@ ALL_ENVIRONMENT_VARIABLES: Final = [
     *RMW_CYCLONEDDS_ENVIRONMENT_VARIABLES
 ]
 
+RMW_ENVIRONMENT_VARIABLES: Final = {
+    'rmw_connextdds': RMW_CONNEXTDDS_ENVIRONMENT_VARIABLES,
+    'rmw_cyclonedds_cpp': RMW_CYCLONEDDS_ENVIRONMENT_VARIABLES,
+    'rmw_fastrtps_cpp': RMW_FASTRTPS_ENVIRONMENT_VARIABLES,
+    'rmw_fastrtps_dynamic_cpp': RMW_FASTRTPS_ENVIRONMENT_VARIABLES,
+    'rmw_zenoh_cpp': RMW_ZENOH_CPP_ENVIRONMENT_VARIABLES,
+}
+
 
 class DoctorCheck:
     """Abstract base class of ros2doctor check."""

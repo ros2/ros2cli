@@ -118,7 +118,7 @@ class TestEnvironmentReport(unittest.TestCase):
 
         if rmw_implementation == 'rmw_cyclonedds_cpp':
             cls.expected_line = f'CYCLONEDDS_URI={CYCLONEDDS_XML}'
-        elif rmw_implementation == 'rmw_connext_cpp':
+        elif rmw_implementation == 'rmw_connextdds':
             cls.expected_line = 'RMW_CONNEXT_INITIAL_PEERS=CONNEXTBOO'
         elif rmw_implementation == 'rmw_zenoh_cpp':
             config = os.environ['ZENOH_CONFIG_OVERRIDE']
@@ -127,7 +127,7 @@ class TestEnvironmentReport(unittest.TestCase):
         elif rmw_implementation == 'rmw_fastrtps_cpp':
             cls.expected_line = 'FASTDDS_BUILTIN_TRANSPORTS=UDPv6'
         else:
-            raise ValueError(f'Unsupported rmw={rmw_implementation}')
+            cls.expected_line = ''
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_environment_report(self) -> None:

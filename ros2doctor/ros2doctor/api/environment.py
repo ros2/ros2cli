@@ -19,10 +19,7 @@ from rclpy.utilities import get_rmw_implementation_identifier
 from ros2doctor.api import DoctorReport
 from ros2doctor.api import RCUTILS_ENVIRONMENT_VARIABLES
 from ros2doctor.api import Report
-from ros2doctor.api import RMW_CONNEXTDDS_ENVIRONMENT_VARIABLES
-from ros2doctor.api import RMW_CYCLONEDDS_ENVIRONMENT_VARIABLES
-from ros2doctor.api import RMW_FASTRTPS_ENVIRONMENT_VARIABLES
-from ros2doctor.api import RMW_ZENOH_CPP_ENVIRONMENT_VARIABLES
+from ros2doctor.api import RMW_ENVIRONMENT_VARIABLES
 from ros2doctor.api import ROS_ENVIRONMENT_VARIABLES
 
 
@@ -37,18 +34,7 @@ class EnvironmentReport(DoctorReport):
 
         rmw_name = get_rmw_implementation_identifier()
 
-        rmw_environment_variables: list[str] = []
-
-        if rmw_name == 'rmw_cyclonedds_cpp':
-            rmw_environment_variables = RMW_CYCLONEDDS_ENVIRONMENT_VARIABLES
-        elif rmw_name == 'rmw_connext_cpp':
-            rmw_environment_variables = RMW_CONNEXTDDS_ENVIRONMENT_VARIABLES
-        elif rmw_name == 'rmw_zenoh_cpp':
-            rmw_environment_variables = RMW_ZENOH_CPP_ENVIRONMENT_VARIABLES
-        elif rmw_name == 'rmw_fastrtps_cpp':
-            rmw_environment_variables = RMW_FASTRTPS_ENVIRONMENT_VARIABLES
-        else:
-            raise Warning(f'Using unsupported rmw={rmw_name}')
+        rmw_environment_variables: list[str] = RMW_ENVIRONMENT_VARIABLES.get(rmw_name, [])
 
         ros_variable_list: list[str] = []
         rmw_variable_list: list[str] = []
