@@ -62,7 +62,7 @@ class EnvironmentReport(DoctorReport):
             if key in rmw_environment_variables:
                 rmw_variable_list.append(f'{key}={value}')
 
-        environment_report.add_to_report('ros environment variables',
+        environment_report.add_to_report('ROS environment variables',
                                          ', '.join(ros_variable_list))
         environment_report.add_to_report('rcutils environment variables',
                                          ', '.join(rcutils_variable_list))
