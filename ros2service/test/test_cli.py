@@ -21,7 +21,10 @@ import unittest
 
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess
+from launch.actions import RegisterEventHandler
+from launch.actions import ResetEnvironment
 from launch.actions import SetEnvironmentVariable
+from launch.event_handlers import OnShutdown
 from launch_ros.actions import Node
 
 import launch_testing
@@ -78,6 +81,7 @@ def generate_test_description(rmw_implementation):
             cmd=['ros2', 'daemon', 'stop'],
             name='daemon-stop',
             on_exit=[
+                RegisterEventHandler(OnShutdown(on_shutdown=ResetEnvironment())),
                 *set_env_actions,
                 EnableRmwIsolation(),
                 ExecuteProcess(
