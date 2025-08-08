@@ -150,7 +150,7 @@ class TestEnvironmentReport(unittest.TestCase):
 
             assert launch_testing.tools.expect_output(
                 expected_lines=[
-                    'ros environment variables        : ROS_AUTOMATIC_DISCOVERY_RANGE=SUBNET, '
+                    'ROS environment variables        : ROS_AUTOMATIC_DISCOVERY_RANGE=SUBNET, '
                     f'ROS_DISABLE_LOANED_MESSAGES=0, ROS_DISTRO=rolling{domain_id_line}',
                     'rcutils environment variables    : RCUTILS_COLORIZED_OUTPUT=0',
                     f'rmw environment variables        : {self.expected_line}'
