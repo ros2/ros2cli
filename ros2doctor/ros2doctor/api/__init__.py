@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from typing import Final
 from typing import List
 from typing import Set
 from typing import Tuple
@@ -26,6 +27,95 @@ from ros2cli.node.strategy import NodeStrategy
 from ros2doctor.api.format import doctor_warn
 
 
+# List of Environment Variables compiled from github.com/ros2/ros2cli/issues/1046
+# TODO(@fujitatomoya): In the future maybe get from centralized storage via rcl/rmw interfaces.
+# NOTE: In alphabetical order for ease of searching.
+ROS_ENVIRONMENT_VARIABLES: Final = [
+    'RCL_LOGGING_SPDLOG_EXPERIMENTAL_OLD_FLUSHING_BEHAVIOR',
+    'ROS_AUTOMATIC_DISCOVERY_RANGE',
+    'ROS_DISABLE_LOANED_MESSAGES',
+    'ROS_DOMAIN_ID',
+    'ROS_DISTRO',
+    'ROS_HOME',
+    'ROS_LOG_DIR',
+    'ROS_SECURITY_ENABLE',
+    'ROS_SECURITY_ENCLAVE_OVERRIDE',
+    'ROS_SECURITY_KEYSTORE',
+    'ROS_SECURITY_STRATEGY',
+    'ROS_STATIC_PEERS',
+    'ROS_TRACE_DIR'
+    'RMW_IMPLEMENTATION',
+    'TRACETOOLS_RUNTIME_DISABLE'
+]
+
+
+RCUTILS_ENVIRONMENT_VARIABLES: Final = [
+    'RCUTILS_COLORIZED_OUTPUT',
+    'RCUTILS_CONSOLE_OUTPUT_FORMAT',
+    'RCUTILS_CONSOLE_STDOUT_LINE_BUFFERED',
+    'RCUTILS_LOGGING_BUFFERED_STREAM',
+    'RCUTILS_LOGGING_USE_STDOUT'
+]
+
+
+RMW_FASTRTPS_ENVIRONMENT_VARIABLES: Final = [
+    'FASTDDS_BUILTIN_TRANSPORTS',
+    'FASTRTPS_DEFAULT_PROFILES_FILE',
+    'RMW_FASTRTPS_PUBLICATION_MODE',
+    'RMW_FASTRTPS_USE_QOS_FROM_XML'
+]
+
+
+RMW_ZENOH_CPP_ENVIRONMENT_VARIABLES: Final = [
+    'RUST_LOG',
+    'ZENOH_CONFIG_OVERRIDE',
+    'ZENOH_ROUTER_CHECK_ATTEMPTS',
+    'ZENOH_ROUTER_CONFIG_URI',
+    'ZENOH_SESSION_CONFIG_URI'
+]
+
+
+RMW_CONNEXTDDS_ENVIRONMENT_VARIABLES: Final = [
+    'RMW_CONNEXT_CYCLONE_COMPATIBILITY_MODE',
+    'RMW_CONNEXT_DISABLE_RELIABILITY_OPTIMIZATIONS',
+    'RMW_CONNEXT_DISABLE_FAST_ENDPOINT_DISCOVERY',
+    'RMW_CONNEXT_DISABLE_LARGE_DATA_OPTIMIZATIONS',
+    'RMW_CONNEXT_ENDPOINT_QOS_OVERRIDE_POLICY',
+    'RMW_CONNEXT_ENV_UDP_INTERFACE',
+    'RMW_CONNEXT_INITIAL_PEERS',
+    'RMW_CONNEXT_OLD_RMW_COMPATIBILITY_MODE',
+    'RMW_CONNEXT_PARTICIPANT_QOS_OVERRIDE_POLICY',
+    'RMW_CONNEXT_REQUEST_REPLY_MAPPING',
+    'RMW_CONNEXT_SECURITY_LOG_FILE',
+    'RMW_CONNEXT_SECURITY_LOG_PUBLISH',
+    'RMW_CONNEXT_SECURITY_LOG_VERBOSITY',
+    'RMW_CONNEXT_USE_DEFAULT_PUBLISH_MODE',
+]
+
+
+RMW_CYCLONEDDS_ENVIRONMENT_VARIABLES: Final = [
+    'CYCLONEDDS_URI'
+]
+
+
+ALL_ENVIRONMENT_VARIABLES: Final = [
+    *ROS_ENVIRONMENT_VARIABLES,
+    *RCUTILS_ENVIRONMENT_VARIABLES,
+    *RMW_FASTRTPS_ENVIRONMENT_VARIABLES,
+    *RMW_ZENOH_CPP_ENVIRONMENT_VARIABLES,
+    *RMW_CONNEXTDDS_ENVIRONMENT_VARIABLES,
+    *RMW_CYCLONEDDS_ENVIRONMENT_VARIABLES
+]
+
+RMW_ENVIRONMENT_VARIABLES: Final = {
+    'rmw_connextdds': RMW_CONNEXTDDS_ENVIRONMENT_VARIABLES,
+    'rmw_cyclonedds_cpp': RMW_CYCLONEDDS_ENVIRONMENT_VARIABLES,
+    'rmw_fastrtps_cpp': RMW_FASTRTPS_ENVIRONMENT_VARIABLES,
+    'rmw_fastrtps_dynamic_cpp': RMW_FASTRTPS_ENVIRONMENT_VARIABLES,
+    'rmw_zenoh_cpp': RMW_ZENOH_CPP_ENVIRONMENT_VARIABLES,
+}
+
+
 class DoctorCheck:
     """Abstract base class of ros2doctor check."""
 
@@ -33,8 +123,8 @@ class DoctorCheck:
         """:return: string linking checks and reports."""
         raise NotImplementedError
 
-    def check(self) -> bool:
-        """:return: boolean indicating result of checks."""
+    def check(self) -> 'Result':
+        """:return: Result indicating result of checks."""
         raise NotImplementedError
 
 

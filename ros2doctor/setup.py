@@ -58,6 +58,7 @@ setup(
             'ActionReport = ros2doctor.api.action:ActionReport',
             'QoSCompatibilityReport = ros2doctor.api.qos_compatibility:QoSCompatibilityReport',
             'PackageReport = ros2doctor.api.package:PackageReport',
+            'EnvironmentReport = ros2doctor.api.environment:EnvironmentReport'
         ],
         'ros2cli.extension_point': [
             'ros2doctor.verb = ros2doctor.verb:VerbExtension',
