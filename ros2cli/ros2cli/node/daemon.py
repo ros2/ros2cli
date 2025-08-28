@@ -46,7 +46,11 @@ class DaemonNode:
                 for method in self._proxy.system.listMethods()
                 if not method.startswith('system.')
             ]
+<<<<<<< HEAD
         except ConnectionRefusedError:
+=======
+        except (ConnectionRefusedError, ConnectionResetError, TimeoutError):
+>>>>>>> a22b39b (fix: Also catch a TimeoutError (#1092))
             return False
         return True
 
