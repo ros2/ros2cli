@@ -143,6 +143,15 @@ class TestROS2TopicBwDelayHz(unittest.TestCase):
 
                 publish_timer = self.node.create_timer(0.5, publish_message)
 
+                # Wait for the publisher to be discovered
+                publisher_count = 0
+                timeout_count = 0
+                while publisher_count == 0 and timeout_count < 10:
+                    self.executor.spin_once(timeout_sec=0.1)
+                    publisher_count = self.node.count_publishers(topic)
+                    timeout_count += 1
+                assert publisher_count > 0, 'Publisher was not discovered'
+
                 try:
                     command_action = ExecuteProcess(
                         cmd=(['ros2', 'topic', verb] +
