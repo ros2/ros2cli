@@ -24,6 +24,7 @@ import unittest
 from launch import LaunchDescription
 from launch import LaunchService
 from launch.actions import ExecuteProcess
+from launch.actions import SetEnvironmentVariable
 
 from launch_ros.actions import Node
 
@@ -32,6 +33,7 @@ import launch_testing.actions
 import launch_testing.asserts
 import launch_testing.markers
 import launch_testing.tools
+from launch_testing_ros.actions import EnableRmwIsolation
 import launch_testing_ros.tools
 
 import pytest
@@ -55,21 +57,22 @@ def generate_test_description(rmw_implementation: str) -> Tuple[LaunchDescriptio
     path_to_fixtures = os.path.join(os.path.dirname(__file__), 'fixtures')
     additional_env = get_rmw_additional_env(rmw_implementation)
     additional_env['PYTHONUNBUFFERED'] = '1'
+    set_env_actions = [SetEnvironmentVariable(k, v) for k, v in additional_env.items()]
 
     return LaunchDescription([
         ExecuteProcess(
             cmd=['ros2', 'daemon', 'stop'],
             name='daemon-stop',
             on_exit=[
+                *set_env_actions,
+                EnableRmwIsolation(),
                 ExecuteProcess(
                     cmd=['ros2', 'daemon', 'start'],
                     name='daemon-start',
-                    additional_env=additional_env,
                     on_exit=[
                         Node(
                             executable=sys.executable,
                             arguments=[os.path.join(path_to_fixtures, 'report_node.py')],
-                            additional_env=additional_env
                         ),
                         launch_testing.actions.ReadyToTest()
                     ]
@@ -100,11 +103,8 @@ class TestROS2DoctorReport(unittest.TestCase):
             self,
             arguments
         ) -> Generator[launch_testing.tools.process.ProcessProxy, None, None]:
-            additional_env = get_rmw_additional_env(rmw_implementation)
-            additional_env['PYTHONUNBUFFERED'] = '1'
             doctor_command_action = ExecuteProcess(
                 cmd=['ros2', 'doctor', *arguments],
-                additional_env=additional_env,
                 name='ros2doctor-cli',
                 output='screen'
             )
