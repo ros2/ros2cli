@@ -13,12 +13,14 @@
 # limitations under the License.
 
 import time
+from unittest.mock import patch
 
 import pytest
 
 import rclpy
 import rclpy.action
 
+from ros2cli.daemon import SERVER_URL_VARIABLE_NAME
 from ros2cli.node.daemon import DaemonNode
 from ros2cli.node.daemon import is_daemon_running
 from ros2cli.node.daemon import shutdown_daemon
@@ -103,8 +105,7 @@ def local_node():
         yield node
 
 
-@pytest.fixture(scope='module')
-def daemon_node():
+def _daemon_node():
     if is_daemon_running(args=[]):
         assert shutdown_daemon(args=[], timeout=5.0)
     assert spawn_daemon(args=[], timeout=5.0)
@@ -126,6 +127,11 @@ def daemon_node():
             )
         yield node
         node.system.shutdown()
+
+
+@pytest.fixture(scope='module')
+def daemon_node():
+    yield from _daemon_node()
 
 
 def test_get_name(daemon_node):
@@ -249,3 +255,25 @@ def test_count_clients(daemon_node):
 
 def test_count_services(daemon_node):
     assert 1 == daemon_node.count_services(TEST_SERVICE_NAME)
+
+
+def test_url_override(daemon_node):
+    # Started by daemon_node
+    assert is_daemon_running(args=[])
+
+    with patch.dict(
+        'ros2cli.daemon.os.environ',
+        {SERVER_URL_VARIABLE_NAME: 'http://127.0.0.1:11744/test/'},
+    ):
+        # No daemon running on that port
+        assert not is_daemon_running(args=[])
+
+        for _ in _daemon_node():
+            # New daemon running on our custom port
+            assert is_daemon_running(args=[])
+
+        # Custom port daemon is shut down
+        assert not is_daemon_running(args=[])
+
+    # Back to the one started by daemon_node
+    assert is_daemon_running(args=[])

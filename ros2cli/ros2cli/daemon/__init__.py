@@ -16,6 +16,7 @@ import argparse
 import os
 import time
 from urllib.parse import urlparse
+from urllib.parse import urlunparse
 import uuid
 
 import rclpy
@@ -32,13 +33,25 @@ from ros2cli.xmlrpc.local_server import LocalXMLRPCServer
 from ros2cli.xmlrpc.local_server import SimpleXMLRPCRequestHandler
 
 
+SERVER_URL_VARIABLE_NAME = 'ROS2_DAEMON_SERVER_URL'
+
+
 def get_xmlrpc_server_url(address=None):
-    if address:
-        host, port = address
-    else:
-        host = '127.0.0.1'
-        port = 11511 + int(os.environ.get('ROS_DOMAIN_ID', 0))
-    return f'http://{host}:{port}/ros2cli/'
+    url = urlparse(
+        os.environ.get(SERVER_URL_VARIABLE_NAME) or '/ros2cli/',
+        scheme='http')
+
+    if address is None:
+        address = (
+            url.hostname or '127.0.0.1',
+            str(
+                url.port
+                if url.port not in (None, '')
+                else (11511 + int(os.environ.get('ROS_DOMAIN_ID', 0)))
+            ),
+        )
+
+    return urlunparse(url._replace(netloc=':'.join(address)))
 
 
 def get_port():
