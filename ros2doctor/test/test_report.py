@@ -24,7 +24,10 @@ import unittest
 from launch import LaunchDescription
 from launch import LaunchService
 from launch.actions import ExecuteProcess
+from launch.actions import RegisterEventHandler
+from launch.actions import ResetEnvironment
 from launch.actions import SetEnvironmentVariable
+from launch.event_handlers import OnShutdown
 
 from launch_ros.actions import Node
 
@@ -64,6 +67,7 @@ def generate_test_description(rmw_implementation: str) -> Tuple[LaunchDescriptio
             cmd=['ros2', 'daemon', 'stop'],
             name='daemon-stop',
             on_exit=[
+                RegisterEventHandler(OnShutdown(on_shutdown=ResetEnvironment())),
                 *set_env_actions,
                 EnableRmwIsolation(),
                 ExecuteProcess(
@@ -130,11 +134,6 @@ class TestROS2DoctorReport(unittest.TestCase):
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_report(self) -> None:
-        # TODO(@fujitatomoya): rmw_zenoh_cpp is instable to find the endpoints, it does not
-        # matter if DaemonNode or DirectNode is used. For now, skip the test for rmw_zenoh_cpp.
-        if self.rmw_implementation == 'rmw_zenoh_cpp':
-            raise unittest.SkipTest()
-
         for argument in ['-r', '--report']:
             with self.launch_doctor_command(
                     arguments=[argument]
