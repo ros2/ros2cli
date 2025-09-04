@@ -105,9 +105,19 @@ def generate_test_description(rmw_implementation):
             cmd=['ros2', 'daemon', 'stop'],
             name='daemon-stop',
             on_exit=[
-                RegisterEventHandler(OnShutdown(on_shutdown=ResetEnvironment())),
                 *set_env_actions,
                 EnableRmwIsolation(),
+                RegisterEventHandler(OnShutdown(on_shutdown=[
+                    # Stop daemon in isolated environment with proper ROS_DOMAIN_ID
+                    ExecuteProcess(
+                        cmd=['ros2', 'daemon', 'stop'],
+                        name='daemon-stop-isolated',
+                        # Use the same isolated environment
+                        additional_env=dict(additional_env),
+                    ),
+                    # This must be done after stopping the daemon in the isolated environment
+                    ResetEnvironment(),
+                ])),
                 ExecuteProcess(
                     cmd=['ros2', 'daemon', 'start'],
                     name='daemon-start',
