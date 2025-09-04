@@ -57,6 +57,9 @@ def make_xmlrpc_server() -> LocalXMLRPCServer:
     """Make local XMLRPC server listening over ros2cli daemon's default port."""
     address = get_address()
 
+    assert urlparse(get_xmlrpc_server_url()).scheme == 'http', \
+        'Only http XMLRPC servers are supported at this time.'
+
     return LocalXMLRPCServer(
         address, logRequests=False,
         requestHandler=RequestHandler,
@@ -143,7 +146,11 @@ def serve(server: LocalXMLRPCServer, *, timeout: int = 2 * 60 * 60):
             shutdown = True
         server.register_function(shutdown_handler, 'system.shutdown')
 
-        print('Serving XML-RPC on ' + get_xmlrpc_server_url(server.server_address))
+        server_path = server.RequestHandlerClass.rpc_paths[0]
+        server_hostname, server_port = server.server_address
+        server_url = f'http://{server_hostname}:{server_port}{server_path}'
+
+        print('Serving XML-RPC on ' + server_url)
         try:
             while rclpy.ok() and not shutdown:
                 server.handle_request()
