@@ -2,6 +2,13 @@
 Changelog for package ros2service
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.38.1 (2025-09-11)
+-------------------
+* fix setuptools deprecations (`#1066 <https://github.com/ros2/ros2cli/issues/1066>`_) (`#1101 <https://github.com/ros2/ros2cli/issues/1101>`_)
+* Relax the check from exact to partial match. (`#1055 <https://github.com/ros2/ros2cli/issues/1055>`_) (`#1057 <https://github.com/ros2/ros2cli/issues/1057>`_)
+* add QoS option to ros2service/ros2action echo commands. (`#1036 <https://github.com/ros2/ros2cli/issues/1036>`_) (`#1038 <https://github.com/ros2/ros2cli/issues/1038>`_)
+* Contributors: mergify[bot]
+
 0.38.0 (2025-04-25)
 -------------------
 * Use `get_service` in `ros2service call` (`#994 <https://github.com/ros2/ros2cli/issues/994>`_)

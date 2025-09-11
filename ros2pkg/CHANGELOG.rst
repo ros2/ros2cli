@@ -2,6 +2,12 @@
 Changelog for package ros2pkg
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.38.1 (2025-09-11)
+-------------------
+* fix setuptools deprecations (`#1066 <https://github.com/ros2/ros2cli/issues/1066>`_) (`#1101 <https://github.com/ros2/ros2cli/issues/1101>`_)
+* fix cmake deprecation (`#1082 <https://github.com/ros2/ros2cli/issues/1082>`_) (`#1083 <https://github.com/ros2/ros2cli/issues/1083>`_)
+* Contributors: mergify[bot]
+
 0.38.0 (2025-04-25)
 -------------------
 * Use modern C++17 syntax. (`#982 <https://github.com/ros2/ros2cli/issues/982>`_)

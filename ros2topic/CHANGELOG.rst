@@ -2,6 +2,12 @@
 Changelog for package ros2topic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.38.1 (2025-09-11)
+-------------------
+* fix setuptools deprecations (`#1066 <https://github.com/ros2/ros2cli/issues/1066>`_) (`#1101 <https://github.com/ros2/ros2cli/issues/1101>`_)
+* wait for the publisher before test command is executed. (`#1094 <https://github.com/ros2/ros2cli/issues/1094>`_) (`#1095 <https://github.com/ros2/ros2cli/issues/1095>`_)
+* Contributors: mergify[bot]
+
 0.38.0 (2025-04-25)
 -------------------
 * Custom Completion Finder for fetching topic prototype (`#995 <https://github.com/ros2/ros2cli/issues/995>`_)

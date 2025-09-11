@@ -2,6 +2,11 @@
 Changelog for package ros2lifecycle_test_fixtures
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.38.1 (2025-09-11)
+-------------------
+* fix cmake deprecation (`#1082 <https://github.com/ros2/ros2cli/issues/1082>`_) (`#1083 <https://github.com/ros2/ros2cli/issues/1083>`_)
+* Contributors: mergify[bot]
+
 0.38.0 (2025-04-25)
 -------------------
 * Use target_link_libraries instead of ament_target_dependencies (`#973 <https://github.com/ros2/ros2cli/issues/973>`_)

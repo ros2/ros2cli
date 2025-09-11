@@ -2,6 +2,14 @@
 Changelog for package ros2param
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.38.1 (2025-09-11)
+-------------------
+* fix setuptools deprecations (`#1066 <https://github.com/ros2/ros2cli/issues/1066>`_) (`#1101 <https://github.com/ros2/ros2cli/issues/1101>`_)
+* Relax the check from exact to partial match. (`#1055 <https://github.com/ros2/ros2cli/issues/1055>`_) (`#1057 <https://github.com/ros2/ros2cli/issues/1057>`_)
+* catch ConnectionRefusedError, so that it can fall back to DirectNode. (`#1014 <https://github.com/ros2/ros2cli/issues/1014>`_) (`#1020 <https://github.com/ros2/ros2cli/issues/1020>`_)
+* fails the test properly to avoid TypeError exception. (`#1016 <https://github.com/ros2/ros2cli/issues/1016>`_) (`#1017 <https://github.com/ros2/ros2cli/issues/1017>`_)
+* Contributors: mergify[bot]
+
 0.38.0 (2025-04-25)
 -------------------
 * Fix loading parameter behavior from yaml file (`#864 <https://github.com/ros2/ros2cli/issues/864>`_)

@@ -2,6 +2,16 @@
 Changelog for package ros2action
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.38.1 (2025-09-11)
+-------------------
+* fix setuptools deprecations (`#1066 <https://github.com/ros2/ros2cli/issues/1066>`_) (`#1101 <https://github.com/ros2/ros2cli/issues/1101>`_)
+* fix ros2action send_goal signal handling. (`#1072 <https://github.com/ros2/ros2cli/issues/1072>`_) (`#1074 <https://github.com/ros2/ros2cli/issues/1074>`_)
+* Fujitatomoya/ros2 action send goal timeout (`#1067 <https://github.com/ros2/ros2cli/issues/1067>`_) (`#1068 <https://github.com/ros2/ros2cli/issues/1068>`_)
+* Relax the check from exact to partial match. (`#1055 <https://github.com/ros2/ros2cli/issues/1055>`_) (`#1057 <https://github.com/ros2/ros2cli/issues/1057>`_)
+* remove unnecessary '/' from ros2 action info. (`#1049 <https://github.com/ros2/ros2cli/issues/1049>`_) (`#1050 <https://github.com/ros2/ros2cli/issues/1050>`_)
+* add QoS option to ros2service/ros2action echo commands. (`#1036 <https://github.com/ros2/ros2cli/issues/1036>`_) (`#1038 <https://github.com/ros2/ros2cli/issues/1038>`_)
+* Contributors: mergify[bot]
+
 0.38.0 (2025-04-25)
 -------------------
 * Allow zenoh tests to run with multicast (`#992 <https://github.com/ros2/ros2cli/issues/992>`_)
