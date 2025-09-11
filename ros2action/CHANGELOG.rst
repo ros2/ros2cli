@@ -2,6 +2,13 @@
 Changelog for package ros2action
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.18.14 (2025-09-11)
+--------------------
+* fix setuptools deprecations (`#1066 <https://github.com/ros2/ros2cli/issues/1066>`_) (`#1103 <https://github.com/ros2/ros2cli/issues/1103>`_)
+* fix ros2action send_goal signal handling. (`#1072 <https://github.com/ros2/ros2cli/issues/1072>`_) (`#1081 <https://github.com/ros2/ros2cli/issues/1081>`_)
+* Fujitatomoya/ros2 action send goal timeout (backport `#1067 <https://github.com/ros2/ros2cli/issues/1067>`_) (`#1070 <https://github.com/ros2/ros2cli/issues/1070>`_)
+* Contributors: mergify[bot]
+
 0.18.13 (2025-07-16)
 --------------------
 * remove unnecessary '/' from ros2 action info. (backport `#1049 <https://github.com/ros2/ros2cli/issues/1049>`_) (`#1052 <https://github.com/ros2/ros2cli/issues/1052>`_)
