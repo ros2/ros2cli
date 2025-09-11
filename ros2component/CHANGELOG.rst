@@ -2,6 +2,9 @@
 Changelog for package ros2component
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.40.1 (2025-09-11)
+-------------------
+
 0.40.0 (2025-07-29)
 -------------------
 * fix setuptools deprecations (`#1066 <https://github.com/ros2/ros2cli/issues/1066>`_)

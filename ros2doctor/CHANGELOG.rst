@@ -2,6 +2,13 @@
 Changelog for package ros2doctor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.40.1 (2025-09-11)
+-------------------
+* Fujitatomoya/clearup isolated ros2daemon (`#1098 <https://github.com/ros2/ros2cli/issues/1098>`_)
+* [ros2doctor] Environment Report (`#1045 <https://github.com/ros2/ros2cli/issues/1045>`_)
+* Restore environment variables after launch tests (`#1086 <https://github.com/ros2/ros2cli/issues/1086>`_)
+* Contributors: Michael Carlstrom, Scott K Logan, Tomoya Fujita
+
 0.40.0 (2025-07-29)
 -------------------
 * add warning notice for ros2 doctor --report. (`#1079 <https://github.com/ros2/ros2cli/issues/1079>`_)

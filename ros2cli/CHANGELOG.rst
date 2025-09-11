@@ -2,6 +2,11 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.40.1 (2025-09-11)
+-------------------
+* fix: Also catch a TimeoutError (`#1092 <https://github.com/ros2/ros2cli/issues/1092>`_)
+* Contributors: Kaju-Bubanja
+
 0.40.0 (2025-07-29)
 -------------------
 * [ros2doctor] Add Action Report (`#1076 <https://github.com/ros2/ros2cli/issues/1076>`_)

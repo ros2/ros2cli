@@ -2,6 +2,9 @@
 Changelog for package ros2pkg
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.40.1 (2025-09-11)
+-------------------
+
 0.40.0 (2025-07-29)
 -------------------
 * fix cmake deprecation (`#1082 <https://github.com/ros2/ros2cli/issues/1082>`_)
