@@ -339,14 +339,16 @@ def populate_ament_cargo(package, package_directory, cargo_library_name):
         cargo_toml_config)
 
 
-def populate_rust_node(package, source_directory):
+def populate_rust_node(package, source_directory, node_name):
     print("Cargo Node Make Pending")
+
+    if node_name == None:
+        node_name = f"{package.name}_node"
+
     cargo_node_config = {
         'package_name': package.name,
+        'node_name': node_name
     }
-
-    print(f"Source Directory: {source_directory}")
-    print(f"Config: {cargo_node_config}")
 
     _create_template_file(
         'rust',

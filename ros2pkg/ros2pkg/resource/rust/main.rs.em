@@ -11,5 +11,3 @@ fn main() -> Result<()> {
     executor.spin(SpinOptions::default()).first_error()?;
     Ok(())
 }
-
-

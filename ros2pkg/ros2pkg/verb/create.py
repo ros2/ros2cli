@@ -237,6 +237,7 @@ class CreateVerb(VerbExtension):
             populate_rust_node(
                     package,
                     source_directory,
+                    node_name
                     )
 
         if args.license in available_licenses:
