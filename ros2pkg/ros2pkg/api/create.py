@@ -122,6 +122,9 @@ def create_package_environment(package, destination_directory):
         print('creating source and include folder')
         source_directory = _create_folder('src', package_directory)
         include_directory = _create_folder(package.name, package_directory + os.sep + 'include')
+    if package.get_build_type() == 'ament_cargo':
+        print('creating source folder')
+        source_directory = _create_folder('src', package_directory)
     if package.get_build_type() == 'ament_python':
         print('creating source folder')
         source_directory = _create_folder(package.name, package_directory)
@@ -319,3 +322,35 @@ def populate_cpp_library(package, source_directory, include_directory, cpp_libra
         include_directory,
         'visibility_control.h',
         visibility_config)
+
+def populate_ament_cargo(package, package_directory, cargo_node_name, cargo_library_name):
+    print("Cargo Package Make Pending")
+    exit(1)
+    cmakelists_config = {
+        'project_name': package.name,
+        'dependencies': [str(dep) for dep in package.build_depends],
+        'cargo_node_name': cargo_node_name,
+        'cargo_library_name': cargo_library_name,
+    }
+    _create_template_file(
+        'ament_cmake',
+        'CMakeLists.txt.em',
+        package_directory,
+        'CMakeLists.txt',
+        cmakelists_config)
+
+
+def populate_rust_node(package, source_directory, cargo_node_name):
+    print("Cargo Node Make Pending")
+    exit(1)
+    cargo_node_config = {
+        'package_name': package.name,
+    }
+    _create_template_file(
+        'cpp',
+        'main.cpp.em',
+        source_directory,
+        cargo_node_name + '.cpp',
+        cargo_node_config)
+
+
