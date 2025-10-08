@@ -323,26 +323,24 @@ def populate_cpp_library(package, source_directory, include_directory, cpp_libra
         'visibility_control.h',
         visibility_config)
 
-def populate_ament_cargo(package, package_directory, cargo_node_name, cargo_library_name):
-    print("Cargo Package Make Pending")
-    exit(1)
-    cmakelists_config = {
+def populate_ament_cargo(package, package_directory, cargo_library_name):
+    cargo_toml_config = {
         'project_name': package.name,
         'dependencies': [str(dep) for dep in package.build_depends],
-        'cargo_node_name': cargo_node_name,
         'cargo_library_name': cargo_library_name,
+        'maintainer_email': package.maintainers[0].email,
+        'maintainer_name': package.maintainers[0].name,
     }
     _create_template_file(
-        'ament_cmake',
-        'CMakeLists.txt.em',
+        'ament_cargo',
+        'Cargo.toml.em',
         package_directory,
-        'CMakeLists.txt',
-        cmakelists_config)
+        'Cargo.toml',
+        cargo_toml_config)
 
 
 def populate_rust_node(package, source_directory, cargo_node_name):
     print("Cargo Node Make Pending")
-    exit(1)
     cargo_node_config = {
         'package_name': package.name,
     }
