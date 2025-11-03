@@ -83,8 +83,15 @@ def get_local_package_versions() -> dict:
     if package_name_prefixes:
         for name, prefix in package_name_prefixes.items():
             file_path = os.path.join(prefix, 'share', name)
-            package_obj = parse_package(file_path)
-            local_packages[name] = package_obj.version if package_obj.version else ''
+            try:
+                package_obj = parse_package(file_path)
+                local_packages[name] = package_obj.version if package_obj.version else ''
+            except IOError as e:
+                print(f'Warning: Could not read package at {file_path}: {e}')
+                local_packages[name] = ''
+            except Exception as e:
+                print(f'Error parsing {file_path}: {e}')
+                local_packages[name] = ''
     return local_packages
 
 
