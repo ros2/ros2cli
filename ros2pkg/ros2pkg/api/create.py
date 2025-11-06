@@ -169,6 +169,11 @@ def populate_ament_python(package, package_directory, source_directory, python_n
                           source_directory,
                           '__init__.py',
                           {})
+    _create_template_file('ament_python',
+                          'py.typed.em',
+                          source_directory,
+                          'py.typed',
+                          {})
 
     test_directory = _create_folder('test', package_directory)
     _create_template_file('ament_python',
@@ -180,6 +185,11 @@ def populate_ament_python(package, package_directory, source_directory, python_n
                           'test_flake8.py.em',
                           test_directory,
                           'test_flake8.py',
+                          {})
+    _create_template_file('ament_python',
+                          'test_mypy.py.em',
+                          test_directory,
+                          'test_mypy.py',
                           {})
     _create_template_file('ament_python',
                           'test_pep257.py.em',
