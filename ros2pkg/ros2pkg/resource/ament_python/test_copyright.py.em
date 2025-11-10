@@ -20,6 +20,6 @@ import pytest
 @@pytest.mark.skip(reason='No copyright header has been placed in the generated source file.')
 @@pytest.mark.copyright
 @@pytest.mark.linter
-def test_copyright():
+def test_copyright() -> None:
     rc = main(argv=['.', 'test'])
     assert rc == 0, 'Found errors'

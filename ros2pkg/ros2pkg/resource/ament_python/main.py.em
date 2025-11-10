@@ -1,4 +1,4 @@
-def main():
+def main() -> None:
     print('Hi from @project_name.')
 
 
