@@ -2,6 +2,11 @@
 Changelog for package ros2node
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.18.15 (2025-11-12)
+--------------------
+* Updated wording in list.py (`#775 <https://github.com/ros2/ros2cli//issues/775>`_) (`#1111 <https://github.com/ros2/ros2cli//issues/1111>`_)
+* Contributors: Eric Su
+
 0.18.14 (2025-09-11)
 --------------------
 * fix setuptools deprecations (`#1066 <https://github.com/ros2/ros2cli/issues/1066>`_) (`#1103 <https://github.com/ros2/ros2cli/issues/1103>`_)

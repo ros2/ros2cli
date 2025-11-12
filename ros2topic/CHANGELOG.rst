@@ -2,6 +2,9 @@
 Changelog for package ros2topic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.18.15 (2025-11-12)
+--------------------
+
 0.18.14 (2025-09-11)
 --------------------
 * fix setuptools deprecations (`#1066 <https://github.com/ros2/ros2cli/issues/1066>`_) (`#1103 <https://github.com/ros2/ros2cli/issues/1103>`_)
