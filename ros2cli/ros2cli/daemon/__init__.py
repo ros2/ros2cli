@@ -15,6 +15,8 @@
 import argparse
 import os
 import time
+from urllib.parse import urlparse
+from urllib.parse import urlunparse
 import uuid
 
 import rclpy
@@ -31,31 +33,65 @@ from ros2cli.xmlrpc.local_server import LocalXMLRPCServer
 from ros2cli.xmlrpc.local_server import SimpleXMLRPCRequestHandler
 
 
-def get_port():
-    base_port = 11511
-    base_port += int(os.environ.get('ROS_DOMAIN_ID', 0))
-    return base_port
-
-
-def get_address():
-    return '127.0.0.1', get_port()
-
-
-class RequestHandler(SimpleXMLRPCRequestHandler):
-    rpc_paths = ('/ros2cli/',)
+SERVER_URL_VARIABLE_NAME = 'ROS2_DAEMON_SERVER_URL'
 
 
 def get_xmlrpc_server_url(address=None):
-    if not address:
-        address = get_address()
-    host, port = address
-    path = RequestHandler.rpc_paths[0]
-    return f'http://{host}:{port}{path}'
+    url = urlparse(
+        os.environ.get(SERVER_URL_VARIABLE_NAME) or '/ros2cli/',
+        scheme='http')
+
+    if address is None:
+        address = (
+            url.hostname or '127.0.0.1',
+            str(
+                url.port
+                if url.port not in (None, '')
+                else (11511 + int(os.environ.get('ROS_DOMAIN_ID', 0)))
+            ),
+        )
+
+    return urlunparse(url._replace(netloc=':'.join(address)))
+
+
+def get_port():
+    url = get_xmlrpc_server_url()
+    return urlparse(url).port
+
+
+def get_address():
+    url = get_xmlrpc_server_url()
+    parsed_url = urlparse(url)
+    return parsed_url.hostname, parsed_url.port
+
+
+def get_path():
+    url = get_xmlrpc_server_url()
+    return urlparse(url).path
+
+
+class RequestHandler(SimpleXMLRPCRequestHandler):
+
+    class _GetRpcPaths(property):
+        """
+        Getter for the RPC paths value to use on the request handler.
+
+        We need this property to work when accessed from the class reference,
+        so we can't just use ``@property`` here.
+        """
+
+        def __get__(self, instance, owner):
+            return (get_path(),)
+
+    rpc_paths = _GetRpcPaths()
 
 
 def make_xmlrpc_server() -> LocalXMLRPCServer:
     """Make local XMLRPC server listening over ros2cli daemon's default port."""
     address = get_address()
+
+    assert urlparse(get_xmlrpc_server_url()).scheme == 'http', \
+        'Only http XMLRPC servers are supported at this time.'
 
     return LocalXMLRPCServer(
         address, logRequests=False,
@@ -143,7 +179,11 @@ def serve(server: LocalXMLRPCServer, *, timeout: int = 2 * 60 * 60):
             shutdown = True
         server.register_function(shutdown_handler, 'system.shutdown')
 
-        print('Serving XML-RPC on ' + get_xmlrpc_server_url(server.server_address))
+        server_path = server.RequestHandlerClass.rpc_paths[0]
+        server_hostname, server_port = server.server_address
+        server_url = f'http://{server_hostname}:{server_port}{server_path}'
+
+        print('Serving XML-RPC on ' + server_url)
         try:
             while rclpy.ok() and not shutdown:
                 server.handle_request()
