@@ -20,12 +20,17 @@ import unittest
 
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess
+from launch.actions import RegisterEventHandler
+from launch.actions import ResetEnvironment
+from launch.actions import SetEnvironmentVariable
+from launch.event_handlers import OnShutdown
 
 import launch_testing
 import launch_testing.actions
 import launch_testing.asserts
 import launch_testing.markers
 import launch_testing.tools
+from launch_testing_ros.actions import EnableRmwIsolation
 import launch_testing_ros.tools
 
 import pytest
@@ -51,23 +56,35 @@ def generate_test_description(rmw_implementation):
         os.path.dirname(__file__), 'fixtures', 'fibonacci_action_server.py'
     )
     additional_env = get_rmw_additional_env(rmw_implementation)
+    set_env_actions = [SetEnvironmentVariable(k, v) for k, v in additional_env.items()]
     return LaunchDescription([
         # Always restart daemon to isolate tests.
         ExecuteProcess(
             cmd=['ros2', 'daemon', 'stop'],
             name='daemon-stop',
             on_exit=[
+                *set_env_actions,
+                EnableRmwIsolation(),
+                RegisterEventHandler(OnShutdown(on_shutdown=[
+                    # Stop daemon in isolated environment with proper ROS_DOMAIN_ID
+                    ExecuteProcess(
+                        cmd=['ros2', 'daemon', 'stop'],
+                        name='daemon-stop-isolated',
+                        # Use the same isolated environment
+                        additional_env=dict(additional_env),
+                    ),
+                    # This must be done after stopping the daemon in the isolated environment
+                    ResetEnvironment(),
+                ])),
                 ExecuteProcess(
                     cmd=['ros2', 'daemon', 'start'],
                     name='daemon-start',
                     on_exit=[
                         ExecuteProcess(
                             cmd=[sys.executable, path_to_action_server_executable],
-                            additional_env=additional_env,
                         ),
                         launch_testing.actions.ReadyToTest()
                     ],
-                    additional_env=additional_env,
                 )
             ]
         ),
@@ -115,8 +132,9 @@ class TestROS2ActionCLI(unittest.TestCase):
     ):
         @contextlib.contextmanager
         def launch_action_command(self, arguments):
-            additional_env = get_rmw_additional_env(rmw_implementation)
-            additional_env['PYTHONUNBUFFERED'] = '1'
+            additional_env = {
+                'PYTHONUNBUFFERED': '1',
+            }
 
             action_command_action = ExecuteProcess(
                 cmd=['ros2', 'action', *arguments],

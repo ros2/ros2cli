@@ -21,12 +21,17 @@ import xmlrpc
 
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess
+from launch.actions import RegisterEventHandler
+from launch.actions import ResetEnvironment
+from launch.actions import SetEnvironmentVariable
+from launch.event_handlers import OnShutdown
 from launch_ros.actions import Node
 import launch_testing
 import launch_testing.actions
 import launch_testing.asserts
 import launch_testing.markers
 import launch_testing.tools
+from launch_testing_ros.actions import EnableRmwIsolation
 import launch_testing_ros.tools
 
 import pytest
@@ -86,6 +91,7 @@ if sys.platform.startswith('win'):
 def generate_test_description(rmw_implementation):
     path_to_fixtures = os.path.join(os.path.dirname(__file__), 'fixtures')
     additional_env = get_rmw_additional_env(rmw_implementation)
+    set_env_actions = [SetEnvironmentVariable(k, v) for k, v in additional_env.items()]
 
     # Parameter node test fixture
     path_to_parameter_node_script = os.path.join(path_to_fixtures, 'parameter_node.py')
@@ -94,7 +100,6 @@ def generate_test_description(rmw_implementation):
         name=TEST_NODE,
         namespace=TEST_NAMESPACE,
         arguments=[path_to_parameter_node_script],
-        additional_env=additional_env
     )
 
     return LaunchDescription([
@@ -103,6 +108,19 @@ def generate_test_description(rmw_implementation):
             cmd=['ros2', 'daemon', 'stop'],
             name='daemon-stop',
             on_exit=[
+                *set_env_actions,
+                EnableRmwIsolation(),
+                RegisterEventHandler(OnShutdown(on_shutdown=[
+                    # Stop daemon in isolated environment with proper ROS_DOMAIN_ID
+                    ExecuteProcess(
+                        cmd=['ros2', 'daemon', 'stop'],
+                        name='daemon-stop-isolated',
+                        # Use the same isolated environment
+                        additional_env=dict(additional_env),
+                    ),
+                    # This must be done after stopping the daemon in the isolated environment
+                    ResetEnvironment(),
+                ])),
                 ExecuteProcess(
                     cmd=['ros2', 'daemon', 'start'],
                     name='daemon-start',
@@ -110,7 +128,6 @@ def generate_test_description(rmw_implementation):
                         parameter_node,
                         launch_testing.actions.ReadyToTest(),
                     ],
-                    additional_env=additional_env
                 )
             ]
         ),
@@ -135,7 +152,6 @@ class TestVerbDump(unittest.TestCase):
         def launch_param_dump_command(self, arguments):
             param_dump_command_action = ExecuteProcess(
                 cmd=['ros2', 'param', 'dump', *arguments],
-                additional_env=get_rmw_additional_env(rmw_implementation),
                 name='ros2param-dump-cli',
                 output='screen'
             )

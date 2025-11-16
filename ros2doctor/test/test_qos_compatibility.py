@@ -19,6 +19,10 @@ import unittest
 
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess
+from launch.actions import RegisterEventHandler
+from launch.actions import ResetEnvironment
+from launch.actions import SetEnvironmentVariable
+from launch.event_handlers import OnShutdown
 
 from launch_ros.actions import Node
 
@@ -27,6 +31,7 @@ import launch_testing.actions
 import launch_testing.asserts
 import launch_testing.markers
 import launch_testing.tools
+from launch_testing_ros.actions import EnableRmwIsolation
 import launch_testing_ros.tools
 
 import pytest
@@ -49,6 +54,7 @@ def generate_test_description(rmw_implementation):
     path_to_fixtures = os.path.join(os.path.dirname(__file__), 'fixtures')
     additional_env = get_rmw_additional_env(rmw_implementation)
     additional_env['PYTHONUNBUFFERED'] = '1'
+    set_env_actions = [SetEnvironmentVariable(k, v) for k, v in additional_env.items()]
 
     path_to_incompatible_talker_node_script = os.path.join(
         path_to_fixtures, 'talker_node_with_best_effort_qos.py')
@@ -62,25 +68,21 @@ def generate_test_description(rmw_implementation):
         executable=sys.executable,
         arguments=[path_to_compatible_talker_node_script],
         remappings=[('chatter', 'compatible_chatter')],
-        additional_env=additional_env
     )
     listener_node_compatible = Node(
         executable=sys.executable,
         arguments=[path_to_listener_node_script],
         remappings=[('chatter', 'compatible_chatter')],
-        additional_env=additional_env
     )
     talker_node_incompatible = Node(
         executable=sys.executable,
         arguments=[path_to_incompatible_talker_node_script],
         remappings=[('chatter', 'incompatible_chatter')],
-        additional_env=additional_env
     )
     listener_node_incompatible = Node(
         executable=sys.executable,
         arguments=[path_to_listener_node_script],
         remappings=[('chatter', 'incompatible_chatter')],
-        additional_env=additional_env
     )
 
     return LaunchDescription([
@@ -89,6 +91,19 @@ def generate_test_description(rmw_implementation):
             cmd=['ros2', 'daemon', 'stop'],
             name='daemon-stop',
             on_exit=[
+                *set_env_actions,
+                EnableRmwIsolation(),
+                RegisterEventHandler(OnShutdown(on_shutdown=[
+                    # Stop daemon in isolated environment with proper ROS_DOMAIN_ID
+                    ExecuteProcess(
+                        cmd=['ros2', 'daemon', 'stop'],
+                        name='daemon-stop-isolated',
+                        # Use the same isolated environment
+                        additional_env=dict(additional_env),
+                    ),
+                    # This must be done after stopping the daemon in the isolated environment
+                    ResetEnvironment(),
+                ])),
                 ExecuteProcess(
                     cmd=['ros2', 'daemon', 'start'],
                     name='daemon-start',
@@ -100,7 +115,6 @@ def generate_test_description(rmw_implementation):
                         listener_node_compatible,
                         launch_testing.actions.ReadyToTest()
                     ],
-                    additional_env=additional_env
                 )
             ]
         ),
@@ -128,11 +142,8 @@ class TestROS2DoctorQoSCompatibility(unittest.TestCase):
 
         @contextlib.contextmanager
         def launch_doctor_command(self, arguments):
-            additional_env = get_rmw_additional_env(rmw_implementation)
-            additional_env['PYTHONUNBUFFERED'] = '1'
             doctor_command_action = ExecuteProcess(
                 cmd=['ros2', 'doctor', *arguments],
-                additional_env=additional_env,
                 name='ros2doctor-cli',
                 output='screen'
             )
