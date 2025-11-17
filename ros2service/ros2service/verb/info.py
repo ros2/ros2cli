@@ -1,4 +1,5 @@
 # Copyright 2022 CLOBOT Co., Ltd.
+# Copyright 2025 Minju Lee (이민주).
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,6 +28,13 @@ class InfoVerb(VerbExtension):
         arg = parser.add_argument(
             'service_name',
             help="Name of the ROS service to get info (e.g. '/add_two_ints')")
+        parser.add_argument(
+            '--verbose',
+            '-v',
+            action='store_true',
+            help='Prints detailed information like the node name, node namespace, service type, '
+                 'service type hash, GUIDs, and QoS Profiless of the clients and servers to '
+                 'this service')
         arg.completer = ServiceNameCompleter(
             include_hidden_services_key='include_hidden_services')
 
@@ -44,11 +52,30 @@ class InfoVerb(VerbExtension):
             else:
                 return "Unknown service '%s'" % service_name
 
+            line_end = '\n'
+            if args.verbose:
+                line_end = '\n\n'
+
             type_str = service_types[0] if len(service_types) == 1 else service_types
             print('Type: %s' % type_str, end='\n')
 
             print('Clients count: %d' %
                   node.count_clients(service_name), end='\n')
 
+            if args.verbose:
+                try:
+                    for info in node.get_clients_info_by_service(service_name):
+                        print(info, end=line_end)
+
+                except NotImplementedError as e:
+                    return str(e)
+
             print('Services count: %d' %
                   node.count_services(service_name), end='\n')
+            if args.verbose:
+                try:
+                    for info in node.get_servers_info_by_service(service_name):
+                        print(info, end=line_end)
+
+                except NotImplementedError as e:
+                    return str(e)
