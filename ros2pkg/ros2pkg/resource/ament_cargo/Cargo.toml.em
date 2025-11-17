@@ -10,7 +10,7 @@ path = "src/main.rs"
 
 [dependencies]
 anyhow = {version = "1", features = ["backtrace"]}
-rosidl_runtime_rs = "0.4"
+rclrs = "*"
 
 # This specific version is compatible with Rust 1.75
 backtrace = "=0.3.74"
