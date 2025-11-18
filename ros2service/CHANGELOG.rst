@@ -2,6 +2,11 @@
 Changelog for package ros2service
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.40.2 (2025-11-18)
+-------------------
+* add verbose in service-info verb (`#916 <https://github.com/ros2/ros2cli//issues/916>`_)
+* Contributors: Minju, Lee
+
 0.40.1 (2025-09-11)
 -------------------
 * Fujitatomoya/clearup isolated ros2daemon (`#1098 <https://github.com/ros2/ros2cli/issues/1098>`_)

@@ -2,6 +2,12 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.40.2 (2025-11-18)
+-------------------
+* add verbose in service-info verb (`#916 <https://github.com/ros2/ros2cli//issues/916>`_)
+* Fix handling of empty ROS_DOMAIN_ID in ros2cli (`#1112 <https://github.com/ros2/ros2cli//issues/1112>`_)
+* Contributors: Minju, Lee, Scott K Logan
+
 0.40.1 (2025-09-11)
 -------------------
 * fix: Also catch a TimeoutError (`#1092 <https://github.com/ros2/ros2cli/issues/1092>`_)

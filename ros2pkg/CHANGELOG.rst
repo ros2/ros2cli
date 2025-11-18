@@ -2,6 +2,11 @@
 Changelog for package ros2pkg
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.40.2 (2025-11-18)
+-------------------
+* add mypy (`#1109 <https://github.com/ros2/ros2cli//issues/1109>`_)
+* Contributors: Michael Carlstrom
+
 0.40.1 (2025-09-11)
 -------------------
 

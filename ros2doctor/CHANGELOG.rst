@@ -2,6 +2,11 @@
 Changelog for package ros2doctor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.40.2 (2025-11-18)
+-------------------
+* Add error handling when parsing package locally (`#1108 <https://github.com/ros2/ros2cli//issues/1108>`_)
+* Contributors: mini-1235
+
 0.40.1 (2025-09-11)
 -------------------
 * Fujitatomoya/clearup isolated ros2daemon (`#1098 <https://github.com/ros2/ros2cli/issues/1098>`_)
