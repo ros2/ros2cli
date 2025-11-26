@@ -58,8 +58,20 @@ class InterfaceFlags:
         self.has_multicast = False
         self.get(interface_name)
 
+<<<<<<< HEAD
     def get(self, interface_name):
         if os.name != 'posix':
+=======
+        try:
+            all_stats = psutil.net_if_stats()
+        except (OSError, IOError) as e:
+            doctor_warn(
+                f'Unable to access network interface statistics '
+                f'for {interface_name}: {e}')
+            return
+
+        if interface_name not in all_stats:
+>>>>>>> 7a718b8 (Harden ros2doctor system calls. (#1118))
             return
 
         import fcntl
@@ -142,7 +154,16 @@ class NetworkCheck(DoctorCheck):
         has_loopback = False
         has_non_loopback = False
         has_multicast = False
-        for interface in psutil.net_if_addrs().keys():
+
+        try:
+            interfaces = psutil.net_if_addrs().keys()
+        except (OSError, IOError) as e:
+            doctor_warn(
+                f'Unable to access network interface information: {e}')
+            result.add_warning()
+            return result
+
+        for interface in interfaces:
             flags = InterfaceFlags(interface)
             has_loopback |= flags.has_loopback
             has_non_loopback |= flags.has_non_loopback
@@ -176,11 +197,23 @@ class NetworkReport(DoctorReport):
 
     def report(self):
         """Print system and ROS network information."""
-        if_stats = psutil.net_if_stats()
+        try:
+            if_stats = psutil.net_if_stats()
+        except (OSError, IOError) as e:
+            doctor_warn(
+                f'Unable to access network interface statistics: {e}')
+            if_stats = {}
 
         network_report = Report('NETWORK CONFIGURATION')
 
-        for interface, addrs in psutil.net_if_addrs().items():
+        try:
+            net_if_addrs = psutil.net_if_addrs()
+        except (OSError, IOError) as e:
+            network_report.add_to_report(
+                'error', f'Unable to access network interface information: {e}')
+            return network_report
+
+        for interface, addrs in net_if_addrs.items():
             if_info = {
                 'inet': None,
                 'inet4': [],
