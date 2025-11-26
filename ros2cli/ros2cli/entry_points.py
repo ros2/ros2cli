@@ -13,11 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys
 from collections import defaultdict
-import logging
-
 from importlib import metadata
+import logging
+import sys
 
 """
 The group name for entry points identifying extension points.

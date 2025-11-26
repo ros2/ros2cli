@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from importlib import resources
 from io import StringIO
 import os
 import sys
@@ -22,8 +23,6 @@ try:
     em_has_configuration = True
 except ImportError:
     em_has_configuration = False
-
-from importlib import resources
 
 
 def _expand_template(template_file, data, output_file):

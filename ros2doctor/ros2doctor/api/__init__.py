@@ -12,14 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from importlib import metadata
 import sys
 from typing import Final
 from typing import List
 from typing import Set
 from typing import Tuple
 from typing import Union
-
-from importlib import metadata
 
 from ros2cli.node.strategy import NodeStrategy
 from ros2doctor.api.format import doctor_warn
