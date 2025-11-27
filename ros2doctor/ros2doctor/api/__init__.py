@@ -12,12 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-<<<<<<< HEAD
-=======
 from importlib import metadata
 import sys
 from typing import Final
->>>>>>> 1691050 (Remove importlib packages (#1117))
 from typing import List
 from typing import Set
 from typing import Tuple
