@@ -28,6 +28,7 @@ from catkin_pkg.package import Person
 
 from ros2pkg.api.create import create_package_environment
 from ros2pkg.api.create import populate_ament_cmake
+from ros2pkg.api.create import populate_ament_cmake_python
 from ros2pkg.api.create import populate_ament_python
 from ros2pkg.api.create import populate_cmake
 from ros2pkg.api.create import populate_cpp_library
@@ -71,6 +72,12 @@ class CreateVerb(VerbExtension):
             default='ament_cmake',
             choices=['cmake', 'ament_cmake', 'ament_python'],
             help='The build type to process the package with')
+        parser.add_argument(
+            '--template-name',
+            default='cmake',
+            choices=['cmake', 'python'],
+            help='The template type to create the package with'
+        )
         parser.add_argument(
             '--dependencies',
             nargs='+',
@@ -136,14 +143,23 @@ class CreateVerb(VerbExtension):
 
         buildtool_depends = []
         if args.build_type == 'ament_cmake':
-            if args.library_name:
-                buildtool_depends = ['ament_cmake_ros']
-            else:
-                buildtool_depends = ['ament_cmake']
+            if args.template_name == 'cmake':
+                if args.library_name:
+                    buildtool_depends = ['ament_cmake_ros']
+                else:
+                    buildtool_depends = ['ament_cmake']
+            elif args.template_name == 'python':
+                if args.library_name:
+                    buildtool_depends = ['ament_cmake_ros', 'ament_cmake_python']
+                else:
+                    buildtool_depends = ['ament_cmake', 'ament_cmake_python']
 
         test_dependencies = []
         if args.build_type == 'ament_cmake':
-            test_dependencies = ['ament_lint_auto', 'ament_lint_common']
+            if args.template_name == 'cmake':
+                test_dependencies = ['ament_lint_auto', 'ament_lint_common']
+            elif args.template_name == 'python':
+                test_dependencies = []
         if args.build_type == 'ament_python':
             test_dependencies = ['ament_copyright', 'ament_flake8', 'ament_mypy', 'ament_pep257',
                                  'ament_xmllint', 'python3-pytest']
@@ -189,7 +205,7 @@ class CreateVerb(VerbExtension):
             print('library_name:', library_name)
 
         package_directory, source_directory, include_directory = \
-            create_package_environment(package, args.destination_directory)
+            create_package_environment(package, args.destination_directory, args.template_name)
         if not package_directory:
             return 'unable to create folder: ' + args.destination_directory
 
@@ -197,7 +213,14 @@ class CreateVerb(VerbExtension):
             populate_cmake(package, package_directory, node_name, library_name)
 
         if args.build_type == 'ament_cmake':
-            populate_ament_cmake(package, package_directory, node_name, library_name)
+            if args.template_name == 'cmake':
+                populate_ament_cmake(package, package_directory, node_name, library_name)
+            elif args.template_name == 'python':
+                populate_ament_cmake_python(package,
+                    package_directory,
+                    source_directory,
+                    node_name
+                )
 
         if args.build_type == 'ament_python':
             if not source_directory:
