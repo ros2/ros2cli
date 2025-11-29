@@ -29,8 +29,8 @@
 # This file is originally from:
 # https://github.com/ros/ros_comm/blob/6e5016f4b2266d8a60c9a1e163c4928b8fc7115e/tools/rostopic/src/rostopic/__init__.py
 
-from collections import defaultdict
 
+from collections import defaultdict, OrderedDict
 import functools
 import math
 import threading
@@ -50,7 +50,9 @@ from ros2cli.qos import choose_qos
 from ros2topic.api import get_msg_class
 from ros2topic.api import positive_int
 from ros2topic.api import TopicNameCompleter
+from ros2topic.eval import base_eval_model, Expr
 from ros2topic.verb import VerbExtension
+from rosidl_runtime_py.convert import message_to_ordereddict
 
 DEFAULT_WINDOW_SIZE = 10000
 
@@ -93,18 +95,75 @@ class HzVerb(VerbExtension):
         return main(args)
 
 
-def main(args):
-    topics = args.topic_name
-    if args.filter_expr:
-        def expr_eval(expr):
-            def eval_fn(m):
-                return eval(expr)
-            return eval_fn
-        filter_expr = expr_eval(args.filter_expr)
-    else:
-        filter_expr = None
+def _setup_base_safe_eval():
+    safe_eval_model = base_eval_model.clone()
 
+    # extend base_eval_model
+    safe_eval_model.nodes.extend(['Call', 'Attribute', 'List', 'Tuple', 'Dict', 'Set',
+                                  'ListComp', 'DictComp', 'SetComp', 'comprehension',
+                                  'Mult', 'Pow', 'boolop', 'mod', 'Invert',
+                                  'Is', 'IsNot', 'FloorDiv', 'If', 'For'])
+
+    # allow-list safe Python built-in functions
+    safe_builtins = [
+        'abs', 'all', 'any', 'bin', 'bool', 'chr', 'cmp', 'divmod', 'enumerate',
+        'float', 'format', 'hex', 'id', 'int', 'isinstance', 'issubclass',
+        'len', 'list', 'long', 'max', 'min', 'ord', 'pow', 'range', 'reversed',
+        'round', 'slice', 'sorted', 'str', 'sum', 'tuple', 'type', 'unichr',
+        'unicode', 'xrange', 'zip', 'filter', 'dict', 'set', 'next'
+    ]
+
+    safe_eval_model.allowed_functions.extend(safe_builtins)
+    return safe_eval_model
+
+
+def _get_nested_messages(msg_ordereddict):
+    """List all message field names recursively."""
+    all_attributes = []
+    for (k, v) in msg_ordereddict.items():
+        all_attributes.append(k)
+        if type(v) is OrderedDict:
+            nested_attrs = _get_nested_messages(v)
+            all_attributes.extend(nested_attrs)
+    return all_attributes
+
+
+def _setup_safe_eval(safe_eval_model, msg_class, topic):
+    # allow-list topic builtins, msg attributes
+    topic_builtins = [i for i in dir(topic) if not i.startswith('_')]
+    safe_eval_model.attributes.extend(topic_builtins)
+
+    # recursively get all nested message attributes
+    # msg_class in this case is a prototype that needs to be instantiated to get
+    # an ordered dictionary of message fields
+    msg_ordereddict = message_to_ordereddict(msg_class())
+    msg_attributes = _get_nested_messages(msg_ordereddict)
+    safe_eval_model.attributes.extend(msg_attributes)
+    return safe_eval_model
+
+
+def main(args):
     with DirectNode(args) as node:
+        topics = args.topic_name
+        filter_expr = None
+        # set up custom safe eval model for filter expression
+        if args.filter_expr:
+            safe_eval_model = _setup_base_safe_eval()
+            for topic in topics:
+                msg_class = get_msg_class(
+                    node, topic, blocking=True, include_hidden_topics=True)
+                if msg_class is None:
+                    continue
+
+                safe_eval_model = _setup_safe_eval(safe_eval_model, msg_class, topic)
+
+            def expr_eval(expr):
+                def eval_fn(m):
+                    safe_expression = Expr(expr, model=safe_eval_model)
+                    return eval(safe_expression.code)
+                return eval_fn
+            filter_expr = expr_eval(args.filter_expr)
+
         _rostopic_hz(node.node, topics, qos_args=args, window_size=args.window_size,
                      filter_expr=filter_expr, use_wtime=args.use_wtime)
 
