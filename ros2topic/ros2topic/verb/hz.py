@@ -53,6 +53,7 @@ from ros2topic.api import get_topic_names_and_types
 from ros2topic.api import positive_int
 from ros2topic.api import TopicNameCompleter
 from ros2topic.verb import VerbExtension
+from ros2topic.verb.echo import clear_terminal
 
 DEFAULT_WINDOW_SIZE = 10000
 
@@ -267,7 +268,7 @@ class ROSTopicHz(object):
 
         # Clear screen if requested (useful when monitoring all topics)
         if clear_screen:
-            os.system('clear' if os.name != 'nt' else 'cls')
+            clear_terminal()
 
         if len(topics) == 1:
             ret = self.get_hz(topics[0])
