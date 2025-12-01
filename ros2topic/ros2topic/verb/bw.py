@@ -80,7 +80,7 @@ class BwVerb(VerbExtension):
         arg = parser.add_argument(
             'topic_name',
             nargs='+',
-            help="Names of the ROS topic to monitor for bandwidth utilization (e.g. '/chatter')")
+            help="Names of the ROS topics to monitor for bandwidth utilization (e.g. '/chatter')")
         arg.completer = TopicNameCompleter(
             include_hidden_topics_key='include_hidden_topics')
         add_qos_arguments(parser, 'subscribe', 'sensor_data')
@@ -105,9 +105,6 @@ class ROSTopicBandwidth(object):
 
     def __init__(self, node, window_size):
         self.lock = threading.Lock()
-        self.last_printed_tn = 0
-        self.sizes = []
-        self.times = []
         self._last_printed_tn = defaultdict(int)
         self._sizes = defaultdict(list)
         self._times = defaultdict(list)
@@ -116,33 +113,21 @@ class ROSTopicBandwidth(object):
         self.clock = node.get_clock()
 
     def get_last_printed_tn(self, topic=None):
-        if topic is None:
-            return self.last_printed_tn
         return self._last_printed_tn[topic]
 
     def set_last_printed_tn(self, value, topic=None):
-        if topic is None:
-            self.last_printed_tn = value
         self._last_printed_tn[topic] = value
 
     def get_sizes(self, topic=None):
-        if topic is None:
-            return self.sizes
         return self._sizes[topic]
 
     def set_sizes(self, value, topic=None):
-        if topic is None:
-            self.sizes = value
         self._sizes[topic] = value
 
     def get_times(self, topic=None):
-        if topic is None:
-            return self.times
         return self._times[topic]
 
     def set_times(self, value, topic=None):
-        if topic is None:
-            self.times = value
         self._times[topic] = value
 
     def callback(self, data, topic=None):
@@ -164,15 +149,15 @@ class ROSTopicBandwidth(object):
 
     def get_bw(self, topic=None):
         """Get the average publishing bw."""
-        if len(self.get_times(topic=topic)) < 2:
-            return None, None, None, None, None
-        elif topic is not None:
-            last_time = self.get_times(topic=topic)[-1]
-            if last_time == self.get_last_printed_tn(topic=topic):
-                return None, None, None, None, None
         with self.lock:
             times = self.get_times(topic=topic)
             sizes = self.get_sizes(topic=topic)
+            if len(times) < 2:
+                return None, None, None, None, None
+            if topic is not None:
+                last_time = times[-1]
+                if last_time == self.get_last_printed_tn(topic=topic):
+                    return None, None, None, None, None
             n = len(times)
             tn = self.clock.now()
             t0 = times[0]
@@ -241,6 +226,8 @@ class ROSTopicBandwidth(object):
 
 def _get_ascii_table(header, cols):
     # compose table with left alignment
+    if not cols or not cols[header[0]]:
+        return ''
     header_aligned = []
     col_widths = []
     for h in header:
@@ -286,7 +273,7 @@ def _rostopic_bw(node, topics, qos_args, window_size=DEFAULT_WINDOW_SIZE):
             print('Subscribed to [%s]' % topic)
 
     # remove the topics from the list if failed to find message type
-    while (topic in topics_to_be_removed):
+    for topic in topics_to_be_removed:
         topics.remove(topic)
     if len(topics) == 0:
         node.destroy_node()
@@ -303,6 +290,7 @@ def _rostopic_bw(node, topics, qos_args, window_size=DEFAULT_WINDOW_SIZE):
         print_thread.start()
         rclpy.spin(node)
     except (KeyboardInterrupt, ExternalShutdownException):
+        # Suppress shutdown exceptions; cleanup is handled in finally block.
         pass
     finally:
         node.destroy_node()
