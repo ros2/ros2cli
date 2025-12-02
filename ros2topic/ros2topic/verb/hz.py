@@ -44,8 +44,14 @@ from rclpy.qos import qos_profile_sensor_data
 from ros2cli.node.direct import add_arguments as add_direct_node_arguments
 from ros2cli.node.direct import DirectNode
 from ros2topic.api import get_msg_class
+<<<<<<< HEAD
+=======
+from ros2topic.api import get_topic_names_and_types
+from ros2topic.api import positive_int
+>>>>>>> 6585592 (add "--all/-a" option to "ros2 topic hz" with screen refresh. (#1122))
 from ros2topic.api import TopicNameCompleter
 from ros2topic.verb import VerbExtension
+from ros2topic.verb.echo import clear_terminal
 
 DEFAULT_WINDOW_SIZE = 10000
 
@@ -73,9 +79,21 @@ class HzVerb(VerbExtension):
         )
         arg = parser.add_argument(
             'topic_name',
+<<<<<<< HEAD
             help="Name of the ROS topic to listen to (e.g. '/chatter')")
         arg.completer = TopicNameCompleter(
             include_hidden_topics_key='include_hidden_topics')
+=======
+            nargs='*',
+            help="Names of the ROS topic to listen to (e.g. '/chatter')")
+        arg.completer = TopicNameCompleter(
+            include_hidden_topics_key='include_hidden_topics')
+        parser.add_argument(
+            '--all', '-a',
+            dest='all_topics', default=False, action='store_true',
+            help='subscribe to all available topics')
+        add_qos_arguments(parser, 'subscribe', 'sensor_data')
+>>>>>>> 6585592 (add "--all/-a" option to "ros2 topic hz" with screen refresh. (#1122))
         parser.add_argument(
             '--window', '-w',
             dest='window_size', type=positive_int, default=DEFAULT_WINDOW_SIZE,
@@ -97,7 +115,16 @@ class HzVerb(VerbExtension):
 
 
 def main(args):
+<<<<<<< HEAD
     topic = args.topic_name
+=======
+    if not args.all_topics and not args.topic_name:
+        raise RuntimeError('Either specify topic names or use --all/-a option')
+    if args.all_topics and args.topic_name:
+        raise RuntimeError('Cannot specify both --all/-a and topic names')
+
+    topics = args.topic_name
+>>>>>>> 6585592 (add "--all/-a" option to "ros2 topic hz" with screen refresh. (#1122))
     if args.filter_expr:
         def expr_eval(expr):
             def eval_fn(m):
@@ -108,9 +135,26 @@ def main(args):
         filter_expr = None
 
     with DirectNode(args) as node:
+<<<<<<< HEAD
         return _rostopic_hz(
             node.node, topic, window_size=args.window_size, filter_expr=filter_expr,
             use_wtime=args.use_wtime)
+=======
+        # Get all available topics at this moment
+        if args.all_topics:
+            topic_names_and_types = get_topic_names_and_types(
+                node=node.node,
+                include_hidden_topics=args.include_hidden_topics)
+            topics = [name for name, _ in topic_names_and_types]
+            if not topics:
+                print('No topics available')
+                return
+            print(f'Subscribing to all {len(topics)} available topics...')
+
+        _rostopic_hz(node.node, topics, qos_args=args, window_size=args.window_size,
+                     filter_expr=filter_expr, use_wtime=args.use_wtime,
+                     all_topics=args.all_topics)
+>>>>>>> 6585592 (add "--all/-a" option to "ros2 topic hz" with screen refresh. (#1122))
 
 
 class ROSTopicHz(object):
@@ -243,10 +287,30 @@ class ROSTopicHz(object):
 
         return rate, min_delta, max_delta, std_dev, n
 
+<<<<<<< HEAD
     def print_hz(self, topic=None):
         """Print the average publishing rate to screen."""
         ret = self.get_hz(topic)
         if ret is None:
+=======
+    def print_hz(self, topics=None, clear_screen=False):
+        """Print the average publishing rate to screen."""
+
+        def get_format_hz(stat):
+            return stat[0] * 1e9, stat[1] * 1e-9, stat[2] * 1e-9, stat[3] * 1e-9, stat[4]
+
+        # Clear screen if requested (useful when monitoring all topics)
+        if clear_screen:
+            clear_terminal()
+
+        if len(topics) == 1:
+            ret = self.get_hz(topics[0])
+            if ret is None:
+                return
+            rate, min_delta, max_delta, std_dev, window = get_format_hz(ret)
+            print('average rate: %.3f\n\tmin: %.3fs max: %.3fs std dev: %.5fs window: %s'
+                  % (rate, min_delta, max_delta, std_dev, window))
+>>>>>>> 6585592 (add "--all/-a" option to "ros2 topic hz" with screen refresh. (#1122))
             return
         rate, min_delta, max_delta, std_dev, window = ret
         print('average rate: %.3f\n\tmin: %.3fs max: %.3fs std dev: %.5fs window: %s'
@@ -254,13 +318,38 @@ class ROSTopicHz(object):
         return
 
 
+<<<<<<< HEAD
 def _rostopic_hz(node, topic, window_size=DEFAULT_WINDOW_SIZE, filter_expr=None, use_wtime=False):
+=======
+def _get_ascii_table(header, cols):
+    # compose table with left alignment
+    header_aligned = []
+    col_widths = []
+    for h in header:
+        col_width = max(len(h), max(len(el) for el in cols[h]))
+        col_widths.append(col_width)
+        header_aligned.append(h.center(col_width))
+        for i, el in enumerate(cols[h]):
+            cols[h][i] = str(cols[h][i]).ljust(col_width)
+    # sum of col and each 3 spaces width
+    table_width = sum(col_widths) + 3 * (len(header) - 1)
+    n_rows = len(cols[header[0]])
+    body = '\n'.join('   '.join(cols[h][i] for h in header) for i in range(n_rows))
+    table = '{header}\n{hline}\n{body}\n'.format(
+        header='   '.join(header_aligned), hline='=' * table_width, body=body)
+    return table
+
+
+def _rostopic_hz(node, topics, qos_args, window_size=DEFAULT_WINDOW_SIZE, filter_expr=None,
+                 use_wtime=False, all_topics=False):
+>>>>>>> 6585592 (add "--all/-a" option to "ros2 topic hz" with screen refresh. (#1122))
     """
     Periodically print the publishing rate of a topic to console until shutdown.
 
     :param topic: topic name, ``list`` of ``str``
     :param window_size: number of messages to average over, -1 for infinite, ``int``
     :param filter_expr: Python filter expression that is called with m, the message instance
+    :param all_topics: whether all topics are being monitored, ``bool``
     """
     # pause hz until topic is published
     msg_class = get_msg_class(
@@ -282,6 +371,43 @@ def _rostopic_hz(node, topic, window_size=DEFAULT_WINDOW_SIZE, filter_expr=None,
         rclpy.spin_once(node)
         rt.print_hz(topic)
 
+<<<<<<< HEAD
     node.destroy_node()
     rclpy.shutdown()
     return 0
+=======
+        qos_profile = choose_qos(node, topic_name=topic, qos_args=qos_args)
+
+        node.create_subscription(
+            msg_class,
+            topic,
+            functools.partial(rt.callback_hz, topic=topic),
+            qos_profile,
+            raw=filter_expr is None)
+        if topics_len > 1:
+            print('Subscribed to [%s]' % topic)
+
+    # remove the topics from the list if failed to find message type
+    while (topic in topics_to_be_removed):
+        topics.remove(topic)
+    if len(topics) == 0:
+        node.destroy_node()
+        rclpy.try_shutdown()
+        return
+
+    try:
+        def thread_func():
+            while rclpy.ok():
+                rt.print_hz(topics, clear_screen=all_topics)
+                time.sleep(1.0)
+
+        print_thread = threading.Thread(target=thread_func)
+        print_thread.start()
+        rclpy.spin(node)
+    except (KeyboardInterrupt, ExternalShutdownException):
+        pass
+    finally:
+        node.destroy_node()
+        rclpy.try_shutdown()
+        print_thread.join()
+>>>>>>> 6585592 (add "--all/-a" option to "ros2 topic hz" with screen refresh. (#1122))
