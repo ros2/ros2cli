@@ -48,9 +48,11 @@ from ros2cli.qos import add_qos_arguments
 from ros2cli.qos import choose_qos
 
 from ros2topic.api import get_msg_class
+from ros2topic.api import get_topic_names_and_types
 from ros2topic.api import positive_int
 from ros2topic.api import TopicNameCompleter
 from ros2topic.verb import VerbExtension
+from ros2topic.verb.echo import clear_terminal
 
 DEFAULT_WINDOW_SIZE = 10000
 
@@ -68,10 +70,14 @@ class HzVerb(VerbExtension):
         )
         arg = parser.add_argument(
             'topic_name',
-            nargs='+',
+            nargs='*',
             help="Names of the ROS topic to listen to (e.g. '/chatter')")
         arg.completer = TopicNameCompleter(
             include_hidden_topics_key='include_hidden_topics')
+        parser.add_argument(
+            '--all', '-a',
+            dest='all_topics', default=False, action='store_true',
+            help='subscribe to all available topics')
         add_qos_arguments(parser, 'subscribe', 'sensor_data')
         parser.add_argument(
             '--window', '-w',
@@ -94,6 +100,11 @@ class HzVerb(VerbExtension):
 
 
 def main(args):
+    if not args.all_topics and not args.topic_name:
+        raise RuntimeError('Either specify topic names or use --all/-a option')
+    if args.all_topics and args.topic_name:
+        raise RuntimeError('Cannot specify both --all/-a and topic names')
+
     topics = args.topic_name
     if args.filter_expr:
         def expr_eval(expr):
@@ -105,8 +116,20 @@ def main(args):
         filter_expr = None
 
     with DirectNode(args) as node:
+        # Get all available topics at this moment
+        if args.all_topics:
+            topic_names_and_types = get_topic_names_and_types(
+                node=node.node,
+                include_hidden_topics=args.include_hidden_topics)
+            topics = [name for name, _ in topic_names_and_types]
+            if not topics:
+                print('No topics available')
+                return
+            print(f'Subscribing to all {len(topics)} available topics...')
+
         _rostopic_hz(node.node, topics, qos_args=args, window_size=args.window_size,
-                     filter_expr=filter_expr, use_wtime=args.use_wtime)
+                     filter_expr=filter_expr, use_wtime=args.use_wtime,
+                     all_topics=args.all_topics)
 
 
 class ROSTopicHz(object):
@@ -236,11 +259,15 @@ class ROSTopicHz(object):
 
         return rate, min_delta, max_delta, std_dev, n
 
-    def print_hz(self, topics=None):
+    def print_hz(self, topics=None, clear_screen=False):
         """Print the average publishing rate to screen."""
 
         def get_format_hz(stat):
             return stat[0] * 1e9, stat[1] * 1e-9, stat[2] * 1e-9, stat[3] * 1e-9, stat[4]
+
+        # Clear screen if requested (useful when monitoring all topics)
+        if clear_screen:
+            clear_terminal()
 
         if len(topics) == 1:
             ret = self.get_hz(topics[0])
@@ -290,7 +317,7 @@ def _get_ascii_table(header, cols):
 
 
 def _rostopic_hz(node, topics, qos_args, window_size=DEFAULT_WINDOW_SIZE, filter_expr=None,
-                 use_wtime=False):
+                 use_wtime=False, all_topics=False):
     """
     Periodically print the publishing rate of a topic to console until shutdown.
 
@@ -298,6 +325,7 @@ def _rostopic_hz(node, topics, qos_args, window_size=DEFAULT_WINDOW_SIZE, filter
     :param qos_args: qos arguments used to pick the qos profile of the subscriber
     :param window_size: number of messages to average over, -1 for infinite, ``int``
     :param filter_expr: Python filter expression that is called with m, the message instance
+    :param all_topics: whether all topics are being monitored, ``bool``
     """
     # pause hz until topic is published
     rt = ROSTopicHz(node, window_size, filter_expr=filter_expr, use_wtime=use_wtime)
@@ -334,7 +362,7 @@ def _rostopic_hz(node, topics, qos_args, window_size=DEFAULT_WINDOW_SIZE, filter
     try:
         def thread_func():
             while rclpy.ok():
-                rt.print_hz(topics)
+                rt.print_hz(topics, clear_screen=all_topics)
                 time.sleep(1.0)
 
         print_thread = threading.Thread(target=thread_func)
