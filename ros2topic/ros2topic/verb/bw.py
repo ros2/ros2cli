@@ -187,11 +187,14 @@ class ROSTopicBandwidth(object):
             # min/max and even mean are likely to be much smaller,
             # but for now I prefer unit consistency
             if bytes_per_s < 1000:
-                bw, mean_str, min_str, max_str = map(str_bytes, (bytes_per_s, mean, min_s, max_s))
+                bw, mean_str, min_str, max_str = map(
+                    str_bytes, (bytes_per_s, mean, min_s, max_s))
             elif bytes_per_s < 1000000:
-                bw, mean_str, min_str, max_str = map(str_kilobytes, (bytes_per_s, mean, min_s, max_s))
+                bw, mean_str, min_str, max_str = map(
+                    str_kilobytes, (bytes_per_s, mean, min_s, max_s))
             else:
-                bw, mean_str, min_str, max_str = map(str_megabytes, (bytes_per_s, mean, min_s, max_s))
+                bw, mean_str, min_str, max_str = map(
+                    str_megabytes, (bytes_per_s, mean, min_s, max_s))
             # Bandwidth is per second
             bw += '/s'
             return bw, mean_str, min_str, max_str, n
@@ -202,7 +205,8 @@ class ROSTopicBandwidth(object):
             if ret[0] is None:
                 return
             bw, mean_str, min_str, max_str, n = get_format_bw(ret)
-            print(f'{bw} from {n} messages\n\tMessage size mean: {mean_str} min: {min_str} max: {max_str}')
+            print(f'{bw} from {n} messages\n\tMessage size mean: {mean_str} ' +
+                  'min: {min_str} max: {max_str}')
             return
 
         # monitoring multiple topics' bw
