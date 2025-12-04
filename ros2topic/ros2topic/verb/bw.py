@@ -109,8 +109,7 @@ class ROSTopicBandwidth(object):
         self._sizes = defaultdict(list)
         self._times = defaultdict(list)
         self.window_size = window_size
-        self.use_sim_time = node.get_parameter('use_sim_time').value
-        self.clock = node.get_clock()
+        self._clock = node.get_clock()
 
     def get_last_printed_tn(self, topic=None):
         return self._last_printed_tn[topic]
@@ -134,7 +133,7 @@ class ROSTopicBandwidth(object):
         """Execute ros sub callback."""
         with self.lock:
             try:
-                t = self.clock.now()
+                t = self._clock.now()
                 self.get_times(topic=topic).append(t)
                 # TODO(yechun1): Subscribing to the msgs and calculate the length may be
                 # inefficient. Optimize here if a better solution is found.
@@ -159,7 +158,7 @@ class ROSTopicBandwidth(object):
                 if last_time == self.get_last_printed_tn(topic=topic):
                     return None, None, None, None, None
             n = len(times)
-            tn = self.clock.now()
+            tn = self._clock.now()
             t0 = times[0]
             if tn <= t0:
                 print('WARNING: time is reset!', file=sys.stderr)
@@ -206,7 +205,7 @@ class ROSTopicBandwidth(object):
                 return
             bw, mean_str, min_str, max_str, n = get_format_bw(ret)
             print(f'{bw} from {n} messages\n\tMessage size mean: {mean_str} ' +
-                  'min: {min_str} max: {max_str}')
+                  f'min: {min_str} max: {max_str}')
             return
 
         # monitoring multiple topics' bw
