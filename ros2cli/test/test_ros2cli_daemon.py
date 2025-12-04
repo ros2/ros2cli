@@ -20,6 +20,8 @@ import rclpy
 import rclpy.action
 from rclpy.endpoint_info import EndpointTypeEnum
 
+from rclpy.utilities import get_rmw_implementation_identifier
+
 from ros2cli.node.daemon import DaemonNode
 from ros2cli.node.daemon import is_daemon_running
 from ros2cli.node.daemon import shutdown_daemon
@@ -219,8 +221,11 @@ def test_get_publishers_info_by_topic(daemon_node):
         TEST_TOPIC_PUBLISHER_QOS.durability
     assert test_publisher_info.qos_profile.reliability == \
         TEST_TOPIC_PUBLISHER_QOS.reliability
-    assert test_publisher_info.qos_profile.history == \
-        TEST_TOPIC_PUBLISHER_QOS.history
+    if get_rmw_implementation_identifier() != 'rmw_connextdds':
+        # rmw_connextdds does not collect the QoS history from discovery.
+        # See more details for https://github.com/ros2/ros2cli/issues/1054
+        assert test_publisher_info.qos_profile.history == \
+            TEST_TOPIC_PUBLISHER_QOS.history
 
 
 def test_get_subscriptions_info_by_topic(daemon_node):
@@ -234,10 +239,13 @@ def test_get_subscriptions_info_by_topic(daemon_node):
         TEST_TOPIC_SUBSCRIPTION_QOS.durability
     assert test_subscription_info.qos_profile.reliability == \
         TEST_TOPIC_SUBSCRIPTION_QOS.reliability
-    assert test_subscription_info.qos_profile.history == \
-        TEST_TOPIC_SUBSCRIPTION_QOS.history
-    assert test_subscription_info.qos_profile.depth == \
-        TEST_TOPIC_SUBSCRIPTION_QOS.depth
+    if get_rmw_implementation_identifier() != 'rmw_connextdds':
+        # rmw_connextdds does not collect the QoS history and depth from discovery
+        # See more details for https://github.com/ros2/ros2cli/issues/1054
+        assert test_subscription_info.qos_profile.history == \
+            TEST_TOPIC_SUBSCRIPTION_QOS.history
+        assert test_subscription_info.qos_profile.depth == \
+            TEST_TOPIC_SUBSCRIPTION_QOS.depth
 
 
 def test_get_clients_info_by_service(daemon_node):
