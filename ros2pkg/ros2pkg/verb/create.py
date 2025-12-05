@@ -27,6 +27,7 @@ from catkin_pkg.package import Package
 from catkin_pkg.package import Person
 
 from ros2pkg.api.create import create_package_environment
+from ros2pkg.api.create import populate_ament_cargo
 from ros2pkg.api.create import populate_ament_cmake
 from ros2pkg.api.create import populate_ament_python
 from ros2pkg.api.create import populate_cmake
@@ -34,6 +35,7 @@ from ros2pkg.api.create import populate_cpp_library
 from ros2pkg.api.create import populate_cpp_node
 from ros2pkg.api.create import populate_python_libary
 from ros2pkg.api.create import populate_python_node
+from ros2pkg.api.create import populate_rust_node
 
 from ros2pkg.verb import VerbExtension
 
@@ -69,7 +71,7 @@ class CreateVerb(VerbExtension):
         parser.add_argument(
             '--build-type',
             default='ament_cmake',
-            choices=['cmake', 'ament_cmake', 'ament_python'],
+            choices=['cmake', 'ament_cmake', 'ament_cargo', 'ament_python'],
             help='The build type to process the package with')
         parser.add_argument(
             '--dependencies',
@@ -141,6 +143,10 @@ class CreateVerb(VerbExtension):
             else:
                 buildtool_depends = ['ament_cmake']
 
+        if args.build_type == 'ament_cargo':
+            buildtool_depends = ['ament_cargo']
+            args.dependencies.append('rclrs')
+
         test_dependencies = []
         if args.build_type == 'ament_cmake':
             test_dependencies = ['ament_lint_auto', 'ament_lint_common']
@@ -199,6 +205,9 @@ class CreateVerb(VerbExtension):
         if args.build_type == 'ament_cmake':
             populate_ament_cmake(package, package_directory, node_name, library_name)
 
+        if args.build_type == 'ament_cargo':
+            populate_ament_cargo(package, package_directory, library_name)
+
         if args.build_type == 'ament_python':
             if not source_directory:
                 return 'unable to create source folder in ' + args.destination_directory
@@ -223,6 +232,13 @@ class CreateVerb(VerbExtension):
                     include_directory,
                     library_name
                 )
+
+        if args.build_type == 'ament_cargo':
+            populate_rust_node(
+                    package,
+                    source_directory,
+                    node_name
+                    )
 
         if args.license in available_licenses:
             with open(os.path.join(package_directory, 'LICENSE'), 'w') as outfp:
