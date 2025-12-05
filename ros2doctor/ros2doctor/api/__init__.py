@@ -14,7 +14,6 @@
 
 from importlib import metadata
 import sys
-from typing import Final
 from typing import List
 from typing import Set
 from typing import Tuple
