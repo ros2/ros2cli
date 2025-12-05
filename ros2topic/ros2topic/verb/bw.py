@@ -272,8 +272,7 @@ def _rostopic_bw(node, topics, qos_args, window_size=DEFAULT_WINDOW_SIZE):
             qos_profile,
             raw=True
         )
-        if topics_len > 1:
-            print('Subscribed to [%s]' % topic)
+        print('Subscribed to [%s]' % topic)
 
     # remove the topics from the list if failed to find message type
     for topic in topics_to_be_removed:
