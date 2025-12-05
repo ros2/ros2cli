@@ -252,7 +252,6 @@ def _rostopic_bw(node, topics, qos_args, window_size=DEFAULT_WINDOW_SIZE):
     """Periodically print the received bandwidth of topics to console until shutdown."""
     # pause bw until topic is published
     rt = ROSTopicBandwidth(node, window_size)
-    topics_len = len(topics)
     topics_to_be_removed = []
     for topic in topics:
         msg_class = get_msg_class(
