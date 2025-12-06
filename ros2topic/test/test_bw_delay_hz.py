@@ -368,3 +368,64 @@ class TestROS2TopicBwDelayHz(unittest.TestCase):
         assert 'Cannot specify both --all/-a and topic names' in command.output, (
             'hz command did not print expected error message'
         )
+
+    @launch_testing.markers.retry_on_failure(times=5)
+    def test_bw_multiple_topics(self, launch_service, proc_info, proc_output):
+        topic1 = '/clitest/topic/bw_multi_1'
+        topic2 = '/clitest/topic/bw_multi_2'
+
+        publisher1 = self.node.create_publisher(PointStamped, topic1, 10)
+        publisher2 = self.node.create_publisher(PointStamped, topic2, 10)
+        assert publisher1
+        assert publisher2
+
+        def publish_messages():
+            msg = PointStamped()
+            publisher1.publish(msg)
+            publisher2.publish(msg)
+
+        publish_timer = self.node.create_timer(0.5, publish_messages)
+
+        # Wait for the publishers to be discovered
+        timeout_count = 0
+        while timeout_count < 10:
+            self.executor.spin_once(timeout_sec=0.1)
+            if (self.node.count_publishers(topic1) > 0 and
+                    self.node.count_publishers(topic2) > 0):
+                break
+            timeout_count += 1
+        assert self.node.count_publishers(topic1) > 0, 'Publisher 1 was not discovered'
+        assert self.node.count_publishers(topic2) > 0, 'Publisher 2 was not discovered'
+
+        try:
+            command_action = ExecuteProcess(
+                cmd=['ros2', 'topic', 'bw', topic1, topic2],
+                additional_env={
+                    'PYTHONUNBUFFERED': '1'
+                },
+                output='screen'
+            )
+            with launch_testing.tools.launch_process(
+                launch_service, command_action, proc_info, proc_output,
+                output_filter=launch_testing_ros.tools.basic_output_filter(
+                    filtered_rmw_implementation=get_rmw_implementation_identifier()
+                )
+            ) as command:
+                # The future won't complete - we will hit the timeout
+                self.executor.spin_until_future_complete(
+                    rclpy.task.Future(), timeout_sec=5
+                )
+            command.wait_for_shutdown(timeout=10)
+            # Check results
+            assert command.output, 'bw CLI printed no output'
+            # Should contain both topic names
+            assert topic1 in command.output, f'Output should contain {topic1}'
+            assert topic2 in command.output, f'Output should contain {topic2}'
+            # Should contain table headers for multiple topics
+            assert 'bandwidth' in command.output, 'Output should contain bandwidth header'
+            assert 'window' in command.output, 'Output should contain window header'
+        finally:
+            # Cleanup
+            self.node.destroy_timer(publish_timer)
+            self.node.destroy_publisher(publisher1)
+            self.node.destroy_publisher(publisher2)
