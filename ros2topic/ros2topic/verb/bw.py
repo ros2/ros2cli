@@ -98,7 +98,8 @@ def main(args):
     topics = args.topic_name
 
     with DirectNode(args) as node:
-        _rostopic_bw(node.node, topics, qos_args=args, window_size=args.window_size)
+        return _rostopic_bw(
+            node.node, topics, qos_args=args, window_size=args.window_size)
 
 
 class ROSTopicBandwidth(object):
@@ -279,7 +280,7 @@ def _rostopic_bw(node, topics, qos_args, window_size=DEFAULT_WINDOW_SIZE):
     if len(topics) == 0:
         node.destroy_node()
         rclpy.try_shutdown()
-        return
+        return 1
 
     try:
         def thread_func():
@@ -297,3 +298,4 @@ def _rostopic_bw(node, topics, qos_args, window_size=DEFAULT_WINDOW_SIZE):
         node.destroy_node()
         rclpy.try_shutdown()
         print_thread.join()
+    return 0

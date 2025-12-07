@@ -124,12 +124,13 @@ def main(args):
             topics = [name for name, _ in topic_names_and_types]
             if not topics:
                 print('No topics available')
-                return
+                return 0
             print(f'Subscribing to all {len(topics)} available topics...')
 
-        _rostopic_hz(node.node, topics, qos_args=args, window_size=args.window_size,
-                     filter_expr=filter_expr, use_wtime=args.use_wtime,
-                     all_topics=args.all_topics)
+        return _rostopic_hz(
+            node.node, topics, qos_args=args, window_size=args.window_size,
+            filter_expr=filter_expr, use_wtime=args.use_wtime,
+            all_topics=args.all_topics)
 
 
 class ROSTopicHz(object):
@@ -357,7 +358,7 @@ def _rostopic_hz(node, topics, qos_args, window_size=DEFAULT_WINDOW_SIZE, filter
     if len(topics) == 0:
         node.destroy_node()
         rclpy.try_shutdown()
-        return
+        return 1
 
     try:
         def thread_func():
@@ -374,3 +375,4 @@ def _rostopic_hz(node, topics, qos_args, window_size=DEFAULT_WINDOW_SIZE, filter
         node.destroy_node()
         rclpy.try_shutdown()
         print_thread.join()
+    return 0
