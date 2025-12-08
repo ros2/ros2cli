@@ -429,3 +429,136 @@ class TestROS2TopicBwDelayHz(unittest.TestCase):
             self.node.destroy_timer(publish_timer)
             self.node.destroy_publisher(publisher1)
             self.node.destroy_publisher(publisher2)
+
+    @launch_testing.markers.retry_on_failure(times=5)
+    def test_bw_all_topics(self, launch_service, proc_info, proc_output):
+        topics = [
+            f'/{TEST_NAMESPACE}/test_topic_1',
+            f'/{TEST_NAMESPACE}/test_topic_2',
+            f'/{TEST_NAMESPACE}/test_topic_3',
+        ]
+        publishers = []
+        timers = []
+
+        for topic in topics:
+            publisher = self.node.create_publisher(PointStamped, topic, 10)
+            publishers.append(publisher)
+
+            def publish_message(pub=publisher):
+                msg = PointStamped()
+                pub.publish(msg)
+
+            timer = self.node.create_timer(0.5, publish_message)
+            timers.append(timer)
+
+        # Wait for all the publishers to be discovered
+        timeout_count = 0
+        all_discovered = False
+        while not all_discovered and timeout_count < 30:
+            self.executor.spin_once(timeout_sec=0.1)
+            all_discovered = all(
+                self.node.count_publishers(topic) > 0 for topic in topics
+            )
+            timeout_count += 1
+        assert all_discovered, 'Not all publishers were discovered'
+
+        try:
+            command_action = ExecuteProcess(
+                cmd=['ros2', 'topic', 'bw', '--all'],
+                additional_env={
+                    'PYTHONUNBUFFERED': '1'
+                },
+                output='screen'
+            )
+            with launch_testing.tools.launch_process(
+                launch_service, command_action, proc_info, proc_output,
+                output_filter=launch_testing_ros.tools.basic_output_filter(
+                    filtered_rmw_implementation=get_rmw_implementation_identifier()
+                )
+            ) as command:
+                # Let it run for a few seconds to collect statistics
+                self.executor.spin_until_future_complete(
+                    rclpy.task.Future(), timeout_sec=5
+                )
+            command.wait_for_shutdown(timeout=10)
+
+            assert command.output, 'bw --all CLI printed no output'
+            assert re.search(
+                r'Subscribing to all \d+ available topics',
+                command.output
+            ), 'bw --all did not print subscription message'
+
+            for topic in topics:
+                assert topic in command.output, (
+                    f'Topic {topic} not found in bw --all output'
+                )
+
+            # Check for bandwidth table headers (multiple topics format)
+            # Expected headers: topic, bandwidth, window, mean, min, max
+            assert 'topic' in command.output, 'Output missing topic header'
+            assert 'bandwidth' in command.output, 'Output missing bandwidth header'
+
+        finally:
+            # Cleanup
+            for timer in timers:
+                self.node.destroy_timer(timer)
+            for publisher in publishers:
+                self.node.destroy_publisher(publisher)
+
+    @launch_testing.markers.retry_on_failure(times=5)
+    def test_bw_no_arguments_error(self, launch_service, proc_info, proc_output):
+        """Test that bw fails when neither --all nor topic names are provided."""
+        command_action = ExecuteProcess(
+            cmd=['ros2', 'topic', 'bw'],
+            additional_env={
+                'PYTHONUNBUFFERED': '1'
+            },
+            output='screen'
+        )
+        with launch_testing.tools.launch_process(
+            launch_service, command_action, proc_info, proc_output,
+            output_filter=launch_testing_ros.tools.basic_output_filter(
+                filtered_rmw_implementation=get_rmw_implementation_identifier()
+            )
+        ) as command:
+            command.wait_for_shutdown(timeout=10)
+
+        # Should fail with non-zero exit code
+        assert command.exit_code != launch_testing.asserts.EXIT_OK, (
+            'bw command should fail when no arguments provided'
+        )
+
+        # Should print the error message
+        assert command.output, 'bw command printed no output'
+        assert 'Either specify topic names or use --all/-a option' in command.output, (
+            'bw command did not print expected error message'
+        )
+
+    @launch_testing.markers.retry_on_failure(times=5)
+    def test_bw_both_all_and_topics_error(self, launch_service, proc_info, proc_output):
+        """Test that bw fails when both --all and topic names are provided."""
+        command_action = ExecuteProcess(
+            cmd=['ros2', 'topic', 'bw', '--all', '/some_topic'],
+            additional_env={
+                'PYTHONUNBUFFERED': '1'
+            },
+            output='screen'
+        )
+        with launch_testing.tools.launch_process(
+            launch_service, command_action, proc_info, proc_output,
+            output_filter=launch_testing_ros.tools.basic_output_filter(
+                filtered_rmw_implementation=get_rmw_implementation_identifier()
+            )
+        ) as command:
+            command.wait_for_shutdown(timeout=10)
+
+        # Should fail with non-zero exit code
+        assert command.exit_code != launch_testing.asserts.EXIT_OK, (
+            'bw command should fail when both --all and topic names provided'
+        )
+
+        # Should print the error message
+        assert command.output, 'bw command printed no output'
+        assert 'Cannot specify both --all/-a and topic names' in command.output, (
+            'bw command did not print expected error message'
+        )
