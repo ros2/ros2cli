@@ -82,9 +82,21 @@ class BwVerb(VerbExtension):
         add_direct_node_arguments(parser)
 
     def main(self, *, args):
+<<<<<<< HEAD
         with DirectNode(args) as node:
             qos_profile = choose_qos(node.node, topic_name=args.topic_name, qos_args=args)
             _rostopic_bw(node.node, args.topic_name, qos_profile, window_size=args.window_size)
+=======
+        return main(args)
+
+
+def main(args):
+    topics = args.topic_name
+
+    with DirectNode(args) as node:
+        return _rostopic_bw(
+            node.node, topics, qos_args=args, window_size=args.window_size)
+>>>>>>> 7508eb2 (return explicitly from internal functions. (#1128))
 
 
 class ROSTopicBandwidth(object):
@@ -166,7 +178,12 @@ def _rostopic_bw(node, topic, qos_profile, window_size=DEFAULT_WINDOW_SIZE):
     msg_class = get_msg_class(node, topic, blocking=True, include_hidden_topics=True)
     if msg_class is None:
         node.destroy_node()
+<<<<<<< HEAD
         return
+=======
+        rclpy.try_shutdown()
+        return 1
+>>>>>>> 7508eb2 (return explicitly from internal functions. (#1128))
 
     rt = ROSTopicBandwidth(node, window_size)
     node.create_subscription(
@@ -177,6 +194,7 @@ def _rostopic_bw(node, topic, qos_profile, window_size=DEFAULT_WINDOW_SIZE):
         raw=True
     )
 
+<<<<<<< HEAD
     print(f'Subscribed to [{topic}]')
     timer = node.create_timer(1, rt.print_bw)
     while rclpy.ok():
@@ -185,3 +203,16 @@ def _rostopic_bw(node, topic, qos_profile, window_size=DEFAULT_WINDOW_SIZE):
     node.destroy_timer(timer)
     node.destroy_node()
     rclpy.shutdown()
+=======
+        print_thread = threading.Thread(target=thread_func)
+        print_thread.start()
+        rclpy.spin(node)
+    except (KeyboardInterrupt, ExternalShutdownException):
+        # Suppress shutdown exceptions; cleanup is handled in finally block.
+        pass
+    finally:
+        node.destroy_node()
+        rclpy.try_shutdown()
+        print_thread.join()
+    return 0
+>>>>>>> 7508eb2 (return explicitly from internal functions. (#1128))
