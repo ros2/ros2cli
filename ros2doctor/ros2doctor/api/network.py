@@ -58,20 +58,8 @@ class InterfaceFlags:
         self.has_multicast = False
         self.get(interface_name)
 
-<<<<<<< HEAD
     def get(self, interface_name):
         if os.name != 'posix':
-=======
-        try:
-            all_stats = psutil.net_if_stats()
-        except (OSError, IOError) as e:
-            doctor_warn(
-                f'Unable to access network interface statistics '
-                f'for {interface_name}: {e}')
-            return
-
-        if interface_name not in all_stats:
->>>>>>> 7a718b8 (Harden ros2doctor system calls. (#1118))
             return
 
         import fcntl
