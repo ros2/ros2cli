@@ -108,8 +108,14 @@ def main(args):
         filter_expr = None
 
     with DirectNode(args) as node:
+<<<<<<< HEAD
         _rostopic_hz(node.node, topic, window_size=args.window_size, filter_expr=filter_expr,
                      use_wtime=args.use_wtime)
+=======
+        return _rostopic_hz(
+            node.node, topics, qos_args=args, window_size=args.window_size,
+            filter_expr=filter_expr, use_wtime=args.use_wtime)
+>>>>>>> a2e617e (return explicitly from internal functions. (backport #1128) (#1134))
 
 
 class ROSTopicHz(object):
@@ -267,7 +273,12 @@ def _rostopic_hz(node, topic, window_size=DEFAULT_WINDOW_SIZE, filter_expr=None,
 
     if msg_class is None:
         node.destroy_node()
+<<<<<<< HEAD
         return
+=======
+        rclpy.try_shutdown()
+        return 1
+>>>>>>> a2e617e (return explicitly from internal functions. (backport #1128) (#1134))
 
     rt = ROSTopicHz(node, window_size, filter_expr=filter_expr, use_wtime=use_wtime)
     node.create_subscription(
@@ -277,9 +288,22 @@ def _rostopic_hz(node, topic, window_size=DEFAULT_WINDOW_SIZE, filter_expr=None,
         qos_profile_sensor_data,
         raw=filter_expr is None)
 
+<<<<<<< HEAD
     while rclpy.ok():
         rclpy.spin_once(node)
         rt.print_hz(topic)
 
     node.destroy_node()
     rclpy.shutdown()
+=======
+        print_thread = threading.Thread(target=thread_func)
+        print_thread.start()
+        rclpy.spin(node)
+    except (KeyboardInterrupt, ExternalShutdownException):
+        pass
+    finally:
+        node.destroy_node()
+        rclpy.try_shutdown()
+        print_thread.join()
+    return 0
+>>>>>>> a2e617e (return explicitly from internal functions. (backport #1128) (#1134))
