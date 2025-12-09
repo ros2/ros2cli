@@ -2,6 +2,12 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.40.3 (2025-12-09)
+-------------------
+* skip history and depth check for rmw_connextdds. (`#1064 <https://github.com/ros2/ros2cli/issues/1064>`_)
+* Remove importlib packages (`#1117 <https://github.com/ros2/ros2cli/issues/1117>`_)
+* Contributors: Michael Carlstrom, Tomoya Fujita
+
 0.40.2 (2025-11-18)
 -------------------
 * add verbose in service-info verb (`#916 <https://github.com/ros2/ros2cli//issues/916>`_)

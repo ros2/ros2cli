@@ -2,6 +2,11 @@
 Changelog for package ros2action
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.40.3 (2025-12-09)
+-------------------
+* add osrf_pycommon depend for test_exec. (`#1120 <https://github.com/ros2/ros2cli/issues/1120>`_)
+* Contributors: Tomoya Fujita
+
 0.40.2 (2025-11-18)
 -------------------
 

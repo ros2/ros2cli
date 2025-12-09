@@ -2,6 +2,12 @@
 Changelog for package ros2doctor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.40.3 (2025-12-09)
+-------------------
+* Remove importlib packages (`#1117 <https://github.com/ros2/ros2cli/issues/1117>`_)
+* Harden ros2doctor system calls. (`#1118 <https://github.com/ros2/ros2cli/issues/1118>`_)
+* Contributors: Michael Carlstrom, Tomoya Fujita
+
 0.40.2 (2025-11-18)
 -------------------
 * Add error handling when parsing package locally (`#1108 <https://github.com/ros2/ros2cli//issues/1108>`_)

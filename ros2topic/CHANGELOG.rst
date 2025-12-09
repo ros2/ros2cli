@@ -2,6 +2,13 @@
 Changelog for package ros2topic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.40.3 (2025-12-09)
+-------------------
+* return explicitly from internal functions. (`#1128 <https://github.com/ros2/ros2cli/issues/1128>`_)
+* support multiple topics for "ros2 topic bw". (`#1124 <https://github.com/ros2/ros2cli/issues/1124>`_)
+* add "--all/-a" option to "ros2 topic hz" with screen refresh. (`#1122 <https://github.com/ros2/ros2cli/issues/1122>`_)
+* Contributors: Tomoya Fujita
+
 0.40.2 (2025-11-18)
 -------------------
 

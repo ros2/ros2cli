@@ -2,6 +2,9 @@
 Changelog for package ros2service
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.40.3 (2025-12-09)
+-------------------
+
 0.40.2 (2025-11-18)
 -------------------
 * add verbose in service-info verb (`#916 <https://github.com/ros2/ros2cli//issues/916>`_)
