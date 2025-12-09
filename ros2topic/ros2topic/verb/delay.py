@@ -66,14 +66,8 @@ class DelayVerb(VerbExtension):
 
 def main(args):
     with DirectNode(args) as node:
-<<<<<<< HEAD
-        _rostopic_delay(
-            node.node, args.topic, window_size=args.window)
-=======
-        qos_profile = choose_qos(node.node, topic_name=args.topic_name, qos_args=args)
         return _rostopic_delay(
-            node.node, args.topic_name, qos_profile, window_size=args.window_size)
->>>>>>> a2e617e (return explicitly from internal functions. (backport #1128) (#1134))
+            node.node, args.topic, window_size=args.window)
 
 
 class ROSTopicDelay(object):
