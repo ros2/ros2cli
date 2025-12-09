@@ -25,7 +25,6 @@ except ModuleNotFoundError:
 
 def _expand_template(template_file, data, output_file):
     output = StringIO()
-<<<<<<< HEAD
     interpreter = em.Interpreter(
         output=output,
         options={
@@ -34,27 +33,6 @@ def _expand_template(template_file, data, output_file):
         },
         globals=data,
     )
-=======
-    if em_has_configuration:
-        config = Configuration(
-                defaultStdout=output,
-                deleteOnError=True,
-                rawErrors=True,
-                useProxy=True)
-        interpreter = em.Interpreter(
-                config=config,
-                dispatcher=False,
-                globals=data)
-    else:
-        interpreter = em.Interpreter(
-                output=output,
-                options={
-                    em.BUFFERED_OPT: True,
-                    em.RAW_OPT: True,
-                    },
-                globals=data)
-
->>>>>>> 5955379 (Add Native ROS2 Rust Package Create Capability (#1107))
     with open(template_file, 'r') as h:
         try:
             interpreter.file(h)
