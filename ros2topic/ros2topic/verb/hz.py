@@ -103,8 +103,9 @@ def main(args):
         filter_expr = None
 
     with DirectNode(args) as node:
-        _rostopic_hz(node.node, topics, qos_args=args, window_size=args.window_size,
-                     filter_expr=filter_expr, use_wtime=args.use_wtime)
+        return _rostopic_hz(
+            node.node, topics, qos_args=args, window_size=args.window_size,
+            filter_expr=filter_expr, use_wtime=args.use_wtime)
 
 
 class ROSTopicHz(object):
@@ -327,7 +328,7 @@ def _rostopic_hz(node, topics, qos_args, window_size=DEFAULT_WINDOW_SIZE, filter
     if len(topics) == 0:
         node.destroy_node()
         rclpy.try_shutdown()
-        return
+        return 1
 
     try:
         def thread_func():
@@ -344,3 +345,4 @@ def _rostopic_hz(node, topics, qos_args, window_size=DEFAULT_WINDOW_SIZE, filter
         node.destroy_node()
         rclpy.try_shutdown()
         print_thread.join()
+    return 0
