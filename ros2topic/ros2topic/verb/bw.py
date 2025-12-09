@@ -120,7 +120,7 @@ def main(args):
                 return
             print(f'Subscribing to all {len(topics)} available topics...')
         return _rostopic_bw(node.node, topics, qos_args=args, window_size=args.window_size,
-                     all_topics=args.all_topics)
+                            all_topics=args.all_topics)
 
 
 class ROSTopicBandwidth(object):
