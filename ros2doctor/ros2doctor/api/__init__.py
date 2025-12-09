@@ -12,14 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from importlib import metadata
+import sys
 from typing import List
 from typing import Set
 from typing import Tuple
-
-try:
-    import importlib.metadata as importlib_metadata
-except ModuleNotFoundError:
-    import importlib_metadata
 
 from ros2cli.node.strategy import NodeStrategy
 from ros2doctor.api.format import doctor_warn
@@ -91,8 +88,8 @@ def run_checks(*, include_warnings=False, exclude_packages=False) -> Tuple[Set[s
     fail_categories = set()  # remove repeating elements
     fail = 0
     total = 0
-    entry_points = importlib_metadata.entry_points()
-    if hasattr(entry_points, 'select'):
+    entry_points = metadata.entry_points()
+    if sys.version_info >= (3, 12):
         groups = entry_points.select(group='ros2doctor.checks')
     else:
         groups = entry_points.get('ros2doctor.checks', [])
@@ -130,8 +127,8 @@ def generate_reports(*, categories=None, exclude_packages=False) -> List[Report]
     :return: list of Report objects
     """
     reports = []
-    entry_points = importlib_metadata.entry_points()
-    if hasattr(entry_points, 'select'):
+    entry_points = metadata.entry_points()
+    if sys.version_info >= (3, 12):
         groups = entry_points.select(group='ros2doctor.report')
     else:
         groups = entry_points.get('ros2doctor.report', [])
