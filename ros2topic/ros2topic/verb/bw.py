@@ -91,7 +91,7 @@ class BwVerb(VerbExtension):
 
     def main(self, *, args):
         with DirectNode(args) as node:
-            _rostopic_bw(node.node, args.topic, window_size=args.window)
+            return _rostopic_bw(node.node, args.topic, window_size=args.window)
 
 
 class ROSTopicBandwidth(object):
@@ -165,7 +165,7 @@ def _rostopic_bw(node, topic, window_size=DEFAULT_WINDOW_SIZE):
     msg_class = get_msg_class(node, topic, blocking=True, include_hidden_topics=True)
     if msg_class is None:
         node.destroy_node()
-        return
+        return 1
 
     rt = ROSTopicBandwidth(node, window_size)
     node.create_subscription(
@@ -184,3 +184,4 @@ def _rostopic_bw(node, topic, window_size=DEFAULT_WINDOW_SIZE):
     node.destroy_timer(timer)
     node.destroy_node()
     rclpy.shutdown()
+    return 0

@@ -76,7 +76,7 @@ class DelayVerb(VerbExtension):
 
 def main(args):
     with DirectNode(args) as node:
-        _rostopic_delay(
+        return _rostopic_delay(
             node.node, args.topic, window_size=args.window)
 
 
@@ -178,7 +178,7 @@ def _rostopic_delay(node, topic, window_size=DEFAULT_WINDOW_SIZE):
 
     if msg_class is None:
         node.destroy_node()
-        return
+        return 1
 
     rt = ROSTopicDelay(node, window_size)
     node.create_subscription(
@@ -194,3 +194,4 @@ def _rostopic_delay(node, topic, window_size=DEFAULT_WINDOW_SIZE):
     node.destroy_timer(timer)
     node.destroy_node()
     rclpy.shutdown()
+    return 0
