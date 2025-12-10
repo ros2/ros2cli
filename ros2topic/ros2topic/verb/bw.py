@@ -47,9 +47,11 @@ from ros2cli.qos import add_qos_arguments
 from ros2cli.qos import choose_qos
 
 from ros2topic.api import get_msg_class
+from ros2topic.api import get_topic_names_and_types
 from ros2topic.api import positive_int
 from ros2topic.api import TopicNameCompleter
 from ros2topic.verb import VerbExtension
+from ros2topic.verb.echo import clear_terminal
 
 DEFAULT_WINDOW_SIZE = 100
 
@@ -79,10 +81,14 @@ class BwVerb(VerbExtension):
         )
         arg = parser.add_argument(
             'topic_name',
-            nargs='+',
+            nargs='*',
             help="Names of the ROS topics to monitor for bandwidth utilization (e.g. '/chatter')")
         arg.completer = TopicNameCompleter(
             include_hidden_topics_key='include_hidden_topics')
+        parser.add_argument(
+            '--all', '-a',
+            dest='all_topics', default=False, action='store_true',
+            help='subscribe to all available topics')
         add_qos_arguments(parser, 'subscribe', 'sensor_data')
         parser.add_argument(
             '--window', '-w', dest='window_size', type=positive_int, default=DEFAULT_WINDOW_SIZE,
@@ -95,11 +101,26 @@ class BwVerb(VerbExtension):
 
 
 def main(args):
+    if not args.all_topics and not args.topic_name:
+        raise RuntimeError('Either specify topic names or use --all/-a option')
+    if args.all_topics and args.topic_name:
+        raise RuntimeError('Cannot specify both --all/-a and topic names')
+
     topics = args.topic_name
 
     with DirectNode(args) as node:
-        return _rostopic_bw(
-            node.node, topics, qos_args=args, window_size=args.window_size)
+        # Get all available topics at this moment
+        if args.all_topics:
+            topic_names_and_types = get_topic_names_and_types(
+                node=node.node,
+                include_hidden_topics=args.include_hidden_topics)
+            topics = [name for name, _ in topic_names_and_types]
+            if not topics:
+                print('No topics available')
+                return
+            print(f'Subscribing to all {len(topics)} available topics...')
+        return _rostopic_bw(node.node, topics, qos_args=args, window_size=args.window_size,
+                            all_topics=args.all_topics)
 
 
 class ROSTopicBandwidth(object):
@@ -180,7 +201,7 @@ class ROSTopicBandwidth(object):
 
         return bytes_per_s, n, mean, min_s, max_s
 
-    def print_bw(self, topics=None):
+    def print_bw(self, topics=None, clear_screen=False):
         """Print the average publishing bw to screen."""
         def get_format_bw(stat):
             bytes_per_s, n, mean, min_s, max_s = stat
@@ -198,6 +219,10 @@ class ROSTopicBandwidth(object):
             # Bandwidth is per second
             bw += '/s'
             return bw, mean_str, min_str, max_str, n
+
+        # Clear screen if requested (useful when monitoring all topics)
+        if clear_screen:
+            clear_terminal()
 
         if topics is None or len(topics) == 1:
             topic = topics[0] if topics else None
@@ -249,7 +274,7 @@ def _get_ascii_table(header, cols):
     return table
 
 
-def _rostopic_bw(node, topics, qos_args, window_size=DEFAULT_WINDOW_SIZE):
+def _rostopic_bw(node, topics, qos_args, window_size=DEFAULT_WINDOW_SIZE, all_topics=False):
     """Periodically print the received bandwidth of topics to console until shutdown."""
     # pause bw until topic is published
     rt = ROSTopicBandwidth(node, window_size)
@@ -285,7 +310,7 @@ def _rostopic_bw(node, topics, qos_args, window_size=DEFAULT_WINDOW_SIZE):
     try:
         def thread_func():
             while rclpy.ok():
-                rt.print_bw(topics)
+                rt.print_bw(topics, clear_screen=all_topics)
                 time.sleep(1.0)
 
         print_thread = threading.Thread(target=thread_func)
