@@ -121,11 +121,6 @@ def main(args):
         filter_expr = None
 
     with DirectNode(args) as node:
-<<<<<<< HEAD
-        return _rostopic_hz(
-            node.node, topic, window_size=args.window_size, filter_expr=filter_expr,
-            use_wtime=args.use_wtime)
-=======
         # Get all available topics at this moment
         if args.all_topics:
             topic_names_and_types = get_topic_names_and_types(
@@ -137,10 +132,10 @@ def main(args):
                 return
             print(f'Subscribing to all {len(topics)} available topics...')
 
-        _rostopic_hz(node.node, topics, qos_args=args, window_size=args.window_size,
-                     filter_expr=filter_expr, use_wtime=args.use_wtime,
-                     all_topics=args.all_topics)
->>>>>>> 6585592 (add "--all/-a" option to "ros2 topic hz" with screen refresh. (#1122))
+        return _rostopic_hz(
+            node.node, topics, qos_args=args, window_size=args.window_size,
+            filter_expr=filter_expr, use_wtime=args.use_wtime,
+            all_topics=args.all_topics)
 
 
 class ROSTopicHz(object):
