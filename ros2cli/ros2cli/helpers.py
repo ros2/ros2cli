@@ -140,15 +140,13 @@ def get_rmw_additional_env(rmw_implementation: str) -> Dict[str, str]:
 
 def interactive_select(
     items: List[str],
-    prompt: str = 'Select an item:',
-    multi: bool = False
+    prompt: str = 'Select an item:'
 ) -> Optional[str]:
     """
     Launch interactive fuzzy search using fzf to select from a list of items.
 
     :param items: List of items to select from
     :param prompt: Prompt message to display in fzf
-    :param multi: Allow multiple selections (not yet implemented)
     :return: Selected item or None if user cancelled or fzf not available
     """
     if not items:
@@ -167,13 +165,9 @@ def interactive_select(
             raise FileNotFoundError()
     except (FileNotFoundError, subprocess.TimeoutExpired):
         print(
-            'Error: fzf is not installed. Interactive selection requires fzf.',
+            'Error: fzf is not installed but is a dependency for this package. You can install it with rosdep',
             file=sys.stderr
         )
-        print('Install fzf: https://github.com/junegunn/fzf#installation', file=sys.stderr)
-        print('  - Ubuntu/Debian: sudo apt install fzf', file=sys.stderr)
-        print('  - Fedora: sudo dnf install fzf', file=sys.stderr)
-        print('  - macOS: brew install fzf', file=sys.stderr)
         return None
 
     try:
