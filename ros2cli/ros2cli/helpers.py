@@ -177,17 +177,16 @@ def interactive_select(
         return None
 
     try:
-        # Launch fzf with items as input
+        # Launch fzf with items as input - using direct TTY access
         process = subprocess.Popen(
             ['fzf', '--prompt', prompt + ' ', '--height', '40%', '--reverse'],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
             text=True
         )
 
         # Send items to fzf
-        stdout, stderr = process.communicate(input='\n'.join(items))
+        stdout, _ = process.communicate(input='\n'.join(items))
 
         # Check if user cancelled (Ctrl-C or ESC)
         if process.returncode != 0:
