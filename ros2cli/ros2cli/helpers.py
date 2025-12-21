@@ -16,10 +16,13 @@ from argparse import ArgumentTypeError
 import functools
 import inspect
 import os
+import subprocess
 import sys
 import time
 
 from typing import Dict
+from typing import List
+from typing import Optional
 
 
 def get_ros_domain_id():
@@ -133,3 +136,68 @@ def get_rmw_additional_env(rmw_implementation: str) -> Dict[str, str]:
         return {
             'RMW_IMPLEMENTATION': rmw_implementation,
         }
+
+
+def interactive_select(
+    items: List[str],
+    prompt: str = 'Select an item:',
+    multi: bool = False
+) -> Optional[str]:
+    """
+    Launch interactive fuzzy search using fzf to select from a list of items.
+
+    :param items: List of items to select from
+    :param prompt: Prompt message to display in fzf
+    :param multi: Allow multiple selections (not yet implemented)
+    :return: Selected item or None if user cancelled or fzf not available
+    """
+    if not items:
+        print('No items available to select from.', file=sys.stderr)
+        return None
+
+    try:
+        # Check if fzf is available
+        result = subprocess.run(
+            ['fzf', '--version'],
+            capture_output=True,
+            text=True,
+            timeout=1
+        )
+        if result.returncode != 0:
+            raise FileNotFoundError()
+    except (FileNotFoundError, subprocess.TimeoutExpired):
+        print(
+            'Error: fzf is not installed. Interactive selection requires fzf.',
+            file=sys.stderr
+        )
+        print('Install fzf: https://github.com/junegunn/fzf#installation', file=sys.stderr)
+        print('  - Ubuntu/Debian: sudo apt install fzf', file=sys.stderr)
+        print('  - Fedora: sudo dnf install fzf', file=sys.stderr)
+        print('  - macOS: brew install fzf', file=sys.stderr)
+        return None
+
+    try:
+        # Launch fzf with items as input
+        process = subprocess.Popen(
+            ['fzf', '--prompt', prompt + ' ', '--height', '40%', '--reverse'],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True
+        )
+
+        # Send items to fzf
+        stdout, stderr = process.communicate(input='\n'.join(items))
+
+        # Check if user cancelled (Ctrl-C or ESC)
+        if process.returncode != 0:
+            return None
+
+        # Return selected item (strip newline)
+        selected = stdout.strip()
+        return selected if selected else None
+
+    except Exception as e:
+        print(f'Error during interactive selection: {e}', file=sys.stderr)
+        return None
+
