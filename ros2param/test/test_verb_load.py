@@ -140,6 +140,7 @@ class TestVerbLoad(unittest.TestCase):
         proc_output,
         rmw_implementation
     ):
+        cls.rmw_implementation = rmw_implementation
         rmw_implementation_filter = launch_testing_ros.tools.basic_output_filter(
             filtered_rmw_implementation=rmw_implementation
         )
@@ -310,6 +311,10 @@ class TestVerbLoad(unittest.TestCase):
             )
 
     def test_verb_load_wildcard(self):
+        if self.rmw_implementation == 'rmw_connextdds':
+            raise unittest.SkipTest(
+                'Skip for Connext DDS as license notifications interfere with YAML parsing'
+            )
         with tempfile.TemporaryDirectory() as tmpdir:
             # Try param file with only wildcard
             filepath = self._write_param_file(tmpdir, 'params.yaml', INPUT_WILDCARD_PARAMETER_FILE)
