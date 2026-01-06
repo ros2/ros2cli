@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>ros2tftree</name>
+  <version>0.1.0</version>
+  <description>ros2cli plugin to expose tf_tree_terminal as a ros2 subcommand</description>
+  <maintainer email="tanneguydv@gmail.com">You</maintainer>
+  <license>Apache-2.0</license>
+
+  <depend>rclpy</depend>
+
+  <exec_depend>python3</exec_depend>
+  <exec_depend>tf_tree_terminal</exec_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
