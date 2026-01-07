@@ -2,6 +2,9 @@
 Changelog for package ros2doctor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.40.4 (2026-01-07)
+-------------------
+
 0.40.3 (2025-12-09)
 -------------------
 * Remove importlib packages (`#1117 <https://github.com/ros2/ros2cli/issues/1117>`_)

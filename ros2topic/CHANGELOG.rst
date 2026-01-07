@@ -2,6 +2,11 @@
 Changelog for package ros2topic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.40.4 (2026-01-07)
+-------------------
+* add "--all/-a" option to "ros2 topic bw" with screen refresh. (`#1130 <https://github.com/ros2/ros2cli/issues/1130>`_)
+* Contributors: nomumu
+
 0.40.3 (2025-12-09)
 -------------------
 * return explicitly from internal functions. (`#1128 <https://github.com/ros2/ros2cli/issues/1128>`_)
