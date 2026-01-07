@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="3">
   <name>ros2tftree</name>
-  <version>0.1.0</version>
+  <version>0.40.3</version>
   <description>ros2cli plugin to expose tf_tree_terminal as a ros2 subcommand</description>
   <maintainer email="tanneguydv@gmail.com">You</maintainer>
   <license>Apache-2.0</license>
