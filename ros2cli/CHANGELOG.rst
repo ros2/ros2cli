@@ -2,6 +2,11 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.18.16 (2026-01-07)
+--------------------
+* Fix handling of empty ROS_DOMAIN_ID in ros2cli (`#1112 <https://github.com/ros2/ros2cli/issues/1112>`_) (`#1115 <https://github.com/ros2/ros2cli/issues/1115>`_)
+* Contributors: mergify[bot]
+
 0.18.15 (2025-11-12)
 --------------------
 

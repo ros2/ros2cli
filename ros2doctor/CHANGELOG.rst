@@ -2,6 +2,11 @@
 Changelog for package ros2doctor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.18.16 (2026-01-07)
+--------------------
+* Harden ros2doctor system calls. (backport `#1118 <https://github.com/ros2/ros2cli/issues/1118>`_) (`#1140 <https://github.com/ros2/ros2cli/issues/1140>`_)
+* Contributors: mergify[bot]
+
 0.18.15 (2025-11-12)
 --------------------
 

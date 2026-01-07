@@ -2,6 +2,9 @@
 Changelog for package ros2node
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.18.16 (2026-01-07)
+--------------------
+
 0.18.15 (2025-11-12)
 --------------------
 * Updated wording in list.py (`#775 <https://github.com/ros2/ros2cli//issues/775>`_) (`#1111 <https://github.com/ros2/ros2cli//issues/1111>`_)
