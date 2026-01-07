@@ -2,6 +2,11 @@
 Changelog for package ros2pkg
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.32.7 (2026-01-07)
+-------------------
+* Add Native ROS2 Rust Package Create Capability (`#1107 <https://github.com/ros2/ros2cli/issues/1107>`_) (`#1136 <https://github.com/ros2/ros2cli/issues/1136>`_)
+* Contributors: mergify[bot]
+
 0.32.6 (2025-09-11)
 -------------------
 * fix setuptools deprecations (`#1066 <https://github.com/ros2/ros2cli/issues/1066>`_) (`#1102 <https://github.com/ros2/ros2cli/issues/1102>`_)
