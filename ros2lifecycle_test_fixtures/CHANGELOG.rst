@@ -2,6 +2,9 @@
 Changelog for package ros2lifecycle_test_fixtures
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.38.2 (2026-01-07)
+-------------------
+
 0.38.1 (2025-09-11)
 -------------------
 * fix cmake deprecation (`#1082 <https://github.com/ros2/ros2cli/issues/1082>`_) (`#1083 <https://github.com/ros2/ros2cli/issues/1083>`_)

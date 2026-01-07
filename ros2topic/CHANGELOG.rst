@@ -2,6 +2,13 @@
 Changelog for package ros2topic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.38.2 (2026-01-07)
+-------------------
+* add "--all/-a" option to "ros2 topic hz" with screen refresh. (backport `#1122 <https://github.com/ros2/ros2cli/issues/1122>`_) (`#1144 <https://github.com/ros2/ros2cli/issues/1144>`_)
+* return explicitly from internal functions. (backport `#1128 <https://github.com/ros2/ros2cli/issues/1128>`_) (`#1134 <https://github.com/ros2/ros2cli/issues/1134>`_)
+* Use rmw_test_fixture to isolate ros2cli tests (backport `#1062 <https://github.com/ros2/ros2cli/issues/1062>`_) (`#1106 <https://github.com/ros2/ros2cli/issues/1106>`_)
+* Contributors: Tomoya Fujita, mergify[bot]
+
 0.38.1 (2025-09-11)
 -------------------
 * fix setuptools deprecations (`#1066 <https://github.com/ros2/ros2cli/issues/1066>`_) (`#1101 <https://github.com/ros2/ros2cli/issues/1101>`_)

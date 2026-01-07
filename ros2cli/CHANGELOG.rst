@@ -2,6 +2,15 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.38.2 (2026-01-07)
+-------------------
+* fix: Also catch a TimeoutError (`#1092 <https://github.com/ros2/ros2cli/issues/1092>`_) (`#1157 <https://github.com/ros2/ros2cli/issues/1157>`_)
+* Remove importlib packages (backport `#1117 <https://github.com/ros2/ros2cli/issues/1117>`_) (`#1119 <https://github.com/ros2/ros2cli/issues/1119>`_)
+* skip history and depth check for rmw_connextdds. (`#1064 <https://github.com/ros2/ros2cli/issues/1064>`_) (`#1127 <https://github.com/ros2/ros2cli/issues/1127>`_)
+* Fix handling of empty ROS_DOMAIN_ID in ros2cli (`#1112 <https://github.com/ros2/ros2cli/issues/1112>`_) (`#1113 <https://github.com/ros2/ros2cli/issues/1113>`_)
+* Use rmw_test_fixture to isolate ros2cli tests (backport `#1062 <https://github.com/ros2/ros2cli/issues/1062>`_) (`#1106 <https://github.com/ros2/ros2cli/issues/1106>`_)
+* Contributors: mergify[bot]
+
 0.38.1 (2025-09-11)
 -------------------
 * fix setuptools deprecations (`#1066 <https://github.com/ros2/ros2cli/issues/1066>`_) (`#1101 <https://github.com/ros2/ros2cli/issues/1101>`_)

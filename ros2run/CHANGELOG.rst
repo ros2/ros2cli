@@ -2,6 +2,9 @@
 Changelog for package ros2run
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.38.2 (2026-01-07)
+-------------------
+
 0.38.1 (2025-09-11)
 -------------------
 * fix setuptools deprecations (`#1066 <https://github.com/ros2/ros2cli/issues/1066>`_) (`#1101 <https://github.com/ros2/ros2cli/issues/1101>`_)

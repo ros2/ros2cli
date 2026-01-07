@@ -2,6 +2,13 @@
 Changelog for package ros2doctor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.38.2 (2026-01-07)
+-------------------
+* Remove importlib packages (backport `#1117 <https://github.com/ros2/ros2cli/issues/1117>`_) (`#1119 <https://github.com/ros2/ros2cli/issues/1119>`_)
+* Harden ros2doctor system calls. (`#1118 <https://github.com/ros2/ros2cli/issues/1118>`_) (`#1138 <https://github.com/ros2/ros2cli/issues/1138>`_)
+* Use rmw_test_fixture to isolate ros2cli tests (backport `#1062 <https://github.com/ros2/ros2cli/issues/1062>`_) (`#1106 <https://github.com/ros2/ros2cli/issues/1106>`_)
+* Contributors: mergify[bot]
+
 0.38.1 (2025-09-11)
 -------------------
 * fix setuptools deprecations (`#1066 <https://github.com/ros2/ros2cli/issues/1066>`_) (`#1101 <https://github.com/ros2/ros2cli/issues/1101>`_)

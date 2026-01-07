@@ -2,6 +2,13 @@
 Changelog for package ros2pkg
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.38.2 (2026-01-07)
+-------------------
+* Add Native ROS2 Rust Package Create Capability (`#1107 <https://github.com/ros2/ros2cli/issues/1107>`_) (`#1135 <https://github.com/ros2/ros2cli/issues/1135>`_)
+* Remove importlib packages (backport `#1117 <https://github.com/ros2/ros2cli/issues/1117>`_) (`#1119 <https://github.com/ros2/ros2cli/issues/1119>`_)
+* add mypy (`#1109 <https://github.com/ros2/ros2cli/issues/1109>`_) (`#1110 <https://github.com/ros2/ros2cli/issues/1110>`_)
+* Contributors: mergify[bot]
+
 0.38.1 (2025-09-11)
 -------------------
 * fix setuptools deprecations (`#1066 <https://github.com/ros2/ros2cli/issues/1066>`_) (`#1101 <https://github.com/ros2/ros2cli/issues/1101>`_)
