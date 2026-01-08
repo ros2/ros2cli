@@ -169,8 +169,8 @@ class ReadStdinPipe(argparse.Action):
             if sys.stdin.isatty():
                 parser.error('expected stdin pipe')
             values = sys.stdin.readline().strip()
-        if not values:
-            parser.error('the passed value is empty')
+            if not values:
+                parser.error('the passed value is empty')
         setattr(namespace, self.dest, values)
 
 
