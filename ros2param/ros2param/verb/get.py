@@ -73,8 +73,16 @@ class GetVerb(VerbExtension):
         # If no parameter name provided, launch interactive selection
         if args.parameter_name is None:
             with DirectNode(args) as node:
-                parameter_names = call_list_parameters(
+                response = call_list_parameters(
                     node=node, node_name=args.node_name)
+                
+                if response is None:
+                    return 'Unable to get parameters: service call timed out.'
+                
+                if response.result() is None:
+                    return 'Unable to get parameters: service call failed.'
+                
+                parameter_names = response.result().result.names
                 
                 if not parameter_names:
                     return 'No parameters available to select from.'
@@ -84,7 +92,8 @@ class GetVerb(VerbExtension):
                     prompt='Select parameter:')
                 
                 if selected_param is None:
-                    return 'No parameter selected'
+                    # Only show this if interactive_select didn't already print an error
+                    return None
                 
                 args.parameter_name = selected_param
         
