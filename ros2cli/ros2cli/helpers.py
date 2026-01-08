@@ -177,21 +177,14 @@ def interactive_select(
         )
 
         try:
-            # Send items to fzf with timeout to prevent indefinite hangs
-            stdout, _ = process.communicate(input='\n'.join(items), timeout=30)
+            # Send items to fzf
+            stdout, _ = process.communicate(input='\n'.join(items))
         except KeyboardInterrupt:
             # Handle Ctrl+C gracefully to avoid leaving terminal in bad state
             process.terminate()
             process.wait()
             # Reset terminal to normal mode after fzf interruption
             subprocess.run(['stty', 'sane'], check=False)
-            return None
-        except subprocess.TimeoutExpired:
-            process.kill()
-            process.wait()
-            # Reset terminal to normal mode after fzf timeout
-            subprocess.run(['stty', 'sane'], check=False)
-            print('Error: Interactive selection timed out.', file=sys.stderr)
             return None
         finally:
             # Ensure terminal is restored even if an exception occurs
