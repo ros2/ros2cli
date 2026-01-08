@@ -109,6 +109,9 @@ def main(args):
                 node=node.node,
                 include_hidden_topics=args.include_hidden_topics)
             
+            if not topic_names:
+                return 'No topics available to select from.'
+            
             selected_topic = interactive_select(
                 topic_names,
                 prompt='Select topic for hz:')

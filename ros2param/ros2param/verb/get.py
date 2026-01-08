@@ -58,6 +58,9 @@ class GetVerb(VerbExtension):
                 node_names = get_node_names(node=node, include_hidden_nodes=args.include_hidden_nodes)
                 node_name_list = [n.full_name for n in node_names]
                 
+                if not node_name_list:
+                    return 'No nodes available to select from.'
+                
                 selected_node = interactive_select(
                     node_name_list,
                     prompt='Select node:')
@@ -72,6 +75,9 @@ class GetVerb(VerbExtension):
             with DirectNode(args) as node:
                 parameter_names = call_list_parameters(
                     node=node, node_name=args.node_name)
+                
+                if not parameter_names:
+                    return 'No parameters available to select from.'
                 
                 selected_param = interactive_select(
                     parameter_names,

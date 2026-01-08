@@ -54,6 +54,10 @@ class InfoVerb(VerbExtension):
                 node_names = get_node_names(node=node, include_hidden_nodes=args.include_hidden)
                 node_name_list = [n.full_name for n in node_names]
                 
+                # Check if there are any nodes before attempting selection
+                if not node_name_list:
+                    return 'No nodes available to select from.'
+                
                 selected_node = interactive_select(
                     node_name_list,
                     prompt='Select node for info:')

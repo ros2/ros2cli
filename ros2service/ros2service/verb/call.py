@@ -77,6 +77,9 @@ class CallVerb(VerbExtension):
                     node=node,
                     include_hidden_services=args.include_hidden_services)
                 
+                if not service_names:
+                    return 'No services available to select from.'
+                
                 selected_service = interactive_select(
                     service_names,
                     prompt='Select service to call:')
