@@ -2,6 +2,11 @@
 Changelog for package ros2param
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.40.4 (2026-01-07)
+-------------------
+* skip test_verb_load_wildcard for rmw_connextdds. (`#1150 <https://github.com/ros2/ros2cli/issues/1150>`_)
+* Contributors: Tomoya Fujita
+
 0.40.3 (2025-12-09)
 -------------------
 
