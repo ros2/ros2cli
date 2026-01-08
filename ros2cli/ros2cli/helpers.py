@@ -16,6 +16,7 @@ from argparse import ArgumentTypeError
 import functools
 import inspect
 import os
+import shutil
 import subprocess
 import sys
 import time
@@ -158,19 +159,10 @@ def interactive_select(
         print('Error: Interactive selection requires a TTY terminal.', file=sys.stderr)
         return None
 
-    try:
-        # Check if fzf is available
-        result = subprocess.run(
-            ['fzf', '--version'],
-            capture_output=True,
-            text=True,
-            timeout=1
-        )
-        if result.returncode != 0:
-            raise FileNotFoundError()
-    except (FileNotFoundError, subprocess.TimeoutExpired):
+    # Check if fzf is available
+    if shutil.which('fzf') is None:
         print(
-            'Error: fzf is not installed but is a dependency for this package. You can install it with rosdep',
+            'Error: fzf is not installed...',
             file=sys.stderr
         )
         return None
@@ -195,7 +187,7 @@ def interactive_select(
         selected = stdout.strip()
         return selected if selected else None
 
-    except Exception as e:
+    except (OSError, subprocess.SubprocessError) as e:
         print(f'Error during interactive selection: {e}', file=sys.stderr)
         return None
 
