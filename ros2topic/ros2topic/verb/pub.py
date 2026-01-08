@@ -23,7 +23,6 @@ from rclpy.node import Node
 from rclpy.qos import QoSProfile
 
 from ros2cli.helpers import collect_stdin
-from ros2cli.helpers import interactive_select
 from ros2cli.node.direct import add_arguments as add_direct_node_arguments
 from ros2cli.node.direct import DirectNode
 from ros2cli.qos import add_qos_arguments
@@ -58,9 +57,8 @@ class PubVerb(VerbExtension):
 
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
-            'topic_name', nargs='?',
-            help="Name of the ROS topic to publish to (e.g. '/chatter'). "
-                 "If not provided, an interactive selection will be shown.")
+            'topic_name',
+            help="Name of the ROS topic to publish to (e.g. '/chatter')")
         arg.completer = TopicNameCompleter(
             include_hidden_topics_key='include_hidden_topics')
         arg = parser.add_argument(
@@ -129,23 +127,6 @@ class PubVerb(VerbExtension):
 
 
 def main(args):
-    # If no topic name provided, launch interactive selection
-    if args.topic_name is None:
-        from ros2cli.node.strategy import NodeStrategy
-        with NodeStrategy(args) as node:
-            topic_names = get_topic_names(
-                node=node,
-                include_hidden_topics=args.include_hidden_topics)
-            
-            selected_topic = interactive_select(
-                topic_names,
-                prompt='Select topic to publish to:')
-            
-            if selected_topic is None:
-                return 'No topic selected'
-            
-            args.topic_name = selected_topic
-    
     qos_profile_name = args.qos_profile
     qos_profile = rclpy.qos.QoSPresetProfiles.get_from_short_key(qos_profile_name)
     profile_configure_short_keys(
