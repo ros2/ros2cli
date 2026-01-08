@@ -85,7 +85,7 @@ class CallVerb(VerbExtension):
                     prompt='Select service to call:')
                 
                 if selected_service is None:
-                    return 'No service selected'
+                    return None
                 
                 args.service_name = selected_service
         

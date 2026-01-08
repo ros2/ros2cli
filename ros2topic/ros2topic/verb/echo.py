@@ -139,7 +139,7 @@ class EchoVerb(VerbExtension):
                 prompt='Select topic to echo:')
             
             if selected_topic is None:
-                return 'No topic selected'
+                return None
             
             args.topic_name = selected_topic
 

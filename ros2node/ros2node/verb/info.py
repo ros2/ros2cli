@@ -63,7 +63,7 @@ class InfoVerb(VerbExtension):
                     prompt='Select node for info:')
                 
                 if selected_node is None:
-                    return 'No node selected'
+                    return None
                 
                 args.node_name = selected_node
             

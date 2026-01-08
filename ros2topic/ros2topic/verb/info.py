@@ -56,7 +56,7 @@ class InfoVerb(VerbExtension):
                     prompt='Select topic for info:')
                 
                 if selected_topic is None:
-                    return 'No topic selected'
+                    return None
                 
                 args.topic_name = selected_topic
 
