@@ -153,6 +153,11 @@ def interactive_select(
         print('No items available to select from.', file=sys.stderr)
         return None
 
+    # Check if we're in an interactive terminal
+    if not sys.stdin.isatty() or not sys.stdout.isatty():
+        print('Error: Interactive selection requires a TTY terminal.', file=sys.stderr)
+        return None
+
     try:
         # Check if fzf is available
         result = subprocess.run(
