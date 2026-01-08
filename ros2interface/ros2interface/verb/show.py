@@ -204,19 +204,19 @@ class ShowVerb(VerbExtension):
         # If no type provided, launch interactive selection
         if args.type is None:
             interface_types = get_all_interface_names()
-            
+
             if not interface_types:
                 return 'No interfaces available to select from.'
-            
+
             selected_type = interactive_select(
                 interface_types,
                 prompt='Select interface to show:')
-            
+
             if selected_type is None:
                 return 'No interface selected'
-            
+
             args.type = selected_type
-        
+
         try:
             _show_interface(
                 args.type,

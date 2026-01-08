@@ -204,4 +204,3 @@ def interactive_select(
     except (OSError, subprocess.SubprocessError) as e:
         print(f'Error during interactive selection: {e}', file=sys.stderr)
         return None
-

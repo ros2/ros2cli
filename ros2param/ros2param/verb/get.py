@@ -57,46 +57,46 @@ class GetVerb(VerbExtension):
             with NodeStrategy(args) as node:
                 node_names = get_node_names(node=node, include_hidden_nodes=args.include_hidden_nodes)
                 node_name_list = [n.full_name for n in node_names]
-                
+
                 if not node_name_list:
                     return 'No nodes available to select from.'
-                
+
                 selected_node = interactive_select(
                     node_name_list,
                     prompt='Select node:')
-                
+
                 if selected_node is None:
                     return 'No node selected'
-                
+
                 args.node_name = selected_node
-        
+
         # If no parameter name provided, launch interactive selection
         if args.parameter_name is None:
             with DirectNode(args) as node:
                 response = call_list_parameters(
                     node=node, node_name=args.node_name)
-                
+
                 if response is None:
                     return 'Unable to get parameters: service call timed out.'
-                
+
                 if response.result() is None:
                     return 'Unable to get parameters: service call failed.'
-                
+
                 parameter_names = response.result().result.names
-                
+
                 if not parameter_names:
                     return 'No parameters available to select from.'
-                
+
                 selected_param = interactive_select(
                     parameter_names,
                     prompt='Select parameter:')
-                
+
                 if selected_param is None:
                     # Only show this if interactive_select didn't already print an error
                     return None
-                
+
                 args.parameter_name = selected_param
-        
+
         node_name = get_absolute_node_name(args.node_name)
         with NodeStrategy(args) as node:
             if not wait_for_node(node, node_name, args.include_hidden_nodes, args.timeout):

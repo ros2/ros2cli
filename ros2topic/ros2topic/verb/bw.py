@@ -109,19 +109,19 @@ def main(args):
             topic_names = get_topic_names(
                 node=node.node,
                 include_hidden_topics=args.include_hidden_topics)
-            
+
             if not topic_names:
                 return 'No topics available to select from.'
-            
+
             selected_topic = interactive_select(
                 topic_names,
                 prompt='Select topic for bw:')
-            
+
             if selected_topic is None:
                 return None
-            
+
             args.topic_name = [selected_topic]
-    
+
     if args.all_topics and args.topic_name:
         raise RuntimeError('Cannot specify both --all/-a and topic names')
 

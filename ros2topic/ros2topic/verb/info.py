@@ -47,17 +47,17 @@ class InfoVerb(VerbExtension):
                 topic_names = get_topic_names(
                     node=node,
                     include_hidden_topics=args.include_hidden_topics)
-                
+
                 if not topic_names:
                     return 'No topics available to select from.'
-                
+
                 selected_topic = interactive_select(
                     topic_names,
                     prompt='Select topic for info:')
-                
+
                 if selected_topic is None:
                     return None
-                
+
                 args.topic_name = selected_topic
 
             topic_names_and_types = get_topic_names_and_types(

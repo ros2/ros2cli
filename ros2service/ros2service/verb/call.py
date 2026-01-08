@@ -76,19 +76,19 @@ class CallVerb(VerbExtension):
                 service_names = get_service_names(
                     node=node,
                     include_hidden_services=args.include_hidden_services)
-                
+
                 if not service_names:
                     return 'No services available to select from.'
-                
+
                 selected_service = interactive_select(
                     service_names,
                     prompt='Select service to call:')
-                
+
                 if selected_service is None:
                     return None
-                
+
                 args.service_name = selected_service
-        
+
         if args.rate is not None and args.rate <= 0:
             raise RuntimeError('rate must be greater than zero')
         period = 1. / args.rate if args.rate else None
