@@ -117,7 +117,7 @@ def main(args):
                 prompt='Select topic for hz:')
             
             if selected_topic is None:
-                return 'No topic selected'
+                return None
             
             args.topic_name = [selected_topic]
     
