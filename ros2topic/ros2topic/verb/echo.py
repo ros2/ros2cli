@@ -55,7 +55,7 @@ class EchoVerb(VerbExtension):
         arg = parser.add_argument(
             'topic_name', nargs='?',
             help="Name of the ROS topic to listen to (e.g. '/chatter'). "
-                 "If not provided, an interactive selection will be shown.")
+                 'If not provided, an interactive selection will be shown.')
         arg.completer = TopicNameCompleter(
             include_hidden_topics_key='include_hidden_topics')
         parser.add_argument(

@@ -22,7 +22,6 @@ import sys
 import time
 
 from typing import Dict
-from typing import List
 from typing import Optional
 
 
@@ -140,7 +139,7 @@ def get_rmw_additional_env(rmw_implementation: str) -> Dict[str, str]:
 
 
 def interactive_select(
-    items: List[str],
+    items: list[str],
     prompt: str = 'Select an item:'
 ) -> Optional[str]:
     """

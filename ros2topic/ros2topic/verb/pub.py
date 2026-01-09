@@ -28,7 +28,6 @@ from ros2cli.node.direct import DirectNode
 from ros2cli.qos import add_qos_arguments
 from ros2cli.qos import profile_configure_short_keys
 
-from ros2topic.api import get_topic_names
 from ros2topic.api import positive_float
 from ros2topic.api import TopicMessagePrototypeCompleter, YamlCompletionFinder
 from ros2topic.api import TopicNameCompleter

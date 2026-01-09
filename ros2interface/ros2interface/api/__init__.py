@@ -54,7 +54,7 @@ def interface_to_yaml(identifier):
     return message_to_yaml(instance)
 
 
-def get_all_interface_names():
+def get_all_interface_names() -> list[str]:
     """Get all available interface names (messages, services, and actions)."""
     types = []
     for package_name, service_names in get_service_interfaces().items():

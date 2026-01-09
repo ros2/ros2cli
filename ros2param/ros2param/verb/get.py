@@ -55,7 +55,9 @@ class GetVerb(VerbExtension):
         # If no node name provided, launch interactive selection
         if args.node_name is None:
             with NodeStrategy(args) as node:
-                node_names = get_node_names(node=node, include_hidden_nodes=args.include_hidden_nodes)
+                node_names = get_node_names(
+                    node=node,
+                    include_hidden_nodes=args.include_hidden_nodes)
                 node_name_list = [n.full_name for n in node_names]
 
                 if not node_name_list:

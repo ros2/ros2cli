@@ -195,7 +195,7 @@ class ShowVerb(VerbExtension):
             nargs='?',
             action=ReadStdinPipe,
             help="Show an interface definition (e.g. 'example_interfaces/msg/String'). "
-                 "If not provided, an interactive selection will be shown. "
+                 'If not provided, an interactive selection will be shown. '
                  "Passing '-' reads the argument from stdin (e.g. "
                  "'ros2 topic type /chatter | ros2 interface show -').")
         arg.completer = type_completer

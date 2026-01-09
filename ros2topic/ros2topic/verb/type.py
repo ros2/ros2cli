@@ -32,7 +32,7 @@ class TypeVerb(VerbExtension):
             'topic_name',
             nargs='?',
             help="Name of the ROS topic to get type (e.g. '/chatter'). "
-                 "If not provided, an interactive selection will be shown.")
+                 'If not provided, an interactive selection will be shown.')
         arg.completer = TopicNameCompleter(
             include_hidden_topics_key='include_hidden_topics')
 

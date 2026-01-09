@@ -45,7 +45,7 @@ class CallVerb(VerbExtension):
         arg = parser.add_argument(
             'service_name', nargs='?',
             help="Name of the ROS service to call to (e.g. '/add_two_ints'). "
-                 "If not provided, an interactive selection will be shown.")
+                 'If not provided, an interactive selection will be shown.')
         arg.completer = ServiceNameCompleter(
             include_hidden_services_key='include_hidden_services')
         arg = parser.add_argument(

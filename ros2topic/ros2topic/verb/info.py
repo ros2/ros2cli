@@ -29,7 +29,7 @@ class InfoVerb(VerbExtension):
         arg = parser.add_argument(
             'topic_name', nargs='?',
             help="Name of the ROS topic to get info (e.g. '/chatter'). "
-                 "If not provided, an interactive selection will be shown.")
+                 'If not provided, an interactive selection will be shown.')
         parser.add_argument(
             '--verbose',
             '-v',
