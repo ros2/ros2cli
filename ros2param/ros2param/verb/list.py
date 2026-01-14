@@ -75,7 +75,7 @@ class ListVerb(VerbExtension):
                     node=node,
                     node_name=node_name.full_name,
                     prefixes=args.param_prefixes)
-                # print responses
+                # print response
                 if response is None:
                     print(
                         'Wait for service timed out waiting for '
