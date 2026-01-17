@@ -104,13 +104,13 @@ def call_set_parameters(*, node, node_name, parameters):
     return response
 
 
-def call_list_parameters(*, node, node_name, prefixes=None):
+def call_list_parameters(*, node, node_name, prefixes=None, spin_timeout_sec=None):
     client = AsyncParameterClient(node, node_name)
     ready = client.wait_for_services(timeout_sec=5.0)
     if not ready:
         return None
     future = client.list_parameters(prefixes=prefixes)
-    rclpy.spin_until_future_complete(node, future)
+    rclpy.spin_until_future_complete(node, future, timeout_sec=spin_timeout_sec)
     return future
 
 
