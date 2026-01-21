@@ -2,8 +2,8 @@
 Changelog for package ros2lifecycle
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.32.8 (2026-01-21)
+-------------------
 * ros2interface output the contents for each node. (`#1163 <https://github.com/ros2/ros2cli/issues/1163>`_) (`#1167 <https://github.com/ros2/ros2cli/issues/1167>`_)
   (cherry picked from commit 6e3c7ac2cbdf571819af6d647ef3e7bf8e5fedf3)
   Co-authored-by: Tomoya Fujita <Tomoya.Fujita@sony.com>

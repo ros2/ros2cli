@@ -2,8 +2,8 @@
 Changelog for package ros2param
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.32.8 (2026-01-21)
+-------------------
 * Fix ParameterNameCompleter. (`#1172 <https://github.com/ros2/ros2cli/issues/1172>`_) (`#1176 <https://github.com/ros2/ros2cli/issues/1176>`_)
   (cherry picked from commit 752e0606195cfac31673e3571943d4fa233c4098)
   Co-authored-by: Tomoya Fujita <Tomoya.Fujita@sony.com>
