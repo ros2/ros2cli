@@ -257,8 +257,14 @@ class ParameterNameCompleter:
 
     def __call__(self, prefix, parsed_args, **kwargs):
         with DirectNode(parsed_args) as node:
-            parameter_names = call_list_parameters(
+            future = call_list_parameters(
                 node=node, node_name=parsed_args.node_name)
+            if future is None:
+                return []
+            result = future.result()
+            if result is None:
+                return []
+            parameter_names = result.result.names
             return [
                 n for n in parameter_names
                 if not prefix or n.startswith(prefix)]
