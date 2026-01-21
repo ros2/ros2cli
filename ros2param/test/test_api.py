@@ -98,3 +98,47 @@ def test_get_parameter_value(
     value = get_parameter_value(string_value=string_value)
     assert value.type == expected_type
     assert getattr(value, value_attribute) == expected_value
+
+
+def test_parameter_name_completer():
+    from unittest.mock import Mock, MagicMock
+    from ros2param.api import ParameterNameCompleter
+
+    # Create a mock parsed_args object
+    parsed_args = Mock()
+    parsed_args.node_name = 'test_complete_node'
+
+    completer = ParameterNameCompleter()
+
+    # Test with mock that returns None (no node available)
+    # The completer should return an empty list gracefully
+    from unittest.mock import patch
+    with patch('ros2param.api.call_list_parameters', return_value=None):
+        with patch('ros2param.api.DirectNode'):
+            result = completer(prefix='', parsed_args=parsed_args)
+            assert result == []
+
+    # This ensures the code calls .result() on the future instead of iterating it directly
+    mock_future = MagicMock()
+    mock_result = Mock()
+    mock_result.result.names = ['param1', 'param2', 'param_test', 'other']
+    mock_future.result.return_value = mock_result
+
+    # If code tries to iterate the future directly, it will raise TypeError
+    mock_future.__iter__ = Mock(side_effect=TypeError('Future object is not iterable'))
+
+    with patch('ros2param.api.call_list_parameters', return_value=mock_future):
+        with patch('ros2param.api.DirectNode'):
+            # Test with no prefix
+            result = completer(prefix='', parsed_args=parsed_args)
+            assert result == ['param1', 'param2', 'param_test', 'other']
+            # Verify .result() was called on the future (not iterated directly)
+            mock_future.result.assert_called()
+
+            # Test with prefix filtering
+            result = completer(prefix='param', parsed_args=parsed_args)
+            assert result == ['param1', 'param2', 'param_test']
+
+            # Test with prefix that matches nothing
+            result = completer(prefix='xyz', parsed_args=parsed_args)
+            assert result == []
