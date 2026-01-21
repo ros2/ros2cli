@@ -119,10 +119,10 @@ def test_parameter_name_completer():
     mock_result = Mock()
     mock_result.result.names = ['param1', 'param2', 'param_test', 'other']
     mock_future.result.return_value = mock_result
-    
+
     # If code tries to iterate the future directly, it will raise TypeError
     mock_future.__iter__ = Mock(side_effect=TypeError('Future object is not iterable'))
-    
+
     with patch('ros2param.api.call_list_parameters', return_value=mock_future):
         with patch('ros2param.api.DirectNode'):
             # Test with no prefix
@@ -130,11 +130,11 @@ def test_parameter_name_completer():
             assert result == ['param1', 'param2', 'param_test', 'other']
             # Verify .result() was called on the future (not iterated directly)
             mock_future.result.assert_called()
-            
+
             # Test with prefix filtering
             result = completer(prefix='param', parsed_args=parsed_args)
             assert result == ['param1', 'param2', 'param_test']
-            
+
             # Test with prefix that matches nothing
             result = completer(prefix='xyz', parsed_args=parsed_args)
             assert result == []
