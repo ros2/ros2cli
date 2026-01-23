@@ -18,13 +18,21 @@ import rclpy
 import rclpy.action
 
 from rclpy.parameter import Parameter
+from ros2cli.helpers import check_discovery_configuration
 from ros2cli.node import NODE_NAME_PREFIX
 DEFAULT_TIMEOUT = 0.5
 
 
 class DirectNode:
 
+<<<<<<< HEAD
     def __init__(self, args, *, node_name=None):
+=======
+    def __init__(self, args, *, node_name: Optional[str] = None):
+        # Check for invalid discovery configuration
+        check_discovery_configuration()
+
+>>>>>>> 83f0429 (check for invalid ROS discovery configuration and print warning if ne… (#1178))
         timeout_reached = False
 
         def timer_callback():
