@@ -36,15 +36,17 @@ class GetVerb(VerbExtension):
         add_arguments(parser)
         arg = parser.add_argument(
             'node_name', nargs='?', default=None,
-            help='Name of the ROS node (optional, queries all nodes if not specified)')
+            help='Name of the ROS node (optional). '
+                 'If only one argument is provided, it is treated as a parameter name to query across all nodes.')
         arg.completer = NodeNameCompleter(
             include_hidden_nodes_key='include_hidden_nodes')
         parser.add_argument(
             '--include-hidden-nodes', action='store_true',
             help='Consider hidden nodes as well')
         arg = parser.add_argument(
-            'parameter_name', nargs='?',
-            help='Name of the parameter. If not provided, an interactive selection will be shown.')
+            'parameter_name', nargs='?', default=None,
+            help='Name of the parameter (optional). '
+                 'If neither node nor parameter is provided, interactive selection is used.')
         arg.completer = ParameterNameCompleter()
         parser.add_argument(
             '--hide-type', action='store_true',
@@ -54,6 +56,56 @@ class GetVerb(VerbExtension):
             help='Wait for N seconds until node becomes available (default %(default)s sec)')
 
     def main(self, *, args):  # noqa: D102
+        # If both node and parameter are None, use interactive selection for both
+        if args.node_name is None and args.parameter_name is None:
+            with NodeStrategy(args) as node:
+                node_names = get_node_names(
+                    node=node,
+                    include_hidden_nodes=args.include_hidden_nodes)
+                node_name_list = [n.full_name for n in node_names]
+
+                if not node_name_list:
+                    return 'No nodes available to select from.'
+
+                selected_node = interactive_select(
+                    node_name_list,
+                    prompt='Select node:')
+
+                if selected_node is None:
+                    return 'No node selected'
+
+                args.node_name = selected_node
+
+            # Now select parameter from the chosen node
+            with DirectNode(args) as node:
+                response = call_list_parameters(
+                    node=node, node_name=args.node_name)
+
+                if response is None:
+                    return 'Unable to get parameters: service call timed out.'
+
+                if response.result() is None:
+                    return 'Unable to get parameters: service call failed.'
+
+                parameter_names = response.result().result.names
+
+                if not parameter_names:
+                    return 'No parameters available to select from.'
+
+                selected_param = interactive_select(
+                    parameter_names,
+                    prompt='Select parameter:')
+
+                if selected_param is None:
+                    return None
+
+                args.parameter_name = selected_param
+
+        # If only one argument provided, treat it as parameter name (query all nodes)
+        elif args.node_name is not None and args.parameter_name is None:
+            args.parameter_name = args.node_name
+            args.node_name = None
+
         # Determine which nodes to query
         if args.node_name:
             # Single node mode (existing behavior)
