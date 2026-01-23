@@ -16,11 +16,15 @@ import io
 import os
 from unittest.mock import patch
 
+import ros2cli.helpers
 from ros2cli.helpers import check_discovery_configuration
 
 
 def test_check_discovery_configuration_off_without_peers():
     """Test warning is shown when ROS_AUTOMATIC_DISCOVERY_RANGE=OFF without ROS_STATIC_PEERS."""
+    # Reset the module-level flag
+    ros2cli.helpers._discovery_warning_shown = False
+
     env = {
         'ROS_AUTOMATIC_DISCOVERY_RANGE': 'OFF',
     }
@@ -43,6 +47,9 @@ def test_check_discovery_configuration_off_without_peers():
 
 def test_check_discovery_configuration_off_with_peers():
     """Test no warning when ROS_AUTOMATIC_DISCOVERY_RANGE=OFF with ROS_STATIC_PEERS set."""
+    # Reset the module-level flag
+    ros2cli.helpers._discovery_warning_shown = False
+
     env = {
         'ROS_AUTOMATIC_DISCOVERY_RANGE': 'OFF',
         'ROS_STATIC_PEERS': '192.168.1.10;192.168.1.11',
@@ -58,8 +65,31 @@ def test_check_discovery_configuration_off_with_peers():
     assert output == '', 'Expected no warning output'
 
 
+def test_check_discovery_configuration_off_with_empty_peers():
+    """Test warning is shown when ROS_STATIC_PEERS is set but empty."""
+    # Reset the module-level flag
+    ros2cli.helpers._discovery_warning_shown = False
+
+    env = {
+        'ROS_AUTOMATIC_DISCOVERY_RANGE': 'OFF',
+        'ROS_STATIC_PEERS': '',
+    }
+
+    # Capture stderr
+    stderr_capture = io.StringIO()
+    with patch.dict(os.environ, env, clear=True):
+        with patch('sys.stderr', stderr_capture):
+            check_discovery_configuration()
+
+    output = stderr_capture.getvalue()
+    assert 'Warning: ROS_AUTOMATIC_DISCOVERY_RANGE=OFF' in output
+
+
 def test_check_discovery_configuration_not_set():
     """Test no warning when ROS_AUTOMATIC_DISCOVERY_RANGE is not set (default behavior)."""
+    # Reset the module-level flag
+    ros2cli.helpers._discovery_warning_shown = False
+
     # Make sure neither env var is set
     env_clean = {
         k: v for k, v in os.environ.items()

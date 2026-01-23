@@ -122,17 +122,30 @@ def collect_stdin():
     return lines
 
 
+# Module-level flag to ensure the discovery warning is only shown once per process
+_discovery_warning_shown = False
+
+
 def check_discovery_configuration():
     """
     Check for invalid ROS discovery configuration and print warning if needed.
 
     Warns when ROS_AUTOMATIC_DISCOVERY_RANGE=OFF is set without ROS_STATIC_PEERS,
     which results in no discovery mechanism being available.
+
+    The warning is only shown once per process to avoid duplicate warnings
+    when multiple nodes are created.
     """
+    global _discovery_warning_shown
+
+    # Skip if warning has already been shown
+    if _discovery_warning_shown:
+        return
+
     discovery_range = os.environ.get('ROS_AUTOMATIC_DISCOVERY_RANGE', '')
     static_peers = os.environ.get('ROS_STATIC_PEERS', '')
 
-    if discovery_range == 'OFF' and not static_peers:
+    if discovery_range == 'OFF' and not static_peers.strip():
         print(
             'Warning: ROS_AUTOMATIC_DISCOVERY_RANGE=OFF with no ROS_STATIC_PEERS configured.\n'
             'No discovery mechanism is available. Results will be empty.\n'
@@ -141,6 +154,7 @@ def check_discovery_configuration():
             '  - Change ROS_AUTOMATIC_DISCOVERY_RANGE to LOCALHOST or SUBNET',
             file=sys.stderr
         )
+        _discovery_warning_shown = True
 
 
 def get_rmw_additional_env(rmw_implementation: str) -> Dict[str, str]:
