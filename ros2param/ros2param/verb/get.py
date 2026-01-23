@@ -37,7 +37,8 @@ class GetVerb(VerbExtension):
         arg = parser.add_argument(
             'node_name', nargs='?', default=None,
             help='Name of the ROS node (optional). '
-                 'If only one argument is provided, it is treated as a parameter name to query across all nodes.')
+                 'If only one argument is provided, it is treated as a parameter name '
+                 'to query across all nodes.')
         arg.completer = NodeNameCompleter(
             include_hidden_nodes_key='include_hidden_nodes')
         parser.add_argument(
