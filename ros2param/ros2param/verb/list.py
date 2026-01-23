@@ -68,15 +68,14 @@ class ListVerb(VerbExtension):
             regex_filter = re.compile(regex_filter[0])
 
         with DirectNode(args) as node:
-            responses = {}
+            # Sort node_names alphabetically
+            node_names = sorted(node_names, key=lambda n: n.full_name)
             for node_name in node_names:
-                responses[node_name] = call_list_parameters(
+                response = call_list_parameters(
                     node=node,
                     node_name=node_name.full_name,
                     prefixes=args.param_prefixes)
-            # print responses
-            for node_name in sorted(responses.keys()):
-                response = responses[node_name]
+                # print response
                 if response is None:
                     print(
                         'Wait for service timed out waiting for '
