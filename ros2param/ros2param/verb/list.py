@@ -91,7 +91,8 @@ class ListVerb(VerbExtension):
                     # Future did not complete within timeout
                     print(
                         'Timed out waiting for list_parameters response '
-                        f'from node {node_name}')
+                        f'from node {node_name} '
+                        f'(timeout: {args.per_node_timeout}s)')
                     continue
                 elif response.result() is None:
                     e = response.exception()
