@@ -118,8 +118,6 @@ def collect_stdin():
             break
         lines += line
     return lines
-<<<<<<< HEAD
-=======
 
 
 # Module-level flag to ensure the discovery warning is only shown once per process
@@ -155,17 +153,3 @@ def check_discovery_configuration():
             file=sys.stderr
         )
         _discovery_warning_shown = True
-
-
-def get_rmw_additional_env(rmw_implementation: str) -> Dict[str, str]:
-    """Get a dictionary of additional environment variables based on rmw."""
-    if rmw_implementation == 'rmw_zenoh_cpp':
-        return {
-            'RMW_IMPLEMENTATION': rmw_implementation,
-            'RUST_LOG': 'z=error'
-        }
-    else:
-        return {
-            'RMW_IMPLEMENTATION': rmw_implementation,
-        }
->>>>>>> 83f0429 (check for invalid ROS discovery configuration and print warning if ne… (#1178))
