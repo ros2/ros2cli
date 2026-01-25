@@ -52,3 +52,20 @@ def interface_to_yaml(identifier):
         instance = interface()
 
     return message_to_yaml(instance)
+
+
+def get_all_interface_names() -> list[str]:
+    """Get all available interface names (messages, services, and actions)."""
+    types = []
+    for package_name, service_names in get_service_interfaces().items():
+        for service_name in service_names:
+            types.append(f'{package_name}/{service_name}')
+
+    for package_name, message_names in get_message_interfaces().items():
+        for message_name in message_names:
+            types.append(f'{package_name}/{message_name}')
+
+    for package_name, action_names in get_action_interfaces().items():
+        for action_name in action_names:
+            types.append(f'{package_name}/{action_name}')
+    return sorted(types)

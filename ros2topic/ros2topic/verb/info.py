@@ -12,8 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from ros2cli.helpers import interactive_select
 from ros2cli.node.strategy import add_arguments as add_strategy_node_arguments
 from ros2cli.node.strategy import NodeStrategy
+from ros2topic.api import get_topic_names
 from ros2topic.api import get_topic_names_and_types
 from ros2topic.api import TopicNameCompleter
 from ros2topic.verb import VerbExtension
@@ -25,8 +27,9 @@ class InfoVerb(VerbExtension):
     def add_arguments(self, parser, cli_name):
         add_strategy_node_arguments(parser)
         arg = parser.add_argument(
-            'topic_name',
-            help="Name of the ROS topic to get info (e.g. '/chatter')")
+            'topic_name', nargs='?',
+            help="Name of the ROS topic to get info (e.g. '/chatter'). "
+                 'If not provided, an interactive selection will be shown.')
         parser.add_argument(
             '--verbose',
             '-v',
@@ -39,6 +42,24 @@ class InfoVerb(VerbExtension):
 
     def main(self, *, args):
         with NodeStrategy(args) as node:
+            # If no topic name provided, launch interactive selection
+            if args.topic_name is None:
+                topic_names = get_topic_names(
+                    node=node,
+                    include_hidden_topics=args.include_hidden_topics)
+
+                if not topic_names:
+                    return 'No topics available to select from.'
+
+                selected_topic = interactive_select(
+                    topic_names,
+                    prompt='Select topic for info:')
+
+                if selected_topic is None:
+                    return None
+
+                args.topic_name = selected_topic
+
             topic_names_and_types = get_topic_names_and_types(
                 node=node, include_hidden_topics=True)
             topic_name = args.topic_name

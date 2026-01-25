@@ -20,10 +20,13 @@ from rclpy.qos import QoSPresetProfiles
 from rclpy.qos import QoSProfile
 
 from ros2cli.helpers import collect_stdin
+from ros2cli.helpers import interactive_select
 from ros2cli.node import NODE_NAME_PREFIX
+from ros2cli.node.strategy import NodeStrategy
 from ros2cli.qos import add_qos_arguments
 from ros2cli.qos import profile_configure_short_keys
 
+from ros2service.api import get_service_names
 from ros2service.api import ServiceNameCompleter
 from ros2service.api import ServicePrototypeCompleter
 from ros2service.api import ServiceTypeCompleter
@@ -40,8 +43,9 @@ class CallVerb(VerbExtension):
 
     def add_arguments(self, parser, cli_name):
         arg = parser.add_argument(
-            'service_name',
-            help="Name of the ROS service to call to (e.g. '/add_two_ints')")
+            'service_name', nargs='?',
+            help="Name of the ROS service to call to (e.g. '/add_two_ints'). "
+                 'If not provided, an interactive selection will be shown.')
         arg.completer = ServiceNameCompleter(
             include_hidden_services_key='include_hidden_services')
         arg = parser.add_argument(
@@ -66,6 +70,25 @@ class CallVerb(VerbExtension):
         add_qos_arguments(parser, 'service client', 'services_default')
 
     def main(self, *, args):
+        # If no service name provided, launch interactive selection
+        if args.service_name is None:
+            with NodeStrategy(args) as node:
+                service_names = get_service_names(
+                    node=node,
+                    include_hidden_services=args.include_hidden_services)
+
+                if not service_names:
+                    return 'No services available to select from.'
+
+                selected_service = interactive_select(
+                    service_names,
+                    prompt='Select service to call:')
+
+                if selected_service is None:
+                    return None
+
+                args.service_name = selected_service
+
         if args.rate is not None and args.rate <= 0:
             raise RuntimeError('rate must be greater than zero')
         period = 1. / args.rate if args.rate else None

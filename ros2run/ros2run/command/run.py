@@ -13,9 +13,13 @@
 # limitations under the License.
 
 from argparse import REMAINDER
+import os
 import shlex
 
 from ros2cli.command import CommandExtension
+from ros2cli.helpers import interactive_select
+from ros2pkg.api import get_executable_paths
+from ros2pkg.api import get_package_names
 from ros2pkg.api import package_name_completer
 from ros2pkg.api import PackageNotFound
 from ros2run.api import ExecutableNameCompleter
@@ -40,12 +44,14 @@ class RunCommand(CommandExtension):
         else:
             arg.completer = SuppressCompleter()
         arg = parser.add_argument(
-            'package_name',
-            help='Name of the ROS package')
+            'package_name', nargs='?', default=None,
+            help='Name of the ROS package '
+                 '(optional, interactive selection if not provided)')
         arg.completer = package_name_completer
         arg = parser.add_argument(
-            'executable_name',
-            help='Name of the executable')
+            'executable_name', nargs='?', default=None,
+            help='Name of the executable '
+                 '(optional, interactive selection if not provided)')
         arg.completer = ExecutableNameCompleter(
             package_name_key='package_name')
         parser.add_argument(
@@ -53,6 +59,37 @@ class RunCommand(CommandExtension):
             help='Pass arbitrary arguments to the executable')
 
     def main(self, *, parser, args):
+        # If package not provided, use interactive selection
+        if args.package_name is None:
+            package_names = sorted(get_package_names())
+            if not package_names:
+                return 'No packages found'
+            selected_package = interactive_select(
+                package_names,
+                prompt='Select package:')
+            if selected_package is None:
+                return 'No package selected'
+            args.package_name = selected_package
+        # If executable not provided, use interactive selection
+        if args.executable_name is None:
+            try:
+                executable_paths = get_executable_paths(
+                    package_name=args.package_name)
+            except PackageNotFound:
+                raise RuntimeError(
+                    f"Package '{args.package_name}' not found")
+            if not executable_paths:
+                return (f'No executables found in package '
+                        f"'{args.package_name}'")
+            # Extract just the executable names from full paths
+            executable_names = sorted(
+                [os.path.basename(p) for p in executable_paths])
+            selected_executable = interactive_select(
+                executable_names,
+                prompt='Select executable:')
+            if selected_executable is None:
+                return 'No executable selected'
+            args.executable_name = selected_executable
         try:
             path = get_executable_path(
                 package_name=args.package_name,

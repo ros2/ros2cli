@@ -23,6 +23,7 @@ from rclpy.node import Node
 from rclpy.qos import QoSProfile
 from rclpy.task import Future
 
+from ros2cli.helpers import interactive_select
 from ros2cli.helpers import unsigned_int
 from ros2cli.node.strategy import add_arguments as add_strategy_node_arguments
 from ros2cli.node.strategy import NodeStrategy
@@ -30,6 +31,7 @@ from ros2cli.qos import add_qos_arguments
 from ros2cli.qos import choose_qos
 
 from ros2topic.api import get_msg_class
+from ros2topic.api import get_topic_names
 from ros2topic.api import positive_float
 from ros2topic.api import TopicNameCompleter
 from ros2topic.verb import VerbExtension
@@ -51,8 +53,9 @@ class EchoVerb(VerbExtension):
         add_strategy_node_arguments(parser)
 
         arg = parser.add_argument(
-            'topic_name',
-            help="Name of the ROS topic to listen to (e.g. '/chatter')")
+            'topic_name', nargs='?',
+            help="Name of the ROS topic to listen to (e.g. '/chatter'). "
+                 'If not provided, an interactive selection will be shown.')
         arg.completer = TopicNameCompleter(
             include_hidden_topics_key='include_hidden_topics')
         parser.add_argument(
@@ -120,6 +123,25 @@ class EchoVerb(VerbExtension):
             help='The name of the echoing node; by default, will be a hidden node name')
 
     def main(self, *, args):
+
+        # If no topic name provided, launch interactive selection
+        if args.topic_name is None:
+            with NodeStrategy(args) as node:
+                topic_names = get_topic_names(
+                    node=node,
+                    include_hidden_topics=args.include_hidden_topics)
+
+            if not topic_names:
+                return 'No topics available to select from.'
+
+            selected_topic = interactive_select(
+                topic_names,
+                prompt='Select topic to echo:')
+
+            if selected_topic is None:
+                return None
+
+            args.topic_name = selected_topic
 
         self.csv = args.csv
 

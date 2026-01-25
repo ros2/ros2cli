@@ -21,6 +21,7 @@
   <exec_depend>python3-packaging</exec_depend>
   <exec_depend>python3-psutil</exec_depend>
   <exec_depend>rclpy</exec_depend>
+  <exec_depend>fzf</exec_depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>

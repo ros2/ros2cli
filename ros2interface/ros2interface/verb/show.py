@@ -16,6 +16,8 @@ import argparse
 import sys
 import typing
 
+from ros2cli.helpers import interactive_select
+from ros2interface.api import get_all_interface_names
 from ros2interface.api import type_completer
 from ros2interface.verb import VerbExtension
 from rosidl_adapter.parser import \
@@ -167,8 +169,8 @@ class ReadStdinPipe(argparse.Action):
             if sys.stdin.isatty():
                 parser.error('expected stdin pipe')
             values = sys.stdin.readline().strip()
-        if not values:
-            parser.error('the passed value is empty')
+            if not values:
+                parser.error('the passed value is empty')
         setattr(namespace, self.dest, values)
 
 
@@ -190,13 +192,31 @@ class ShowVerb(VerbExtension):
 
         arg = parser.add_argument(
             'type',
+            nargs='?',
             action=ReadStdinPipe,
             help="Show an interface definition (e.g. 'example_interfaces/msg/String'). "
+                 'If not provided, an interactive selection will be shown. '
                  "Passing '-' reads the argument from stdin (e.g. "
                  "'ros2 topic type /chatter | ros2 interface show -').")
         arg.completer = type_completer
 
     def main(self, *, args):
+        # If no type provided, launch interactive selection
+        if args.type is None:
+            interface_types = get_all_interface_names()
+
+            if not interface_types:
+                return 'No interfaces available to select from.'
+
+            selected_type = interactive_select(
+                interface_types,
+                prompt='Select interface to show:')
+
+            if selected_type is None:
+                return 'No interface selected'
+
+            args.type = selected_type
+
         try:
             _show_interface(
                 args.type,

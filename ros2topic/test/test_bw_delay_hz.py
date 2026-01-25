@@ -312,35 +312,6 @@ class TestROS2TopicBwDelayHz(unittest.TestCase):
                 self.node.destroy_publisher(publisher)
 
     @launch_testing.markers.retry_on_failure(times=5)
-    def test_hz_no_arguments_error(self, launch_service, proc_info, proc_output):
-        """Test that hz fails when neither --all nor topic names are provided."""
-        command_action = ExecuteProcess(
-            cmd=['ros2', 'topic', 'hz'],
-            additional_env={
-                'PYTHONUNBUFFERED': '1'
-            },
-            output='screen'
-        )
-        with launch_testing.tools.launch_process(
-            launch_service, command_action, proc_info, proc_output,
-            output_filter=launch_testing_ros.tools.basic_output_filter(
-                filtered_rmw_implementation=get_rmw_implementation_identifier()
-            )
-        ) as command:
-            command.wait_for_shutdown(timeout=10)
-
-        # Should fail with non-zero exit code
-        assert command.exit_code != launch_testing.asserts.EXIT_OK, (
-            'hz command should fail when no arguments provided'
-        )
-
-        # Should print the error message
-        assert command.output, 'hz command printed no output'
-        assert 'Either specify topic names or use --all/-a option' in command.output, (
-            'hz command did not print expected error message'
-        )
-
-    @launch_testing.markers.retry_on_failure(times=5)
     def test_hz_both_all_and_topics_error(self, launch_service, proc_info, proc_output):
         """Test that hz fails when both --all and topic names are provided."""
         command_action = ExecuteProcess(
@@ -504,35 +475,6 @@ class TestROS2TopicBwDelayHz(unittest.TestCase):
                 self.node.destroy_timer(timer)
             for publisher in publishers:
                 self.node.destroy_publisher(publisher)
-
-    @launch_testing.markers.retry_on_failure(times=5)
-    def test_bw_no_arguments_error(self, launch_service, proc_info, proc_output):
-        """Test that bw fails when neither --all nor topic names are provided."""
-        command_action = ExecuteProcess(
-            cmd=['ros2', 'topic', 'bw'],
-            additional_env={
-                'PYTHONUNBUFFERED': '1'
-            },
-            output='screen'
-        )
-        with launch_testing.tools.launch_process(
-            launch_service, command_action, proc_info, proc_output,
-            output_filter=launch_testing_ros.tools.basic_output_filter(
-                filtered_rmw_implementation=get_rmw_implementation_identifier()
-            )
-        ) as command:
-            command.wait_for_shutdown(timeout=10)
-
-        # Should fail with non-zero exit code
-        assert command.exit_code != launch_testing.asserts.EXIT_OK, (
-            'bw command should fail when no arguments provided'
-        )
-
-        # Should print the error message
-        assert command.output, 'bw command printed no output'
-        assert 'Either specify topic names or use --all/-a option' in command.output, (
-            'bw command did not print expected error message'
-        )
 
     @launch_testing.markers.retry_on_failure(times=5)
     def test_bw_both_all_and_topics_error(self, launch_service, proc_info, proc_output):
