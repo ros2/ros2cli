@@ -12,12 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-<<<<<<< HEAD
-=======
-from typing import Optional
-
 from ros2cli.helpers import check_discovery_configuration
->>>>>>> 83f0429 (check for invalid ROS discovery configuration and print warning if ne… (#1178))
 from ros2cli.node.daemon import add_arguments as add_daemon_node_arguments
 from ros2cli.node.daemon import DaemonNode
 from ros2cli.node.daemon import is_daemon_running
@@ -28,14 +23,10 @@ from ros2cli.node.direct import DirectNode
 
 class NodeStrategy:
 
-<<<<<<< HEAD
     def __init__(self, args, *, node_name=None):
-=======
-    def __init__(self, args, *, node_name: Optional[str] = None):
         # Check for invalid discovery configuration
         check_discovery_configuration()
 
->>>>>>> 83f0429 (check for invalid ROS discovery configuration and print warning if ne… (#1178))
         use_daemon = not getattr(args, 'no_daemon', False)
         if use_daemon and is_daemon_running(args):
             self._daemon_node = DaemonNode(args)
