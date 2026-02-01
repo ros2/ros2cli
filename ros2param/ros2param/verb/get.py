@@ -35,7 +35,7 @@ class GetVerb(VerbExtension):
     def add_arguments(self, parser, cli_name):  # noqa: D102
         add_arguments(parser)
         arg = parser.add_argument(
-            'node_name', nargs='?', default=None,
+            'node_name', nargs='?',
             help='Name of the ROS node (optional). '
                  'If only one argument is provided, it is treated as a parameter name '
                  'to query across all nodes.')
@@ -45,7 +45,7 @@ class GetVerb(VerbExtension):
             '--include-hidden-nodes', action='store_true',
             help='Consider hidden nodes as well')
         arg = parser.add_argument(
-            'parameter_name', nargs='?', default=None,
+            'parameter_name', nargs='?',
             help='Name of the parameter (optional). '
                  'If neither node nor parameter is provided, interactive selection is used.')
         arg.completer = ParameterNameCompleter()

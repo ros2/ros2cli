@@ -120,8 +120,10 @@ class ServiceTypeCompleter:
 
     def __call__(self, prefix, parsed_args, **kwargs):
         if self.service_name_key is not None:
+            service_name = getattr(parsed_args, self.service_name_key)
+            if not service_name:
+                return service_type_completer()
             with NodeStrategy(parsed_args) as node:
-                service_name = getattr(parsed_args, self.service_name_key)
                 names_and_types = get_service_names_and_types(
                     node=node, include_hidden_services=True)
                 for n, t in names_and_types:
