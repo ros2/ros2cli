@@ -134,6 +134,8 @@ class ParameterNameCompleter:
     """Callable returning a list of parameter names."""
 
     def __call__(self, prefix, parsed_args, **kwargs):
+        if not parsed_args.node_name:
+            return []
         with DirectNode(parsed_args) as node:
             future = call_list_parameters(
                 node=node, node_name=parsed_args.node_name)

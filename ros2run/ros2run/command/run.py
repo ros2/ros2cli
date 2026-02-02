@@ -32,31 +32,34 @@ class RunCommand(CommandExtension):
     """Run a package specific executable."""
 
     def add_arguments(self, parser, cli_name):
+        try:
+            from argcomplete.completers import SuppressCompleter
+        except ImportError:
+            SuppressCompleter = None
+
         arg = parser.add_argument(
             '--prefix',
             help='Prefix command, which should go before the executable. '
                  'Command must be wrapped in quotes if it contains spaces '
                  "(e.g. --prefix 'gdb -ex run --args').")
-        try:
-            from argcomplete.completers import SuppressCompleter
-        except ImportError:
-            pass
-        else:
+        if SuppressCompleter:
             arg.completer = SuppressCompleter()
         arg = parser.add_argument(
-            'package_name', nargs='?', default=None,
+            'package_name', nargs='?',
             help='Name of the ROS package '
                  '(optional, interactive selection if not provided)')
         arg.completer = package_name_completer
         arg = parser.add_argument(
-            'executable_name', nargs='?', default=None,
+            'executable_name', nargs='?',
             help='Name of the executable '
                  '(optional, interactive selection if not provided)')
         arg.completer = ExecutableNameCompleter(
             package_name_key='package_name')
-        parser.add_argument(
+        arg = parser.add_argument(
             'argv', nargs=REMAINDER,
             help='Pass arbitrary arguments to the executable')
+        if SuppressCompleter:
+            arg.completer = SuppressCompleter()
 
     def main(self, *, parser, args):
         # If package not provided, use interactive selection

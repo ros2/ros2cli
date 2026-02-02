@@ -97,6 +97,9 @@ class ExecutableNameCompleter:
 
     def __call__(self, prefix, parsed_args, **kwargs):
         package_name = getattr(parsed_args, self.package_name_key)
+        if not package_name:
+            print('Package name not specified for executable name completion')
+            return []
         try:
             paths = get_executable_paths(package_name=package_name)
         except PackageNotFound:
