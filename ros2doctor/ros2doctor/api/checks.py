@@ -23,6 +23,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 class CheckStatus(Enum):
     """Status of a diagnostic check."""
+
     PASS = 'PASS'
     WARN = 'WARN'
     FAIL = 'FAIL'
@@ -32,6 +33,7 @@ class CheckStatus(Enum):
 @dataclass
 class CheckResult:
     """Result of a diagnostic check."""
+
     name: str
     status: CheckStatus
     message: str = ''
@@ -43,10 +45,8 @@ def check_rmw_configuration() -> CheckResult:
     """
     Check RMW (ROS Middleware) configuration.
 
-    Validates:
-    - RMW implementation is set and available
-    - Domain ID configuration
-    - DDS discovery settings
+    Validates RMW implementation is set and available,
+    Domain ID configuration, and DDS discovery settings.
     """
     details = {}
     suggestions = []
@@ -118,10 +118,8 @@ def check_node_connectivity() -> CheckResult:
     """
     Check ROS 2 node connectivity and health.
 
-    Validates:
-    - Active nodes can be discovered
-    - Nodes are responding
-    - No orphaned nodes detected
+    Validates that active nodes can be discovered, nodes are responding,
+    and no orphaned nodes are detected.
     """
     details = {}
     warnings = []
@@ -211,18 +209,14 @@ def check_qos_compatibility() -> CheckResult:
     """
     Check QoS compatibility between publishers and subscribers.
 
-    Validates:
-    - Publisher/subscriber QoS policies are compatible
-    - No reliability mismatches
-    - No durability mismatches
+    Validates that publisher/subscriber QoS policies are compatible
+    and checks for reliability and durability mismatches.
     """
     details = {}
-    issues = []
 
     try:
         import rclpy
         from rclpy.node import Node
-        from rclpy.qos import QoSProfile
 
         rclpy.init()
         node = Node('_doctor_qos_check_node')
@@ -233,7 +227,7 @@ def check_qos_compatibility() -> CheckResult:
         qos_issues = []
         checked_topics = []
 
-        for topic_name, topic_types in topic_names_and_types:
+        for topic_name, _ in topic_names_and_types:
             try:
                 # Get publisher info
                 pub_info = node.get_publishers_info_by_topic(topic_name)
@@ -330,10 +324,8 @@ def check_resource_usage() -> CheckResult:
     """
     Check system resource usage.
 
-    Validates:
-    - Memory usage is within acceptable limits
-    - CPU usage is not excessive
-    - File descriptors are not exhausted
+    Validates that memory and CPU usage are within acceptable limits
+    and file descriptors are not exhausted.
     """
     details = {}
     warnings = []
@@ -443,10 +435,8 @@ def check_environment() -> CheckResult:
     """
     Check ROS 2 environment configuration.
 
-    Validates:
-    - ROS_DISTRO is set
-    - Required environment variables are configured
-    - Workspace is properly sourced
+    Validates that ROS_DISTRO is set, required environment variables
+    are configured, and workspace is properly sourced.
     """
     details = {}
     warnings = []

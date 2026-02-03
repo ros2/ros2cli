@@ -1,46 +1,71 @@
-# Copyright 2024 Open Source Robotics Foundation, Inc.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-from setuptools import find_packages, setup
+from setuptools import find_packages
+from setuptools import setup
 
 package_name = 'ros2doctor'
 
 setup(
     name=package_name,
-    version='0.1.0',
+    version='0.40.4',
     packages=find_packages(exclude=['test']),
     data_files=[
+        ('share/' + package_name, ['package.xml']),
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
-        ('share/' + package_name, ['package.xml']),
     ],
-    install_requires=['setuptools'],
+    package_data={'': ['py.typed']},
+    install_requires=['ros2cli'],
     zip_safe=True,
-    maintainer='Nivesh Dandyan',
-    maintainer_email='niveshdandyan@users.noreply.github.com',
-    description='Enhanced system health check and diagnostics for ROS 2',
-    license='Apache-2.0',
-    tests_require=['pytest'],
+    author='Claire Wang',
+    author_email='clairewang@openrobotics.org',
+    maintainer='Audrow Nash, Geoffrey Biggs',
+    maintainer_email='audrow@openrobotics.org, geoff@openrobotics.org',
+    url='',
+    download_url='',
+    keywords=[],
+    classifiers=[
+        'Environment :: Console',
+        'Intended Audience :: Developers',
+        'Programming Language :: Python',
+    ],
+    description='The doctor command for ROS 2 command line tools',
+    long_description="""\
+    The package provides a cli tool to check potential issues in a ROS 2 system""",
+    license='Apache License, Version 2.0',
+    extras_require={
+        'test': [
+            'pytest',
+        ],
+    },
     entry_points={
         'ros2cli.command': [
             'doctor = ros2doctor.command.doctor:DoctorCommand',
+            'wtf = ros2doctor.command.doctor:WtfCommand',
+        ],
+        'ros2doctor.checks': [
+            'PlatformCheck = ros2doctor.api.platform:PlatformCheck',
+            'NetworkCheck = ros2doctor.api.network:NetworkCheck',
+            'TopicCheck = ros2doctor.api.topic:TopicCheck',
+            'QoSCompatibilityCheck = ros2doctor.api.qos_compatibility:QoSCompatibilityCheck',
+            'PackageCheck = ros2doctor.api.package:PackageCheck',
+        ],
+        'ros2doctor.report': [
+            'PlatformReport = ros2doctor.api.platform:PlatformReport',
+            'RosdistroReport = ros2doctor.api.platform:RosdistroReport',
+            'NetworkReport = ros2doctor.api.network:NetworkReport',
+            'RMWReport = ros2doctor.api.rmw:RMWReport',
+            'TopicReport = ros2doctor.api.topic:TopicReport',
+            'ServiceReport = ros2doctor.api.service:ServiceReport',
+            'ActionReport = ros2doctor.api.action:ActionReport',
+            'QoSCompatibilityReport = ros2doctor.api.qos_compatibility:QoSCompatibilityReport',
+            'PackageReport = ros2doctor.api.package:PackageReport',
+            'EnvironmentReport = ros2doctor.api.environment:EnvironmentReport'
         ],
         'ros2cli.extension_point': [
             'ros2doctor.verb = ros2doctor.verb:VerbExtension',
         ],
         'ros2doctor.verb': [
+            'hello = ros2doctor.verb.hello:HelloVerb',
             'check = ros2doctor.verb.doctor:DoctorVerb',
-        ],
-    },
+        ]
+    }
 )

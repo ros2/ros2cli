@@ -17,7 +17,7 @@
 import json
 import sys
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from .checks import CheckResult, CheckStatus
 
@@ -25,6 +25,7 @@ from .checks import CheckResult, CheckStatus
 # ANSI color codes
 class Colors:
     """ANSI color codes for terminal output."""
+
     PASS = '\033[92m'      # Green
     WARN = '\033[93m'      # Yellow
     FAIL = '\033[91m'      # Red

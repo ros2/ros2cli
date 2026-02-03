@@ -1,4 +1,4 @@
-# Copyright 2024 Open Source Robotics Foundation, Inc.
+# Copyright 2019 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,111 +12,73 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Implementation of the 'ros2 doctor' command."""
-
+from ros2cli.command import add_subparsers_on_demand
 from ros2cli.command import CommandExtension
-
-from ros2doctor.api import (
-    run_all_checks,
-    format_results,
-    format_json,
-    format_yaml,
-    print_report_notice,
-)
+from ros2doctor.api import generate_reports
+from ros2doctor.api import print_warning_notice
+from ros2doctor.api import run_checks
+from ros2doctor.api.format import format_print
 
 
 class DoctorCommand(CommandExtension):
-    """Check ROS 2 setup and other potential issues."""
+    """Check ROS setup and other potential issues."""
 
     def add_arguments(self, parser, cli_name):
-        """Add command-line arguments."""
-        parser.add_argument(
-            '--report', '-r',
-            action='store_true',
-            help='Print full diagnostic report with details'
+        group = parser.add_mutually_exclusive_group(required=False)
+        group.add_argument(
+            '--report', '-r', action='store_true',
+            help='Print all reports.'
+        )
+        group.add_argument(
+            '--report-failed', '-rf', action='store_true',
+            help='Print reports of failed checks only.'
         )
         parser.add_argument(
-            '--report-failed', '-rf',
-            action='store_true',
-            help='Print report only for failed and warning checks'
+            '--exclude-packages', '-ep', action='store_true',
+            help='Exclude package checks or report.'
         )
         parser.add_argument(
-            '--include-warnings', '-iw',
-            action='store_true',
-            default=False,
-            help='Include warnings when counting failures (for exit code)'
+            '--include-warnings', '-iw', action='store_true',
+            help='Include warnings as failed checks. Warnings are ignored by default.'
         )
-        parser.add_argument(
-            '--json', '-j',
-            action='store_true',
-            help='Output results in JSON format'
-        )
-        parser.add_argument(
-            '--yaml', '-y',
-            action='store_true',
-            help='Output results in YAML format'
-        )
-        parser.add_argument(
-            '--verbose', '-v',
-            action='store_true',
-            help='Show detailed diagnostic information'
-        )
-        parser.add_argument(
-            '--summary', '-s',
-            action='store_true',
-            help='Show only summary (suppress individual check output)'
-        )
-        parser.add_argument(
-            '--exclude',
-            nargs='*',
-            default=[],
-            metavar='CHECK',
-            help='Exclude specific checks (e.g., --exclude "Resource Usage")'
-        )
+        # add arguments and sub-commands of verbs
+        add_subparsers_on_demand(
+            parser, cli_name, '_verb', 'ros2doctor.verb', required=False)
 
-    def main(self, *, args):
-        """Execute the doctor command."""
-        # Run all checks
-        results, summary = run_all_checks(
-            include_warnings=args.include_warnings,
-            exclude_checks=args.exclude
-        )
+    def main(self, *, parser, args):
+        """Run checks and print report to terminal based on user input args."""
+        if hasattr(args, '_verb'):
+            extension = getattr(args, '_verb')
+            return extension.main(args=args)
 
-        # Determine output format
-        if args.json:
-            print(format_json(results, summary))
-        elif args.yaml:
-            print(format_yaml(results, summary))
-        elif args.summary:
-            # Just print summary line
-            total = summary['passed'] + summary['warnings'] + summary['failed']
-            print(f"Ran {total} checks: "
-                  f"{summary['passed']} passed, "
-                  f"{summary['warnings']} warnings, "
-                  f"{summary['failed']} failed")
+        # Local Variables to reduce code length
+        iw, ep = (args.include_warnings, args.exclude_packages)
+        # `ros2 doctor -r`
+        if args.report:
+            all_reports = generate_reports(exclude_packages=ep)
+            for report_obj in all_reports:
+                format_print(report_obj)
+            # Warn user about sensitive data in the report
+            print_warning_notice()
+            return
+
+        # `ros2 doctor
+
+        fail_category, fail, total = run_checks(include_warnings=iw, exclude_packages=ep)
+        if fail:
+            print(f'\n{fail}/{total} check(s) failed\n')
+            print('Failed modules:', *fail_category)
         else:
-            # Terminal output
-            verbose = args.report or args.verbose
-            show_failed = args.report_failed
+            print(f'\nAll {total} checks passed\n')
 
-            output = format_results(
-                results,
-                summary,
-                verbose=verbose,
-                show_failed_only=show_failed
-            )
-            print(output)
+        # `ros2 doctor -rf`
+        if args.report_failed and fail != 0:
+            fail_reports = generate_reports(categories=fail_category)
+            for report_obj in fail_reports:
+                format_print(report_obj)
 
-            # Print notice if showing full report
-            if verbose:
-                print_report_notice()
 
-        # Calculate exit code
-        if args.include_warnings:
-            failures = summary['failed'] + summary['warnings']
-        else:
-            failures = summary['failed']
+class WtfCommand(DoctorCommand):
+    """Use `wtf` as alias to `doctor`."""
 
-        if failures > 0:
-            return 2  # Some checks failed
-        return 0  # All checks passed
+    pass

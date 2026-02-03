@@ -22,7 +22,6 @@ from ros2doctor.api import (
     format_json,
     format_yaml,
     print_report_notice,
-    CheckStatus,
 )
 
 
