@@ -30,6 +30,7 @@ from .formatters import (
     format_json,
     format_yaml,
     colorize,
+    print_report_notice,
 )
 
 __all__ = [
@@ -45,4 +46,5 @@ __all__ = [
     'format_json',
     'format_yaml',
     'colorize',
+    'print_report_notice',
 ]
