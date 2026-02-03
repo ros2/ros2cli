@@ -12,37 +12,39 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""API module for ros2doctor diagnostics."""
+"""API module for ros2wtf diagnostics."""
 
-from .checks import (
-    CheckResult,
-    CheckStatus,
-    run_all_checks,
-    check_rmw_configuration,
-    check_node_connectivity,
-    check_qos_compatibility,
-    check_resource_usage,
-    check_environment,
+from .analyzer import (
+    Issue,
+    IssueSeverity,
+    analyze_topic,
+    analyze_node,
+    analyze_system,
+    get_qos_issues,
+    get_type_mismatches,
+    get_orphaned_publishers,
+    get_orphaned_subscribers,
 )
 
 from .formatters import (
-    format_results,
-    format_json,
-    format_yaml,
+    format_issues,
+    format_issues_json,
+    format_issues_yaml,
     colorize,
 )
 
 __all__ = [
-    'CheckResult',
-    'CheckStatus',
-    'run_all_checks',
-    'check_rmw_configuration',
-    'check_node_connectivity',
-    'check_qos_compatibility',
-    'check_resource_usage',
-    'check_environment',
-    'format_results',
-    'format_json',
-    'format_yaml',
+    'Issue',
+    'IssueSeverity',
+    'analyze_topic',
+    'analyze_node',
+    'analyze_system',
+    'get_qos_issues',
+    'get_type_mismatches',
+    'get_orphaned_publishers',
+    'get_orphaned_subscribers',
+    'format_issues',
+    'format_issues_json',
+    'format_issues_yaml',
     'colorize',
 ]

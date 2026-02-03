@@ -14,7 +14,7 @@
 
 from setuptools import find_packages, setup
 
-package_name = 'ros2doctor'
+package_name = 'ros2wtf'
 
 setup(
     name=package_name,
@@ -29,18 +29,18 @@ setup(
     zip_safe=True,
     maintainer='Nivesh Dandyan',
     maintainer_email='niveshdandyan@users.noreply.github.com',
-    description='Enhanced system health check and diagnostics for ROS 2',
+    description='What The Failure - Debug helper for ROS 2 systems',
     license='Apache-2.0',
     tests_require=['pytest'],
     entry_points={
         'ros2cli.command': [
-            'doctor = ros2doctor.command.doctor:DoctorCommand',
+            'wtf = ros2wtf.command.wtf:WtfCommand',
         ],
         'ros2cli.extension_point': [
-            'ros2doctor.verb = ros2doctor.verb:VerbExtension',
+            'ros2wtf.verb = ros2wtf.verb:VerbExtension',
         ],
-        'ros2doctor.verb': [
-            'check = ros2doctor.verb.doctor:DoctorVerb',
+        'ros2wtf.verb': [
+            'analyze = ros2wtf.verb.wtf:WtfVerb',
         ],
     },
 )

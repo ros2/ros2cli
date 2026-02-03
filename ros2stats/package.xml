@@ -1,16 +1,16 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>ros2doctor</name>
+  <name>ros2stats</name>
   <version>0.1.0</version>
-  <description>Enhanced system health check and diagnostics for ROS 2</description>
+  <description>Topic statistics and latency measurement tools for ROS 2</description>
   <maintainer email="niveshdandyan@users.noreply.github.com">Nivesh Dandyan</maintainer>
   <license>Apache-2.0</license>
 
   <depend>rclpy</depend>
   <depend>ros2cli</depend>
-
-  <exec_depend>python3-psutil</exec_depend>
+  <depend>ros2topic</depend>
+  <depend>rosidl_runtime_py</depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>

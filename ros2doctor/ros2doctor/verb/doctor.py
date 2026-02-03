@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Implementation of the 'ros2 doctor' command."""
+"""Verb implementation for 'ros2 doctor' command."""
 
-from ros2cli.command import CommandExtension
+from ros2cli.verb import VerbExtension
 
 from ros2doctor.api import (
     run_all_checks,
@@ -22,14 +22,15 @@ from ros2doctor.api import (
     format_json,
     format_yaml,
     print_report_notice,
+    CheckStatus,
 )
 
 
-class DoctorCommand(CommandExtension):
-    """Check ROS 2 setup and other potential issues."""
+class DoctorVerb(VerbExtension):
+    """Check ROS 2 setup and diagnose potential issues."""
 
     def add_arguments(self, parser, cli_name):
-        """Add command-line arguments."""
+        """Add command-line arguments for the doctor verb."""
         parser.add_argument(
             '--report', '-r',
             action='store_true',
@@ -73,13 +74,33 @@ class DoctorCommand(CommandExtension):
             metavar='CHECK',
             help='Exclude specific checks (e.g., --exclude "Resource Usage")'
         )
+        parser.add_argument(
+            '--check',
+            choices=['rmw', 'nodes', 'qos', 'resources', 'environment', 'all'],
+            default='all',
+            help='Run specific check only'
+        )
 
     def main(self, *, args):
-        """Execute the doctor command."""
-        # Run all checks
+        """Execute the doctor verb."""
+        # Map check argument to exclude list
+        check_mapping = {
+            'rmw': ['Node Connectivity', 'QoS Compatibility', 'Resource Usage', 'Environment'],
+            'nodes': ['RMW Configuration', 'QoS Compatibility', 'Resource Usage', 'Environment'],
+            'qos': ['RMW Configuration', 'Node Connectivity', 'Resource Usage', 'Environment'],
+            'resources': ['RMW Configuration', 'Node Connectivity', 'QoS Compatibility', 'Environment'],
+            'environment': ['RMW Configuration', 'Node Connectivity', 'QoS Compatibility', 'Resource Usage'],
+            'all': [],
+        }
+
+        exclude_checks = list(args.exclude)
+        if args.check != 'all':
+            exclude_checks.extend(check_mapping.get(args.check, []))
+
+        # Run checks
         results, summary = run_all_checks(
             include_warnings=args.include_warnings,
-            exclude_checks=args.exclude
+            exclude_checks=exclude_checks
         )
 
         # Determine output format
@@ -118,5 +139,5 @@ class DoctorCommand(CommandExtension):
             failures = summary['failed']
 
         if failures > 0:
-            return 2  # Some checks failed
-        return 0  # All checks passed
+            return 2
+        return 0

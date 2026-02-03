@@ -14,7 +14,7 @@
 
 from setuptools import find_packages, setup
 
-package_name = 'ros2doctor'
+package_name = 'ros2stats'
 
 setup(
     name=package_name,
@@ -29,18 +29,23 @@ setup(
     zip_safe=True,
     maintainer='Nivesh Dandyan',
     maintainer_email='niveshdandyan@users.noreply.github.com',
-    description='Enhanced system health check and diagnostics for ROS 2',
+    description='Topic statistics and latency measurement tools for ROS 2',
     license='Apache-2.0',
     tests_require=['pytest'],
     entry_points={
         'ros2cli.command': [
-            'doctor = ros2doctor.command.doctor:DoctorCommand',
+            'stats = ros2stats.command.stats:StatsCommand',
+            'latency = ros2stats.command.latency:LatencyCommand',
         ],
         'ros2cli.extension_point': [
-            'ros2doctor.verb = ros2doctor.verb:VerbExtension',
+            'ros2stats.verb = ros2stats.verb:VerbExtension',
         ],
-        'ros2doctor.verb': [
-            'check = ros2doctor.verb.doctor:DoctorVerb',
+        'ros2stats.verb': [
+            'topic = ros2stats.verb.stats:StatsVerb',
+            'measure = ros2stats.verb.latency:LatencyVerb',
+        ],
+        'ros2topic.verb': [
+            'stats = ros2stats.verb.stats:StatsVerb',
         ],
     },
 )

@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""ROS 2 Doctor - System health check and diagnostics tool."""
+"""Verb extensions for ros2stats commands."""
 
-__version__ = '0.1.0'
+from ros2cli.verb import VerbExtension
+
+__all__ = ['VerbExtension']

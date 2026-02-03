@@ -12,37 +12,33 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""API module for ros2doctor diagnostics."""
+"""API module for ros2stats functionality."""
 
-from .checks import (
-    CheckResult,
-    CheckStatus,
-    run_all_checks,
-    check_rmw_configuration,
-    check_node_connectivity,
-    check_qos_compatibility,
-    check_resource_usage,
-    check_environment,
+from .statistics import (
+    TopicStats,
+    LatencyStats,
+    TopicStatisticsCollector,
+    LatencyMeasurement,
 )
 
 from .formatters import (
-    format_results,
-    format_json,
-    format_yaml,
+    format_topic_stats,
+    format_topic_stats_json,
+    format_topic_stats_csv,
+    format_latency_stats,
+    format_latency_stats_json,
     colorize,
 )
 
 __all__ = [
-    'CheckResult',
-    'CheckStatus',
-    'run_all_checks',
-    'check_rmw_configuration',
-    'check_node_connectivity',
-    'check_qos_compatibility',
-    'check_resource_usage',
-    'check_environment',
-    'format_results',
-    'format_json',
-    'format_yaml',
+    'TopicStats',
+    'LatencyStats',
+    'TopicStatisticsCollector',
+    'LatencyMeasurement',
+    'format_topic_stats',
+    'format_topic_stats_json',
+    'format_topic_stats_csv',
+    'format_latency_stats',
+    'format_latency_stats_json',
     'colorize',
 ]
