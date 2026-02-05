@@ -197,7 +197,7 @@ class TestVerbList(unittest.TestCase):
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_verb_list(self):
         with self.launch_param_list_command(
-            arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}']
+            arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}', '--service-timeout', '10']
         ) as param_list_command:
             assert param_list_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
         assert param_list_command.exit_code == launch_testing.asserts.EXIT_OK
@@ -221,15 +221,15 @@ class TestVerbList(unittest.TestCase):
 
     def test_verb_list_timeout(self):
         # Test that param list doesn't hang when a node doesn't respond,
-        # and completes within the specified per-node-timeout.
-        per_node_timeout = 2.0
+        # and completes within the specified service-timeout.
+        service_timeout = 2.0
         timeout_buffer = 5.0
-        expected_max_duration = per_node_timeout + timeout_buffer
+        expected_max_duration = service_timeout + timeout_buffer
         start_time = time.time()
         with self.launch_param_list_command(
             arguments=[
                 f'{HANG_NAMESPACE}{HANG_NODE}',
-                '--per-node-timeout', str(per_node_timeout)
+                '--service-timeout', str(service_timeout)
             ]
         ) as param_list_command:
             assert param_list_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
@@ -237,13 +237,14 @@ class TestVerbList(unittest.TestCase):
         assert param_list_command.exit_code == launch_testing.asserts.EXIT_OK
         assert elapsed_time < expected_max_duration, (
             f'Command took {elapsed_time:.1f}s, expected to complete within '
-            f'{expected_max_duration}s (per-node-timeout={per_node_timeout}s)'
+            f'{expected_max_duration}s (service-timeout={service_timeout}s)'
         )
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_verb_list_filter(self):
         with self.launch_param_list_command(
-            arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}', '--filter', 'bool.*']
+            arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}',
+                       '--service-timeout', '10', '--filter', 'bool.*']
         ) as param_list_command:
             assert param_list_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
         assert param_list_command.exit_code == launch_testing.asserts.EXIT_OK

@@ -41,6 +41,10 @@ class DescribeVerb(VerbExtension):
         parser.add_argument(
             '--timeout', metavar='N', type=int, default=1,
             help='Wait for N seconds until node becomes available (default %(default)s sec)')
+        parser.add_argument(
+            '--service-timeout', metavar='N', type=float,
+            help='Maximum time to wait for service response in seconds '
+                 '(default: waits indefinitely)')
         arg.completer = ParameterNameCompleter()
 
     def main(self, *, args):  # noqa: D102
@@ -52,7 +56,7 @@ class DescribeVerb(VerbExtension):
         with DirectNode(args) as node:
             response = call_describe_parameters(
                 node=node, node_name=args.node_name,
-                parameter_names=args.parameter_names or None)
+                parameter_names=args.parameter_names or None, timeout=args.service_timeout)
 
             # output response
             for descriptor in response.descriptors:
