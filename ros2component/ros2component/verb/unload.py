@@ -37,8 +37,11 @@ class UnloadVerb(VerbExtension):
         )
         parser.add_argument(
             '-q', '--quiet', action='store_true', default=False,
-            help='Only print component unique IDs'
-        )
+            help='Only print component unique IDs')
+        parser.add_argument(
+            '--timeout', metavar='N', type=float,
+            help='Maximum time to wait for unloading component in seconds '
+                 '(default: waits indefinitely)')
 
     def main(self, *, args):
         with NodeStrategy(args) as node:
@@ -49,7 +52,7 @@ class UnloadVerb(VerbExtension):
                 return "Unable to find container node '" + args.container_node_name + "'"
             for uid, error, reason in unload_component_from_container(
                 node=node, remote_container_node_name=args.container_node_name,
-                component_uids=args.component_uid
+                component_uids=args.component_uid, timeout=args.timeout
             ):
                 if error:
                     return "Failed to unload component {} from '{}' container node\n    {}".format(

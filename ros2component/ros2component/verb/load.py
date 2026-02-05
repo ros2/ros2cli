@@ -36,8 +36,11 @@ class LoadVerb(VerbExtension):
         add_component_arguments(parser)
         parser.add_argument(
             '-q', '--quiet', action='store_true', default=False,
-            help='Only print component unique IDs and names'
-        )
+            help='Only print component unique IDs and names')
+        parser.add_argument(
+            '--timeout', metavar='N', type=float,
+            help='Maximum time to wait for loading component in seconds '
+                 '(default: waits indefinitely)')
 
     def main(self, *, args):
         with NodeStrategy(args) as node:
@@ -51,7 +54,8 @@ class LoadVerb(VerbExtension):
                 package_name=args.package_name, plugin_name=args.plugin_name,
                 node_name=args.node_name, node_namespace=args.node_namespace,
                 log_level=args.log_level, remap_rules=args.remap_rules,
-                parameters=args.parameters, extra_arguments=args.extra_arguments
+                parameters=args.parameters, extra_arguments=args.extra_arguments,
+                timeout=args.timeout
             )
             if not args.quiet:
                 print("Loaded component {} into '{}' container node as '{}'".format(

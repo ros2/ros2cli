@@ -68,22 +68,23 @@ def get_registered_component_types():
 ComponentInfo = namedtuple('Component', ('uid', 'name'))
 
 
-def get_components_in_container(*, node, remote_container_node_name):
+def get_components_in_container(*, node, remote_container_node_name, timeout=5.0):
     """
     Get information about the components in a container.
 
     :param node: an `rclpy.Node` instance.
     :param remote_container_node_names: of the container node to inspect.
+    :param timeout: maximum time to wait for response in seconds (default: 5.0).
     :return: a tuple with either a truthy boolean and a list of `ComponentInfo`
         instances containing the unique id and name of each component or a falsy
         boolean and a reason string in case of error.
     """
     return get_components_in_containers(
-        node=node, remote_containers_node_names=[remote_container_node_name]
+        node=node, remote_containers_node_names=[remote_container_node_name], timeout=timeout
     )[remote_container_node_name]
 
 
-def get_components_in_containers(*, node, remote_containers_node_names):
+def get_components_in_containers(*, node, remote_containers_node_names, timeout=5.0):
     """
     Get information about the components in multiple containers.
 
@@ -91,6 +92,7 @@ def get_components_in_containers(*, node, remote_containers_node_names):
 
     :param node: an `rclpy.Node` instance.
     :param remote_container_node_names: of the container nodes to inspect.
+    :param timeout: maximum time to wait for response in seconds (default: 5.0).
     :return: a dict of tuples, with either a truthy boolean and a list of `ComponentInfo`
         instances containing the unique id and name of each component or a falsy boolean and
         a reason string in case of error, per container node.
@@ -174,7 +176,7 @@ def get_components_in_containers(*, node, remote_containers_node_names):
 
     timer = node.create_timer(timer_period_sec=0.1, callback=resume)
     try:
-        rclpy.spin_until_future_complete(node, future, timeout_sec=5.0)
+        rclpy.spin_until_future_complete(node, future, timeout_sec=timeout)
         if not future.done():
             resume(to_completion=True)
         return dict(future.result())
@@ -193,7 +195,8 @@ def load_component_into_container(
     log_level=None,
     remap_rules=None,
     parameters=None,
-    extra_arguments=None
+    extra_arguments=None,
+    timeout=None
 ):
     """
     Load component into a running container synchronously.
@@ -208,6 +211,7 @@ def load_component_into_container(
     :param remap_rules: remapping rules for the component node, in the 'from:=to' form
     :param parameters: optional parameters for the component node, in the 'name:=value' form
     :param extra_arguments: arguments specific to the container node in the 'name:=value' form
+    :param timeout: maximum time to wait for response in seconds (default: waits indefinitely)
     """
     load_node_client = node.create_client(
         composition_interfaces.srv.LoadNode,
@@ -244,7 +248,11 @@ def load_component_into_container(
                 arg_msg.name = name
                 request.extra_arguments.append(arg_msg)
         future = load_node_client.call_async(request)
-        rclpy.spin_until_future_complete(node, future)
+        rclpy.spin_until_future_complete(node, future, timeout_sec=timeout)
+        if not future.done():
+            raise RuntimeError(
+                'Timed out waiting for load_node response from '
+                f'{remote_container_node_name!r} container (timeout: {timeout}s)')
         response = future.result()
         if not response.success:
             raise RuntimeError('Failed to load component: ' + response.error_message.capitalize())
@@ -253,13 +261,15 @@ def load_component_into_container(
         node.destroy_client(load_node_client)
 
 
-def unload_component_from_container(*, node, remote_container_node_name, component_uids):
+def unload_component_from_container(
+        *, node, remote_container_node_name, component_uids, timeout=None):
     """
     Unload a component from a running container synchronously.
 
     :param node: an `rclpy.Node` instance
     :param remote_container_node_name: of the container node to unload the component from
     :param component_uids: list of unique IDs of the components to be unloaded
+    :param timeout: maximum time to wait for response in seconds (default: waits indefinitely)
     """
     unload_node_client = node.create_client(
         composition_interfaces.srv.UnloadNode,
@@ -274,7 +284,11 @@ def unload_component_from_container(*, node, remote_container_node_name, compone
             request = composition_interfaces.srv.UnloadNode.Request()
             request.unique_id = uid
             future = unload_node_client.call_async(request)
-            rclpy.spin_until_future_complete(node, future)
+            rclpy.spin_until_future_complete(node, future, timeout_sec=timeout)
+            if not future.done():
+                raise RuntimeError(
+                    'Timed out waiting for unload_node response from '
+                    f'{remote_container_node_name!r} container (timeout: {timeout}s)')
             response = future.result()
             yield uid, not response.success, response.error_message
     finally:
