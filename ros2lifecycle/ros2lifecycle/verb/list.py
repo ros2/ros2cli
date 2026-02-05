@@ -40,6 +40,10 @@ class ListVerb(VerbExtension):
         parser.add_argument(
             '-a', '--all', action='store_true',
             help='Display all existing transitions')
+        parser.add_argument(
+            '--timeout', metavar='N', type=float,
+            help='Maximum time to wait for response in seconds '
+                 '(default: waits indefinitely)')
 
     def main(self, *, args):  # noqa: D102
         with NodeStrategy(args) as node:
@@ -53,10 +57,10 @@ class ListVerb(VerbExtension):
         with DirectNode(args) as node:
             if args.all:
                 transitions = call_get_transition_graph(
-                    node=node, states={node_name: None})
+                    node=node, states={node_name: None}, timeout=args.timeout)
             else:
                 transitions = call_get_available_transitions(
-                    node=node, states={node_name: None})
+                    node=node, states={node_name: None}, timeout=args.timeout)
             transitions = transitions[node_name]
             if isinstance(transitions, Exception):
                 return 'Exception while calling service of node ' \
