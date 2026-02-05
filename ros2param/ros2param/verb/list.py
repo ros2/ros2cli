@@ -50,6 +50,11 @@ class ListVerb(VerbExtension):
         parser.add_argument(
             '--param-type', action='store_true',
             help='Print parameter types with parameter names')
+        parser.add_argument(
+            '--per-node-timeout', metavar='N', type=float, default=5.0,
+            help=(
+                'Maximum wait time per node for list_parameters service call '
+                'in seconds (default: %(default)s)'))
 
     def main(self, *, args):  # noqa: D102
         with NodeStrategy(args) as node:
@@ -74,12 +79,20 @@ class ListVerb(VerbExtension):
                 response = call_list_parameters(
                     node=node,
                     node_name=node_name.full_name,
-                    prefixes=args.param_prefixes)
+                    prefixes=args.param_prefixes,
+                    spin_timeout_sec=args.per_node_timeout)
                 # print response
                 if response is None:
                     print(
                         'Wait for service timed out waiting for '
                         f'parameter services for node {node_name}')
+                    continue
+                elif not response.done():
+                    # Future did not complete within timeout
+                    print(
+                        'Timed out waiting for list_parameters response '
+                        f'from node {node_name} '
+                        f'(timeout: {args.per_node_timeout}s)')
                     continue
                 elif response.result() is None:
                     e = response.exception()
