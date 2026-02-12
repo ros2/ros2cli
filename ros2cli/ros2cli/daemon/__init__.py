@@ -18,10 +18,8 @@ import time
 import uuid
 
 import rclpy
-import rclpy.action
 
 from ros2cli.helpers import before_invocation
-from ros2cli.helpers import bind
 from ros2cli.helpers import get_ros_domain_id
 from ros2cli.helpers import pretty_print_call
 
@@ -85,7 +83,7 @@ def serve(server: LocalXMLRPCServer, *, timeout: int = 2 * 60 * 60):
             node.get_node_names_and_namespaces_with_enclaves,
             node.get_topic_names_and_types,
             node.get_service_names_and_types,
-            bind(rclpy.action.get_action_names_and_types, node),
+            node.get_action_names_and_types,
             node.get_publisher_names_and_types_by_node,
             node.get_publishers_info_by_topic,
             node.get_subscriber_names_and_types_by_node,
@@ -94,8 +92,8 @@ def serve(server: LocalXMLRPCServer, *, timeout: int = 2 * 60 * 60):
             node.get_servers_info_by_service,
             node.get_clients_info_by_service,
             node.get_client_names_and_types_by_node,
-            bind(rclpy.action.get_action_server_names_and_types_by_node, node),
-            bind(rclpy.action.get_action_client_names_and_types_by_node, node),
+            node.get_action_server_names_and_types_by_node,
+            node.get_action_client_names_and_types_by_node,
             node.count_publishers,
             node.count_subscribers,
             node.count_clients,
