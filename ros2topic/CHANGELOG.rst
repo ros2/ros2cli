@@ -2,6 +2,9 @@
 Changelog for package ros2topic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.18.16 (2026-01-07)
 --------------------
 * return explicitly from internal functions. (backport `#1128 <https://github.com/ros2/ros2cli/issues/1128>`_) (backport `#1134 <https://github.com/ros2/ros2cli/issues/1134>`_) (`#1143 <https://github.com/ros2/ros2cli/issues/1143>`_)

@@ -2,6 +2,11 @@
 Changelog for package ros2param
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix ParameterNameCompleter. (`#1172 <https://github.com/ros2/ros2cli/issues/1172>`_) (`#1177 <https://github.com/ros2/ros2cli/issues/1177>`_)
+* Contributors: mergify[bot]
+
 0.18.16 (2026-01-07)
 --------------------
 * skip test_verb_load_wildcard for rmw_connextdds. (`#1150 <https://github.com/ros2/ros2cli/issues/1150>`_) (`#1153 <https://github.com/ros2/ros2cli/issues/1153>`_)
