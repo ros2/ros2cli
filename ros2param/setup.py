@@ -44,6 +44,7 @@ The package provides the param command for the ROS 2 command line tools.""",
             'ros2param.verb = ros2param.verb:VerbExtension',
         ],
         'ros2param.verb': [
+            'check_sim_time = ros2param.verb.check_sim_time:CheckSimTimeVerb',
             'delete = ros2param.verb.delete:DeleteVerb',
             'describe = ros2param.verb.describe:DescribeVerb',
             'dump = ros2param.verb.dump:DumpVerb',
