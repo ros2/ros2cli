@@ -12,5 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# flake8: noqa: A005
+
 # Force rclpy specific xmlrpc (un)marshalling logic importation.
 from . import rclpy  # noqa: F401
