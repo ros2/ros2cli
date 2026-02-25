@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# flake8: noqa: A005
+
 from ros2component.api import get_package_component_types
 from ros2component.api import get_registered_component_types
 from ros2component.verb import VerbExtension

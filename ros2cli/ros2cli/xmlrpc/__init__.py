@@ -12,5 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# flake8: noqa: A005
+
 # Force custom xmlrpc (un)marshalling logic importation.
 from . import marshal  # noqa: F401
