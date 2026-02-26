@@ -137,7 +137,6 @@ class CreateVerb(VerbExtension):
 
         if args.build_type == 'ament_cargo':
             buildtool_depends = ['ament_cargo']
-            args.dependencies.append('rclrs')
 
         test_dependencies = []
         if args.build_type == 'ament_cmake':
