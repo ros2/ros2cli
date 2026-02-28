@@ -22,14 +22,14 @@ import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile
 
-from ros2cli.helpers import collect_stdin
+from ros2cli.helpers import collect_stdin, UnescapedCompletionFinder
 from ros2cli.node.direct import add_arguments as add_direct_node_arguments
 from ros2cli.node.direct import DirectNode
 from ros2cli.qos import add_qos_arguments
 from ros2cli.qos import profile_configure_short_keys
 
 from ros2topic.api import positive_float
-from ros2topic.api import TopicMessagePrototypeCompleter, YamlCompletionFinder
+from ros2topic.api import TopicMessagePrototypeCompleter
 from ros2topic.api import TopicNameCompleter
 from ros2topic.api import TopicTypeCompleter
 from ros2topic.verb import VerbExtension
@@ -115,8 +115,8 @@ class PubVerb(VerbExtension):
             '-n', '--node-name',
             help='Name of the created publishing node')
 
-        # Use the custom completion finder
-        argcomplete.autocomplete = YamlCompletionFinder(parser)
+        # Prevent argcomplete from escaping special characters in the YAML string
+        argcomplete.autocomplete = UnescapedCompletionFinder(parser)
 
         add_qos_arguments(parser, 'publish', 'default')
         add_direct_node_arguments(parser)
