@@ -14,6 +14,7 @@
 
 import getpass
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -33,6 +34,7 @@ from ros2pkg.api.create import populate_ament_python
 from ros2pkg.api.create import populate_cmake
 from ros2pkg.api.create import populate_cpp_library
 from ros2pkg.api.create import populate_cpp_node
+from ros2pkg.api.create import populate_messages
 from ros2pkg.api.create import populate_python_libary
 from ros2pkg.api.create import populate_python_node
 from ros2pkg.api.create import populate_rust_node
@@ -90,6 +92,12 @@ class CreateVerb(VerbExtension):
         parser.add_argument(
             '--library-name',
             help='name of the empty library')
+        parser.add_argument(
+            '--message',
+            nargs='+',
+            default=[],
+            metavar='MESSAGE_NAME',
+            help='name(s) of message files to create in msg/')
 
     def main(self, *, args):
 
@@ -136,12 +144,26 @@ class CreateVerb(VerbExtension):
                 print('[WARNING] node name can not be equal to the library name', file=sys.stderr)
                 print('[WARNING] renaming node to %s' % node_name, file=sys.stderr)
 
+        if args.message:
+            if args.build_type != 'ament_cmake':
+                return "Aborted: --message is only supported with 'ament_cmake' build type."
+
+            invalid = [
+                name for name in args.message
+                if not re.match(r'^[A-Z][A-Za-z0-9]*$', name)
+            ]
+            if invalid:
+                return 'Aborted: invalid message name(s): ' + ', '.join(invalid) + \
+                    '. Message names must be CamelCase and alphanumeric (e.g. MyMsg).'
+
         buildtool_depends = []
         if args.build_type == 'ament_cmake':
             if args.library_name:
                 buildtool_depends = ['ament_cmake_ros']
             else:
                 buildtool_depends = ['ament_cmake']
+            if args.message:
+                buildtool_depends.append('rosidl_default_generators')
 
         if args.build_type == 'ament_cargo':
             buildtool_depends = ['ament_cargo']
@@ -152,6 +174,12 @@ class CreateVerb(VerbExtension):
         if args.build_type == 'ament_python':
             test_dependencies = ['ament_copyright', 'ament_flake8', 'ament_mypy', 'ament_pep257',
                                  'ament_xmllint', 'python3-pytest']
+
+        member_of_group_depends = []
+        exec_depends = []
+        if args.message:
+            member_of_group_depends.append('rosidl_interface_packages')
+            exec_depends.append('rosidl_default_runtime')
 
         if args.build_type == 'ament_python' and args.package_name == 'test':
             # If the package name is 'test', there will be a conflict between
@@ -169,6 +197,8 @@ class CreateVerb(VerbExtension):
             licenses=[args.license],
             buildtool_depends=[Dependency(dep) for dep in buildtool_depends],
             build_depends=[Dependency(dep) for dep in args.dependencies],
+            exec_depends=[Dependency(dep) for dep in exec_depends],
+            member_of_groups=member_of_group_depends,
             test_depends=[Dependency(dep) for dep in test_dependencies],
             exports=[Export('build_type', content=args.build_type)]
         )
@@ -192,6 +222,8 @@ class CreateVerb(VerbExtension):
             print('node_name:', node_name)
         if library_name:
             print('library_name:', library_name)
+        if args.message:
+            print('messages:', args.message)
 
         package_directory, source_directory, include_directory = \
             create_package_environment(package, args.destination_directory)
@@ -202,7 +234,8 @@ class CreateVerb(VerbExtension):
             populate_cmake(package, package_directory, node_name, library_name)
 
         if args.build_type == 'ament_cmake':
-            populate_ament_cmake(package, package_directory, node_name, library_name)
+            populate_ament_cmake(package, package_directory, node_name, library_name,
+                                 message_names=args.message)
 
         if args.build_type == 'ament_cargo':
             populate_ament_cargo(package, package_directory, library_name)
@@ -238,6 +271,9 @@ class CreateVerb(VerbExtension):
                     source_directory,
                     node_name
                     )
+
+        if args.message:
+            populate_messages(package_directory, args.message)
 
         if args.license in available_licenses:
             with open(os.path.join(package_directory, 'LICENSE'), 'w') as outfp:

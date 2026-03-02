@@ -19,9 +19,21 @@
 @[  end for]@
 
 @[end if]@
+@[if exec_dependencies]@
+@[  for dep in exec_dependencies]@
+  <exec_depend>@dep</exec_depend>
+@[  end for]@
+
+@[end if]@
 @[if test_dependencies]@
 @[  for dep in test_dependencies]@
   <test_depend>@dep</test_depend>
+@[  end for]@
+
+@[end if]@
+@[if member_of_group]@
+@[  for group in member_of_group]@
+  <member_of_group>@group</member_of_group>
 @[  end for]@
 
 @[end if]@
