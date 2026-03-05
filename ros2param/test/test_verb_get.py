@@ -227,3 +227,79 @@ class TestVerbGet(unittest.TestCase):
             text=param_get_command.output,
             strict=False
         )
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_verb_get_multiple_params(self):
+        """Test getting multiple parameters at once from a specific node."""
+        with self.launch_param_get_command(
+            arguments=[f'{TEST_NAMESPACE}/{TEST_NODE1}', 'bool_param', 'int_param']
+        ) as param_get_command:
+            assert param_get_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
+        assert param_get_command.exit_code == launch_testing.asserts.EXIT_OK
+        output = param_get_command.output
+        # Each parameter should be prefixed with its name
+        assert 'bool_param:' in output
+        assert 'Boolean value is: True' in output
+        assert 'int_param:' in output
+        assert 'Integer value is: 42' in output
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_verb_get_multiple_params_hide_type(self):
+        """Test getting multiple parameters at once with --hide-type."""
+        with self.launch_param_get_command(
+            arguments=[
+                f'{TEST_NAMESPACE}/{TEST_NODE1}', 'bool_param', 'int_param', '--hide-type'
+            ]
+        ) as param_get_command:
+            assert param_get_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
+        assert param_get_command.exit_code == launch_testing.asserts.EXIT_OK
+        output = param_get_command.output
+        # Should prefix each with param name and suppress type label
+        assert 'bool_param: True' in output
+        assert 'int_param: 42' in output
+        assert 'Boolean value is:' not in output
+        assert 'Integer value is:' not in output
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_verb_get_multiple_params_three(self):
+        """Test getting three parameters at once from a specific node."""
+        with self.launch_param_get_command(
+            arguments=[
+                f'{TEST_NAMESPACE}/{TEST_NODE1}',
+                'bool_param', 'int_param', 'str_param'
+            ]
+        ) as param_get_command:
+            assert param_get_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
+        assert param_get_command.exit_code == launch_testing.asserts.EXIT_OK
+        output = param_get_command.output
+        assert 'bool_param:' in output
+        assert 'Boolean value is: True' in output
+        assert 'int_param:' in output
+        assert 'Integer value is: 42' in output
+        assert 'str_param:' in output
+        assert 'String value is: Hello World' in output
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_verb_get_multiple_params_with_nonexistent(self):
+        """
+        Test getting multiple params where one does not exist on the node.
+
+        When any parameter in the batch is undeclared, the get_parameters service
+        returns an empty values list for the whole request.  The command returns
+        a diagnostic message listing all requested parameter names and exits with
+        a non-zero exit code (ros2param treats a returned string from main() as an
+        error).
+        """
+        with self.launch_param_get_command(
+            arguments=[
+                f'{TEST_NAMESPACE}/{TEST_NODE1}', 'bool_param', 'nonexistent_param'
+            ]
+        ) as param_get_command:
+            assert param_get_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
+        # main() returns an error string, that exits code 1
+        assert param_get_command.exit_code != launch_testing.asserts.EXIT_OK
+        output = param_get_command.output
+        # Both parameter names and the diagnostic text should appear
+        assert 'bool_param' in output
+        assert 'nonexistent_param' in output
+        assert 'not available on node' in output
