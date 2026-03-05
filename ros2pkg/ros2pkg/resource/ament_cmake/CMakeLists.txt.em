@@ -24,10 +24,15 @@ find_package(@dep REQUIRED)
 @[end if]@
 @[if message_names]@
 
+# do not forget to find_package all dependencies of your custom messages
+# (if they were not already found earlier)
+# find_package(<msg_dependency> REQUIRED)
+
 rosidl_generate_interfaces(${PROJECT_NAME}
 @[  for msg in message_names]@
   "msg/@(msg).msg"
 @[  end for]@
+  DEPENDENCIES  # list all package dependencies of your messages
 )
 @[end if]@
 @[if cpp_library_name]@
