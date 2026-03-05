@@ -45,8 +45,9 @@ class GetVerb(VerbExtension):
             '--include-hidden-nodes', action='store_true',
             help='Consider hidden nodes as well')
         arg = parser.add_argument(
-            'parameter_name', nargs='?',
-            help='Name of the parameter (optional). '
+            'parameter_name', nargs='*',
+            help='Name of the parameter(s) (optional). '
+                 'Multiple parameter names can be specified when a node name is given. '
                  'If neither node nor parameter is provided, interactive selection is used.')
         arg.completer = ParameterNameCompleter()
         parser.add_argument(
@@ -57,8 +58,8 @@ class GetVerb(VerbExtension):
             help='Wait for N seconds until node becomes available (default %(default)s sec)')
 
     def main(self, *, args):  # noqa: D102
-        # If both node and parameter are None, use interactive selection for both
-        if args.node_name is None and args.parameter_name is None:
+        # If both node and parameter are None/empty, use interactive selection for both
+        if args.node_name is None and not args.parameter_name:
             with NodeStrategy(args) as node:
                 node_names = get_node_names(
                     node=node,
@@ -100,11 +101,11 @@ class GetVerb(VerbExtension):
                 if selected_param is None:
                     return None
 
-                args.parameter_name = selected_param
+                args.parameter_name = [selected_param]
 
         # If only one argument provided, treat it as parameter name (query all nodes)
-        elif args.node_name is not None and args.parameter_name is None:
-            args.parameter_name = args.node_name
+        elif args.node_name is not None and not args.parameter_name:
+            args.parameter_name = [args.node_name]
             args.node_name = None
 
         # Determine which nodes to query
@@ -130,80 +131,99 @@ class GetVerb(VerbExtension):
 
         with DirectNode(args) as node:
             found_any = False
+            # In multi-node mode only one parameter is supported; use the first element
+            multi_param = len(args.parameter_name) > 1
             for node_name, node_name_arg in nodes_to_query:
                 try:
                     response = call_get_parameters(
                         node=node, node_name=node_name_arg,
-                        parameter_names=[args.parameter_name])
+                        parameter_names=args.parameter_name)
 
-                    assert len(response.values) <= 1
-
-                    # requested parameter not set
+                    # requested parameter(s) not available
                     if not response.values:
                         # In multi-node mode, skip nodes without the parameter
                         if not args.node_name:
                             continue
-                        return f"Parameter '{args.parameter_name}' not set on any node"
+                        param_names_str = ', '.join(
+                            f"'{p}'" for p in args.parameter_name)
+                        return f'Parameter(s) {param_names_str} not available on node'
 
                     found_any = True
-                    pvalue = response.values[0]
 
-                    # extract type specific value
-                    if pvalue.type == ParameterType.PARAMETER_BOOL:
-                        label = 'Boolean value is:'
-                        value = pvalue.bool_value
-                    elif pvalue.type == ParameterType.PARAMETER_INTEGER:
-                        label = 'Integer value is:'
-                        value = pvalue.integer_value
-                    elif pvalue.type == ParameterType.PARAMETER_DOUBLE:
-                        label = 'Double value is:'
-                        value = pvalue.double_value
-                    elif pvalue.type == ParameterType.PARAMETER_STRING:
-                        label = 'String value is:'
-                        value = pvalue.string_value
-                    elif pvalue.type == ParameterType.PARAMETER_BYTE_ARRAY:
-                        label = 'Byte values are:'
-                        value = pvalue.byte_array_value
-                    elif pvalue.type == ParameterType.PARAMETER_BOOL_ARRAY:
-                        label = 'Boolean values are:'
-                        value = pvalue.bool_array_value
-                    elif pvalue.type == ParameterType.PARAMETER_INTEGER_ARRAY:
-                        label = 'Integer values are:'
-                        value = pvalue.integer_array_value.tolist()
-                    elif pvalue.type == ParameterType.PARAMETER_DOUBLE_ARRAY:
-                        label = 'Double values are:'
-                        value = pvalue.double_array_value.tolist()
-                    elif pvalue.type == ParameterType.PARAMETER_STRING_ARRAY:
-                        label = 'String values are:'
-                        value = pvalue.string_array_value
-                    elif pvalue.type == ParameterType.PARAMETER_NOT_SET:
-                        label = 'Parameter not set.'
-                        value = None
-                    else:
-                        if not args.node_name:
+                    # Process each parameter value in the response
+                    for param_idx, pvalue in enumerate(response.values):
+                        queried_param_name = args.parameter_name[param_idx]
+
+                        # extract type specific value
+                        if pvalue.type == ParameterType.PARAMETER_BOOL:
+                            label = 'Boolean value is:'
+                            value = pvalue.bool_value
+                        elif pvalue.type == ParameterType.PARAMETER_INTEGER:
+                            label = 'Integer value is:'
+                            value = pvalue.integer_value
+                        elif pvalue.type == ParameterType.PARAMETER_DOUBLE:
+                            label = 'Double value is:'
+                            value = pvalue.double_value
+                        elif pvalue.type == ParameterType.PARAMETER_STRING:
+                            label = 'String value is:'
+                            value = pvalue.string_value
+                        elif pvalue.type == ParameterType.PARAMETER_BYTE_ARRAY:
+                            label = 'Byte values are:'
+                            value = pvalue.byte_array_value
+                        elif pvalue.type == ParameterType.PARAMETER_BOOL_ARRAY:
+                            label = 'Boolean values are:'
+                            value = pvalue.bool_array_value
+                        elif pvalue.type == ParameterType.PARAMETER_INTEGER_ARRAY:
+                            label = 'Integer values are:'
+                            value = pvalue.integer_array_value.tolist()
+                        elif pvalue.type == ParameterType.PARAMETER_DOUBLE_ARRAY:
+                            label = 'Double values are:'
+                            value = pvalue.double_array_value.tolist()
+                        elif pvalue.type == ParameterType.PARAMETER_STRING_ARRAY:
+                            label = 'String values are:'
+                            value = pvalue.string_array_value
+                        elif pvalue.type == ParameterType.PARAMETER_NOT_SET:
+                            label = 'Parameter not set.'
+                            value = None
+                        else:
+                            if not args.node_name:
+                                print(
+                                    f"{node_name}: Unknown parameter type '{pvalue.type}'",
+                                    file=sys.stderr)
+                                continue
                             print(
-                                f"{node_name}: Unknown parameter type '{pvalue.type}'",
+                                f"Unknown parameter type '{pvalue.type}' "
+                                f"for parameter '{queried_param_name}'",
                                 file=sys.stderr)
                             continue
-                        return f"Unknown parameter type '{pvalue.type}'"
 
-                    # output response
-                    if not args.node_name:
-                        # Multi-node mode: prefix with node name
-                        prefix = f'{node_name}:\n  '
-                        if not args.hide_type:
-                            if value is not None:
-                                print(prefix + label, value)
+                        # output response
+                        if not args.node_name:
+                            # Multi-node mode: prefix with node name
+                            prefix = f'{node_name}:\n  '
+                            if not args.hide_type:
+                                if value is not None:
+                                    print(prefix + label, value)
+                                else:
+                                    print(prefix + label)
                             else:
-                                print(prefix + label)
+                                print(f'{node_name}: {value}')
                         else:
-                            print(f'{node_name}: {value}')
-                    else:
-                        # Single node mode: original output format
-                        if not args.hide_type:
-                            print(label, value) if value is not None else print(label)
-                        else:
-                            print(value)
+                            # Single node mode: prefix with param name when multiple params
+                            if multi_param:
+                                prefix = f'{queried_param_name}:\n  '
+                            else:
+                                prefix = ''
+                            if not args.hide_type:
+                                if value is not None:
+                                    print(prefix + label, value)
+                                else:
+                                    print(prefix + label)
+                            else:
+                                if multi_param:
+                                    print(f'{queried_param_name}: {value}')
+                                else:
+                                    print(value)
                 except Exception as e:
                     if not args.node_name:
                         print(f'{node_name}: Error: {e}', file=sys.stderr)
@@ -213,4 +233,4 @@ class GetVerb(VerbExtension):
 
             # If we're in multi-node mode and found no parameters
             if not args.node_name and not found_any:
-                print(f"Parameter '{args.parameter_name}' not set on any node")
+                print(f"Parameter '{args.parameter_name[0]}' not set on any node")
