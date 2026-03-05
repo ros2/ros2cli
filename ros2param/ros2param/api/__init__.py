@@ -104,6 +104,21 @@ def call_set_parameters(*, node, node_name, parameters):
     return response
 
 
+def call_set_parameters_atomically(*, node, node_name, parameters):
+    client = AsyncParameterClient(node, node_name)
+    ready = client.wait_for_services(timeout_sec=5.0)
+    if not ready:
+        raise RuntimeError('Wait for service timed out waiting for '
+                           f'parameter services for node {node_name}')
+    future = client.set_parameters_atomically(parameters)
+    rclpy.spin_until_future_complete(node, future)
+    response = future.result()
+    if response is None:
+        raise RuntimeError('Exception while calling service of node '
+                           f'{node_name}: {future.exception()}')
+    return response
+
+
 def call_list_parameters(*, node, node_name, prefixes=None, spin_timeout_sec=None):
     client = AsyncParameterClient(node, node_name)
     ready = client.wait_for_services(timeout_sec=5.0)

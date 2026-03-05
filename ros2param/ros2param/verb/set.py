@@ -24,6 +24,7 @@ from ros2node.api import NodeNameCompleter
 from ros2node.api import wait_for_node
 
 from ros2param.api import call_set_parameters
+from ros2param.api import call_set_parameters_atomically
 from ros2param.api import ParameterNameCompleter
 from ros2param.verb import VerbExtension
 
@@ -63,6 +64,10 @@ class SetVerb(VerbExtension):
                  'Provide one or more name/value pairs to set multiple parameters at once.')
         arg.completer = _NameValueCompleter()
         parser.add_argument(
+            '--atomic', action='store_true',
+            help='Set all parameters atomically using the SetParametersAtomically service. '
+                 'Either all parameters are set successfully or none are changed.')
+        parser.add_argument(
             '--timeout', metavar='N', type=int, default=1,
             help='Wait for N seconds until node becomes available (default %(default)s sec)')
 
@@ -91,25 +96,42 @@ class SetVerb(VerbExtension):
                 parameter.value = get_parameter_value(string_value=param_value_str)
                 parameters.append(parameter)
 
-            response = call_set_parameters(
-                node=node, node_name=args.node_name, parameters=parameters)
+            if args.atomic:
+                # Set all parameters in a single atomic transaction
+                response = call_set_parameters_atomically(
+                    node=node, node_name=args.node_name, parameters=parameters)
 
-            # output response
-            assert len(response.results) == len(parameters)
-            for (param_name, _), result in zip(pairs, response.results):
+                result = response.result
                 if result.successful:
-                    msg = 'Set parameter successful'
+                    msg = 'Set parameters atomically successful'
                     if result.reason:
                         msg += ': ' + result.reason
-                    if multi_param:
-                        print(f'{param_name}: {msg}')
-                    else:
-                        print(msg)
+                    print(msg)
                 else:
-                    msg = 'Setting parameter failed'
+                    msg = 'Setting parameters atomically failed'
                     if result.reason:
                         msg += ': ' + result.reason
-                    if multi_param:
-                        print(f'{param_name}: {msg}', file=sys.stderr)
+                    print(msg, file=sys.stderr)
+            else:
+                response = call_set_parameters(
+                    node=node, node_name=args.node_name, parameters=parameters)
+
+                # output response
+                assert len(response.results) == len(parameters)
+                for (param_name, _), result in zip(pairs, response.results):
+                    if result.successful:
+                        msg = 'Set parameter successful'
+                        if result.reason:
+                            msg += ': ' + result.reason
+                        if multi_param:
+                            print(f'{param_name}: {msg}')
+                        else:
+                            print(msg)
                     else:
-                        print(msg, file=sys.stderr)
+                        msg = 'Setting parameter failed'
+                        if result.reason:
+                            msg += ': ' + result.reason
+                        if multi_param:
+                            print(f'{param_name}: {msg}', file=sys.stderr)
+                        else:
+                            print(msg, file=sys.stderr)

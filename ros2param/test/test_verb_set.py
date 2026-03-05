@@ -306,3 +306,67 @@ class TestVerbSet(unittest.TestCase):
         # Undeclared parameter reports failure
         assert 'nonexistent_param: Setting parameter failed' in output
 
+    # -------------------------------------------------------------------------
+    # Atomic tests (--atomic flag)
+    # -------------------------------------------------------------------------
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_verb_set_atomic_single_param(self):
+        """Test setting a single parameter atomically."""
+        with self.launch_param_set_command(
+            arguments=[
+                f'{TEST_NAMESPACE}/{TEST_NODE}', 'bool_param', 'false', '--atomic'
+            ]
+        ) as param_set_command:
+            assert param_set_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
+        assert param_set_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=['Set parameters atomically successful'],
+            text=param_set_command.output,
+            strict=False
+        )
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_verb_set_atomic_multiple_params(self):
+        """Test setting multiple parameters atomically (all declared)."""
+        with self.launch_param_set_command(
+            arguments=[
+                f'{TEST_NAMESPACE}/{TEST_NODE}',
+                'bool_param', 'true',
+                'int_param', '42',
+                'str_param', 'Hello World',
+                '--atomic',
+            ]
+        ) as param_set_command:
+            assert param_set_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
+        assert param_set_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=['Set parameters atomically successful'],
+            text=param_set_command.output,
+            strict=False
+        )
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_verb_set_atomic_one_nonexistent(self):
+        """Test atomic set where one parameter is undeclared.
+
+        SetParametersAtomically is all-or-nothing: if any parameter fails the
+        entire transaction is rejected and no parameters are changed.  The
+        command prints a single failure message and exits cleanly (exit 0)
+        because the service call itself completed.
+        """
+        with self.launch_param_set_command(
+            arguments=[
+                f'{TEST_NAMESPACE}/{TEST_NODE}',
+                'bool_param', 'false',
+                'nonexistent_param', 'some_value',
+                '--atomic',
+            ]
+        ) as param_set_command:
+            assert param_set_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
+        assert param_set_command.exit_code == launch_testing.asserts.EXIT_OK
+        # A single failure message is printed (not per-parameter)
+        assert 'Setting parameters atomically failed' in param_set_command.output
+        # The successful param name must NOT appear as individually set
+        assert 'bool_param: Set parameter' not in param_set_command.output
+
