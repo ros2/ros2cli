@@ -527,7 +527,7 @@ class TestROS2InterfaceCLI(unittest.TestCase):
         assert interface_command.exit_code == 1
         assert launch_testing.tools.expect_output(
             expected_lines=[re.compile(
-                r"Could not find the interface '.+NotAMessageTypeName\.idl'"
+                r"Interface 'msg/NotAMessageTypeName' not found in package 'test_msgs'"
             )],
             text=interface_command.output,
             strict=True
