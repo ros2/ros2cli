@@ -30,7 +30,8 @@ from ros2param.verb import VerbExtension
 
 
 class _NameValueCompleter:
-    """Completer for interleaved name/value pairs.
+    """
+    Completer for interleaved name/value pairs.
 
     Delegates to ParameterNameCompleter for name positions (even index)
     and returns no completions for value positions (odd index).

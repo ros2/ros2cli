@@ -283,7 +283,8 @@ class TestVerbSet(unittest.TestCase):
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_verb_set_multiple_params_one_nonexistent(self):
-        """Test setting multiple params where one is not declared on the node.
+        """
+        Test setting multiple params where one is not declared on the node.
 
         set_parameters returns one result per parameter.  For an undeclared
         parameter the service sets successful=False with a reason string.
@@ -348,7 +349,8 @@ class TestVerbSet(unittest.TestCase):
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_verb_set_atomic_one_nonexistent(self):
-        """Test atomic set where one parameter is undeclared.
+        """
+        Test atomic set where one parameter is undeclared.
 
         SetParametersAtomically is all-or-nothing: if any parameter fails the
         entire transaction is rejected and no parameters are changed.  The
