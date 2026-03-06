@@ -61,7 +61,7 @@ def main(*, script_name='ros2', argv=None, description=None, extension=None):
     except ImportError:
         pass
     else:
-        autocomplete(parser, exclude=['-h', '--help'])
+        autocomplete(parser, exclude=['-h', '--help'], always_complete_options=False)
 
     # parse the command line arguments
     args = parser.parse_args(args=argv)
