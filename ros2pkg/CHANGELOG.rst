@@ -2,6 +2,11 @@
 Changelog for package ros2pkg
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.38.3 (2026-03-07)
+-------------------
+* Remove "rclrs" duplicate dependency (`#1197 <https://github.com/ros2/ros2cli//issues/1197>`_) (`#1198 <https://github.com/ros2/ros2cli//issues/1198>`_)
+* Contributors: mergify[bot]
+
 0.38.2 (2026-01-07)
 -------------------
 * Add Native ROS2 Rust Package Create Capability (`#1107 <https://github.com/ros2/ros2cli/issues/1107>`_) (`#1135 <https://github.com/ros2/ros2cli/issues/1135>`_)

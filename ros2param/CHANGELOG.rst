@@ -2,6 +2,12 @@
 Changelog for package ros2param
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.38.3 (2026-03-07)
+-------------------
+* Fix ParameterNameCompleter. (`#1172 <https://github.com/ros2/ros2cli//issues/1172>`_) (`#1175 <https://github.com/ros2/ros2cli//issues/1175>`_)
+* Output node parameters upon each receipt (`#1162 <https://github.com/ros2/ros2cli//issues/1162>`_) (`#1164 <https://github.com/ros2/ros2cli//issues/1164>`_)
+* Contributors: mergify[bot]
+
 0.38.2 (2026-01-07)
 -------------------
 * skip test_verb_load_wildcard for rmw_connextdds. (`#1150 <https://github.com/ros2/ros2cli/issues/1150>`_) (`#1152 <https://github.com/ros2/ros2cli/issues/1152>`_)

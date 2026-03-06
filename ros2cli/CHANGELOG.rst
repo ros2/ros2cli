@@ -2,6 +2,11 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.38.3 (2026-03-07)
+-------------------
+* check for invalid ROS discovery configuration and print warning if ne… (backport `#1178 <https://github.com/ros2/ros2cli//issues/1178>`_) (`#1179 <https://github.com/ros2/ros2cli//issues/1179>`_)
+* Contributors: mergify[bot]
+
 0.38.2 (2026-01-07)
 -------------------
 * fix: Also catch a TimeoutError (`#1092 <https://github.com/ros2/ros2cli/issues/1092>`_) (`#1157 <https://github.com/ros2/ros2cli/issues/1157>`_)

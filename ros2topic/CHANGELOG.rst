@@ -2,6 +2,9 @@
 Changelog for package ros2topic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.38.3 (2026-03-07)
+-------------------
+
 0.38.2 (2026-01-07)
 -------------------
 * add "--all/-a" option to "ros2 topic hz" with screen refresh. (backport `#1122 <https://github.com/ros2/ros2cli/issues/1122>`_) (`#1144 <https://github.com/ros2/ros2cli/issues/1144>`_)

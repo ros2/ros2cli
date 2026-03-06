@@ -2,6 +2,11 @@
 Changelog for package ros2lifecycle
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.38.3 (2026-03-07)
+-------------------
+* ros2interface output the contents for each node. (`#1163 <https://github.com/ros2/ros2cli//issues/1163>`_) (`#1165 <https://github.com/ros2/ros2cli//issues/1165>`_)
+* Contributors: mergify[bot]
+
 0.38.2 (2026-01-07)
 -------------------
 * Use rmw_test_fixture to isolate ros2cli tests (backport `#1062 <https://github.com/ros2/ros2cli/issues/1062>`_) (`#1106 <https://github.com/ros2/ros2cli/issues/1106>`_)
