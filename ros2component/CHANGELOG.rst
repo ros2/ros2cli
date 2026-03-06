@@ -2,6 +2,11 @@
 Changelog for package ros2component
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.40.5 (2026-03-07)
+-------------------
+* Fix future flake8 regressions (`#1196 <https://github.com/ros2/ros2cli//issues/1196>`_)
+* Contributors: Michael Carlstrom
+
 0.40.4 (2026-01-07)
 -------------------
 

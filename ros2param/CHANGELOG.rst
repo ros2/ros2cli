@@ -2,6 +2,18 @@
 Changelog for package ros2param
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.40.5 (2026-03-07)
+-------------------
+* ros2 param set /node_name <param1 value1 param2 value2...> support. (`#1204 <https://github.com/ros2/ros2cli//issues/1204>`_)
+* ros2 param get /node_name <param1 param2 param3...> support. (`#1203 <https://github.com/ros2/ros2cli//issues/1203>`_)
+* Add per-node timeout option to ros2 param list (`#1170 <https://github.com/ros2/ros2cli//issues/1170>`_)
+* Fix Bash completion (`#1182 <https://github.com/ros2/ros2cli//issues/1182>`_)
+* Add fzf-based interactive selection to ros2cli commands (`#1151 <https://github.com/ros2/ros2cli//issues/1151>`_)
+* Support "ros2 param get <parameter>" across all nodes. (`#1174 <https://github.com/ros2/ros2cli//issues/1174>`_)
+* Fix ParameterNameCompleter. (`#1172 <https://github.com/ros2/ros2cli//issues/1172>`_)
+* Output node parameters upon each receipt (`#1162 <https://github.com/ros2/ros2cli//issues/1162>`_)
+* Contributors: Barry Xu, Taiga Arai, Tomoya Fujita, Tony Najjar
+
 0.40.4 (2026-01-07)
 -------------------
 * skip test_verb_load_wildcard for rmw_connextdds. (`#1150 <https://github.com/ros2/ros2cli/issues/1150>`_)

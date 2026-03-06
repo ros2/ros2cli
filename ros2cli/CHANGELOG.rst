@@ -2,6 +2,15 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.40.5 (2026-03-07)
+-------------------
+* Fix future flake8 regressions (`#1196 <https://github.com/ros2/ros2cli//issues/1196>`_)
+* fix deprecated warning for action graph APIs. (`#1188 <https://github.com/ros2/ros2cli//issues/1188>`_)
+* Enable always complete (`#1190 <https://github.com/ros2/ros2cli//issues/1190>`_)
+* Add fzf-based interactive selection to ros2cli commands (`#1151 <https://github.com/ros2/ros2cli//issues/1151>`_)
+* check for invalid ROS discovery configuration and print warning if ne… (`#1178 <https://github.com/ros2/ros2cli//issues/1178>`_)
+* Contributors: David V. Lu!!, Michael Carlstrom, Tomoya Fujita, Tony Najjar
+
 0.40.4 (2026-01-07)
 -------------------
 

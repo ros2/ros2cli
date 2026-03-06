@@ -2,6 +2,11 @@
 Changelog for package ros2lifecycle
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.40.5 (2026-03-07)
+-------------------
+* ros2interface output the contents for each node. (`#1163 <https://github.com/ros2/ros2cli//issues/1163>`_)
+* Contributors: Tomoya Fujita
+
 0.40.4 (2026-01-07)
 -------------------
 
