@@ -369,4 +369,3 @@ class TestVerbSet(unittest.TestCase):
         assert 'Setting parameters atomically failed' in param_set_command.output
         # The successful param name must NOT appear as individually set
         assert 'bool_param: Set parameter' not in param_set_command.output
-
