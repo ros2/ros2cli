@@ -5,7 +5,7 @@ package_name = 'ros2interface'
 
 setup(
     name=package_name,
-    version='0.18.17',
+    version='0.18.18',
     packages=find_packages(exclude=['test']),
     data_files=[
         ('share/' + package_name, ['package.xml']),
