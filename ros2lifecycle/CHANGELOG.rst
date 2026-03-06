@@ -2,6 +2,9 @@
 Changelog for package ros2lifecycle
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.32.9 (2026-03-07)
+-------------------
+
 0.32.8 (2026-01-21)
 -------------------
 * ros2interface output the contents for each node. (`#1163 <https://github.com/ros2/ros2cli/issues/1163>`_) (`#1167 <https://github.com/ros2/ros2cli/issues/1167>`_)

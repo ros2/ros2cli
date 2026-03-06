@@ -2,6 +2,9 @@
 Changelog for package ros2param
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.32.9 (2026-03-07)
+-------------------
+
 0.32.8 (2026-01-21)
 -------------------
 * Fix ParameterNameCompleter. (`#1172 <https://github.com/ros2/ros2cli/issues/1172>`_) (`#1176 <https://github.com/ros2/ros2cli/issues/1176>`_)
