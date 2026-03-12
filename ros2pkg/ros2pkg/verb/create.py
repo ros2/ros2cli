@@ -150,11 +150,19 @@ class CreateVerb(VerbExtension):
 
             invalid = [
                 name for name in args.message
-                if not re.match(r'^[A-Z][A-Za-z0-9]*$', name)
+                if not re.match(r'^[A-Z][A-Za-z0-9]+$', name)
             ]
             if invalid:
                 return 'Aborted: invalid message name(s): ' + ', '.join(invalid) + \
                     '. Message names must be CamelCase and alphanumeric (e.g. MyMsg).'
+
+            if len(set(args.message)) != len(args.message):
+                duplicates = {
+                    name for name in args.message
+                    if args.message.count(name) > 1
+                }
+                return 'Aborted: duplicate message name(s): ' + \
+                    ', '.join(sorted(duplicates))
 
         buildtool_depends = []
         if args.build_type == 'ament_cmake':
