@@ -67,6 +67,10 @@ class CallVerb(VerbExtension):
         parser.add_argument(
             '-r', '--rate', metavar='N', type=float,
             help='Repeat the call at a specific rate in Hz')
+        parser.add_argument(
+            '--timeout', metavar='N', type=float,
+            help='Maximum time to wait for service response in seconds. '
+                 'If not specified, waits indefinitely.')
         add_qos_arguments(parser, 'service client', 'services_default')
 
     def main(self, *, args):
@@ -104,11 +108,12 @@ class CallVerb(VerbExtension):
             values = args.values
 
         return requester(
-            args.service_type, args.service_name, values, period, default_profile)
+            args.service_type, args.service_name, values, period, default_profile,
+            timeout=args.timeout)
 
 
 def requester(service_type: str, service_name: str, values, period: Optional[float],
-              qos_profile: QoSProfile) -> None:
+              qos_profile: QoSProfile, timeout: Optional[float] = None) -> None:
     try:
         parts = service_type.split('/')
         package_name = parts[0]
@@ -147,7 +152,12 @@ def requester(service_type: str, service_name: str, values, period: Optional[flo
             print('requester: making request: %r\n' % request)
             last_call = time.time()
             future = cli.call_async(request)
-            rclpy.spin_until_future_complete(node, future)
+            rclpy.spin_until_future_complete(node, future, timeout_sec=timeout)
+            if not future.done():
+                timeout_msg = f'{timeout}s' if timeout is not None else 'default'
+                raise RuntimeError(
+                    f'Timed out waiting for response from service {service_name} '
+                    f'(timeout: {timeout_msg})')
             if future.result() is not None:
                 print('response:\n%r\n' % future.result())
             else:

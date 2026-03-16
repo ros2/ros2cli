@@ -42,6 +42,10 @@ class LoadVerb(VerbExtension):
         parser.add_argument(
             '--timeout', metavar='N', type=int, default=1,
             help='Wait for N seconds until node becomes available (default %(default)s sec)')
+        parser.add_argument(
+            '--service-timeout', metavar='N', type=float,
+            help='Maximum time to wait for service response in seconds '
+                 '(default: waits indefinitely)')
 
     def main(self, *, args):  # noqa: D102
         node_name = get_absolute_node_name(args.node_name)
@@ -50,5 +54,6 @@ class LoadVerb(VerbExtension):
                 return 'Node not found'
 
         with DirectNode(args) as node:
-            load_parameter_file(node=node, node_name=node_name, parameter_file=args.parameter_file,
-                                use_wildcard=not args.no_use_wildcard)
+            load_parameter_file(
+                node=node, node_name=node_name, parameter_file=args.parameter_file,
+                use_wildcard=not args.no_use_wildcard, timeout=args.service_timeout)

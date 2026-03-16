@@ -56,6 +56,10 @@ class GetVerb(VerbExtension):
         parser.add_argument(
             '--timeout', metavar='N', type=int, default=1,
             help='Wait for N seconds until node becomes available (default %(default)s sec)')
+        parser.add_argument(
+            '--service-timeout', metavar='N', type=float,
+            help='Maximum time to wait for service response in seconds '
+                 '(default: waits indefinitely)')
 
     def main(self, *, args):  # noqa: D102
         # If both node and parameter are None/empty, use interactive selection for both
@@ -137,7 +141,8 @@ class GetVerb(VerbExtension):
                 try:
                     response = call_get_parameters(
                         node=node, node_name=node_name_arg,
-                        parameter_names=args.parameter_name)
+                        parameter_names=args.parameter_name,
+                        timeout=args.service_timeout)
 
                     # requested parameter(s) not available
                     if not response.values:

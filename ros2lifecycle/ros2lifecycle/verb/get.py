@@ -37,6 +37,10 @@ class GetVerb(VerbExtension):
         parser.add_argument(
             '--include-hidden-nodes', action='store_true',
             help='Consider hidden nodes as well')
+        parser.add_argument(
+            '--timeout', metavar='N', type=float,
+            help='Maximum time to wait for response in seconds '
+                 '(default: waits indefinitely)')
 
     def main(self, *, args):  # noqa: D102
         with NodeStrategy(args) as node:
@@ -55,7 +59,8 @@ class GetVerb(VerbExtension):
         with DirectNode(args) as node:
             # Process and output each node's state immediately upon receipt
             for query_node_name in nodes_to_query:
-                state = call_get_states(node=node, node_names=[query_node_name])
+                state = call_get_states(
+                    node=node, node_names=[query_node_name], timeout=args.timeout)
                 state = state.get(query_node_name)
 
                 if isinstance(state, Exception):
