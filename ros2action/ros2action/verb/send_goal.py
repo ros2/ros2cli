@@ -157,7 +157,6 @@ def send_goal(action_name, action_type, goal_values, feedback_callback, timeout=
 
         # install signal handler to cancel the goal on SIGINT
         def _sigint_cancel_handler(sig, frame):
-            nonlocal goal_handle
             # Cancel the goal if it's still active
             if (goal_handle is not None and
                 (GoalStatus.STATUS_ACCEPTED == goal_handle.status or

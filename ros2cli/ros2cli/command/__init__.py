@@ -217,7 +217,6 @@ class SuppressUsageOutput:
 
 def _ignore_zero_exit(original_exit_handler):
     def exit_(self, status=0, message=None):
-        nonlocal original_exit_handler
         if status == 0:
             return
         return original_exit_handler(status=status, message=message)
