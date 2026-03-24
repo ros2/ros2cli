@@ -149,7 +149,6 @@ def get_components_in_containers(*, node, remote_containers_node_names, timeout=
             return future, None
 
         def _resume(to_completion=False):
-            nonlocal outcomes
             if future.done():
                 raise RuntimeError("'async_run' done already")
             for i, co in enumerate(coroutines):
