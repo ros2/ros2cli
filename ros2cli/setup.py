@@ -21,7 +21,8 @@ setup(
         ]),
         ('share/ros2cli/environment', [
             'completion/ros2-argcomplete.bash',
-            'completion/ros2-argcomplete.zsh'
+            'completion/ros2-argcomplete.fish',
+            'completion/ros2-argcomplete.zsh',
         ]),
     ],
     package_data={'': ['py.typed']},
