@@ -27,6 +27,13 @@ from ros2cli.node.daemon import is_daemon_running
 from ros2cli.node.daemon import shutdown_daemon
 from ros2cli.node.daemon import spawn_daemon
 
+try:
+    from rmw_test_fixture_implementation import rmw_test_isolation_start
+    from rmw_test_fixture_implementation import rmw_test_isolation_stop
+    _HAS_RMW_ISOLATION = True
+except ImportError:
+    _HAS_RMW_ISOLATION = False
+
 import test_msgs.action
 import test_msgs.msg
 import test_msgs.srv
@@ -54,6 +61,16 @@ TEST_SERVICE_NAME = '/test/service'
 TEST_SERVICE_TYPE = 'test_msgs/srv/Empty'
 TEST_ACTION_NAME = '/test/action'
 TEST_ACTION_TYPE = 'test_msgs/action/Fibonacci'
+
+
+@pytest.fixture(autouse=True, scope='session')
+def rmw_isolation():
+    """Start RMW isolation before spawning the daemon."""
+    if _HAS_RMW_ISOLATION:
+        rmw_test_isolation_start()
+    yield
+    if _HAS_RMW_ISOLATION:
+        rmw_test_isolation_stop()
 
 
 @pytest.fixture(autouse=True, scope='module')

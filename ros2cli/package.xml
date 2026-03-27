@@ -23,6 +23,7 @@
   <exec_depend>rclpy</exec_depend>
   <exec_depend>fzf</exec_depend>
 
+  <test_depend>rmw_test_fixture_implementation</test_depend>
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
   <test_depend>ament_pep257</test_depend>
