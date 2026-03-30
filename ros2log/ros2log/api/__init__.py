@@ -138,33 +138,37 @@ def call_get_logger_levels(
     futures = {}
     results = {}
 
-    for node_name, logger_names in logger_names_by_node.items():
-        client = node.create_client(
-            GetLoggerLevels,
-            get_get_logger_levels_service_name(node_name),
-        )
-        clients[node_name] = client
-        if not client.wait_for_service(timeout_sec=timeout_sec):
-            results[node_name] = RuntimeError(
-                'Wait for service timed out waiting for logger services '
-                f'for node {node_name}'
+    try:
+        for node_name, logger_names in logger_names_by_node.items():
+            client = node.create_client(
+                GetLoggerLevels,
+                get_get_logger_levels_service_name(node_name),
             )
-            continue
+            clients[node_name] = client
+            if not client.wait_for_service(timeout_sec=timeout_sec):
+                results[node_name] = RuntimeError(
+                    'Wait for service timed out waiting for logger services '
+                    f'for node {node_name}'
+                )
+                continue
 
-        request = GetLoggerLevels.Request()
-        request.names = list(logger_names)
-        futures[node_name] = client.call_async(request)
+            request = GetLoggerLevels.Request()
+            request.names = list(logger_names)
+            futures[node_name] = client.call_async(request)
 
-    while futures and not all(future.done() for future in futures.values()):
-        rclpy.spin_once(node, timeout_sec=0.1)
+        while futures and not all(future.done() for future in futures.values()):
+            rclpy.spin_once(node, timeout_sec=0.1)
 
-    for node_name, future in futures.items():
-        if future.result() is not None:
-            results[node_name] = list(future.result().levels)
-        else:
-            results[node_name] = future.exception()
+        for node_name, future in futures.items():
+            if future.result() is not None:
+                results[node_name] = list(future.result().levels)
+            else:
+                results[node_name] = future.exception()
 
-    return results
+        return results
+    finally:
+        for client in clients.values():
+            node.destroy_client(client)
 
 
 def call_set_logger_levels(
@@ -178,33 +182,37 @@ def call_set_logger_levels(
     futures = {}
     results = {}
 
-    for node_name, levels in levels_by_node.items():
-        client = node.create_client(
-            SetLoggerLevels,
-            get_set_logger_levels_service_name(node_name),
-        )
-        clients[node_name] = client
-        if not client.wait_for_service(timeout_sec=timeout_sec):
-            results[node_name] = RuntimeError(
-                'Wait for service timed out waiting for logger services '
-                f'for node {node_name}'
+    try:
+        for node_name, levels in levels_by_node.items():
+            client = node.create_client(
+                SetLoggerLevels,
+                get_set_logger_levels_service_name(node_name),
             )
-            continue
+            clients[node_name] = client
+            if not client.wait_for_service(timeout_sec=timeout_sec):
+                results[node_name] = RuntimeError(
+                    'Wait for service timed out waiting for logger services '
+                    f'for node {node_name}'
+                )
+                continue
 
-        request = SetLoggerLevels.Request()
-        request.levels = list(levels)
-        futures[node_name] = client.call_async(request)
+            request = SetLoggerLevels.Request()
+            request.levels = list(levels)
+            futures[node_name] = client.call_async(request)
 
-    while futures and not all(future.done() for future in futures.values()):
-        rclpy.spin_once(node, timeout_sec=0.1)
+        while futures and not all(future.done() for future in futures.values()):
+            rclpy.spin_once(node, timeout_sec=0.1)
 
-    for node_name, future in futures.items():
-        if future.result() is not None:
-            results[node_name] = list(future.result().results)
-        else:
-            results[node_name] = future.exception()
+        for node_name, future in futures.items():
+            if future.result() is not None:
+                results[node_name] = list(future.result().results)
+            else:
+                results[node_name] = future.exception()
 
-    return results
+        return results
+    finally:
+        for client in clients.values():
+            node.destroy_client(client)
 
 
 def _service_has_type(service_map, service_name: str, service_type: str) -> bool:
