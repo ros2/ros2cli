@@ -14,6 +14,8 @@
 
 from collections.abc import Iterator
 from collections.abc import Sequence
+from typing import Optional
+from typing import Union
 
 from rcl_interfaces.msg import LoggerLevel
 from rcl_interfaces.msg import SetLoggerLevelsResult
@@ -87,9 +89,9 @@ def get_logger_service_nodes(*, node) -> list[NodeName]:
 def get_target_node_names(
     *,
     node,
-    node_name: str | None = None,
+    node_name: Optional[str] = None,
     all_nodes: bool = False,
-) -> tuple[list[str] | None, str | None]:
+) -> tuple[Optional[list[str]], Optional[str]]:
     """Resolve the node names targeted by a get/set command."""
     logger_service_nodes = get_logger_service_nodes(node=node)
     logger_service_node_names = {
@@ -132,7 +134,7 @@ def call_get_logger_levels(
     node,
     logger_names_by_node: dict[str, Sequence[str]],
     timeout_sec: float = 5.0,
-) -> dict[str, list[LoggerLevel] | Exception]:
+) -> dict[str, Union[list[LoggerLevel], Exception]]:
     """Call the get-logger-levels service for one or more nodes."""
     clients = {}
     futures = {}
@@ -176,7 +178,7 @@ def call_set_logger_levels(
     node,
     levels_by_node: dict[str, Sequence[LoggerLevel]],
     timeout_sec: float = 5.0,
-) -> dict[str, list[SetLoggerLevelsResult] | Exception]:
+) -> dict[str, Union[list[SetLoggerLevelsResult], Exception]]:
     """Call the set-logger-levels service for one or more nodes."""
     clients = {}
     futures = {}

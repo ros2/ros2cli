@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import sys
+from typing import Optional
 
 from rcl_interfaces.msg import LoggerLevel
 
@@ -114,7 +115,7 @@ class SetVerb(VerbExtension):
         return 1 if had_error else 0
 
 
-def _validate_arguments(args) -> str | None:
+def _validate_arguments(args) -> Optional[str]:
     if args.all and args.node_name is not None:
         return 'Node name cannot be used with --all'
     if not args.all and args.node_name is None:
