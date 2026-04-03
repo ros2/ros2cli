@@ -141,7 +141,7 @@ class LogWatcher:
         qos_profile: QoSProfile = qos_profile_rosout_default,
         enable_content_filter: bool = True,
         debug: bool = False,
-    ):
+    ) -> None:
         self.node = node
         self.enable_color = enable_color
         self.show_timestamp = show_timestamp
