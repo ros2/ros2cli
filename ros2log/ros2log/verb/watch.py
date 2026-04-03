@@ -137,7 +137,7 @@ class LogWatcher:
         enable_color: bool = True,
         show_timestamp: bool = True,
         show_function_detail: bool = False,
-        qos_profile=qos_profile_rosout_default,
+        qos_profile: QoSProfile = qos_profile_rosout_default,
         enable_content_filter: bool = True,
         debug: bool = False,
     ):
