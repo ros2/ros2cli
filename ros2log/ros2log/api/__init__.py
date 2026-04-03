@@ -35,6 +35,11 @@ LOGGER_GET_SERVICE_TYPE = 'rcl_interfaces/srv/GetLoggerLevels'
 LOGGER_SET_SERVICE_TYPE = 'rcl_interfaces/srv/SetLoggerLevels'
 
 
+def _validate_timeout_sec(timeout_sec: float) -> None:
+    if timeout_sec < 0:
+        raise ValueError(f'timeout_sec must be non-negative, got {timeout_sec}')
+
+
 def _require_absolute_node_name(node_name: str) -> str:
     absolute_node_name = get_absolute_node_name(node_name)
     if absolute_node_name is None:
@@ -137,8 +142,7 @@ def call_get_logger_levels(
     timeout_sec: float = 5.0,
 ) -> dict[str, Union[list[LoggerLevel], Exception]]:
     """Call the get-logger-levels service for one or more nodes."""
-    if timeout_sec <= 0:                                                                                                                                                           
-      raise ValueError(f'timeout_sec must be positive, got {timeout_sec}')
+    _validate_timeout_sec(timeout_sec)
     clients = {}
     futures = {}
     results = {}
@@ -183,6 +187,7 @@ def call_set_logger_levels(
     timeout_sec: float = 5.0,
 ) -> dict[str, Union[list[SetLoggerLevelsResult], Exception]]:
     """Call the set-logger-levels service for one or more nodes."""
+    _validate_timeout_sec(timeout_sec)
     clients = {}
     futures = {}
     results = {}

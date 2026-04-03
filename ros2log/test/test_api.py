@@ -15,6 +15,8 @@
 import unittest
 from unittest.mock import patch
 
+from ros2log.api import call_get_logger_levels
+from ros2log.api import call_set_logger_levels
 from ros2log.api import format_logger_service_unavailable_error
 from ros2log.api import get_get_logger_levels_service_name
 from ros2log.api import get_logger_name_for_node
@@ -110,4 +112,50 @@ class TestGetTargetNodeNames(unittest.TestCase):
         self.assertEqual(
             format_logger_service_unavailable_error('/listener'),
             error,
+        )
+
+
+class TestLoggerLevelServiceCalls(unittest.TestCase):
+    """Test logger-level service call helpers."""
+
+    def test_call_get_logger_levels_rejects_negative_timeout(self):
+        with self.assertRaisesRegex(
+            ValueError,
+            'timeout_sec must be non-negative, got -1.0',
+        ):
+            call_get_logger_levels(
+                node=object(),
+                logger_names_by_node={},
+                timeout_sec=-1.0,
+            )
+
+    def test_call_get_logger_levels_allows_zero_timeout(self):
+        self.assertEqual(
+            {},
+            call_get_logger_levels(
+                node=object(),
+                logger_names_by_node={},
+                timeout_sec=0.0,
+            ),
+        )
+
+    def test_call_set_logger_levels_rejects_negative_timeout(self):
+        with self.assertRaisesRegex(
+            ValueError,
+            'timeout_sec must be non-negative, got -1.0',
+        ):
+            call_set_logger_levels(
+                node=object(),
+                levels_by_node={},
+                timeout_sec=-1.0,
+            )
+
+    def test_call_set_logger_levels_allows_zero_timeout(self):
+        self.assertEqual(
+            {},
+            call_set_logger_levels(
+                node=object(),
+                levels_by_node={},
+                timeout_sec=0.0,
+            ),
         )
