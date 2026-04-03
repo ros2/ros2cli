@@ -21,6 +21,7 @@ from rcl_interfaces.msg import Log
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import qos_profile_rosout_default
+from rclpy.qos import QoSProfile
 
 from ros2cli.node.direct import DirectNode
 from ros2cli.qos import add_qos_arguments
