@@ -137,6 +137,8 @@ def call_get_logger_levels(
     timeout_sec: float = 5.0,
 ) -> dict[str, Union[list[LoggerLevel], Exception]]:
     """Call the get-logger-levels service for one or more nodes."""
+    if timeout_sec <= 0:                                                                                                                                                           
+      raise ValueError(f'timeout_sec must be positive, got {timeout_sec}')
     clients = {}
     futures = {}
     results = {}
