@@ -23,6 +23,7 @@ from rcl_interfaces.srv import GetLoggerLevels
 from rcl_interfaces.srv import SetLoggerLevels
 import rclpy
 
+from rclpy.node import Node
 from ros2node.api import get_absolute_node_name
 from ros2node.api import get_node_names
 from ros2node.api import NodeName
@@ -73,7 +74,7 @@ def format_logger_service_unavailable_error(node_name: str) -> str:
 
 def iter_logger_service_nodes(
     *,
-    node,
+    node: Node,
 ) -> Iterator[NodeName]:
     """Yield nodes that expose the logger get/set services as they are discovered."""
     for node_name in get_node_names(node=node):
@@ -81,14 +82,14 @@ def iter_logger_service_nodes(
             yield node_name
 
 
-def get_logger_service_nodes(*, node) -> list[NodeName]:
+def get_logger_service_nodes(*, node: Node) -> list[NodeName]:
     """Return all nodes that expose the logger get/set services."""
     return list(iter_logger_service_nodes(node=node))
 
 
 def get_target_node_names(
     *,
-    node,
+    node: Node,
     node_name: Optional[str] = None,
     all_nodes: bool = False,
 ) -> tuple[Optional[list[str]], Optional[str]]:
@@ -115,7 +116,7 @@ def get_target_node_names(
     return [absolute_node_name], None
 
 
-def node_has_logger_services(node, node_name: NodeName) -> bool:
+def node_has_logger_services(node: Node, node_name: NodeName) -> bool:
     """Check if a node provides both get/set logger level services."""
     services = node.get_service_names_and_types_by_node(node_name.name, node_name.namespace)
     service_map = dict(services)
@@ -131,7 +132,7 @@ def node_has_logger_services(node, node_name: NodeName) -> bool:
 
 def call_get_logger_levels(
     *,
-    node,
+    node: Node,
     logger_names_by_node: dict[str, Sequence[str]],
     timeout_sec: float = 5.0,
 ) -> dict[str, Union[list[LoggerLevel], Exception]]:
@@ -175,7 +176,7 @@ def call_get_logger_levels(
 
 def call_set_logger_levels(
     *,
-    node,
+    node: Node,
     levels_by_node: dict[str, Sequence[LoggerLevel]],
     timeout_sec: float = 5.0,
 ) -> dict[str, Union[list[SetLoggerLevelsResult], Exception]]:
