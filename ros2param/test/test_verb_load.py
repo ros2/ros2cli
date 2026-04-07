@@ -14,6 +14,7 @@
 
 import contextlib
 import os
+import re
 import sys
 import tempfile
 import time
@@ -226,6 +227,26 @@ class TestVerbLoad(unittest.TestCase):
         if timed_out:
             self.fail(f'CLI daemon failed to find test node after {TEST_TIMEOUT} seconds')
 
+    @staticmethod
+    def _extract_yaml_output(text):
+        """Extract YAML content from command output.
+
+        Strip ANSI escape sequences and non-YAML lines (e.g. RMW log messages)
+        that some RMW implementations may emit to stdout.
+        """
+        text = re.sub(r'\x1b\[[0-9;]*[a-zA-Z]', '', text)
+        yaml_lines = []
+        in_yaml = False
+        for line in text.splitlines():
+            if not in_yaml:
+                if line.startswith('/') or line.startswith('/**'):
+                    in_yaml = True
+                    yaml_lines.append(line)
+            else:
+                if line == '' or line[0] == ' ' or line.startswith('/'):
+                    yaml_lines.append(line)
+        return '\n'.join(yaml_lines)
+
     def _write_param_file(self, tmpdir, filename, contents=INPUT_PARAMETER_FILE):
         yaml_path = os.path.join(tmpdir, filename)
         with open(yaml_path, 'w') as f:
@@ -365,7 +386,8 @@ class TestVerbLoad(unittest.TestCase):
                 assert param_dump_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
             assert param_dump_command.exit_code == launch_testing.asserts.EXIT_OK
             try:
-                loaded_params = yaml.safe_load(param_dump_command.output)
+                loaded_params = yaml.safe_load(
+                    self._extract_yaml_output(param_dump_command.output))
                 if not isinstance(loaded_params, dict):
                     self.fail('Invalid YAML output: Expected a dictionary')
                 params = loaded_params[f'{TEST_NAMESPACE}/{TEST_NODE}']['ros__parameters']
@@ -391,7 +413,8 @@ class TestVerbLoad(unittest.TestCase):
                 assert param_dump_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
             assert param_dump_command.exit_code == launch_testing.asserts.EXIT_OK
             try:
-                loaded_params = yaml.safe_load(param_dump_command.output)
+                loaded_params = yaml.safe_load(
+                    self._extract_yaml_output(param_dump_command.output))
                 if not isinstance(loaded_params, dict):
                     self.fail('Invalid YAML output: Expected a dictionary')
                 params = loaded_params[f'{TEST_NAMESPACE}/{TEST_NODE}']['ros__parameters']
@@ -417,7 +440,8 @@ class TestVerbLoad(unittest.TestCase):
                 assert param_dump_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
             assert param_dump_command.exit_code == launch_testing.asserts.EXIT_OK
             try:
-                loaded_params = yaml.safe_load(param_dump_command.output)
+                loaded_params = yaml.safe_load(
+                    self._extract_yaml_output(param_dump_command.output))
                 if not isinstance(loaded_params, dict):
                     self.fail('Invalid YAML output: Expected a dictionary')
                 params = loaded_params[f'{TEST_NAMESPACE}/{TEST_NODE}']['ros__parameters']
