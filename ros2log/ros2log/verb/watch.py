@@ -106,17 +106,21 @@ class WatchVerb(VerbExtension):
         with DirectNode(args) as node:
             # Configure QoS profile based on arguments and available publishers
             qos_profile = choose_qos(node, '/rosout', args)
-            LogWatcher(
-                node,
-                level_filter=args.level,
-                logger_filter=args.logger,
-                regex_filter=args.regex,
-                enable_color=not args.no_color,
-                show_timestamp=not args.no_timestamp,
-                show_function_detail=args.function_detail,
-                qos_profile=qos_profile,
-                debug=args.debug,
-            )
+            try:
+                watcher = LogWatcher(
+                    node,
+                    level_filter=args.level,
+                    logger_filter=args.logger,
+                    regex_filter=args.regex,
+                    enable_color=not args.no_color,
+                    show_timestamp=not args.no_timestamp,
+                    show_function_detail=args.function_detail,
+                    qos_profile=qos_profile,
+                    debug=args.debug,
+                )
+            except ValueError as e:
+                print(str(e), file=sys.stderr)
+                return 1
 
             try:
                 rclpy.spin(node)
@@ -160,8 +164,7 @@ class LogWatcher:
             try:
                 self.regex_pattern = re.compile(regex_filter)
             except re.error as e:
-                node.get_logger().error(f'Invalid regex pattern: {e}')
-                sys.exit(1)
+                raise ValueError(f'Invalid regex pattern: {e}') from e
 
         # Create subscription to /rosout
         self.subscription = node.create_subscription(
