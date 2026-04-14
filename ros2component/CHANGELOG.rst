@@ -2,6 +2,14 @@
 Changelog for package ros2component
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.40.6 (2026-04-14)
+-------------------
+
+* Fix ``flake8`` (`#1215 <https://github.com/ros2/ros2cli/issues/1215>`_)
+* Add timeout arguments to ``ros2 service call``, ``ros2 action send_goal``, ``ros2 component``, ``ros2 lifecycle``, and ``ros2 param`` (`#1185 <https://github.com/ros2/ros2cli/issues/1185>`_)
+
+* Contributors: Michael Carlstrom, Tomoya Fujita
+
 0.40.5 (2026-03-07)
 -------------------
 * Fix future flake8 regressions (`#1196 <https://github.com/ros2/ros2cli//issues/1196>`_)

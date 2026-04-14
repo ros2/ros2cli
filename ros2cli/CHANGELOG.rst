@@ -2,6 +2,15 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.40.6 (2026-04-14)
+-------------------
+
+* Add RMW isolation fixture to enable discovery for ``rmw_zenoh_cpp`` tests (`#1216 <https://github.com/ros2/ros2cli/issues/1216>`_)
+* Add support for fish (`#1211 <https://github.com/ros2/ros2cli/issues/1211>`_)
+* Fix ``flake8`` (`#1215 <https://github.com/ros2/ros2cli/issues/1215>`_)
+
+* Contributors: Michael Carlstrom, SPeak, Yuyuan Yuan
+
 0.40.5 (2026-03-07)
 -------------------
 * Fix future flake8 regressions (`#1196 <https://github.com/ros2/ros2cli//issues/1196>`_)
