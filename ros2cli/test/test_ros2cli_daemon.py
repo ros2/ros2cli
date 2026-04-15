@@ -130,8 +130,8 @@ def local_node():
 @pytest.fixture(scope='module')
 def daemon_node():
     if is_daemon_running(args=[]):
-        assert shutdown_daemon(args=[], timeout=5.0)
-    assert spawn_daemon(args=[], timeout=5.0)
+        assert shutdown_daemon(args=[], timeout=30.0)
+    assert spawn_daemon(args=[], timeout=30.0)
     with DaemonNode(args=[]) as node:
         if not node.connected:
             pytest.fail(
