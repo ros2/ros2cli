@@ -16,11 +16,15 @@
 import argparse
 import builtins
 import functools
+import os
 import signal
 import sys
 
 from rclpy.executors import ExternalShutdownException
 
+from ros2cli.color import ColoringStdout
+from ros2cli.color import get_colorizer
+from ros2cli.color import is_color_enabled
 from ros2cli.command import add_subparsers_on_demand
 
 
@@ -42,6 +46,11 @@ def main(*, script_name='ros2', argv=None, description=None, extension=None):
             'Do not force line buffering in stdout and instead use the python default buffering, '
             'which might be affected by PYTHONUNBUFFERED/-u and depends on whatever stdout is '
             'interactive or not'))
+    parser.add_argument(
+        '--color',
+        action='store_true',
+        default=False,
+        help='Force colorized output (also enabled by ROS_COLORIZED_OUTPUT=1)')
 
     # add arguments for command extension(s)
     if extension:
@@ -80,6 +89,15 @@ def main(*, script_name='ros2', argv=None, description=None, extension=None):
     if extension is None:
         # get extension identified by the passed command (if available)
         extension = getattr(args, selected_extension_key, None)
+
+    # activate colorized output if requested
+    if args.color:
+        os.environ['ROS_COLORIZED_OUTPUT'] = '1'
+    if is_color_enabled():
+        command_name = getattr(extension, 'NAME', '') if extension else ''
+        verb_name = getattr(getattr(args, '_verb', None), 'NAME', '') or ''
+        colorizer = get_colorizer(command_name, verb_name)
+        sys.stdout = ColoringStdout(sys.stdout, colorizer)
 
     # handle the case that no command was passed
     if extension is None:
