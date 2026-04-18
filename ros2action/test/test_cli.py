@@ -214,6 +214,44 @@ class TestROS2ActionCLI(unittest.TestCase):
         )
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_fibonacci_info_verbose(self):
+        with self.launch_action_command(
+                arguments=['info', '-v', '/test/fibonacci']) as action_command:
+            assert action_command.wait_for_shutdown(timeout=10)
+        assert action_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=[
+                'Action: /test/fibonacci',
+                'Action clients: 0',
+                'Action servers: 1',
+                'Node name: fibonacci_action_server',
+                'Node namespace: /test',
+                'Action type: test_msgs/action/Fibonacci',
+                'Endpoint type: SERVER',
+            ],
+            text=action_command.output,
+            strict=False
+        )
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_fibonacci_info_verbose_count(self):
+        with self.launch_action_command(
+                arguments=['info', '-v', '-c', '/test/fibonacci']) as action_command:
+            assert action_command.wait_for_shutdown(timeout=10)
+        assert action_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=[
+                'Action: /test/fibonacci',
+                'Action clients: 0',
+                'Action servers: 1',
+            ],
+            text=action_command.output,
+            strict=False
+        )
+        assert 'Node name:' not in action_command.output
+        assert 'Endpoint type:' not in action_command.output
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_list(self):
         with self.launch_action_command(arguments=['list']) as action_command:
             assert action_command.wait_for_shutdown(timeout=10)

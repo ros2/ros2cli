@@ -19,6 +19,25 @@ from ros2action.verb import VerbExtension
 from ros2cli.node.strategy import NodeStrategy
 
 
+def _split_fully_qualified_name(fqn):
+    if not fqn.startswith('/'):
+        return '/', fqn
+    idx = fqn.rfind('/')
+    if idx == 0:
+        return '/', fqn[1:]
+    return fqn[:idx], fqn[idx + 1:]
+
+
+def _format_action_endpoint_block(node_fqn, types, endpoint_label):
+    node_namespace, node_name = _split_fully_qualified_name(node_fqn)
+    return (
+        f'Node name: {node_name}\n'
+        f'Node namespace: {node_namespace}\n'
+        f'Action type: {", ".join(types)}\n'
+        f'Endpoint type: {endpoint_label}'
+    )
+
+
 class InfoVerb(VerbExtension):
     """Print information about an action."""
 
@@ -33,6 +52,12 @@ class InfoVerb(VerbExtension):
         parser.add_argument(
             '-c', '--count', action='store_true',
             help='Only display the number of action clients and action servers')
+        parser.add_argument(
+            '--verbose', '-v', action='store_true',
+            help='Prints detailed information for each action client and action server, '
+                 'including the node name, node namespace, action type, and endpoint type '
+                 '(CLIENT or SERVER). QoS profiles and type hashes are not exposed for '
+                 'action endpoints.')
 
     def main(self, *, args):
         with NodeStrategy(args) as node:
@@ -44,20 +69,38 @@ class InfoVerb(VerbExtension):
             except (ValueError, rclpy.exceptions.InvalidTopicNameException) as e:
                 raise RuntimeError(e)
 
-        print('Action: {}'.format(args.action_name))
-        print('Action clients: {}'.format(len(action_clients)))
+        line_end = '\n\n' if args.verbose else '\n'
+
+        print('Action: {}'.format(args.action_name), end=line_end)
+
+        print('Action clients: {}'.format(len(action_clients)), end=line_end)
         if not args.count:
-            for client_name, client_types in action_clients:
-                if args.show_types:
-                    types_formatted = ', '.join(client_types)
-                    print(f'    {client_name} [{types_formatted}]')
-                else:
-                    print(f'    {client_name}')
-        print('Action servers: {}'.format(len(action_servers)))
+            if args.verbose:
+                for node_fqn, client_types in action_clients:
+                    print(
+                        _format_action_endpoint_block(node_fqn, client_types, 'CLIENT'),
+                        end=line_end,
+                    )
+            else:
+                for client_name, client_types in action_clients:
+                    if args.show_types:
+                        types_formatted = ', '.join(client_types)
+                        print(f'    {client_name} [{types_formatted}]')
+                    else:
+                        print(f'    {client_name}')
+
+        print('Action servers: {}'.format(len(action_servers)), end=line_end)
         if not args.count:
-            for server_name, server_types in action_servers:
-                if args.show_types:
-                    types_formatted = ', '.join(server_types)
-                    print(f'    {server_name} [{types_formatted}]')
-                else:
-                    print(f'    {server_name}')
+            if args.verbose:
+                for node_fqn, server_types in action_servers:
+                    print(
+                        _format_action_endpoint_block(node_fqn, server_types, 'SERVER'),
+                        end=line_end,
+                    )
+            else:
+                for server_name, server_types in action_servers:
+                    if args.show_types:
+                        types_formatted = ', '.join(server_types)
+                        print(f'    {server_name} [{types_formatted}]')
+                    else:
+                        print(f'    {server_name}')
