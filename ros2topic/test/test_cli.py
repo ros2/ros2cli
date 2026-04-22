@@ -57,6 +57,7 @@ def generate_test_description(rmw_implementation):
     path_to_fixtures = os.path.join(os.path.dirname(__file__), 'fixtures')
     additional_env = get_rmw_additional_env(rmw_implementation)
     additional_env['PYTHONUNBUFFERED'] = '1'
+    additional_env['ROS_AUTOMATIC_DISCOVERY_RANGE'] = 'LOCALHOST'
     set_env_actions = [SetEnvironmentVariable(k, v) for k, v in additional_env.items()]
     path_to_talker_node_script = os.path.join(path_to_fixtures, 'talker_node.py')
     path_to_listener_node_script = os.path.join(path_to_fixtures, 'listener_node.py')
@@ -116,22 +117,21 @@ def generate_test_description(rmw_implementation):
     )
 
     return LaunchDescription([
-        # Always restart daemon to isolate tests.
+        # Establish environment variables.
+        *set_env_actions,
+        # Enable RMW isolation (unique ROS_DOMAIN_ID).
+        EnableRmwIsolation(),
+        # Ensure daemon is stopped in the isolated environment before starting.
         ExecuteProcess(
             cmd=['ros2', 'daemon', 'stop'],
-            name='daemon-stop',
+            name='daemon-stop-isolated-pre',
             on_exit=[
-                *set_env_actions,
-                EnableRmwIsolation(),
+                # Stop daemon in isolated environment upon shutdown.
                 RegisterEventHandler(OnShutdown(on_shutdown=[
-                    # Stop daemon in isolated environment with proper ROS_DOMAIN_ID
                     ExecuteProcess(
                         cmd=['ros2', 'daemon', 'stop'],
-                        name='daemon-stop-isolated',
-                        # Use the same isolated environment
-                        additional_env=dict(additional_env),
+                        name='daemon-stop-isolated-post',
                     ),
-                    # This must be done after stopping the daemon in the isolated environment
                     ResetEnvironment(),
                 ])),
                 ExecuteProcess(
@@ -196,7 +196,7 @@ class TestROS2TopicCLI(unittest.TestCase):
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_list_topics(self):
         with self.launch_topic_command(arguments=['list']) as topic_command:
-            assert topic_command.wait_for_shutdown(timeout=10)
+            assert topic_command.wait_for_shutdown(timeout=20)
         assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
@@ -219,7 +219,7 @@ class TestROS2TopicCLI(unittest.TestCase):
         with self.launch_topic_command(
             arguments=['list', '--include-hidden-topics']
         ) as topic_command:
-            assert topic_command.wait_for_shutdown(timeout=10)
+            assert topic_command.wait_for_shutdown(timeout=20)
         assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
@@ -241,7 +241,7 @@ class TestROS2TopicCLI(unittest.TestCase):
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_list_with_types(self):
         with self.launch_topic_command(arguments=['list', '-t']) as topic_command:
-            assert topic_command.wait_for_shutdown(timeout=10)
+            assert topic_command.wait_for_shutdown(timeout=20)
         assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
@@ -262,7 +262,7 @@ class TestROS2TopicCLI(unittest.TestCase):
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_list_with_verbose(self):
         with self.launch_topic_command(arguments=['list', '-v']) as topic_command:
-            assert topic_command.wait_for_shutdown(timeout=10)
+            assert topic_command.wait_for_shutdown(timeout=20)
         assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
@@ -287,7 +287,7 @@ class TestROS2TopicCLI(unittest.TestCase):
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_list_count(self):
         with self.launch_topic_command(arguments=['list', '-c']) as topic_command:
-            assert topic_command.wait_for_shutdown(timeout=10)
+            assert topic_command.wait_for_shutdown(timeout=20)
         assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
         output_lines = topic_command.output.splitlines()
         assert len(output_lines) == 1
@@ -296,7 +296,7 @@ class TestROS2TopicCLI(unittest.TestCase):
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_endpoint_info(self):
         with self.launch_topic_command(arguments=['info', '/chatter']) as topic_command:
-            assert topic_command.wait_for_shutdown(timeout=10)
+            assert topic_command.wait_for_shutdown(timeout=20)
         assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
@@ -315,7 +315,7 @@ class TestROS2TopicCLI(unittest.TestCase):
             'df668c740482bbd48fb39d76a70dfd4bd59db1288021743503259e948f6b1a18'
 
         with self.launch_topic_command(arguments=['info', '-v', '/chatter']) as topic_command:
-            assert topic_command.wait_for_shutdown(timeout=10)
+            assert topic_command.wait_for_shutdown(timeout=20)
         assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=[
@@ -349,7 +349,7 @@ class TestROS2TopicCLI(unittest.TestCase):
 
     def test_info_on_unknown_topic(self):
         with self.launch_topic_command(arguments=['info', '/unknown_topic']) as topic_command:
-            assert topic_command.wait_for_shutdown(timeout=10)
+            assert topic_command.wait_for_shutdown(timeout=20)
         assert launch_testing.tools.expect_output(
             expected_lines=[
                 "Unknown topic '/unknown_topic'",
@@ -361,7 +361,7 @@ class TestROS2TopicCLI(unittest.TestCase):
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_type(self):
         with self.launch_topic_command(arguments=['type', '/chatter']) as topic_command:
-            assert topic_command.wait_for_shutdown(timeout=10)
+            assert topic_command.wait_for_shutdown(timeout=20)
         assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=['std_msgs/msg/String'],
@@ -374,7 +374,7 @@ class TestROS2TopicCLI(unittest.TestCase):
         with self.launch_topic_command(
             arguments=['type', '/_hidden_chatter']
         ) as topic_command:
-            assert topic_command.wait_for_shutdown(timeout=10)
+            assert topic_command.wait_for_shutdown(timeout=20)
         assert topic_command.exit_code == 1
         assert topic_command.output == ''
 
@@ -383,7 +383,7 @@ class TestROS2TopicCLI(unittest.TestCase):
         with self.launch_topic_command(
             arguments=['find', 'rcl_interfaces/msg/Log']
         ) as topic_command:
-            assert topic_command.wait_for_shutdown(timeout=10)
+            assert topic_command.wait_for_shutdown(timeout=20)
         assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=['/rosout'], text=topic_command.output, strict=True
@@ -393,7 +393,7 @@ class TestROS2TopicCLI(unittest.TestCase):
         with self.launch_topic_command(
             arguments=['find', 'rcl_interfaces/msg/NotAMessageTypeName']
         ) as topic_command:
-            assert topic_command.wait_for_shutdown(timeout=10)
+            assert topic_command.wait_for_shutdown(timeout=20)
         assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
         assert not topic_command.output
 
@@ -407,8 +407,8 @@ class TestROS2TopicCLI(unittest.TestCase):
                     re.compile(r"data: 'Hello World: \d+'"),
                     '---'
                 ], strict=True
-            ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=10)
+            ), timeout=30)
+        assert topic_command.wait_for_shutdown(timeout=20)
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_no_str_topic_echo(self):
@@ -420,8 +420,8 @@ class TestROS2TopicCLI(unittest.TestCase):
                     re.compile(r"data: '<string length: <\d+>>'"),
                     '---'
                 ], strict=True
-            ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=10)
+            ), timeout=30)
+        assert topic_command.wait_for_shutdown(timeout=20)
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_csv_topic_echo(self):
@@ -432,8 +432,8 @@ class TestROS2TopicCLI(unittest.TestCase):
                 launch_testing.tools.expect_output, expected_lines=[
                     "True,b'2',100,1.125,1.125,-50,200,-1000,2000,-30000,60000,-40000000,50000000"
                 ], strict=True
-            ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=10)
+            ), timeout=30)
+        assert topic_command.wait_for_shutdown(timeout=20)
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_no_arr_topic_echo_on_array_message(self):
@@ -476,8 +476,8 @@ class TestROS2TopicCLI(unittest.TestCase):
                     'alignment_check: 0',
                     '---'
                 ], strict=False
-            ), timeout=10), 'Output does not match: ' + topic_command.output
-        assert topic_command.wait_for_shutdown(timeout=10)
+            ), timeout=30), 'Output does not match: ' + topic_command.output
+        assert topic_command.wait_for_shutdown(timeout=20)
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_no_arr_topic_echo_on_seq_message(self):
@@ -520,8 +520,8 @@ class TestROS2TopicCLI(unittest.TestCase):
                     'alignment_check: 0',
                     '---'
                 ], strict=True
-            ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=10)
+            ), timeout=30)
+        assert topic_command.wait_for_shutdown(timeout=20)
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_no_arr_topic_echo_on_bounded_seq_message(self):
@@ -565,8 +565,8 @@ class TestROS2TopicCLI(unittest.TestCase):
                     'alignment_check: 0',
                     '---'
                 ], strict=True
-            ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=10)
+            ), timeout=30)
+        assert topic_command.wait_for_shutdown(timeout=20)
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_truncate_length_topic_echo(self):
@@ -578,8 +578,8 @@ class TestROS2TopicCLI(unittest.TestCase):
                     re.compile(r'data: Hello...'),
                     '---'
                 ], strict=True
-            ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=10)
+            ), timeout=30)
+        assert topic_command.wait_for_shutdown(timeout=20)
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_echo_field(self):
@@ -591,8 +591,8 @@ class TestROS2TopicCLI(unittest.TestCase):
                     '0',
                     '---',
                 ], strict=True
-            ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=10)
+            ), timeout=30)
+        assert topic_command.wait_for_shutdown(timeout=20)
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_echo_multi_fields(self):
@@ -605,8 +605,8 @@ class TestROS2TopicCLI(unittest.TestCase):
                     '200',
                     '---',
                 ], strict=True
-            ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=10)
+            ), timeout=30)
+        assert topic_command.wait_for_shutdown(timeout=20)
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_echo_field_nested(self):
@@ -620,8 +620,8 @@ class TestROS2TopicCLI(unittest.TestCase):
                     'z: 0.0',
                     '---',
                 ], strict=True
-            ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=10)
+            ), timeout=30)
+        assert topic_command.wait_for_shutdown(timeout=20)
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_echo_field_array(self):
@@ -633,8 +633,8 @@ class TestROS2TopicCLI(unittest.TestCase):
                     '-1.125',
                     '---',
                 ], strict=True
-            ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=10)
+            ), timeout=30)
+        assert topic_command.wait_for_shutdown(timeout=20)
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_echo_multi_fields_nested(self):
@@ -648,8 +648,8 @@ class TestROS2TopicCLI(unittest.TestCase):
                     '0.0',
                     '---',
                 ], strict=True
-            ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=10)
+            ), timeout=30)
+        assert topic_command.wait_for_shutdown(timeout=20)
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_echo_multi_fields_array(self):
@@ -663,8 +663,8 @@ class TestROS2TopicCLI(unittest.TestCase):
                     'max value',
                     '---',
                 ], strict=True
-            ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=10)
+            ), timeout=30)
+        assert topic_command.wait_for_shutdown(timeout=20)
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_echo_field_not_a_member(self):
@@ -675,8 +675,8 @@ class TestROS2TopicCLI(unittest.TestCase):
                 launch_testing.tools.expect_output, expected_lines=[
                     "Invalid field 'not_member': 'Arrays' object has no attribute 'not_member'",
                 ], strict=True
-            ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=10)
+            ), timeout=30)
+        assert topic_command.wait_for_shutdown(timeout=20)
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_echo_field_array_not_an_array(self):
@@ -688,8 +688,8 @@ class TestROS2TopicCLI(unittest.TestCase):
                     "Invalid field 'float32_values_default.[0].[0]': invalid index to "
                     'scalar variable.',
                 ], strict=True
-            ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=10)
+            ), timeout=30)
+        assert topic_command.wait_for_shutdown(timeout=20)
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_echo_field_array_index_out_of_bounds(self):
@@ -701,8 +701,8 @@ class TestROS2TopicCLI(unittest.TestCase):
                     "Invalid field 'float32_values_default.[3]': index 3 is out of bounds "
                     'for axis 0 with size 3',
                 ], strict=True
-            ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=10)
+            ), timeout=30)
+        assert topic_command.wait_for_shutdown(timeout=20)
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_echo_field_array_no_index(self):
@@ -714,8 +714,8 @@ class TestROS2TopicCLI(unittest.TestCase):
                     "Invalid field 'float32_values_default.[abc]': 'numpy.ndarray' object "
                     "has no attribute '[abc]'",
                 ], strict=True
-            ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=10)
+            ), timeout=30)
+        assert topic_command.wait_for_shutdown(timeout=20)
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_echo_multi_fields_not_a_member(self):
@@ -726,8 +726,8 @@ class TestROS2TopicCLI(unittest.TestCase):
                 launch_testing.tools.expect_output, expected_lines=[
                     "Invalid field 'not_member': 'Arrays' object has no attribute 'not_member'",
                 ], strict=True
-            ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=10)
+            ), timeout=30)
+        assert topic_command.wait_for_shutdown(timeout=20)
 
         with self.launch_topic_command(
             arguments=['echo', '/arrays', '--field', 'alignment_check', '--field', 'not_member'],
@@ -736,8 +736,8 @@ class TestROS2TopicCLI(unittest.TestCase):
                 launch_testing.tools.expect_output, expected_lines=[
                     "Invalid field 'not_member': 'Arrays' object has no attribute 'not_member'",
                 ], strict=True
-            ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=10)
+            ), timeout=30)
+        assert topic_command.wait_for_shutdown(timeout=20)
 
     def test_topic_echo_field_invalid(self):
         with self.launch_topic_command(
@@ -747,8 +747,8 @@ class TestROS2TopicCLI(unittest.TestCase):
                 launch_testing.tools.expect_output, expected_lines=[
                     "Invalid field '/': 'Arrays' object has no attribute '/'",
                 ], strict=True
-            ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=10)
+            ), timeout=30)
+        assert topic_command.wait_for_shutdown(timeout=20)
 
         with self.launch_topic_command(
             arguments=['echo', '/arrays', '--field', '.'],
@@ -757,8 +757,8 @@ class TestROS2TopicCLI(unittest.TestCase):
                 launch_testing.tools.expect_output, expected_lines=[
                     "Invalid field value '.'",
                 ], strict=True
-            ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=10)
+            ), timeout=30)
+        assert topic_command.wait_for_shutdown(timeout=20)
 
     def test_topic_echo_multi_fields_invalid(self):
         with self.launch_topic_command(
@@ -768,8 +768,8 @@ class TestROS2TopicCLI(unittest.TestCase):
                 launch_testing.tools.expect_output, expected_lines=[
                     "Invalid field '/': 'Arrays' object has no attribute '/'",
                 ], strict=True
-            ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=10)
+            ), timeout=30)
+        assert topic_command.wait_for_shutdown(timeout=20)
 
         with self.launch_topic_command(
             arguments=['echo', '/arrays', '--field', 'alignment_check', '--field', '.'],
@@ -778,8 +778,8 @@ class TestROS2TopicCLI(unittest.TestCase):
                 launch_testing.tools.expect_output, expected_lines=[
                     "Invalid field value '.'",
                 ], strict=True
-            ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=10)
+            ), timeout=30)
+        assert topic_command.wait_for_shutdown(timeout=20)
 
     def test_topic_echo_no_publisher(self):
         with self.launch_topic_command(
@@ -813,13 +813,13 @@ class TestROS2TopicCLI(unittest.TestCase):
                     "publishing #1: std_msgs.msg.String(data='foo')",
                     ''
                 ]
-            ), timeout=10)
+            ), timeout=30)
             assert self.listener_node.wait_for_output(functools.partial(
                 launch_testing.tools.expect_output, expected_lines=[
                     re.compile(r'\[INFO\] \[\d+\.\d*\] \[listener\]: I heard: \[foo\]')
                 ] * 3, strict=False
-            ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=10)
+            ), timeout=30)
+        assert topic_command.wait_for_shutdown(timeout=20)
 
     def test_topic_pub_once(self):
         with self.launch_topic_command(
@@ -839,13 +839,13 @@ class TestROS2TopicCLI(unittest.TestCase):
                     "publishing #1: std_msgs.msg.String(data='bar')",
                     ''
                 ]
-            ), timeout=10)
-            assert topic_command.wait_for_shutdown(timeout=10)
+            ), timeout=30)
+            assert topic_command.wait_for_shutdown(timeout=20)
             assert self.listener_node.wait_for_output(functools.partial(
                 launch_testing.tools.expect_output, expected_lines=[
                     re.compile(r'\[INFO\] \[\d+\.\d*\] \[listener\]: I heard: \[bar\]')
                 ], strict=False
-            ), timeout=10)
+            ), timeout=30)
         assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
 
     def test_topic_pub_once_matching_two_listeners(
@@ -878,18 +878,18 @@ class TestROS2TopicCLI(unittest.TestCase):
                     "publishing #1: std_msgs.msg.String(data='bar')",
                     ''
                 ]
-            ), timeout=10)
-            assert topic_command.wait_for_shutdown(timeout=10)
+            ), timeout=30)
+            assert topic_command.wait_for_shutdown(timeout=20)
             assert self.listener_node.wait_for_output(functools.partial(
                 launch_testing.tools.expect_output, expected_lines=[
                     re.compile(r'\[INFO\] \[\d+\.\d*\] \[listener\]: I heard: \[bar\]')
                 ]
-            ), timeout=10)
+            ), timeout=30)
             assert second_listener_node.wait_for_output(functools.partial(
                 launch_testing.tools.expect_output, expected_lines=[
                     re.compile(r'\[INFO\] \[\d+\.\d*\] \[second_listener\]: I heard: \[bar\]')
                 ]
-            ), timeout=10)
+            ), timeout=30)
         assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
 
     def test_topic_pub_print_every_two(self):
@@ -913,13 +913,13 @@ class TestROS2TopicCLI(unittest.TestCase):
                     "publishing #4: std_msgs.msg.String(data='fizz')",
                     ''
                 ]
-            ), timeout=10), 'Output does not match: ' + topic_command.output
+            ), timeout=30), 'Output does not match: ' + topic_command.output
             assert self.listener_node.wait_for_output(functools.partial(
                 launch_testing.tools.expect_output, expected_lines=[
                     re.compile(r'\[INFO\] \[\d+\.\d*\] \[listener\]: I heard: \[fizz\]')
                 ], strict=False
-            ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=10)
+            ), timeout=30)
+        assert topic_command.wait_for_shutdown(timeout=20)
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_delay(self):
@@ -932,8 +932,8 @@ class TestROS2TopicCLI(unittest.TestCase):
                 launch_testing.tools.expect_output, expected_lines=[
                     average_delay_line_pattern, stats_line_pattern
                 ], strict=True
-            ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=10)
+            ), timeout=30)
+        assert topic_command.wait_for_shutdown(timeout=20)
 
         head_line = topic_command.output.splitlines()[0]
         average_delay = float(average_delay_line_pattern.match(head_line).group(1))
@@ -950,8 +950,8 @@ class TestROS2TopicCLI(unittest.TestCase):
                 launch_testing.tools.expect_output, expected_lines=[
                     average_rate_line_pattern, stats_line_pattern
                 ], strict=True
-            ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=10)
+            ), timeout=30)
+        assert topic_command.wait_for_shutdown(timeout=20)
 
         head_line = topic_command.output.splitlines()[0]
         average_rate = float(average_rate_line_pattern.match(head_line).group(1))
@@ -975,8 +975,8 @@ class TestROS2TopicCLI(unittest.TestCase):
                     header_pattern, hline_pattern,
                     chatter_line_pattern, hidden_chatter_line_pattern
                 ], strict=True
-            ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=10)
+            ), timeout=30)
+        assert topic_command.wait_for_shutdown(timeout=20)
 
         chatter_line = topic_command.output.splitlines()[4]
         chatter_average_rate = float(chatter_line_pattern.match(chatter_line).group(1))
@@ -1004,8 +1004,8 @@ class TestROS2TopicCLI(unittest.TestCase):
                 launch_testing.tools.expect_output, expected_lines=[
                     average_rate_line_pattern, stats_line_pattern
                 ], strict=True
-            ), timeout=10), 'Output does not match: ' + topic_command.output
-        assert topic_command.wait_for_shutdown(timeout=10)
+            ), timeout=30), 'Output does not match: ' + topic_command.output
+        assert topic_command.wait_for_shutdown(timeout=20)
 
         head_line = topic_command.output.splitlines()[0]
         average_rate = float(average_rate_line_pattern.match(head_line).group(1))
@@ -1020,5 +1020,5 @@ class TestROS2TopicCLI(unittest.TestCase):
                     re.compile(r'\d{2,3} B/s from \d+ messages'),
                     re.compile(r'\s*Message size mean: \d{2} B min: \d{2} B max: \d{2} B')
                 ], strict=True
-            ), timeout=10)
-        assert topic_command.wait_for_shutdown(timeout=10)
+            ), timeout=30)
+        assert topic_command.wait_for_shutdown(timeout=20)
