@@ -57,6 +57,9 @@ def generate_test_description(rmw_implementation):
     path_to_fixtures = os.path.join(os.path.dirname(__file__), 'fixtures')
     additional_env = get_rmw_additional_env(rmw_implementation)
     additional_env['PYTHONUNBUFFERED'] = '1'
+    additional_env['ROS_AUTOMATIC_DISCOVERY_RANGE'] = 'LOCALHOST'
+    # Suppress RTI Connext license header noise
+    additional_env['NDDS_CONFIG_LOG_VERBOSITY'] = 'SILENT'
     set_env_actions = [SetEnvironmentVariable(k, v) for k, v in additional_env.items()]
     path_to_talker_node_script = os.path.join(path_to_fixtures, 'talker_node.py')
     path_to_listener_node_script = os.path.join(path_to_fixtures, 'listener_node.py')
@@ -116,22 +119,21 @@ def generate_test_description(rmw_implementation):
     )
 
     return LaunchDescription([
-        # Always restart daemon to isolate tests.
+        # Establish environment variables.
+        *set_env_actions,
+        # Enable RMW isolation (unique ROS_DOMAIN_ID).
+        EnableRmwIsolation(),
+        # Ensure daemon is stopped in the isolated environment before starting.
         ExecuteProcess(
             cmd=['ros2', 'daemon', 'stop'],
-            name='daemon-stop',
+            name='daemon-stop-isolated-pre',
             on_exit=[
-                *set_env_actions,
-                EnableRmwIsolation(),
+                # Stop daemon in isolated environment upon shutdown.
                 RegisterEventHandler(OnShutdown(on_shutdown=[
-                    # Stop daemon in isolated environment with proper ROS_DOMAIN_ID
                     ExecuteProcess(
                         cmd=['ros2', 'daemon', 'stop'],
-                        name='daemon-stop-isolated',
-                        # Use the same isolated environment
-                        additional_env=dict(additional_env),
+                        name='daemon-stop-isolated-post',
                     ),
-                    # This must be done after stopping the daemon in the isolated environment
                     ResetEnvironment(),
                 ])),
                 ExecuteProcess(
