@@ -2,6 +2,9 @@
 Changelog for package ros2doctor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.40.5 (2026-03-07)
 -------------------
 * Fix future flake8 regressions (`#1196 <https://github.com/ros2/ros2cli//issues/1196>`_)

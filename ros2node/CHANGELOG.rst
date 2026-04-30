@@ -2,6 +2,9 @@
 Changelog for package ros2node
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.40.5 (2026-03-07)
 -------------------
 * Add fzf-based interactive selection to ros2cli commands (`#1151 <https://github.com/ros2/ros2cli//issues/1151>`_)
