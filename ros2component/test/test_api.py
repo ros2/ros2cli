@@ -39,3 +39,33 @@ def test_find_container_node_names():
 def test_get_package_component_types():
     """Test get_package_component_types() API function."""
     assert len(get_package_component_types(package_name='ros2component')) == 0
+
+
+def test_component_type_name_completer():
+    from unittest.mock import Mock, patch
+    from ros2component.api import ComponentTypeNameCompleter
+
+    parsed_args = Mock()
+    parsed_args.package_name = 'my_package'
+    completer = ComponentTypeNameCompleter(package_name_key='package_name')
+
+    # Test 1: package has component types
+    with patch('ros2component.api.get_package_component_types') as mock_get_types:
+        mock_get_types.return_value = ['my_package::MyComponent', 'my_package::OtherComponent']
+        result = completer(prefix='', parsed_args=parsed_args)
+        assert result == ['my_package::MyComponent', 'my_package::OtherComponent']
+        mock_get_types.assert_called_once_with(package_name='my_package')
+
+    # Test 2: package has no component types
+    with patch('ros2component.api.get_package_component_types') as mock_get_types:
+        mock_get_types.return_value = []
+        result = completer(prefix='', parsed_args=parsed_args)
+        assert result == []
+
+    # Test 3: different package name
+    parsed_args.package_name = 'other_package'
+    with patch('ros2component.api.get_package_component_types') as mock_get_types:
+        mock_get_types.return_value = ['other_package::Comp']
+        result = completer(prefix='', parsed_args=parsed_args)
+        assert result == ['other_package::Comp']
+        mock_get_types.assert_called_once_with(package_name='other_package')
