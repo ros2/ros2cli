@@ -2,6 +2,11 @@
 Changelog for package ros2cli_test_interfaces
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update template to use c17 and c++20 (`#1221 <https://github.com/ros2/ros2cli/issues/1221>`_)
+* Contributors: Maurice Alexander Purnawan
+
 0.40.7 (2026-04-30)
 -------------------
 
