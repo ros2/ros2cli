@@ -2,8 +2,8 @@
 Changelog for package ros2lifecycle_test_fixtures
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.41.0 (2026-05-06)
+-------------------
 * Update template to use c17 and c++20 (`#1221 <https://github.com/ros2/ros2cli/issues/1221>`_)
 * Contributors: Maurice Alexander Purnawan
 
