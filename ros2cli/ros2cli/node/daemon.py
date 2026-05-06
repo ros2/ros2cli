@@ -17,6 +17,7 @@ import functools
 import os
 import platform
 import socket
+import time
 
 import rclpy
 
@@ -122,15 +123,24 @@ def spawn_daemon(args, timeout=None, debug=False):
     :raises: if it fails to spawn the daemon.
     """
     # Acquire socket by instantiating XMLRPC server.
-    try:
-        server = daemon.make_xmlrpc_server()
-        server.socket.set_inheritable(True)
-    except socket.error as e:
-        if e.errno == errno.EADDRINUSE:
-            # Failed to acquire socket
-            # Daemon already running
-            return False
-        raise
+    # Retry on EADDRINUSE: on Windows (where SO_REUSEADDR is intentionally not
+    # set), a just-shutdown daemon's TCP connection may still be in TIME_WAIT,
+    # temporarily blocking the port.  Retry within the timeout budget.
+    deadline = time.monotonic() + (timeout if timeout and timeout > 0 else 0)
+    while True:
+        try:
+            server = daemon.make_xmlrpc_server()
+            server.socket.set_inheritable(True)
+            break
+        except socket.error as e:
+            if e.errno == errno.EADDRINUSE:
+                if timeout is not None and timeout > 0 \
+                        and time.monotonic() < deadline:
+                    time.sleep(0.1)
+                    continue
+                # Failed to acquire socket — daemon already running
+                return False
+            raise
 
     # During tab completion on the ros2 tooling, we can get here and attempt to spawn a daemon.
     # In that scenario, there may be open file descriptors that can prevent us from successfully
