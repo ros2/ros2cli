@@ -19,11 +19,29 @@ DEFAULT_GROUP = '225.0.0.1'
 DEFAULT_PORT = 49150
 
 
+def _get_multicast_iface():
+    # Connect a UDP socket to a multicast address (no data is sent) so the OS
+    # resolves its routing table and getsockname() returns the local address it
+    # would use.  Fall back to INADDR_ANY if the OS cannot determine a route.
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect((DEFAULT_GROUP, 1))
+        return s.getsockname()[0]
+    except OSError:
+        return '0.0.0.0'
+    finally:
+        s.close()
+
+
 def send(data, *, group=DEFAULT_GROUP, port=DEFAULT_PORT, ttl=None):
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
     if ttl is not None:
         packed_ttl = struct.pack('b', ttl)
         s.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, packed_ttl)
+    s.setsockopt(
+        socket.IPPROTO_IP,
+        socket.IP_MULTICAST_IF,
+        socket.inet_aton(_get_multicast_iface()))
     try:
         s.sendto(data, (group, port))
     finally:
