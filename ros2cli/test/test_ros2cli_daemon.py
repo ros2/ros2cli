@@ -149,7 +149,8 @@ def daemon_node():
                 f'daemon failed to discover {TEST_NODE_NAMESPACE}/{TEST_NODE_NAME}'
             )
         yield node
-        node.system.shutdown()
+    # Wait for full teardown so the next module's fixture can rebind.
+    shutdown_daemon(args=[], timeout=5.0)
 
 
 def test_get_name(daemon_node):

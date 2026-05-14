@@ -75,6 +75,21 @@ def is_daemon_running(args):
         return node.connected
 
 
+def _is_daemon_address_free():
+    # Mirror LocalXMLRPCServer.allow_reuse_address: SO_REUSEADDR on
+    # non-Windows so TIME_WAIT doesn't make us falsely report busy.
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            if os.name != 'nt':
+                s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            s.bind(daemon.get_address())
+        return True
+    except socket.error as e:
+        if e.errno == errno.EADDRINUSE:
+            return False
+        raise
+
+
 def shutdown_daemon(args, timeout=None):
     """
     Shut down daemon node if it's running.
@@ -92,7 +107,11 @@ def shutdown_daemon(args, timeout=None):
             return False
         node.system.shutdown()
         if timeout is not None:
-            predicate = (lambda: not node.connected)
+            # Both conditions matter: a caller spawning a new daemon
+            # right after this returns needs the address to be free.
+            predicate = (
+                lambda: not node.connected and _is_daemon_address_free()
+            )
             if not wait_for(predicate, timeout):
                 raise RuntimeError(
                     'Timed out waiting for '
