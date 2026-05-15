@@ -125,6 +125,9 @@ def create_package_environment(package, destination_directory):
     if package.get_build_type() == 'ament_cargo':
         print('creating source folder')
         source_directory = _create_folder('src', package_directory)
+    if package.get_build_type() == 'ament_cmake_python':
+        print('creating Python package folder')
+        source_directory = _create_folder(package.name, package_directory)
     if package.get_build_type() == 'ament_python':
         print('creating source folder')
         source_directory = _create_folder(package.name, package_directory)
@@ -257,6 +260,31 @@ def populate_cmake(package, package_directory, cpp_node_name, cpp_library_name):
             package_directory,
             package.name + 'ConfigVersion.cmake.in',
             version_config)
+
+
+def populate_ament_cmake_python(package, package_directory, source_directory, python_node_name):
+    cmakelists_config = {
+            'project_name': package.name,
+            'dependencies': [str(dep) for dep in package.build_depends],
+            'node_name': python_node_name,
+            }
+    _create_template_file(
+            'ament_cmake_python',
+            'CMakeLists.txt.em',
+            package_directory,
+            'CMakeLists.txt',
+            cmakelists_config)
+
+    _create_template_file('ament_python',
+                          'init.py.em',
+                          source_directory,
+                          '__init__.py',
+                          {})
+    _create_template_file('ament_python',
+                          'py.typed.em',
+                          source_directory,
+                          'py.typed',
+                          {})
 
 
 def populate_ament_cmake(package, package_directory, cpp_node_name, cpp_library_name):
