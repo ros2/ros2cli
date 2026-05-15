@@ -83,15 +83,16 @@ def _create_template_file(
         template_subdir, template_file_name, output_directory, output_file_name, template_config
         ):
     full_package = 'ros2pkg.resource.' + template_subdir
-    with resources.path(full_package, template_file_name) as path:
+    ref = resources.files(full_package).joinpath(template_file_name)
+    with resources.as_file(ref) as path:
         template_path = str(path)
-    if not os.path.exists(template_path):
-        raise FileNotFoundError('template not found:', template_path)
+        if not os.path.exists(template_path):
+            raise FileNotFoundError('template not found:', template_path)
 
-    output_file_path = os.path.join(output_directory, output_file_name)
+        output_file_path = os.path.join(output_directory, output_file_name)
 
-    print('creating', output_file_path)
-    _expand_template(template_path, template_config, output_file_path)
+        print('creating', output_file_path)
+        _expand_template(template_path, template_config, output_file_path)
 
 
 def create_package_environment(package, destination_directory):
