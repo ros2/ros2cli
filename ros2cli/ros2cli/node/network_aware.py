@@ -21,9 +21,10 @@ import rclpy
 from ros2cli.node.direct import DirectNode
 
 
-def get_interfaces_ip_addresses():
+def get_interfaces_ip_addresses(logger=None):
     addresses_by_interfaces = psutil.net_if_addrs()
-    print(f'Addresses by interfaces: {addresses_by_interfaces}')
+    if logger is not None:
+        logger.info(f'Addresses by interfaces: {addresses_by_interfaces}')
     return addresses_by_interfaces
 
 
@@ -35,7 +36,7 @@ class NetworkAwareNode:
         # TODO(ivanpauno): A race condition is possible here, since it isn't possible to know
         # exactly which interfaces were available at node creation.
         self.node = DirectNode(args)
-        self.addresses_at_start = get_interfaces_ip_addresses()
+        self.addresses_at_start = get_interfaces_ip_addresses(self.node.get_logger())
 
     def __enter__(self):
         self.node.__enter__()
@@ -59,11 +60,11 @@ class NetworkAwareNode:
         self.node.__exit__(exc_type, exc_value, traceback)
 
     def reset_if_addresses_changed(self):
-        new_addresses = get_interfaces_ip_addresses()
+        new_addresses = get_interfaces_ip_addresses(self.node.get_logger())
         if new_addresses != self.addresses_at_start:
             self.addresses_at_start = new_addresses
             self.node.destroy_node()
             rclpy.shutdown()
             self.node = DirectNode(self.args)
             self.node.__enter__()
-            print('Network interfaces changed, daemon node was reset!')
+            self.node.get_logger().info('Network interfaces changed, daemon node was reset!')
