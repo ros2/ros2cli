@@ -23,6 +23,7 @@ import composition_interfaces.srv
 import rcl_interfaces.msg
 
 import rclpy
+from rclpy.logging import get_logging_severity_from_string
 from rclpy.parameter import get_parameter_value
 from rclpy.task import Future
 
@@ -229,7 +230,14 @@ def load_component_into_container(
         if node_namespace is not None:
             request.node_namespace = node_namespace
         if log_level is not None:
-            request.log_level = log_level
+            try:
+                severity = get_logging_severity_from_string(log_level)
+            except RuntimeError:
+                raise RuntimeError(
+                    f"Invalid log level '{log_level}'. "
+                    'Valid values are: debug, info, warn, error, fatal'
+                )
+            request.log_level = int(severity)
         if remap_rules is not None:
             request.remap_rules = remap_rules
         if parameters is not None:
@@ -365,7 +373,11 @@ def add_component_arguments(parser):
     argument.completer = ComponentTypeNameCompleter(package_name_key='package_name')
     parser.add_argument('-n', '--node-name', help='Component node name')
     parser.add_argument('--node-namespace', help='Component node namespace')
-    parser.add_argument('--log-level', help='Component node log level')
+    parser.add_argument(
+        '--log-level', type=str.lower,
+        choices=['debug', 'info', 'warn', 'error', 'fatal'],
+        help='Component node log level (debug, info, warn, error, fatal)'
+    )
     parser.add_argument(
         '-r', '--remap-rule', action='append', dest='remap_rules',
         help="Component node remapping rules, in the 'from:=to' form"
