@@ -2,8 +2,8 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.32.10 (2026-06-02)
+--------------------
 * Enable always complete (`#1190 <https://github.com/ros2/ros2cli/issues/1190>`_) (`#1208 <https://github.com/ros2/ros2cli/issues/1208>`_)
   (cherry picked from commit 181a85c2788e2e844e65c582a7b8a4ca68c9d7e0)
   Co-authored-by: David V. Lu!! <davidvlu@gmail.com>
