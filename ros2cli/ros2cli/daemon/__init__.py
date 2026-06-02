@@ -21,7 +21,6 @@ import rclpy
 
 from ros2cli.helpers import before_invocation
 from ros2cli.helpers import get_ros_domain_id
-from ros2cli.helpers import pretty_print_call
 
 from ros2cli.node.network_aware import NetworkAwareNode
 
@@ -76,6 +75,7 @@ def serve(server: LocalXMLRPCServer, *, timeout: int = 2 * 60 * 60):
         start_parameter_services=False,
         start_type_description_service=False)
     with NetworkAwareNode(node_args) as node:
+        daemon_logger = node.get_logger()
         functions = [
             node.get_name,
             node.get_namespace,
@@ -117,7 +117,8 @@ def serve(server: LocalXMLRPCServer, *, timeout: int = 2 * 60 * 60):
         def reset_timer_and_pretty_print(func, *args, **kwargs):
             nonlocal last_function_call_time
             last_function_call_time = time.time()
-            pretty_print_call(func, args, kwargs)
+            arguments = ', '.join([f'{v!r}' for v in (args, kwargs)])
+            daemon_logger.info(f'{func.__name__}({arguments})')
 
         server.register_introspection_functions()
         for func in functions:
@@ -131,7 +132,7 @@ def serve(server: LocalXMLRPCServer, *, timeout: int = 2 * 60 * 60):
             nonlocal shutdown
 
             if time.time() - last_function_call_time > timeout:
-                print('Shutdown due to timeout')
+                daemon_logger.info('Shutdown due to timeout')
                 shutdown = True
         server.handle_timeout = timeout_handler
         server.timeout = 0.2
@@ -139,11 +140,12 @@ def serve(server: LocalXMLRPCServer, *, timeout: int = 2 * 60 * 60):
         # function to shutdown daemon remotely
         def shutdown_handler():
             nonlocal shutdown
-            print('Remote shutdown requested')
+            daemon_logger.info('Remote shutdown requested')
             shutdown = True
         server.register_function(shutdown_handler, 'system.shutdown')
 
-        print('Serving XML-RPC on ' + get_xmlrpc_server_url(server.server_address))
+        daemon_logger.info(
+            f'Serving XML-RPC on {get_xmlrpc_server_url(server.server_address)}')
         try:
             while rclpy.ok() and not shutdown:
                 server.handle_request()
