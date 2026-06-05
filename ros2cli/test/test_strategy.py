@@ -21,19 +21,25 @@ from ros2cli.node.daemon import shutdown_daemon
 from ros2cli.node.daemon import spawn_daemon
 from ros2cli.node.strategy import NodeStrategy
 
-
 @pytest.fixture
 def enforce_no_daemon_is_running():
+    # Setup phase: enforce no daemon running
     if is_daemon_running(args=[]):
         assert shutdown_daemon(args=[], timeout=5.0)
     yield
-
+    # Teardown phase: enforce no daemon left over
+    if is_daemon_running(args=[]):
+        assert shutdown_daemon(args=[], timeout=5.0)
 
 @pytest.fixture
 def enforce_daemon_is_running():
+    # Setup phase: enforce the daemon is running
     if not is_daemon_running(args=[]):
         assert spawn_daemon(args=[], timeout=5.0)
     yield
+    # Teardown phase: enforce no daemon left over
+    if is_daemon_running(args=[]):
+        assert shutdown_daemon(args=[], timeout=5.0)
 
 
 def test_with_daemon_running(enforce_daemon_is_running):
