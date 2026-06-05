@@ -36,15 +36,17 @@ def _send_receive(sent_data, rx_kwargs, tx_kwargs):
     t = threading.Thread(target=target)
     t.start()
     time.sleep(0.1)
-    send(sent_data, **tx_kwargs)
-    t.join()
+    try:
+        send(sent_data, **tx_kwargs)
+    finally:
+        t.join()
     return received_data
 
 
 def test_api():
     sent_data = b'test_api'
 
-    rx_kwargs = {'timeout': 1.0}
+    rx_kwargs = {'timeout': 0.2}
     tx_kwargs = {}
 
     assert sent_data == _send_receive(sent_data, rx_kwargs, tx_kwargs)
