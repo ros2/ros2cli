@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
 import socket
 # Import SimpleXMLRPCRequestHandler to re-export it.
 from xmlrpc.server import SimpleXMLRPCRequestHandler  # noqa
@@ -33,11 +32,8 @@ def get_local_ipaddrs():
 class LocalXMLRPCServer(SimpleXMLRPCServer):
 
     # Allow re-binding even if another server instance was recently bound (i.e. we are still in
-    # TCP TIME_WAIT). This is already the default behavior on Windows, and further SO_REUSEADDR can
-    # lead to undefined behavior on Windows; see
-    # https://learn.microsoft.com/en-us/windows/win32/winsock/using-so-reuseaddr-and-so-exclusiveaddruse.  # noqa
-    # So we don't set the option for Windows.
-    allow_reuse_address = False if os.name == 'nt' else True
+    # TCP TIME_WAIT).
+    allow_reuse_address = True
 
     def verify_request(self, request, client_address):
         if client_address[0] not in get_local_ipaddrs():

@@ -77,11 +77,10 @@ def is_daemon_running(args):
 
 def _is_daemon_address_free():
     # Mirror LocalXMLRPCServer.allow_reuse_address: SO_REUSEADDR on
-    # non-Windows so TIME_WAIT doesn't make us falsely report busy.
+    # all platforms so TIME_WAIT doesn't make us falsely report busy.
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            if os.name != 'nt':
-                s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             s.bind(daemon.get_address())
         return True
     except socket.error as e:
@@ -140,6 +139,9 @@ def spawn_daemon(args, timeout=None, debug=False):
       `False` if it was already running.
     :raises: if it fails to spawn the daemon.
     """
+    if is_daemon_running(args):
+        return False
+
     # Acquire socket by instantiating XMLRPC server.
     try:
         server = daemon.make_xmlrpc_server()
