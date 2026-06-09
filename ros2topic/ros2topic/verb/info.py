@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from rclpy.endpoint_info import EndpointTypeEnum
 from ros2cli.helpers import interactive_select
 from ros2cli.node.strategy import add_arguments as add_strategy_node_arguments
 from ros2cli.node.strategy import NodeStrategy
@@ -19,6 +20,18 @@ from ros2topic.api import get_topic_names
 from ros2topic.api import get_topic_names_and_types
 from ros2topic.api import TopicNameCompleter
 from ros2topic.verb import VerbExtension
+
+
+def _endpoint_gid_to_hex(info):
+    return ''.join(format(x, '02x') for x in info.endpoint_gid)
+
+
+def _print_endpoint_info(info, backend_metadata_by_gid, line_end):
+    info_str = str(info)
+    backend_metadata = backend_metadata_by_gid.get(_endpoint_gid_to_hex(info))
+    if backend_metadata is not None:
+        info_str += '\nBuffer backends: %s' % (backend_metadata or '<none>')
+    print(info_str, end=line_end)
 
 
 class InfoVerb(VerbExtension):
@@ -81,8 +94,10 @@ class InfoVerb(VerbExtension):
                   node.count_publishers(topic_name), end=line_end)
             if args.verbose:
                 try:
+                    publisher_backend_metadata = node.get_buffer_backend_metadata_by_topic(
+                        topic_name, EndpointTypeEnum.PUBLISHER)
                     for info in node.get_publishers_info_by_topic(topic_name):
-                        print(info, end=line_end)
+                        _print_endpoint_info(info, publisher_backend_metadata, line_end)
                 except NotImplementedError as e:
                     return str(e)
 
@@ -90,7 +105,9 @@ class InfoVerb(VerbExtension):
                   node.count_subscribers(topic_name), end=line_end)
             if args.verbose:
                 try:
+                    subscription_backend_metadata = node.get_buffer_backend_metadata_by_topic(
+                        topic_name, EndpointTypeEnum.SUBSCRIPTION)
                     for info in node.get_subscriptions_info_by_topic(topic_name):
-                        print(info, end=line_end)
+                        _print_endpoint_info(info, subscription_backend_metadata, line_end)
                 except NotImplementedError as e:
                     return str(e)
