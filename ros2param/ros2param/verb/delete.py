@@ -59,7 +59,7 @@ class DeleteVerb(VerbExtension):
 
         with DirectNode(args) as node:
             parameter = Parameter()
-            Parameter.name = args.parameter_name
+            parameter.name = args.parameter_name
             value = ParameterValue()
             value.type = ParameterType.PARAMETER_NOT_SET
             parameter.value = value
