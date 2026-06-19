@@ -19,7 +19,8 @@ from rclpy.executors import ExternalShutdownException
 def main(args=None):
     try:
         with rclpy.init(args=args):
-            # Create a node that allows undeclared parameters so they can be dynamically set and deleted
+            # Create a node that allows undeclared parameters
+            # so they can be dynamically set and deleted
             node = rclpy.create_node('parameter_delete_node', allow_undeclared_parameters=True)
             rclpy.spin(node)
     except (KeyboardInterrupt, ExternalShutdownException):
