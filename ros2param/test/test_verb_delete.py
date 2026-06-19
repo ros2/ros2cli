@@ -171,7 +171,8 @@ class TestVerbDelete(unittest.TestCase):
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_verb_delete_param(self):
         """Test deleting an existing parameter."""
-        # 1. Set a dynamic parameter first (since statically declared parameters cannot be undeclared)
+        # 1. Set a dynamic parameter first
+        # (since statically declared parameters cannot be undeclared)
         with self.launch_param_set_command(
             arguments=[f'{TEST_NAMESPACE}/{TEST_NODE}', 'dynamic_param', '123']
         ) as param_set_command:
