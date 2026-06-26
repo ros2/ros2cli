@@ -14,6 +14,10 @@
 
 import sys
 
+from ros2cli.color import blue
+from ros2cli.color import bold
+from ros2cli.color import cyan
+from ros2cli.color import green
 from ros2cli.helpers import interactive_select
 from ros2cli.node.strategy import add_arguments
 from ros2cli.node.strategy import NodeStrategy
@@ -30,7 +34,11 @@ from ros2node.verb import VerbExtension
 
 
 def print_names_and_types(names_and_types):
-    print(*[2 * '  ' + s.name + ': ' + ', '.join(s.types) for s in names_and_types], sep='\n')
+    lines = [
+        2 * '  ' + s.name + ': ' + bold(blue(', '.join(s.types)))
+        for s in names_and_types
+    ]
+    print(*lines, sep='\n')
 
 
 class InfoVerb(VerbExtension):
@@ -75,30 +83,30 @@ class InfoVerb(VerbExtension):
                         num_nodes=count, node_name=args.node_name),
                     file=sys.stderr)
             if count > 0:
-                print(args.node_name)
+                print(bold(cyan(args.node_name)))
                 subscribers = get_subscriber_info(
                     node=node, remote_node_name=args.node_name, include_hidden=args.include_hidden)
-                print('  Subscribers:')
+                print(green('  Subscribers:'))
                 print_names_and_types(subscribers)
                 publishers = get_publisher_info(
                     node=node, remote_node_name=args.node_name, include_hidden=args.include_hidden)
-                print('  Publishers:')
+                print(green('  Publishers:'))
                 print_names_and_types(publishers)
                 service_servers = get_service_server_info(
                     node=node, remote_node_name=args.node_name, include_hidden=args.include_hidden)
-                print('  Service Servers:')
+                print(green('  Service Servers:'))
                 print_names_and_types(service_servers)
                 service_clients = get_service_client_info(
                     node=node, remote_node_name=args.node_name, include_hidden=args.include_hidden)
-                print('  Service Clients:')
+                print(green('  Service Clients:'))
                 print_names_and_types(service_clients)
                 actions_servers = get_action_server_info(
                     node=node, remote_node_name=args.node_name, include_hidden=args.include_hidden)
-                print('  Action Servers:')
+                print(green('  Action Servers:'))
                 print_names_and_types(actions_servers)
                 actions_clients = get_action_client_info(
                     node=node, remote_node_name=args.node_name, include_hidden=args.include_hidden)
-                print('  Action Clients:')
+                print(green('  Action Clients:'))
                 print_names_and_types(actions_clients)
             else:
                 return "Unable to find node '" + args.node_name + "'"

@@ -18,6 +18,7 @@
   <author email="michael.jeronimo@openrobotics.org">Michael Jeronimo</author>
 
   <exec_depend>python3-argcomplete</exec_depend>
+  <exec_depend>python3-colorama</exec_depend>
   <exec_depend>python3-packaging</exec_depend>
   <exec_depend>python3-psutil</exec_depend>
   <exec_depend>rclpy</exec_depend>
