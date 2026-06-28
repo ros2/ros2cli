@@ -61,14 +61,20 @@ def make_xmlrpc_server() -> LocalXMLRPCServer:
     )
 
 
-def serve(server: LocalXMLRPCServer, *, timeout: int = 2 * 60 * 60):
+def serve(server: LocalXMLRPCServer, *, timeout: float = 2 * 60 * 60):
     """
     Serve the ros2cli daemon API using the given `server`.
 
     :param server: an XMLRPC server instance
-    :param timeout: how long to wait before shutting
-      down the server due to inactivity.
+    :param timeout: how long, in seconds, to wait before shutting
+      down the server due to inactivity. A negative value disables
+      the timeout (it becomes ``float('inf')``), so the server runs
+      until explicitly stopped.
     """
+    # A negative timeout means "never time out"; mirror the convention
+    # used by ros2cli.helpers.wait_for.
+    if timeout < 0:
+        timeout = float('inf')
     ros_domain_id = get_ros_domain_id()
     node_args = argparse.Namespace(
         node_name_suffix=f'_daemon_{ros_domain_id}_{uuid.uuid4().hex}',
@@ -153,7 +159,7 @@ def serve(server: LocalXMLRPCServer, *, timeout: int = 2 * 60 * 60):
             pass
 
 
-def serve_and_close(server: LocalXMLRPCServer, *, timeout: int = 2 * 60 * 60):
+def serve_and_close(server: LocalXMLRPCServer, *, timeout: float = 2 * 60 * 60):
     try:
         serve(server, timeout=timeout)
     finally:
@@ -173,7 +179,9 @@ def main(*, argv=None):
              'ROS_DOMAIN_ID)')
     parser.add_argument(
         '--timeout', metavar='N', type=int, default=2 * 60 * 60,
-        help='Shutdown the daemon after N seconds of inactivity')
+        help='Shutdown the daemon after N seconds of inactivity. '
+             'A negative value disables the timeout, so the daemon '
+             'runs until explicitly stopped.')
     args = parser.parse_args(args=argv)
 
     # the arguments are only passed for visibility in e.g. the process list

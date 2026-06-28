@@ -98,7 +98,7 @@ def shutdown_daemon(args, timeout=None):
     :param timeout: optional duration, in seconds, to wait
       until the daemon node is fully shut down. Non-positive
       durations will result in an indefinite wait.
-    :return: `True` if the the daemon was shut down,
+    :return: `True` if the daemon was shut down,
       `False` if it was already shut down.
     :raises: if it fails to shutdown the daemon.
     """
@@ -120,7 +120,7 @@ def shutdown_daemon(args, timeout=None):
         return True
 
 
-def spawn_daemon(args, timeout=None, debug=False):
+def spawn_daemon(args, timeout=None, debug=False, inactivity_timeout=2 * 60 * 60):
     """
     Spawn daemon node if it's not running.
 
@@ -136,7 +136,11 @@ def spawn_daemon(args, timeout=None, debug=False):
       durations will result in an indefinite wait.
     :param debug: if `True`, the daemon process will output
       to the current `stdout` and `stderr` streams.
-    :return: `True` if the the daemon was spawned,
+    :param inactivity_timeout: duration, in seconds, of inactivity
+      after which the spawned daemon shuts down. A negative value
+      disables the timeout, so the daemon runs until explicitly
+      stopped.
+    :return: `True` if the daemon was spawned,
       `False` if it was already running.
     :raises: if it fails to spawn the daemon.
     """
@@ -187,7 +191,8 @@ def spawn_daemon(args, timeout=None, debug=False):
             'rmw_implementation': rclpy.get_rmw_implementation_identifier()}
 
         daemonize(
-            functools.partial(daemon.serve_and_close, server),
+            functools.partial(
+                daemon.serve_and_close, server, timeout=inactivity_timeout),
             tags=tags, timeout=timeout, debug=debug)
     finally:
         server.server_close()

@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import argparse
 import time
 
 import pytest
@@ -26,6 +27,7 @@ from ros2cli.node.daemon import DaemonNode
 from ros2cli.node.daemon import is_daemon_running
 from ros2cli.node.daemon import shutdown_daemon
 from ros2cli.node.daemon import spawn_daemon
+from ros2cli.verb.daemon.start import StartVerb
 
 try:
     from rmw_test_fixture_implementation import rmw_test_isolation_start
@@ -316,3 +318,46 @@ def test_count_clients(daemon_node):
 
 def test_count_services(daemon_node):
     assert 1 == daemon_node.count_services(TEST_SERVICE_NAME)
+
+
+def _wait_until(predicate, timeout):
+    # Polling is_daemon_running() uses system.listMethods, which is not a
+    # timer-resetting RPC, so it never keeps the daemon alive artificially.
+    deadline = time.time() + timeout
+    while time.time() < deadline:
+        if predicate():
+            return True
+        time.sleep(0.2)
+    return predicate()
+
+
+def test_start_verb_exposes_timeout_argument():
+    parser = argparse.ArgumentParser()
+    StartVerb().add_arguments(parser, 'daemon')
+    # Default preserves the long-standing 2 hour inactivity timeout.
+    assert parser.parse_args([]).timeout == 2 * 60 * 60
+    # A negative value is accepted and means "never time out".
+    assert parser.parse_args(['--timeout', '-1']).timeout == -1
+
+
+def test_daemon_shuts_down_after_inactivity_timeout():
+    if is_daemon_running(args=[]):
+        assert shutdown_daemon(args=[], timeout=5.0)
+    assert spawn_daemon(args=[], timeout=5.0, inactivity_timeout=5)
+    assert _wait_until(lambda: is_daemon_running(args=[]), timeout=10.0), \
+        'daemon did not come up'
+    assert _wait_until(lambda: not is_daemon_running(args=[]), timeout=60.0), \
+        'daemon did not shut down after its inactivity timeout elapsed'
+
+
+def test_negative_inactivity_timeout_never_shuts_down():
+    if is_daemon_running(args=[]):
+        assert shutdown_daemon(args=[], timeout=5.0)
+    assert spawn_daemon(args=[], timeout=5.0, inactivity_timeout=-1)
+    try:
+        assert _wait_until(lambda: is_daemon_running(args=[]), timeout=10.0)
+        # Stays up well past any short inactivity window.
+        time.sleep(8.0)
+        assert is_daemon_running(args=[])
+    finally:
+        assert shutdown_daemon(args=[], timeout=5.0)

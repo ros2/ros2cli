@@ -23,9 +23,17 @@ class StartVerb(VerbExtension):
         parser.add_argument(
             '--debug', '-d', action='store_true',
             help='Print debug messages')
+        parser.add_argument(
+            '--timeout', metavar='N', type=int, default=2 * 60 * 60,
+            help='Shut down the daemon after N seconds of inactivity. '
+                 'A negative value disables the timeout, so the daemon '
+                 'runs until explicitly stopped.')
 
     def main(self, *, args):
-        if spawn_daemon(args, timeout=10.0, debug=args.debug):
+        if spawn_daemon(
+            args, timeout=10.0, debug=args.debug,
+            inactivity_timeout=args.timeout
+        ):
             print('The daemon has been started')
         else:
             print('The daemon is already running')
