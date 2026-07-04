@@ -17,14 +17,17 @@ from rclpy.executors import ExternalShutdownException
 
 
 def main(args=None):
+    rclpy.init(args=args)
+    # Create a node that allows undeclared parameters
+    # so they can be dynamically set and deleted
+    node = rclpy.create_node('parameter_delete_node', allow_undeclared_parameters=True)
     try:
-        with rclpy.init(args=args):
-            # Create a node that allows undeclared parameters
-            # so they can be dynamically set and deleted
-            node = rclpy.create_node('parameter_delete_node', allow_undeclared_parameters=True)
-            rclpy.spin(node)
+        rclpy.spin(node)
     except (KeyboardInterrupt, ExternalShutdownException):
         print('parameter delete node stopped cleanly')
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
 
 
 if __name__ == '__main__':
