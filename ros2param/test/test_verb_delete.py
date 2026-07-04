@@ -21,17 +21,12 @@ import xmlrpc
 
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess
-from launch.actions import RegisterEventHandler
-from launch.actions import ResetEnvironment
-from launch.actions import SetEnvironmentVariable
-from launch.event_handlers import OnShutdown
 from launch_ros.actions import Node
 import launch_testing
 import launch_testing.actions
 import launch_testing.asserts
 import launch_testing.markers
 import launch_testing.tools
-from launch_testing_ros.actions import EnableRmwIsolation
 import launch_testing_ros.tools
 
 import pytest
@@ -39,7 +34,6 @@ import pytest
 import rclpy
 from rclpy.utilities import get_available_rmw_implementations
 
-from ros2cli.helpers import get_rmw_additional_env
 from ros2cli.node.strategy import NodeStrategy
 
 
@@ -60,8 +54,7 @@ if sys.platform.startswith('win'):
 @launch_testing.parametrize('rmw_implementation', get_available_rmw_implementations())
 def generate_test_description(rmw_implementation):
     path_to_fixtures = Path(__file__).parent / 'fixtures'
-    additional_env = get_rmw_additional_env(rmw_implementation)
-    set_env_actions = [SetEnvironmentVariable(k, v) for k, v in additional_env.items()]
+    additional_env = {'RMW_IMPLEMENTATION': rmw_implementation}
 
     path_to_parameter_node_script = path_to_fixtures / 'parameter_delete_node.py'
     parameter_node = Node(
@@ -69,6 +62,7 @@ def generate_test_description(rmw_implementation):
         name=TEST_NODE,
         namespace=TEST_NAMESPACE,
         arguments=[str(path_to_parameter_node_script)],
+        additional_env=additional_env
     )
 
     return LaunchDescription([
@@ -76,16 +70,6 @@ def generate_test_description(rmw_implementation):
             cmd=['ros2', 'daemon', 'stop'],
             name='daemon-stop',
             on_exit=[
-                *set_env_actions,
-                EnableRmwIsolation(),
-                RegisterEventHandler(OnShutdown(on_shutdown=[
-                    ExecuteProcess(
-                        cmd=['ros2', 'daemon', 'stop'],
-                        name='daemon-stop-isolated',
-                        additional_env=dict(additional_env),
-                    ),
-                    ResetEnvironment(),
-                ])),
                 ExecuteProcess(
                     cmd=['ros2', 'daemon', 'start'],
                     name='daemon-start',
@@ -93,6 +77,7 @@ def generate_test_description(rmw_implementation):
                         parameter_node,
                         launch_testing.actions.ReadyToTest(),
                     ],
+                    additional_env=additional_env
                 )
             ]
         ),
@@ -117,6 +102,9 @@ class TestVerbDelete(unittest.TestCase):
         def launch_param_delete_command(self, arguments):
             param_delete_command_action = ExecuteProcess(
                 cmd=['ros2', 'param', 'delete', *arguments],
+                additional_env={
+                    'RMW_IMPLEMENTATION': rmw_implementation,
+                },
                 name='ros2param-delete-cli',
                 output='screen'
             )
@@ -131,6 +119,9 @@ class TestVerbDelete(unittest.TestCase):
         def launch_param_set_command(self, arguments):
             param_set_command_action = ExecuteProcess(
                 cmd=['ros2', 'param', 'set', *arguments],
+                additional_env={
+                    'RMW_IMPLEMENTATION': rmw_implementation,
+                },
                 name='ros2param-set-cli',
                 output='screen'
             )
