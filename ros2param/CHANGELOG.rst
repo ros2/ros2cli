@@ -2,6 +2,11 @@
 Changelog for package ros2param
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.32.11 (2026-07-15)
+--------------------
+* Fix ros2param delete jazzy (`#1254 <https://github.com/ros2/ros2cli//issues/1254>`_)
+* Contributors: longway
+
 0.32.10 (2026-06-02)
 --------------------
 

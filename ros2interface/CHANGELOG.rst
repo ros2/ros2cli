@@ -2,6 +2,11 @@
 Changelog for package ros2interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.32.11 (2026-07-15)
+--------------------
+* Fix ros2 interface show --no-comments leaving bare # lines (`#1257 <https://github.com/ros2/ros2cli//issues/1257>`_) (`#1260 <https://github.com/ros2/ros2cli//issues/1260>`_)
+* Contributors: mergify[bot]
+
 0.32.10 (2026-06-02)
 --------------------
 
