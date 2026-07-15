@@ -10,7 +10,9 @@ find_package(rosidl_default_generators REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
   "action/ShortVariedMultiNested.action"
+  "msg/IdlOnly.idl"
   "msg/ShortVaried.msg"
+  "msg/ShortVariedIdlNested.msg"
   "msg/ShortVariedMultiNested.msg"
   "msg/ShortVariedNested.msg"
   "srv/ShortVariedMultiNested.srv"

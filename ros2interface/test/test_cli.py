@@ -302,6 +302,47 @@ class TestROS2InterfaceCLI(unittest.TestCase):
             strict=True
         )
 
+    def test_show_idl_message(self):
+        with self.launch_interface_command(
+            arguments=['show', 'ros2cli_test_interfaces/msg/IdlOnly']
+        ) as interface_command:
+            assert interface_command.wait_for_shutdown(timeout=2)
+        assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=[
+                'module ros2cli_test_interfaces {',
+                '  module msg {',
+                '    struct IdlOnly {',
+                '      uint32 value;',
+                '    };',
+                '  };',
+                '};',
+            ],
+            text=interface_command.output,
+            strict=True
+        )
+
+    def test_show_message_with_idl_nested_type(self):
+        with self.launch_interface_command(
+            arguments=['show', 'ros2cli_test_interfaces/msg/ShortVariedIdlNested']
+        ) as interface_command:
+            assert interface_command.wait_for_shutdown(timeout=2)
+        assert interface_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=[
+                'IdlOnly idl_only',
+                '\tmodule ros2cli_test_interfaces {',
+                '\t  module msg {',
+                '\t    struct IdlOnly {',
+                '\t      uint32 value;',
+                '\t    };',
+                '\t  };',
+                '\t};',
+            ],
+            text=interface_command.output,
+            strict=True
+        )
+
     def test_show_message_with_all_comments(self):
         with self.launch_interface_command(
             arguments=[

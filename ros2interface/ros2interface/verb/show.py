@@ -153,7 +153,11 @@ def _show_interface(
     if file_path.endswith('.idl'):
         with open(file_path) as file_handler:
             content = file_handler.read()
-        print(content, end='' if content.endswith('\n') else '\n')
+        indent_string = indent_level * '\t'
+        for line in content.splitlines():
+            print(f'{indent_string}{line}' if line else '')
+        if not content or not content.endswith('\n'):
+            print()
         return
 
     for line in _get_interface_lines(interface_identifier, file_path):
