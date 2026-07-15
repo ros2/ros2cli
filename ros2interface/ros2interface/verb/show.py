@@ -54,7 +54,7 @@ class InterfaceTextLine:
         return self._raw_line_text
 
     def is_comment(self) -> bool:
-        return self._msg_spec and self._msg_spec.annotations['comment']
+        return self._raw_line_text.lstrip().startswith('#')
 
     def is_trailing_comment(self) -> bool:
         return (
