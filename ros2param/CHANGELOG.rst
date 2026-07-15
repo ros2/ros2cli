@@ -2,6 +2,11 @@
 Changelog for package ros2param
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.18.19 (2026-07-15)
+--------------------
+* Fix ros2param delete humble (`#1255 <https://github.com/ros2/ros2cli//issues/1255>`_)
+* Contributors: longway
+
 0.18.18 (2026-03-07)
 --------------------
 

@@ -2,6 +2,11 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.18.19 (2026-07-15)
+--------------------
+* Enable always complete (`#1190 <https://github.com/ros2/ros2cli//issues/1190>`_) (`#1209 <https://github.com/ros2/ros2cli//issues/1209>`_)
+* Contributors: mergify[bot]
+
 0.18.18 (2026-03-07)
 --------------------
 

@@ -2,6 +2,9 @@
 Changelog for package ros2pkg
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.18.19 (2026-07-15)
+--------------------
+
 0.18.18 (2026-03-07)
 --------------------
 * Remove "rclrs" duplicate dependency (`#1197 <https://github.com/ros2/ros2cli//issues/1197>`_) (`#1200 <https://github.com/ros2/ros2cli//issues/1200>`_)
