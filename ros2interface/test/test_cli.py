@@ -29,6 +29,8 @@ import launch_testing.tools
 
 import pytest
 
+from ros2interface.verb.show import InterfaceTextLine
+
 
 # Skip cli tests on Windows while they exhibit pathological behavior
 # https://github.com/ros2/build_farmer/issues/248
@@ -562,3 +564,20 @@ class TestROS2InterfaceCLI(unittest.TestCase):
             text=interface_command.output,
             strict=True
         )
+
+
+@pytest.mark.parametrize('line_text', [
+    '#',
+    '    #',
+    '# comment',
+    '    # comment',
+])
+def test_interface_text_line_is_comment(line_text):
+    line = InterfaceTextLine('test_pkg', 'Test', line_text)
+    assert line.is_comment()
+
+
+def test_interface_text_line_trailing_comment_is_not_full_line_comment():
+    line = InterfaceTextLine('test_pkg', 'Test', 'int32 value  # trailing comment')
+    assert not line.is_comment()
+    assert line.is_trailing_comment()
