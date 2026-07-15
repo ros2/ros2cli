@@ -2,6 +2,11 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.40.8 (2026-07-15)
+-------------------
+* Check socket is actually freed and reusable during shutdown daemon. (`#1230 <https://github.com/ros2/ros2cli//issues/1230>`_) (`#1231 <https://github.com/ros2/ros2cli//issues/1231>`_)
+* Contributors: mergify[bot]
+
 0.40.7 (2026-04-30)
 -------------------
 

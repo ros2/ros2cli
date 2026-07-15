@@ -2,6 +2,12 @@
 Changelog for package ros2node
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.40.8 (2026-07-15)
+-------------------
+* Merge pull request `#1232 <https://github.com/ros2/ros2cli//issues/1232>`_ from ros2/mergify/bp/lyrical/pr-1227
+* Add unit tests for sub-command tab completers (`#1227 <https://github.com/ros2/ros2cli//issues/1227>`_)
+* Contributors: MzKyle, Skyler Medeiros
+
 0.40.7 (2026-04-30)
 -------------------
 
