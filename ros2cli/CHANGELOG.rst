@@ -2,6 +2,11 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.38.4 (2026-07-15)
+-------------------
+* Enable always complete (`#1190 <https://github.com/ros2/ros2cli//issues/1190>`_) (`#1207 <https://github.com/ros2/ros2cli//issues/1207>`_)
+* Contributors: mergify[bot]
+
 0.38.3 (2026-03-07)
 -------------------
 * check for invalid ROS discovery configuration and print warning if ne… (backport `#1178 <https://github.com/ros2/ros2cli//issues/1178>`_) (`#1179 <https://github.com/ros2/ros2cli//issues/1179>`_)
