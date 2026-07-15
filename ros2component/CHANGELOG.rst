@@ -2,6 +2,12 @@
 Changelog for package ros2component
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.41.1 (2026-07-15)
+-------------------
+* add "--log-level" option for "ros2 component load" (`#1212 <https://github.com/ros2/ros2cli//issues/1212>`_)
+* Add unit tests for sub-command tab completers (`#1227 <https://github.com/ros2/ros2cli//issues/1227>`_)
+* Contributors: MzKyle, Peng Wang
+
 0.41.0 (2026-05-06)
 -------------------
 

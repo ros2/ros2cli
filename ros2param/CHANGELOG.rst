@@ -2,6 +2,11 @@
 Changelog for package ros2param
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.41.1 (2026-07-15)
+-------------------
+* ros2param: fix parameter delete typo (use instance instead of class) (`#1243 <https://github.com/ros2/ros2cli//issues/1243>`_)
+* Contributors: longway
+
 0.41.0 (2026-05-06)
 -------------------
 

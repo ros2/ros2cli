@@ -2,6 +2,11 @@
 Changelog for package ros2action
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.41.1 (2026-07-15)
+-------------------
+* Add unit tests for sub-command tab completers (`#1227 <https://github.com/ros2/ros2cli//issues/1227>`_)
+* Contributors: MzKyle
+
 0.41.0 (2026-05-06)
 -------------------
 
