@@ -100,10 +100,14 @@ def serve(server: LocalXMLRPCServer, *, timeout: float = 2 * 60 * 60):
             node.get_client_names_and_types_by_node,
             node.get_action_server_names_and_types_by_node,
             node.get_action_client_names_and_types_by_node,
+            node.get_action_clients_info_by_action,
+            node.get_action_servers_info_by_action,
             node.count_publishers,
             node.count_subscribers,
             node.count_clients,
-            node.count_services
+            node.count_services,
+            node.count_action_clients,
+            node.count_action_servers
         ]
 
         # Dealing with the timeouts in this server is a bit tricky.  The caller
