@@ -32,7 +32,8 @@ class InfoVerb(VerbExtension):
         arg.completer = action_name_completer
         parser.add_argument(
             '-t', '--show-types', action='store_true',
-            help='Additionally show the action type')
+            help='Additionally show the action type next to each listed '
+                 'action client and action server')
         parser.add_argument(
             '-c', '--count', action='store_true',
             help='Only display the number of action clients and action servers')
