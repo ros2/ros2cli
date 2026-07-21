@@ -14,6 +14,8 @@
 
 from collections.abc import Iterator
 from collections.abc import Sequence
+import time
+from typing import Callable
 from typing import Optional
 from typing import Union
 
@@ -135,6 +137,34 @@ def node_has_logger_services(node: Node, node_name: NodeName) -> bool:
     )
 
 
+def _collect_service_responses(
+    node: Node,
+    futures: dict,
+    results: dict,
+    timeout_sec: float,
+    extract_result: Callable,
+) -> None:
+    """Spin until all futures complete or the deadline expires, then fill results."""
+    deadline = time.monotonic() + timeout_sec
+    while futures and not all(future.done() for future in futures.values()):
+        remaining = deadline - time.monotonic()
+        if remaining <= 0.0:
+            break
+        rclpy.spin_once(node, timeout_sec=min(0.1, remaining))
+
+    for node_name, future in futures.items():
+        if not future.done():
+            future.cancel()
+            results[node_name] = RuntimeError(
+                'Timed out waiting for service response '
+                f'from node {node_name}'
+            )
+        elif future.result() is not None:
+            results[node_name] = extract_result(future.result())
+        else:
+            results[node_name] = future.exception()
+
+
 def call_get_logger_levels(
     *,
     node: Node,
@@ -165,14 +195,9 @@ def call_get_logger_levels(
             request.names = list(logger_names)
             futures[node_name] = client.call_async(request)
 
-        while futures and not all(future.done() for future in futures.values()):
-            rclpy.spin_once(node, timeout_sec=0.1)
-
-        for node_name, future in futures.items():
-            if future.result() is not None:
-                results[node_name] = list(future.result().levels)
-            else:
-                results[node_name] = future.exception()
+        _collect_service_responses(
+            node, futures, results, timeout_sec,
+            lambda response: list(response.levels))
 
         return results
     finally:
@@ -210,14 +235,9 @@ def call_set_logger_levels(
             request.levels = list(levels)
             futures[node_name] = client.call_async(request)
 
-        while futures and not all(future.done() for future in futures.values()):
-            rclpy.spin_once(node, timeout_sec=0.1)
-
-        for node_name, future in futures.items():
-            if future.result() is not None:
-                results[node_name] = list(future.result().results)
-            else:
-                results[node_name] = future.exception()
+        _collect_service_responses(
+            node, futures, results, timeout_sec,
+            lambda response: list(response.results))
 
         return results
     finally:

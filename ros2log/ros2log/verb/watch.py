@@ -23,6 +23,7 @@ from rclpy.node import Node
 from rclpy.qos import qos_profile_rosout_default
 from rclpy.qos import QoSProfile
 
+from ros2cli.node.direct import add_arguments as add_direct_node_arguments
 from ros2cli.node.direct import DirectNode
 from ros2cli.qos import add_qos_arguments
 from ros2cli.qos import choose_qos
@@ -97,6 +98,7 @@ class WatchVerb(VerbExtension):
             action='store_true',
             default=False,
             help='Output function name, file, and line number')
+        add_direct_node_arguments(parser)
         add_qos_arguments(
             parser,
             entity_type='subscribe',
@@ -107,7 +109,7 @@ class WatchVerb(VerbExtension):
             # Configure QoS profile based on arguments and available publishers
             qos_profile = choose_qos(node, '/rosout', args)
             try:
-                watcher = LogWatcher(
+                LogWatcher(
                     node,
                     level_filter=args.level,
                     logger_filter=args.logger,
