@@ -68,8 +68,7 @@ class InfoVerb(VerbExtension):
 
             print('Action: {}'.format(args.action_name))
             if action_types is not None:
-                type_str = action_types[0] if len(action_types) == 1 else action_types
-                print('Type: %s' % type_str)
+                print('Type: %s' % ', '.join(action_types))
 
             print('Action clients: {}'.format(len(action_clients)))
             if not args.count:
