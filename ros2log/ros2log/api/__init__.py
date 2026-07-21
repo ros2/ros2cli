@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from collections.abc import Callable
 from collections.abc import Iterator
 from collections.abc import Sequence
 import time
-from typing import Callable
 from typing import Optional
 from typing import Union
 
@@ -99,7 +99,7 @@ def get_target_node_names(
     node: Node,
     node_name: Optional[str] = None,
     all_nodes: bool = False,
-) -> tuple[Optional[list[str]], Optional[str]]:
+) -> tuple[list[str], None] | tuple[None, str]:
     """Resolve the node names targeted by a get/set command."""
     logger_service_nodes = get_logger_service_nodes(node=node)
     logger_service_node_names = {

@@ -95,7 +95,12 @@ def main(argv=None):
         return 0
     finally:
         node.destroy_node()
-        rclpy.try_shutdown()
+        try:
+            rclpy.try_shutdown()
+        except RuntimeError as e:
+            # A shutdown failure (e.g. rmw_zenoh session close timeout) must
+            # not mask the result of the logger-level operation.
+            print(f'Ignoring error during shutdown: {e}', file=sys.stderr)
 
 
 if __name__ == '__main__':

@@ -30,7 +30,7 @@ class TalkerNode(Node):
         self.count = 0
         self.get_logger().info('Talker node started')
 
-    def timer_callback(self):
+    def timer_callback(self) -> None:
         """Publish messages and generate various log levels."""
         msg = String()
         msg.data = f'Publishing: Hello World {self.count}'

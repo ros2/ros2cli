@@ -72,7 +72,7 @@ class WatchVerb(VerbExtension):
         parser.add_argument(
             '--level',
             type=str,
-            choices=['DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL'],
+            choices=LOG_LEVELS.keys(),
             help='Show only logs at or above the specified severity level')
         parser.add_argument(
             '--logger',

@@ -54,7 +54,7 @@ LOG_LEVEL_DESCRIPTIONS = {
 }
 
 
-def get_log_levels_from_msg():
+def get_log_levels_from_msg() -> list[tuple[str, int]]:
     """
     Extract log level constants from rcl_interfaces.msg.LoggerLevel.
 

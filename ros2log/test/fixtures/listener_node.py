@@ -32,7 +32,7 @@ class ListenerNode(Node):
             10)
         self.get_logger().info('Listener node started')
 
-    def listener_callback(self, msg):
+    def listener_callback(self, msg: String) -> None:
         """Process received messages and log them."""
         self.get_logger().debug(f'Debug message: {msg.data}')
         self.get_logger().info(f'Info message: {msg.data}')
