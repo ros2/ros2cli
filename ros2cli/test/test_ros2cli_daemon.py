@@ -130,6 +130,7 @@ def local_node():
         action_server.destroy()
         node.destroy_node()
 
+
 @pytest.fixture(scope='module')
 def daemon_node():
     if is_daemon_running(args=[]):
