@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>ros2log</name>
+  <version>0.40.4</version>
+  <description>The log command for ROS 2 command line tools.</description>
+  <maintainer email="tomoya.fujita825@gmail.com">Tomoya Fujita</maintainer>
+  <maintainer email="fumiya-onishi@keio.jp">Fumiya Ohnishi</maintainer>
+  <license>Apache License 2.0</license>
+
+  <author email="tomoya.fujita825@gmail.com">Tomoya Fujita</author>
+  <author email="fumiya-onishi@keio.jp">Fumiya Ohnishi</author>
+
+  <exec_depend>python3-argcomplete</exec_depend>
+  <exec_depend>rcl_interfaces</exec_depend>
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>ros2cli</exec_depend>
+  <exec_depend>ros2node</exec_depend>
+  <exec_depend>rosgraph_msgs</exec_depend>
+
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>ament_xmllint</test_depend>
+  <test_depend>launch</test_depend>
+  <test_depend>launch_ros</test_depend>
+  <test_depend>launch_testing</test_depend>
+  <test_depend>launch_testing_ros</test_depend>
+  <test_depend>python3-pytest</test_depend>
+  <test_depend>python3-pytest-timeout</test_depend>
+  <test_depend>test_msgs</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
