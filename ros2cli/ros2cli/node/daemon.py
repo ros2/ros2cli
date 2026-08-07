@@ -17,6 +17,7 @@ import functools
 import os
 import platform
 import socket
+import time
 
 import rclpy
 
@@ -27,6 +28,12 @@ from ros2cli.helpers import get_ros_domain_id
 from ros2cli.helpers import wait_for
 
 from ros2cli.xmlrpc.client import ServerProxy
+from ros2cli.xmlrpc.client import TimeoutTransport
+
+# How long, in seconds, to wait for the daemon to answer a single RPC.
+# Bounds requests that would otherwise block indefinitely, e.g. against
+# a daemon that stopped serving but has not released its socket yet.
+DAEMON_RPC_TIMEOUT = 10.0
 
 
 class DaemonNode:
@@ -35,7 +42,8 @@ class DaemonNode:
         self._args = args
         self._proxy = ServerProxy(
             daemon.get_xmlrpc_server_url(),
-            allow_none=True)
+            allow_none=True,
+            transport=TimeoutTransport(timeout=DAEMON_RPC_TIMEOUT))
         self._methods = []
 
     @property
@@ -141,19 +149,49 @@ def spawn_daemon(args, timeout=None, debug=False, inactivity_timeout=2 * 60 * 60
       disables the timeout, so the daemon runs until explicitly
       stopped.
     :return: `True` if the daemon was spawned,
-      `False` if it was already running.
+      `False` if it was already running or if the daemon address
+      could not be acquired within the given timeout.
     :raises: if it fails to spawn the daemon.
     """
     # Acquire socket by instantiating XMLRPC server.
-    try:
-        server = daemon.make_xmlrpc_server()
+    # Binding may transiently fail with EADDRINUSE while a previous
+    # daemon, no longer serving RPCs, is still releasing the address
+    # (e.g. its process has not fully terminated yet). The bind is the
+    # only authoritative check for address availability, so within the
+    # timeout budget keep retrying it, unless a running daemon answers.
+    if timeout is None:
+        deadline = time.time()
+    elif timeout > 0:
+        deadline = time.time() + timeout
+    else:
+        deadline = float('+inf')
+    while True:
+        try:
+            server = daemon.make_xmlrpc_server()
+            break
+        except socket.error as e:
+            if e.errno != errno.EADDRINUSE:
+                raise
+            if is_daemon_running(args):
+                # Failed to acquire socket
+                # Daemon already running
+                return False
+            if time.time() >= deadline:
+                # The address is still in use, but whatever holds it
+                # does not answer RPCs: most likely a daemon in its
+                # shutdown tail. Give up.
+                return False
+            time.sleep(0.1)
+
+    if platform.system() != 'Windows':
+        # On POSIX the listening socket is passed to the daemon process
+        # by file descriptor inheritance. On Windows it is explicitly
+        # duplicated via socket.share()/fromshare() instead; marking it
+        # inheritable there would hand the daemon process a second
+        # handle it never closes, keeping the address bound until the
+        # process fully terminates rather than until the daemon closes
+        # its server.
         server.socket.set_inheritable(True)
-    except socket.error as e:
-        if e.errno == errno.EADDRINUSE:
-            # Failed to acquire socket
-            # Daemon already running
-            return False
-        raise
 
     # During tab completion on the ros2 tooling, we can get here and attempt to spawn a daemon.
     # In that scenario, there may be open file descriptors that can prevent us from successfully

@@ -161,6 +161,11 @@ def serve(server: LocalXMLRPCServer, *, timeout: float = 2 * 60 * 60):
                 server.handle_request()
         except KeyboardInterrupt:
             pass
+        finally:
+            # Release the daemon address as soon as we stop serving.
+            # Tearing down the node below can take a long time, and a
+            # replacement daemon must be able to bind in the meantime.
+            server.server_close()
 
 
 def serve_and_close(server: LocalXMLRPCServer, *, timeout: float = 2 * 60 * 60):
