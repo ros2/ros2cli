@@ -78,6 +78,12 @@ Unmarshaller.dispatch[fullname(rclpy.endpoint_info.ServiceEndpointInfo)] = \
 Marshaller.dispatch[rclpy.endpoint_info.ServiceEndpointInfo] = \
     functools.partial(dump_any_with_slots, transform=lambda slot: slot.lstrip('_'))
 
+Unmarshaller.dispatch[fullname(rclpy.endpoint_info.ActionEndpointInfo)] = \
+    functools.partial(end_any_with_slots, type_=rclpy.endpoint_info.ActionEndpointInfo)
+
+Marshaller.dispatch[rclpy.endpoint_info.ActionEndpointInfo] = \
+    functools.partial(dump_any_with_slots, transform=lambda slot: slot.lstrip('_'))
+
 Unmarshaller.dispatch[fullname(rclpy.endpoint_info.EndpointTypeEnum)] = \
     functools.partial(end_any_enum, enum_=rclpy.endpoint_info.EndpointTypeEnum)
 

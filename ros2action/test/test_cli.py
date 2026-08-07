@@ -172,6 +172,7 @@ class TestROS2ActionCLI(unittest.TestCase):
         assert launch_testing.tools.expect_output(
             expected_lines=[
                 'Action: /test/fibonacci',
+                'Type: test_msgs/action/Fibonacci',
                 'Action clients: 0',
                 'Action servers: 1',
                 '  /test/fibonacci_action_server'
@@ -189,6 +190,7 @@ class TestROS2ActionCLI(unittest.TestCase):
         assert launch_testing.tools.expect_output(
             expected_lines=[
                 'Action: /test/fibonacci',
+                'Type: test_msgs/action/Fibonacci',
                 'Action clients: 0',
                 'Action servers: 1',
                 '  /test/fibonacci_action_server [test_msgs/action/Fibonacci]'
@@ -206,12 +208,67 @@ class TestROS2ActionCLI(unittest.TestCase):
         assert launch_testing.tools.expect_output(
             expected_lines=[
                 'Action: /test/fibonacci',
+                'Type: test_msgs/action/Fibonacci',
                 'Action clients: 0',
                 'Action servers: 1',
             ],
             text=action_command.output,
             strict=False
         )
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_fibonacci_info_verbose(self):
+        with self.launch_action_command(
+                arguments=['info', '-v', '/test/fibonacci']) as action_command:
+            assert action_command.wait_for_shutdown(timeout=10)
+        assert action_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=[
+                'Action: /test/fibonacci',
+                'Type: test_msgs/action/Fibonacci',
+                'Action clients: 0',
+                'Action servers: 1',
+                'Node name: fibonacci_action_server',
+                'Node namespace: /test',
+                'Action type: test_msgs/action/Fibonacci',
+                'Endpoint type: SERVER',
+                'Goal service:',
+                '  Service type: test_msgs/action/Fibonacci_SendGoal',
+                re.compile(r'\s*Service type hash: RIHS01_[a-f0-9]{64}'),
+                re.compile(r'\s*Endpoint count: [12]'),
+                re.compile(r'\s*Reliability: RELIABLE'),
+                'Cancel service:',
+                '  Service type: action_msgs/srv/CancelGoal',
+                'Result service:',
+                '  Service type: test_msgs/action/Fibonacci_GetResult',
+                'Feedback topic:',
+                '  Topic type: test_msgs/action/Fibonacci_FeedbackMessage',
+                'Status topic:',
+                '  Topic type: action_msgs/msg/GoalStatusArray',
+                re.compile(r'\s*Durability: TRANSIENT_LOCAL'),
+            ],
+            text=action_command.output,
+            strict=False
+        )
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_fibonacci_info_verbose_count(self):
+        with self.launch_action_command(
+                arguments=['info', '-v', '-c', '/test/fibonacci']) as action_command:
+            assert action_command.wait_for_shutdown(timeout=10)
+        assert action_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert launch_testing.tools.expect_output(
+            expected_lines=[
+                'Action: /test/fibonacci',
+                'Type: test_msgs/action/Fibonacci',
+                'Action clients: 0',
+                'Action servers: 1',
+            ],
+            text=action_command.output,
+            strict=False
+        )
+        # The count option should suppress the detailed endpoint information
+        assert 'Node name:' not in action_command.output
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_list(self):
