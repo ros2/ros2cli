@@ -101,6 +101,36 @@ class TestROS2PkgCLI(unittest.TestCase):
             strict=True
         )
 
+    def test_package_dependencies(self):
+        with self.launch_pkg_command(arguments=['depends', 'ros2pkg']) as pkg_command:
+            assert pkg_command.wait_for_shutdown(timeout=2)
+        assert pkg_command.exit_code == launch_testing.asserts.EXIT_OK
+        assert pkg_command.output.splitlines() == [
+            'ament_copyright',
+            'ament_flake8',
+            'ament_index_python',
+            'ament_pep257',
+            'ament_xmllint',
+            'launch',
+            'launch_testing',
+            'launch_testing_ros',
+            'python3-catkin-pkg-modules',
+            'python3-empy',
+            'python3-pytest',
+            'python3-pytest-timeout',
+            'ros2cli',
+        ]
+
+    def test_not_a_package_dependencies(self):
+        with self.launch_pkg_command(arguments=['depends', 'not_a_package']) as pkg_command:
+            assert pkg_command.wait_for_shutdown(timeout=2)
+        assert pkg_command.exit_code == 1
+        assert launch_testing.tools.expect_output(
+            expected_lines=['Package not found'],
+            text=pkg_command.output,
+            strict=True
+        )
+
     def test_xml(self):
         with self.launch_pkg_command(arguments=['xml', 'ros2cli']) as pkg_command:
             assert pkg_command.wait_for_shutdown(timeout=2)
