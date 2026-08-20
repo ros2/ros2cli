@@ -241,7 +241,7 @@ class TestVerbLoad(unittest.TestCase):
         assert param_load_command.exit_code != launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
             expected_lines=['ros2 param load: error: the following arguments are required: '
-                            'node_name, parameter_file'],
+                            'parameter_file'],
             text=param_load_command.output,
             strict=False
         )
@@ -249,8 +249,7 @@ class TestVerbLoad(unittest.TestCase):
             assert param_load_command.wait_for_shutdown(timeout=TEST_TIMEOUT)
         assert param_load_command.exit_code != launch_testing.asserts.EXIT_OK
         assert launch_testing.tools.expect_output(
-            expected_lines=['ros2 param load: error: the following arguments are required: '
-                            'parameter_file'],
+            expected_lines=['No such file or directory'],
             text=param_load_command.output,
             strict=False
         )

@@ -12,23 +12,39 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from rclpy.parameter import parameter_dict_from_yaml_file
 from ros2cli.node.direct import DirectNode
 from ros2cli.node.strategy import add_arguments
 from ros2cli.node.strategy import NodeStrategy
 from ros2node.api import get_absolute_node_name
+from ros2node.api import get_node_names
 from ros2node.api import NodeNameCompleter
 from ros2node.api import wait_for_node
 from ros2param.api import load_parameter_file
 from ros2param.verb import VerbExtension
 
 
+_NO_PARAMETERS_ERROR = 'Param file does not contain any valid parameters'
+
+
+def _parameter_file_matches_node(parameter_file, node_name, use_wildcard):
+    try:
+        parameter_dict_from_yaml_file(
+            parameter_file, use_wildcard, target_nodes=[node_name])
+    except RuntimeError as e:
+        if str(e) == _NO_PARAMETERS_ERROR:
+            return False
+        raise
+    return True
+
+
 class LoadVerb(VerbExtension):
-    """Load parameter file for a node."""
+    """Load a parameter file for one node or all matching nodes."""
 
     def add_arguments(self, parser, cli_name):  # noqa: D102
         add_arguments(parser)
         arg = parser.add_argument(
-            'node_name', help='Name of the ROS node')
+            'node_name', nargs='?', help='Name of the ROS node (omit to load all matching nodes)')
         arg.completer = NodeNameCompleter(
             include_hidden_nodes_key='include_hidden_nodes')
         parser.add_argument(
@@ -48,12 +64,44 @@ class LoadVerb(VerbExtension):
                  '(default: waits indefinitely)')
 
     def main(self, *, args):  # noqa: D102
-        node_name = get_absolute_node_name(args.node_name)
+        use_wildcard = not args.no_use_wildcard
+
+        if args.node_name is not None:
+            node_name = get_absolute_node_name(args.node_name)
+            with NodeStrategy(args) as node:
+                if not wait_for_node(node, node_name, args.include_hidden_nodes, args.timeout):
+                    return 'Node not found'
+
+            with DirectNode(args) as node:
+                load_parameter_file(
+                    node=node, node_name=node_name, parameter_file=args.parameter_file,
+                    use_wildcard=use_wildcard, timeout=args.service_timeout)
+            return
+
+        # Validate the file before discovery so malformed files fail consistently.
+        parameter_dict_from_yaml_file(args.parameter_file, use_wildcard)
+
         with NodeStrategy(args) as node:
-            if not wait_for_node(node, node_name, args.include_hidden_nodes, args.timeout):
-                return 'Node not found'
+            discovered_nodes = get_node_names(
+                node=node, include_hidden_nodes=args.include_hidden_nodes)
+            local_node_name = None
+            if node.daemon_node is None:
+                local_node_name = node.direct_node.get_fully_qualified_name()
+
+        matching_node_names = []
+        for node_name in sorted({n.full_name for n in discovered_nodes}):
+            # A direct discovery node is an implementation detail of this command and
+            # must not become a target of a system-wide wildcard parameter file.
+            if node_name == local_node_name:
+                continue
+            if _parameter_file_matches_node(args.parameter_file, node_name, use_wildcard):
+                matching_node_names.append(node_name)
+
+        if not matching_node_names:
+            return 'No matching nodes found'
 
         with DirectNode(args) as node:
-            load_parameter_file(
-                node=node, node_name=node_name, parameter_file=args.parameter_file,
-                use_wildcard=not args.no_use_wildcard, timeout=args.service_timeout)
+            for node_name in matching_node_names:
+                load_parameter_file(
+                    node=node, node_name=node_name, parameter_file=args.parameter_file,
+                    use_wildcard=use_wildcard, timeout=args.service_timeout)
