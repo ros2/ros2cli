@@ -160,8 +160,7 @@ class HelloSubscriber:
     def _callback(self, msg):
         msg_data = msg.data.split()
         pub_hostname = msg_data[-1]
-        if pub_hostname != socket.gethostname():
-            self._summary_table.increment_sub(pub_hostname)
+        self._summary_table.increment_sub(pub_hostname)
 
 
 class HelloMulticastUDPSender:
@@ -223,10 +222,11 @@ class HelloMulticastUDPReceiver:
         try:
             while not self._is_shutdown:
                 data, _ = self._socket.recvfrom(4096)
+                if self._is_shutdown:
+                    break
                 data = data.decode('utf-8')
                 sender_hostname = data.split()[-1]
-                if sender_hostname != socket.gethostname():
-                    self._summary_table.increment_receive(sender_hostname)
+                self._summary_table.increment_receive(sender_hostname)
         except socket.timeout:
             pass
 
@@ -267,7 +267,7 @@ class SummaryTable:
             self._pub += 1
 
     def increment_sub(self, hostname):
-        """Increment subscribed msg count from different host(s)."""
+        """Increment subscribed msg count from host(s)."""
         with self.lock:
             if hostname not in self._sub:
                 self._sub[hostname] = 1
@@ -280,7 +280,7 @@ class SummaryTable:
             self._send += 1
 
     def increment_receive(self, hostname):
-        """Increment multicast-received msg count from different host(s)."""
+        """Increment multicast-received msg count from host(s)."""
         with self.lock:
             if hostname not in self._receive:
                 self._receive[hostname] = 1

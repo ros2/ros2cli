@@ -42,12 +42,14 @@ def generate_test_description():
     ])
 
 
-def _generate_expected_summary_table():
+def _generate_expected_summary_table(hostname):
     """Generate expected summary table for one emit period on a single host."""
     expected_summary = SummaryTable()
-    # 1 pub/send per default emit period
+    # 1 pub/send and matching local sub/receive per default emit period
     expected_summary.increment_pub()
+    expected_summary.increment_sub(hostname)
     expected_summary.increment_send()
+    expected_summary.increment_receive(hostname)
     return expected_summary
 
 
@@ -61,11 +63,12 @@ class TestROS2DoctorCLI(unittest.TestCase):
         args.print_period = 1.0
         args.ttl = None
         args.once = True
-        with mock.patch('socket.gethostname', return_value='!nv@lid-n*de-n4me'):
+        hostname = '!nv@lid-n*de-n4me'
+        with mock.patch('socket.gethostname', return_value=hostname):
             summary = SummaryTable()
             hello_verb = HelloVerb()
             hello_verb.main(args=args, summary_table=summary)
-            expected_summary = _generate_expected_summary_table()
+            expected_summary = _generate_expected_summary_table(hostname)
             self.assertEqual(summary._pub, expected_summary._pub)
             self.assertEqual(summary._sub, expected_summary._sub)
             self.assertEqual(summary._send, expected_summary._send)
