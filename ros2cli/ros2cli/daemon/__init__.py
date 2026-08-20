@@ -61,6 +61,14 @@ def make_xmlrpc_server() -> LocalXMLRPCServer:
     )
 
 
+def get_daemon_configuration():
+    """Get discovery settings that affect the ros2cli daemon's ROS graph."""
+    return {
+        'ros_domain_id': get_ros_domain_id(),
+        'rmw_implementation': rclpy.get_rmw_implementation_identifier(),
+    }
+
+
 def serve(server: LocalXMLRPCServer, *, timeout: float = 2 * 60 * 60):
     """
     Serve the ros2cli daemon API using the given `server`.
@@ -68,7 +76,7 @@ def serve(server: LocalXMLRPCServer, *, timeout: float = 2 * 60 * 60):
     :param server: an XMLRPC server instance
     :param timeout: how long, in seconds, to wait before shutting
       down the server due to inactivity. A negative value disables
-      the timeout (it becomes ``float('inf')``), so the server runs
+      the timeout (it becomes ``float('inf')``), so the daemon runs
       until explicitly stopped.
     """
     # A negative timeout means "never time out"; mirror the convention
@@ -83,6 +91,7 @@ def serve(server: LocalXMLRPCServer, *, timeout: float = 2 * 60 * 60):
     with NetworkAwareNode(node_args) as node:
         daemon_logger = node.get_logger()
         functions = [
+            get_daemon_configuration,
             node.get_name,
             node.get_namespace,
             node.get_node_names_and_namespaces,
