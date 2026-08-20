@@ -42,6 +42,7 @@ from rclpy.qos import QoSCompatibility
 from rclpy.qos import QoSProfile
 from rclpy.qos import ReliabilityPolicy
 from rclpy.utilities import get_rmw_implementation_identifier
+from ros2cli.node.strategy import NodeStrategy
 
 
 # Skip cli tests on Windows while they exhibit pathological behavior
@@ -102,6 +103,15 @@ class TestROS2TopicBwDelayHz(unittest.TestCase):
         self.node.destroy_node()
         rclpy.shutdown(context=self.context)
 
+    def _wait_for_daemon_publishers(self, topics):
+        """Wait until the CLI daemon has discovered all publishers under test."""
+        with NodeStrategy(None) as node:
+            for _ in range(30):
+                self.executor.spin_once(timeout_sec=0.1)
+                if all(node.count_publishers(topic) > 0 for topic in topics):
+                    return
+        self.fail('Publishers were not discovered by the CLI daemon')
+
     def helper_verb_basic(self, launch_service, proc_info, proc_output, verb, success_regex):
         params = [
             (f'/clitest/topic/{verb}_basic', False, True),
@@ -156,15 +166,7 @@ class TestROS2TopicBwDelayHz(unittest.TestCase):
                     publisher.publish(msg)
 
                 publish_timer = self.node.create_timer(0.5, publish_message)
-
-                # Wait for the publisher to be discovered
-                publisher_count = 0
-                timeout_count = 0
-                while publisher_count == 0 and timeout_count < 10:
-                    self.executor.spin_once(timeout_sec=0.1)
-                    publisher_count = self.node.count_publishers(topic)
-                    timeout_count += 1
-                assert publisher_count > 0, 'Publisher was not discovered'
+                self._wait_for_daemon_publishers([topic])
 
                 try:
                     command_action = ExecuteProcess(
@@ -257,16 +259,7 @@ class TestROS2TopicBwDelayHz(unittest.TestCase):
             timer = self.node.create_timer(0.5, publish_message)
             timers.append(timer)
 
-        # Wait for all the publishers to be discovered
-        timeout_count = 0
-        all_discovered = False
-        while not all_discovered and timeout_count < 30:
-            self.executor.spin_once(timeout_sec=0.1)
-            all_discovered = all(
-                self.node.count_publishers(topic) > 0 for topic in topics
-            )
-            timeout_count += 1
-        assert all_discovered, 'Not all publishers were discovered'
+        self._wait_for_daemon_publishers(topics)
 
         try:
             command_action = ExecuteProcess(
@@ -356,17 +349,7 @@ class TestROS2TopicBwDelayHz(unittest.TestCase):
             publisher2.publish(msg)
 
         publish_timer = self.node.create_timer(0.5, publish_messages)
-
-        # Wait for the publishers to be discovered
-        timeout_count = 0
-        while timeout_count < 10:
-            self.executor.spin_once(timeout_sec=0.1)
-            if (self.node.count_publishers(topic1) > 0 and
-                    self.node.count_publishers(topic2) > 0):
-                break
-            timeout_count += 1
-        assert self.node.count_publishers(topic1) > 0, 'Publisher 1 was not discovered'
-        assert self.node.count_publishers(topic2) > 0, 'Publisher 2 was not discovered'
+        self._wait_for_daemon_publishers([topic1, topic2])
 
         try:
             command_action = ExecuteProcess(
@@ -422,16 +405,7 @@ class TestROS2TopicBwDelayHz(unittest.TestCase):
             timer = self.node.create_timer(0.5, publish_message)
             timers.append(timer)
 
-        # Wait for all the publishers to be discovered
-        timeout_count = 0
-        all_discovered = False
-        while not all_discovered and timeout_count < 30:
-            self.executor.spin_once(timeout_sec=0.1)
-            all_discovered = all(
-                self.node.count_publishers(topic) > 0 for topic in topics
-            )
-            timeout_count += 1
-        assert all_discovered, 'Not all publishers were discovered'
+        self._wait_for_daemon_publishers(topics)
 
         try:
             command_action = ExecuteProcess(
