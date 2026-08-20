@@ -90,6 +90,32 @@ def _is_daemon_address_free():
         raise
 
 
+def _make_xmlrpc_server_when_available(args, timeout):
+    """Acquire the daemon XML-RPC server socket, waiting out a shutdown tail if requested."""
+    try:
+        return daemon.make_xmlrpc_server()
+    except socket.error as e:
+        if e.errno != errno.EADDRINUSE:
+            raise
+
+    # A live daemon owns the address legitimately. If no wait was requested,
+    # preserve the existing non-blocking behavior for any occupied address.
+    if is_daemon_running(args) or timeout is None:
+        return None
+
+    # On Windows a daemon can stop serving before its process releases the
+    # listening socket. Give that shutdown tail time to finish, then retry the
+    # bind. Another process may win the race, in which case it owns the socket.
+    if not wait_for(_is_daemon_address_free, timeout):
+        return None
+    try:
+        return daemon.make_xmlrpc_server()
+    except socket.error as e:
+        if e.errno == errno.EADDRINUSE:
+            return None
+        raise
+
+
 def shutdown_daemon(args, timeout=None):
     """
     Shut down daemon node if it's running.
@@ -141,19 +167,14 @@ def spawn_daemon(args, timeout=None, debug=False, inactivity_timeout=2 * 60 * 60
       disables the timeout, so the daemon runs until explicitly
       stopped.
     :return: `True` if the daemon was spawned,
-      `False` if it was already running.
+      `False` if it was already running or its address remained busy.
     :raises: if it fails to spawn the daemon.
     """
     # Acquire socket by instantiating XMLRPC server.
-    try:
-        server = daemon.make_xmlrpc_server()
-        server.socket.set_inheritable(True)
-    except socket.error as e:
-        if e.errno == errno.EADDRINUSE:
-            # Failed to acquire socket
-            # Daemon already running
-            return False
-        raise
+    server = _make_xmlrpc_server_when_available(args, timeout)
+    if server is None:
+        return False
+    server.socket.set_inheritable(True)
 
     # During tab completion on the ros2 tooling, we can get here and attempt to spawn a daemon.
     # In that scenario, there may be open file descriptors that can prevent us from successfully
