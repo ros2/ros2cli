@@ -14,5 +14,13 @@
 
 # flake8: noqa: A005
 
+from xmlrpc.client import Marshaller
+
+from .generic import dump_int
+
+# Python's XML-RPC unmarshaller accepts the i8 extension, but the stock
+# marshaller rejects integers outside the signed 32-bit range.
+Marshaller.dispatch[int] = dump_int
+
 # Force rclpy specific xmlrpc (un)marshalling logic importation.
-from . import rclpy  # noqa: F401
+from . import rclpy  # noqa: E402,F401

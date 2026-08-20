@@ -12,9 +12,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from xmlrpc.client import MAXINT
+from xmlrpc.client import MININT
+
+
+I8_MIN = -(1 << 63)
+I8_MAX = (1 << 63) - 1
+
 
 def fullname(klass):
     return f'{klass.__module__}.{klass.__name__}'
+
+
+def dump_int(marshaller, value, write):
+    """Marshal Python integers using XML-RPC int or the standard i8 extension."""
+    if MININT <= value <= MAXINT:
+        tag = 'int'
+    elif I8_MIN <= value <= I8_MAX:
+        tag = 'i8'
+    else:
+        raise OverflowError('int exceeds XML-RPC i8 limits')
+    write(f'<value><{tag}>{value}</{tag}></value>\n')
 
 
 def end_any_with_slots(unmarshaller, data, type_):
