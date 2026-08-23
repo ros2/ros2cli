@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from argparse import ArgumentTypeError
+import ipaddress
 import os
 import re
 import socket
@@ -50,6 +51,16 @@ positive_float = positive(float)
 positive_int = positive(int)
 
 
+def multicast_address(string):
+    try:
+        address = ipaddress.IPv4Address(string)
+    except ipaddress.AddressValueError:
+        raise ArgumentTypeError('value must be an IPv4 multicast address') from None
+    if not address.is_multicast:
+        raise ArgumentTypeError('value must be an IPv4 multicast address')
+    return string
+
+
 class HelloVerb(VerbExtension):
     """
     Check network connectivity between multiple hosts.
@@ -71,7 +82,7 @@ class HelloVerb(VerbExtension):
             '-pp', '--print-period', metavar='N', type=positive_float, default=1.0,
             help='Time period to print summary table (default: 1.0s)')
         parser.add_argument(
-            '--group', type=str, default=DEFAULT_GROUP,
+            '--group', type=multicast_address, default=DEFAULT_GROUP,
             help=f'Multicast group address (default: {DEFAULT_GROUP})')
         parser.add_argument(
             '--port', type=positive_int, default=DEFAULT_PORT,
