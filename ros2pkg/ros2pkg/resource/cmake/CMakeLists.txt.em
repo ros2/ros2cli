@@ -29,7 +29,7 @@ add_library(@(project_name)::@(cpp_library_name) ALIAS @(cpp_library_name))
 target_compile_features(@(cpp_library_name) PUBLIC c_std_17 cxx_std_20)  # Require C17 and C++20
 target_include_directories(@(cpp_library_name) PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
+  $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
 @[  if dependencies]@
 @[    for dep in dependencies]@
   PUBLIC ${@(dep)_INCLUDE_DIRS}
@@ -50,7 +50,7 @@ target_compile_definitions(@(cpp_library_name) PRIVATE "@(project_name.upper())_
 
 install(
   DIRECTORY include/
-  DESTINATION include
+  DESTINATION include/${PROJECT_NAME}
 )
 install(
   TARGETS @(cpp_library_name)
