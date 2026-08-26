@@ -15,6 +15,7 @@
 from argparse import ArgumentTypeError
 import os
 import re
+import select
 import socket
 import struct
 import threading
@@ -29,6 +30,7 @@ from std_msgs.msg import String
 
 DEFAULT_GROUP = '225.0.0.1'
 DEFAULT_PORT = 49150
+ONCE_WAIT_TIMEOUT = 5.0
 
 NODE_NAME_PREFIX = \
     f"ros2doctor_{re.sub(r'[^0-9a-zA-Z_]', '_', socket.gethostname())}_{os.getpid()}"
@@ -113,10 +115,12 @@ class HelloVerb(VerbExtension):
                         prev_time = current_time
                     publisher.publish()
                     sender.send()
-                    emit_rate.sleep()
                     if args.once:
+                        summary_table.wait_for_local_round_trip(
+                            socket.gethostname(), timeout=ONCE_WAIT_TIMEOUT)
                         summary_table.format_print_summary(args.topic, args.print_period)
                         break
+                    emit_rate.sleep()
             except KeyboardInterrupt:
                 pass
             finally:
@@ -160,8 +164,7 @@ class HelloSubscriber:
     def _callback(self, msg):
         msg_data = msg.data.split()
         pub_hostname = msg_data[-1]
-        if pub_hostname != socket.gethostname():
-            self._summary_table.increment_sub(pub_hostname)
+        self._summary_table.increment_sub(pub_hostname)
 
 
 class HelloMulticastUDPSender:
@@ -195,7 +198,7 @@ class HelloMulticastUDPReceiver:
     """Receive 'hello' messages over a multicast UDP socket."""
 
     def __init__(self, summary_table, group=DEFAULT_GROUP, port=DEFAULT_PORT, timeout=None):
-        self._dummy_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+        self._shutdown_reader, self._shutdown_writer = socket.socketpair()
         self._socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
         try:
             self._socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -206,40 +209,50 @@ class HelloMulticastUDPReceiver:
                 pass
             self._socket.bind(('', port))
 
-            self._socket.settimeout(timeout)
-
             self._mreq = struct.pack('4sl', socket.inet_aton(group), socket.INADDR_ANY)
             self._socket.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, self._mreq)
         except Exception:
-            self._dummy_socket.close()
+            self._shutdown_reader.close()
+            self._shutdown_writer.close()
             self._socket.close()
             raise
         self._is_shutdown = False
         self._summary_table = summary_table
         self._group = group
         self._port = port
+        self._timeout = timeout
 
     def recv(self):
         try:
             while not self._is_shutdown:
+                readable, _, _ = select.select(
+                    [self._socket, self._shutdown_reader], [], [], self._timeout)
+                if not readable:
+                    break
+                if self._shutdown_reader in readable:
+                    self._shutdown_reader.recv(1)
+                    break
                 data, _ = self._socket.recvfrom(4096)
                 data = data.decode('utf-8')
                 sender_hostname = data.split()[-1]
-                if sender_hostname != socket.gethostname():
-                    self._summary_table.increment_receive(sender_hostname)
-        except socket.timeout:
-            pass
+                self._summary_table.increment_receive(sender_hostname)
+        finally:
+            try:
+                self._socket.setsockopt(socket.IPPROTO_IP, socket.IP_DROP_MEMBERSHIP, self._mreq)
+            except OSError:
+                pass
+            self._socket.close()
+            self._shutdown_reader.close()
 
     def shutdown(self):
         if self._is_shutdown:
             return
         self._is_shutdown = True
-        self._dummy_socket.sendto(
-            f'{socket.gethostname()}'.encode('utf-8'), ('127.0.0.1', self._port)
-        )
-        self._dummy_socket.close()
-        self._socket.setsockopt(socket.IPPROTO_IP, socket.IP_DROP_MEMBERSHIP, self._mreq)
-        self._socket.close()
+        try:
+            self._shutdown_writer.send(b'\0')
+        except OSError:
+            pass
+        self._shutdown_writer.close()
 
 
 class SummaryTable:
@@ -248,6 +261,7 @@ class SummaryTable:
     def __init__(self):
         """Initialize empty summary table."""
         self.lock = threading.Lock()
+        self._condition = threading.Condition(self.lock)
         self._pub = 0
         self._send = 0
         self._sub = {}
@@ -267,12 +281,13 @@ class SummaryTable:
             self._pub += 1
 
     def increment_sub(self, hostname):
-        """Increment subscribed msg count from different host(s)."""
-        with self.lock:
+        """Increment subscribed msg count from host(s)."""
+        with self._condition:
             if hostname not in self._sub:
                 self._sub[hostname] = 1
             else:
                 self._sub[hostname] += 1
+            self._condition.notify_all()
 
     def increment_send(self):
         """Increment multicast-sent msg count."""
@@ -280,12 +295,20 @@ class SummaryTable:
             self._send += 1
 
     def increment_receive(self, hostname):
-        """Increment multicast-received msg count from different host(s)."""
-        with self.lock:
+        """Increment multicast-received msg count from host(s)."""
+        with self._condition:
             if hostname not in self._receive:
                 self._receive[hostname] = 1
             else:
                 self._receive[hostname] += 1
+            self._condition.notify_all()
+
+    def wait_for_local_round_trip(self, hostname, timeout):
+        """Wait until local topic and multicast messages have both been observed."""
+        with self._condition:
+            return self._condition.wait_for(
+                lambda: hostname in self._sub and hostname in self._receive,
+                timeout=timeout)
 
     def format_print_summary(self, topic, print_period, *, group=DEFAULT_GROUP, port=DEFAULT_PORT):
         """Print content in a table format."""
