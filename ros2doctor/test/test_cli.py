@@ -12,7 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from argparse import ArgumentParser
 from argparse import Namespace
+import socket
 import unittest
 import unittest.mock as mock
 
@@ -24,6 +26,10 @@ import launch_testing.markers
 
 import pytest
 
+from ros2doctor.verb.hello import DEFAULT_GROUP
+from ros2doctor.verb.hello import DEFAULT_PORT
+from ros2doctor.verb.hello import HelloMulticastUDPReceiver
+from ros2doctor.verb.hello import HelloMulticastUDPSender
 from ros2doctor.verb.hello import HelloVerb
 from ros2doctor.verb.hello import SummaryTable
 
@@ -59,6 +65,8 @@ class TestROS2DoctorCLI(unittest.TestCase):
         args.topic = '/canyouhearme'
         args.emit_period = 0.1
         args.print_period = 1.0
+        args.group = DEFAULT_GROUP
+        args.port = DEFAULT_PORT
         args.ttl = None
         args.once = True
         with mock.patch('socket.gethostname', return_value='!nv@lid-n*de-n4me'):
@@ -70,3 +78,50 @@ class TestROS2DoctorCLI(unittest.TestCase):
             self.assertEqual(summary._sub, expected_summary._sub)
             self.assertEqual(summary._send, expected_summary._send)
             self.assertEqual(summary._receive, expected_summary._receive)
+
+    def test_hello_rejects_invalid_multicast_groups(self):
+        """Reject invalid multicast group arguments."""
+        parser = ArgumentParser()
+        HelloVerb().add_arguments(parser, 'ros2 doctor hello')
+        for group in ['127.0.0.1', 'not-an-address', 'ff02::1']:
+            with self.subTest(group=group):
+                with self.assertRaises(SystemExit) as context:
+                    parser.parse_args(['--group', group])
+                self.assertEqual(context.exception.code, 2)
+
+    def test_hello_single_host_custom_group_and_port(self):
+        """Run HelloVerb with a custom multicast group and port."""
+        group = '225.0.0.2'
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
+            sock.bind(('', 0))
+            port = sock.getsockname()[1]
+        parser = ArgumentParser()
+        hello_verb = HelloVerb()
+        hello_verb.add_arguments(parser, 'ros2 doctor hello')
+        args = parser.parse_args([
+            '--group', group, '--port', str(port), '--once'])
+        with mock.patch('socket.gethostname', return_value='!nv@lid-n*de-n4me'), \
+                mock.patch(
+                    'ros2doctor.verb.hello.HelloMulticastUDPSender',
+                    wraps=HelloMulticastUDPSender) as sender, \
+                mock.patch(
+                    'ros2doctor.verb.hello.HelloMulticastUDPReceiver',
+                    wraps=HelloMulticastUDPReceiver) as receiver, \
+                mock.patch.object(
+                    SummaryTable, 'format_print_summary',
+                    wraps=SummaryTable.format_print_summary,
+                    autospec=True) as format_print_summary:
+            summary = SummaryTable()
+            hello_verb.main(args=args, summary_table=summary)
+            expected_summary = _generate_expected_summary_table()
+            self.assertEqual(summary._pub, expected_summary._pub)
+            self.assertEqual(summary._sub, expected_summary._sub)
+            self.assertEqual(summary._send, expected_summary._send)
+            self.assertEqual(summary._receive, expected_summary._receive)
+            sender.assert_called_once_with(
+                summary, group=args.group, port=args.port, ttl=args.ttl)
+            receiver.assert_called_once_with(
+                summary, group=args.group, port=args.port)
+            format_print_summary.assert_called_once_with(
+                summary, args.topic, args.print_period,
+                group=args.group, port=args.port)

@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from argparse import ArgumentTypeError
+import ipaddress
 import os
 import re
 import socket
@@ -50,6 +51,16 @@ positive_float = positive(float)
 positive_int = positive(int)
 
 
+def multicast_address(string):
+    try:
+        address = ipaddress.IPv4Address(string)
+    except ipaddress.AddressValueError:
+        raise ArgumentTypeError('value must be an IPv4 multicast address') from None
+    if not address.is_multicast:
+        raise ArgumentTypeError('value must be an IPv4 multicast address')
+    return string
+
+
 class HelloVerb(VerbExtension):
     """
     Check network connectivity between multiple hosts.
@@ -71,6 +82,12 @@ class HelloVerb(VerbExtension):
             '-pp', '--print-period', metavar='N', type=positive_float, default=1.0,
             help='Time period to print summary table (default: 1.0s)')
         parser.add_argument(
+            '--group', type=multicast_address, default=DEFAULT_GROUP,
+            help=f'Multicast group address (default: {DEFAULT_GROUP})')
+        parser.add_argument(
+            '--port', type=positive_int, default=DEFAULT_PORT,
+            help=f'Multicast port (default: {DEFAULT_PORT})')
+        parser.add_argument(
             '--ttl', type=positive_int,
             help='TTL for multicast send (default: None)')
         parser.add_argument(
@@ -83,8 +100,10 @@ class HelloVerb(VerbExtension):
         with DirectNode(args, node_name=NODE_NAME_PREFIX + '_node') as node:
             publisher = HelloPublisher(node, args.topic, summary_table)
             subscriber = HelloSubscriber(node, args.topic, summary_table)
-            sender = HelloMulticastUDPSender(summary_table, ttl=args.ttl)
-            receiver = HelloMulticastUDPReceiver(summary_table)
+            sender = HelloMulticastUDPSender(
+                summary_table, group=args.group, port=args.port, ttl=args.ttl)
+            receiver = HelloMulticastUDPReceiver(
+                summary_table, group=args.group, port=args.port)
             receiver_thread = threading.Thread(target=receiver.recv)
             receiver_thread.start()
 
@@ -108,14 +127,18 @@ class HelloVerb(VerbExtension):
                 while rclpy.ok():
                     current_time = clock.now()
                     if (current_time - prev_time) > print_period:
-                        summary_table.format_print_summary(args.topic, args.print_period)
+                        summary_table.format_print_summary(
+                            args.topic, args.print_period,
+                            group=args.group, port=args.port)
                         summary_table.reset()
                         prev_time = current_time
                     publisher.publish()
                     sender.send()
                     emit_rate.sleep()
                     if args.once:
-                        summary_table.format_print_summary(args.topic, args.print_period)
+                        summary_table.format_print_summary(
+                            args.topic, args.print_period,
+                            group=args.group, port=args.port)
                         break
             except KeyboardInterrupt:
                 pass
