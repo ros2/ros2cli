@@ -1,0 +1,7 @@
+module ros2cli_test_interfaces {
+  module msg {
+    struct IdlOnly {
+      uint32 value;
+    };
+  };
+};

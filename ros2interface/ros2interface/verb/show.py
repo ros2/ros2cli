@@ -104,7 +104,10 @@ class InterfaceTextLine:
             return False
 
 
-def _get_interface_lines(interface_identifier: str) -> typing.Iterable[InterfaceTextLine]:
+def _get_interface_lines(
+    interface_identifier: str,
+    file_path: str,
+) -> typing.Iterable[InterfaceTextLine]:
     parts: typing.List[str] = interface_identifier.split('/')
     if len(parts) != 3:
         raise ValueError(
@@ -112,7 +115,6 @@ def _get_interface_lines(interface_identifier: str) -> typing.Iterable[Interface
         )
     pkg_name, _, msg_name = parts
 
-    file_path = get_interface_path(interface_identifier)
     with open(file_path) as file_handler:
         for line in file_handler:
             yield InterfaceTextLine(
@@ -147,7 +149,18 @@ def _show_interface(
     is_show_nested_comments: bool = False,
     indent_level: int = 0
 ):
-    for line in _get_interface_lines(interface_identifier):
+    file_path = get_interface_path(interface_identifier)
+    if file_path.endswith('.idl'):
+        with open(file_path) as file_handler:
+            content = file_handler.read()
+        indent_string = indent_level * '\t'
+        for line in content.splitlines():
+            print(f'{indent_string}{line}' if line else '')
+        if not content or not content.endswith('\n'):
+            print()
+        return
+
+    for line in _get_interface_lines(interface_identifier, file_path):
 
         _print_interface_line(
             line, is_show_comments=is_show_comments, indent_level=indent_level)
