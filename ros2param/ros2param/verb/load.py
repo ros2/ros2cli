@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from rclpy.parameter import parameter_dict_from_yaml_file
+from ros2cli.helpers import wait_for
 from ros2cli.node.direct import DirectNode
 from ros2cli.node.strategy import add_arguments
 from ros2cli.node.strategy import NodeStrategy
@@ -24,18 +25,31 @@ from ros2param.api import load_parameter_file
 from ros2param.verb import VerbExtension
 
 
-_NO_PARAMETERS_ERROR = 'Param file does not contain any valid parameters'
-
-
 def _parameter_file_matches_node(parameter_file, node_name, use_wildcard):
     try:
         parameter_dict_from_yaml_file(
             parameter_file, use_wildcard, target_nodes=[node_name])
-    except RuntimeError as e:
-        if str(e) == _NO_PARAMETERS_ERROR:
-            return False
-        raise
+    except RuntimeError:
+        # The complete file is validated before this helper is used. For a
+        # validated file, rclpy raises RuntimeError here when the selected node
+        # contributes no parameters.
+        return False
     return True
+
+
+def _get_matching_node_names(node, parameter_file, use_wildcard, include_hidden_nodes):
+    discovered_nodes = get_node_names(
+        node=node, include_hidden_nodes=include_hidden_nodes)
+    local_node_name = None
+    if node.daemon_node is None:
+        local_node_name = node.direct_node.get_fully_qualified_name()
+
+    return [
+        node_name
+        for node_name in sorted({n.full_name for n in discovered_nodes})
+        if node_name != local_node_name
+        and _parameter_file_matches_node(parameter_file, node_name, use_wildcard)
+    ]
 
 
 class LoadVerb(VerbExtension):
@@ -78,27 +92,25 @@ class LoadVerb(VerbExtension):
                     use_wildcard=use_wildcard, timeout=args.service_timeout)
             return
 
-        # Validate the file before discovery so malformed files fail consistently.
+        # Validate the complete file before per-node matching. This keeps malformed
+        # file errors distinct from an otherwise-valid file not selecting a node.
         parameter_dict_from_yaml_file(args.parameter_file, use_wildcard)
 
         with NodeStrategy(args) as node:
-            discovered_nodes = get_node_names(
-                node=node, include_hidden_nodes=args.include_hidden_nodes)
-            local_node_name = None
-            if node.daemon_node is None:
-                local_node_name = node.direct_node.get_fully_qualified_name()
+            matching_node_names = []
 
-        matching_node_names = []
-        for node_name in sorted({n.full_name for n in discovered_nodes}):
-            # A direct discovery node is an implementation detail of this command and
-            # must not become a target of a system-wide wildcard parameter file.
-            if node_name == local_node_name:
-                continue
-            if _parameter_file_matches_node(args.parameter_file, node_name, use_wildcard):
-                matching_node_names.append(node_name)
+            def matching_node_available():
+                nonlocal matching_node_names
+                matching_node_names = _get_matching_node_names(
+                    node,
+                    args.parameter_file,
+                    use_wildcard,
+                    args.include_hidden_nodes,
+                )
+                return bool(matching_node_names)
 
-        if not matching_node_names:
-            return 'No matching nodes found'
+            if not wait_for(matching_node_available, args.timeout):
+                return 'No matching nodes found'
 
         with DirectNode(args) as node:
             for node_name in matching_node_names:
