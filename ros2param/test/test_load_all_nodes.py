@@ -19,7 +19,6 @@ from unittest.mock import MagicMock
 from unittest.mock import patch
 
 from ros2param.verb.load import LoadVerb
-from ros2param.verb.load import _NO_PARAMETERS_ERROR
 
 
 def _args(**kwargs):
@@ -35,6 +34,10 @@ def _args(**kwargs):
     return SimpleNamespace(**values)
 
 
+def _run_wait_for_once(predicate, timeout):
+    return predicate()
+
+
 def test_parser_accepts_parameter_file_without_node_name():
     parser = argparse.ArgumentParser()
     LoadVerb().add_arguments(parser, 'ros2 param load')
@@ -46,7 +49,7 @@ def test_parser_accepts_parameter_file_without_node_name():
 
 
 def test_loads_parameter_file_for_all_matching_nodes():
-    args = _args()
+    args = _args(timeout=3)
     strategy = MagicMock()
     strategy.daemon_node = MagicMock()
     strategy_context = MagicMock()
@@ -65,7 +68,8 @@ def test_loads_parameter_file_for_all_matching_nodes():
 
     def parse_parameter_file(parameter_file, use_wildcard, target_nodes=None):
         if target_nodes == ['/unmatched']:
-            raise RuntimeError(_NO_PARAMETERS_ERROR)
+            # Per-node matching must not depend on the text of this error.
+            raise RuntimeError('no parameters selected')
         return {'parameter': object()}
 
     with patch('ros2param.verb.load.NodeStrategy', return_value=strategy_context), \
@@ -75,10 +79,14 @@ def test_loads_parameter_file_for_all_matching_nodes():
                 'ros2param.verb.load.parameter_dict_from_yaml_file',
                 side_effect=parse_parameter_file
             ), \
+            patch(
+                'ros2param.verb.load.wait_for', side_effect=_run_wait_for_once
+            ) as wait_for, \
             patch('ros2param.verb.load.load_parameter_file') as load_parameter_file:
         result = LoadVerb().main(args=args)
 
     assert result is None
+    assert wait_for.call_args.args[1] == 3
     assert load_parameter_file.call_args_list == [
         call(
             node=direct, node_name='/first', parameter_file='params.yaml',
@@ -99,7 +107,7 @@ def test_returns_error_when_no_running_node_matches_file():
 
     def parse_parameter_file(parameter_file, use_wildcard, target_nodes=None):
         if target_nodes is not None:
-            raise RuntimeError(_NO_PARAMETERS_ERROR)
+            raise RuntimeError('no parameters selected')
         return {'parameter': object()}
 
     with patch('ros2param.verb.load.NodeStrategy', return_value=strategy_context), \
@@ -110,7 +118,8 @@ def test_returns_error_when_no_running_node_matches_file():
             patch(
                 'ros2param.verb.load.parameter_dict_from_yaml_file',
                 side_effect=parse_parameter_file
-            ):
+            ), \
+            patch('ros2param.verb.load.wait_for', side_effect=_run_wait_for_once):
         result = LoadVerb().main(args=args)
 
     assert result == 'No matching nodes found'
