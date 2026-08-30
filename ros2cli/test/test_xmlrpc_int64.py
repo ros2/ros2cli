@@ -22,7 +22,6 @@ import pytest
 import ros2cli.daemon as daemon
 from ros2cli.node.daemon import DaemonNode
 import ros2cli.xmlrpc  # noqa: F401
-from ros2cli.xmlrpc.local_server import LocalXMLRPCServer
 
 
 @pytest.mark.parametrize('value', [
@@ -52,12 +51,9 @@ def test_integer_outside_int64_range_is_rejected(value):
 
 
 def test_int64_round_trip_through_daemon_xmlrpc_client():
-    server = LocalXMLRPCServer(
-        ('127.0.0.1', 0),
-        logRequests=False,
-        requestHandler=daemon.RequestHandler,
-        allow_none=True,
-    )
+    with patch.object(daemon, 'get_address', return_value=('127.0.0.1', 0)):
+        server = daemon.make_xmlrpc_server()
+    server.timeout = 1.0
     server.register_function(lambda value: value, 'echo_int64')
     server_url = daemon.get_xmlrpc_server_url(server.server_address)
     server_thread = threading.Thread(target=server.handle_request)
