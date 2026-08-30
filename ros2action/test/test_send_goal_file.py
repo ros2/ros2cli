@@ -60,3 +60,15 @@ def test_send_goal_rejects_empty_goal_file(tmp_path):
 
     assert result == 'Goal file is empty'
     mock_send_goal.assert_not_called()
+
+
+def test_send_goal_reports_goal_file_read_error(tmp_path):
+    missing_goal_file = tmp_path / 'missing.yaml'
+    verb, args = _parse_goal_file(missing_goal_file)
+
+    with patch('ros2action.verb.send_goal.send_goal') as mock_send_goal:
+        result = verb.main(args=args)
+
+    assert result.startswith('Failed to read goal file:')
+    assert str(missing_goal_file) in result
+    mock_send_goal.assert_not_called()
