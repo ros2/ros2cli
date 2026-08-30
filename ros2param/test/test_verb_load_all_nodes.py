@@ -47,13 +47,6 @@ TEST_NAMESPACE = '/foo'
 TEST_TIMEOUT = 20.0
 
 
-if sys.platform.startswith('win'):
-    pytest.skip(
-        'CLI tests can block for a pathological amount of time on Windows.',
-        allow_module_level=True,
-    )
-
-
 @pytest.mark.rostest
 @launch_testing.parametrize('rmw_implementation', get_available_rmw_implementations())
 def generate_test_description(rmw_implementation):
