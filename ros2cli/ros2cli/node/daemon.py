@@ -29,6 +29,12 @@ from ros2cli.helpers import wait_for
 from ros2cli.xmlrpc.client import ServerProxy
 
 
+# The daemon server polls for shutdown every 0.2 seconds. Allow several such
+# intervals for Windows process teardown without letting a foreign port owner
+# consume the caller's full (or indefinite) daemon startup timeout.
+_DAEMON_SOCKET_RELEASE_GRACE_PERIOD = 1.0
+
+
 class DaemonNode:
 
     def __init__(self, args):
@@ -91,22 +97,28 @@ def _is_daemon_address_free():
 
 
 def _make_xmlrpc_server_when_available(args, timeout):
-    """Acquire the daemon XML-RPC server socket, waiting out a shutdown tail if requested."""
+    """Acquire the daemon XML-RPC server socket, waiting out a Windows shutdown tail."""
     try:
         return daemon.make_xmlrpc_server()
     except socket.error as e:
         if e.errno != errno.EADDRINUSE:
             raise
 
-    # A live daemon owns the address legitimately. If no wait was requested,
-    # preserve the existing non-blocking behavior for any occupied address.
-    if is_daemon_running(args) or timeout is None:
+    # A live daemon owns the address legitimately. The shutdown-tail behavior
+    # addressed here is Windows-specific; on other platforms preserve the
+    # previous immediate EADDRINUSE result. No requested timeout also remains
+    # non-blocking.
+    if is_daemon_running(args) or timeout is None or os.name != 'nt':
         return None
 
-    # On Windows a daemon can stop serving before its process releases the
-    # listening socket. Give that shutdown tail time to finish, then retry the
-    # bind. Another process may win the race, in which case it owns the socket.
-    if not wait_for(_is_daemon_address_free, timeout):
+    # A Windows daemon can stop serving before its process releases the socket.
+    # Use a short bounded grace period rather than the full spawn timeout: a
+    # foreign process can own this fixed port too, and must not make startup
+    # block indefinitely when the caller requested an indefinite daemon wait.
+    grace_period = _DAEMON_SOCKET_RELEASE_GRACE_PERIOD
+    if timeout > 0:
+        grace_period = min(timeout, grace_period)
+    if not wait_for(_is_daemon_address_free, grace_period):
         return None
     try:
         return daemon.make_xmlrpc_server()
