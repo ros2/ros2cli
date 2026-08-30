@@ -13,7 +13,6 @@
 # limitations under the License.
 
 from argparse import ArgumentTypeError
-from argparse import FileType
 
 import signal
 
@@ -63,7 +62,7 @@ class SendGoalVerb(VerbExtension):
             '--stdin', action='store_true',
             help='Read goal from standard input')
         group.add_argument(
-            '--goal-file', metavar='FILE', type=FileType('r'),
+            '--goal-file', metavar='FILE',
             help='Read goal request values from a YAML file')
         arg.completer = ActionGoalPrototypeCompleter(action_type_key='action_type')
         parser.add_argument(
@@ -86,8 +85,13 @@ class SendGoalVerb(VerbExtension):
         if args.stdin:
             goal = collect_stdin()
         elif args.goal_file:
-            with args.goal_file:
-                goal = args.goal_file.read()
+            try:
+                with open(args.goal_file, 'r', encoding='utf-8') as goal_file:
+                    goal = goal_file.read()
+            except OSError as e:
+                return f'Failed to read goal file: {e}'
+            if not goal.strip():
+                return 'Goal file is empty'
         else:
             goal = args.goal
 
