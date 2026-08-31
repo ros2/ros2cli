@@ -17,15 +17,10 @@ import os
 import sys
 import typing
 
-<<<<<<< HEAD
-=======
 from ament_index_python.packages import \
     get_package_share_directory, \
     PackageNotFoundError
 from ament_index_python.resources import get_resource
-from ros2cli.helpers import interactive_select
-from ros2interface.api import get_all_interface_names
->>>>>>> 7c6e097 (fix non standard interface locations. (#1186) (#1283))
 from ros2interface.api import type_completer
 from ros2interface.verb import VerbExtension
 from rosidl_adapter.parser import \
