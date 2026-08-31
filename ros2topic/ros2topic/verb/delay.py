@@ -30,6 +30,7 @@
 # https://github.com/ros/ros_comm/blob/6e5016f4b2266d8a60c9a1e163c4928b8fc7115e/tools/rostopic/src/rostopic/__init__.py
 
 import math
+import re
 
 import rclpy
 
@@ -62,6 +63,11 @@ class DelayVerb(VerbExtension):
             '--window', '-w', dest='window_size', type=positive_int, default=DEFAULT_WINDOW_SIZE,
             help='window size, in # of messages, for calculating rate, '
                  'string to (default: %d)' % DEFAULT_WINDOW_SIZE)
+        parser.add_argument(
+            '--field', type=str, default=None,
+            help='Use the header from a selected message field. '
+                 "Use '.' to select sub-fields and '.[index]' for arrays, "
+                 "for example 'transforms.[0]'.")
         add_direct_node_arguments(parser)
 
     def main(self, *, args):
@@ -72,13 +78,33 @@ def main(args):
     with DirectNode(args) as node:
         qos_profile = choose_qos(node.node, topic_name=args.topic_name, qos_args=args)
         return _rostopic_delay(
-            node.node, args.topic_name, qos_profile, window_size=args.window_size)
+            node.node, args.topic_name, qos_profile, window_size=args.window_size,
+            field=args.field)
+
+
+def _get_message_field(msg, field):
+    """Return the selected sub-message, supporting dotted fields and array indexes."""
+    if field is None:
+        return msg
+
+    selected = msg
+    is_indexing = re.compile(r'^\[(\d+)\]$')
+    for part in filter(None, field.split('.')):
+        match = is_indexing.match(part)
+        try:
+            if match is None:
+                selected = getattr(selected, part)
+            else:
+                selected = selected[int(match.group(1))]
+        except (AttributeError, IndexError, TypeError, ValueError) as ex:
+            raise RuntimeError(f"Invalid field '{field}': {ex}") from ex
+    return selected
 
 
 class ROSTopicDelay(object):
     """Receives messages for a topic and computes timestamp delay."""
 
-    def __init__(self, node, window_size):
+    def __init__(self, node, window_size, field=None):
         import threading
         self.lock = threading.Lock()
         self.last_msg_tn = 0
@@ -87,6 +113,7 @@ class ROSTopicDelay(object):
         self.delays = []
 
         self.window_size = window_size
+        self.field = field
 
         self._clock = node.get_clock()
 
@@ -96,8 +123,11 @@ class ROSTopicDelay(object):
 
         :param msg: Message instance
         """
+        msg = _get_message_field(msg, self.field)
         if not hasattr(msg, 'header'):
-            raise RuntimeError('msg does not have header')
+            if self.field is None:
+                raise RuntimeError('msg does not have header')
+            raise RuntimeError(f"field '{self.field}' does not have header")
         with self.lock:
             curr_rostime = self._clock.now()
 
@@ -160,13 +190,16 @@ class ROSTopicDelay(object):
               % (delay * 1e-9, min_delta * 1e-9, max_delta * 1e-9, std_dev * 1e-9, window))
 
 
-def _rostopic_delay(node, topic, qos_profile, window_size=DEFAULT_WINDOW_SIZE):
+def _rostopic_delay(
+    node, topic, qos_profile, window_size=DEFAULT_WINDOW_SIZE, field=None
+):
     """
     Periodically print the publishing delay of a topic to console until shutdown.
 
     :param topic: topic name, ``str``
     :param qos_profile: qos profile of the subscriber
     :param window_size: number of messages to average over, ``unsigned_int``
+    :param field: optional message field whose value contains the timestamp header, ``str``
     :param blocking: pause delay until topic is published, ``bool``
     """
     # pause hz until topic is published
@@ -176,7 +209,7 @@ def _rostopic_delay(node, topic, qos_profile, window_size=DEFAULT_WINDOW_SIZE):
         node.destroy_node()
         return 1
 
-    rt = ROSTopicDelay(node, window_size)
+    rt = ROSTopicDelay(node, window_size, field=field)
     node.create_subscription(
         msg_class,
         topic,
