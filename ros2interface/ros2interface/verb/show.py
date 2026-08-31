@@ -13,9 +13,19 @@
 # limitations under the License.
 
 import argparse
+import os
 import sys
 import typing
 
+<<<<<<< HEAD
+=======
+from ament_index_python.packages import \
+    get_package_share_directory, \
+    PackageNotFoundError
+from ament_index_python.resources import get_resource
+from ros2cli.helpers import interactive_select
+from ros2interface.api import get_all_interface_names
+>>>>>>> 7c6e097 (fix non standard interface locations. (#1186) (#1283))
 from ros2interface.api import type_completer
 from ros2interface.verb import VerbExtension
 from rosidl_adapter.parser import \
@@ -25,7 +35,6 @@ from rosidl_adapter.parser import \
     MessageSpecification, \
     parse_message_string, \
     SERVICE_REQUEST_RESPONSE_SEPARATOR
-from rosidl_runtime_py import get_interface_path
 
 
 class InterfaceTextLine:
@@ -108,9 +117,23 @@ def _get_interface_lines(interface_identifier: str) -> typing.Iterable[Interface
         raise ValueError(
             f"Invalid name '{interface_identifier}'. Expected three parts separated by '/'"
         )
-    pkg_name, _, msg_name = parts
+    pkg_name, msg_type, msg_name = parts
 
-    file_path = get_interface_path(interface_identifier)
+    try:
+        share_dir = get_package_share_directory(pkg_name)
+    except PackageNotFoundError:
+        raise LookupError(f"Unknown package '{pkg_name}'")
+
+    interfaces, _ = get_resource('rosidl_interfaces', pkg_name)
+    interfaces = interfaces.splitlines()
+
+    interface = [f for f in interfaces if f.endswith(msg_name + '.' + msg_type)]
+    if len(interface) == 0:
+        raise LookupError(
+            f"Interface '{msg_type}/{msg_name}' not found in package '{pkg_name}'"
+        )
+
+    file_path = os.path.join(share_dir, interface[0])
     with open(file_path) as file_handler:
         for line in file_handler:
             yield InterfaceTextLine(
