@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import sys
 from typing import Optional
 
 from ros2cli.helpers import check_discovery_configuration
@@ -34,6 +35,14 @@ class NodeStrategy:
             self._daemon_node = DaemonNode(args)
             self._direct_node = None
             if not self._daemon_node.connected:
+                self._direct_node = DirectNode(args, node_name=node_name)
+                self._daemon_node = None
+            elif not self._daemon_node.configuration_matches:
+                print(
+                    'WARNING: the running ROS 2 daemon uses a different or unverifiable '
+                    'discovery configuration. Falling back to direct discovery.',
+                    file=sys.stderr
+                )
                 self._direct_node = DirectNode(args, node_name=node_name)
                 self._daemon_node = None
         else:
