@@ -22,6 +22,7 @@ setup(
         ('share/ros2cli/environment', [
             'completion/ros2-argcomplete.bash',
             'completion/ros2-argcomplete.fish',
+            'completion/ros2-argcomplete.ps1',
             'completion/ros2-argcomplete.zsh',
         ]),
     ],

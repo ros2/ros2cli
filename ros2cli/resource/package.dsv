@@ -1,3 +1,4 @@
 source;share/ros2cli/environment/ros2-argcomplete.bash
 source;share/ros2cli/environment/ros2-argcomplete.fish
+source;share/ros2cli/environment/ros2-argcomplete.ps1
 source;share/ros2cli/environment/ros2-argcomplete.zsh
