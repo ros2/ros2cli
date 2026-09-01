@@ -10,6 +10,9 @@ find_package(ament_cmake REQUIRED)
 @[if cpp_library_name]@
 find_package(ament_cmake_ros REQUIRED)
 @[end if]@
+@[if message_names]@
+find_package(rosidl_default_generators REQUIRED)
+@[end if]@
 @[if dependencies]@
 @[  for dep in dependencies]@
 find_package(@dep REQUIRED)
@@ -18,6 +21,19 @@ find_package(@dep REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
+@[end if]@
+@[if message_names]@
+
+# do not forget to find_package all dependencies of your custom messages
+# (if they were not already found earlier)
+# find_package(<msg_dependency> REQUIRED)
+
+rosidl_generate_interfaces(${PROJECT_NAME}
+@[  for msg in message_names]@
+  "msg/@(msg).msg"
+@[  end for]@
+  DEPENDENCIES  # list all package dependencies of your messages
+)
 @[end if]@
 @[if cpp_library_name]@
 
