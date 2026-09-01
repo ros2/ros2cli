@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>ros2log</name>
-  <version>0.40.4</version>
+  <version>0.41.1</version>
   <description>The log command for ROS 2 command line tools.</description>
   <maintainer email="tomoya.fujita825@gmail.com">Tomoya Fujita</maintainer>
   <maintainer email="fumiya-onishi@keio.jp">Fumiya Ohnishi</maintainer>

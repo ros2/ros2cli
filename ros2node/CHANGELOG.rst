@@ -2,6 +2,9 @@
 Changelog for package ros2node
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.42.0 (2026-09-01)
+-------------------
+
 0.41.1 (2026-07-15)
 -------------------
 * Add unit tests for sub-command tab completers (`#1227 <https://github.com/ros2/ros2cli//issues/1227>`_)

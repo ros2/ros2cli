@@ -2,6 +2,11 @@
 Changelog for package ros2interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.42.0 (2026-09-01)
+-------------------
+* fix non standard interface locations. (`#1186 <https://github.com/ros2/ros2cli/issues/1186>`_) (`#1283 <https://github.com/ros2/ros2cli/issues/1283>`_)
+* Contributors: Alejandro Hernández Cordero
+
 0.41.1 (2026-07-15)
 -------------------
 * Fix ros2 interface show --no-comments leaving bare # lines (`#1257 <https://github.com/ros2/ros2cli//issues/1257>`_)

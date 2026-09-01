@@ -2,6 +2,9 @@
 Changelog for package ros2component
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.42.0 (2026-09-01)
+-------------------
+
 0.41.1 (2026-07-15)
 -------------------
 * add "--log-level" option for "ros2 component load" (`#1212 <https://github.com/ros2/ros2cli//issues/1212>`_)

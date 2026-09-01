@@ -2,6 +2,11 @@
 Changelog for package ros2pkg
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.42.0 (2026-09-01)
+-------------------
+* feat(ros2pkg): Install headers into subdirectory (`#1280 <https://github.com/ros2/ros2cli/issues/1280>`_)
+* Contributors: Martin Pecka
+
 0.41.1 (2026-07-15)
 -------------------
 

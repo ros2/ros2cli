@@ -2,6 +2,11 @@
 Changelog for package ros2doctor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.42.0 (2026-09-01)
+-------------------
+* Add multicast options to ros2 doctor hello (`#1267 <https://github.com/ros2/ros2cli/issues/1267>`_)
+* Contributors: Miko Parkkinen
+
 0.41.1 (2026-07-15)
 -------------------
 

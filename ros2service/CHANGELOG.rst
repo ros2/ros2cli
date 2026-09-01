@@ -2,6 +2,9 @@
 Changelog for package ros2service
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.42.0 (2026-09-01)
+-------------------
+
 0.41.1 (2026-07-15)
 -------------------
 * Remove fzf interactive selection for services (`#1244 <https://github.com/ros2/ros2cli//issues/1244>`_)
