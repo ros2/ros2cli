@@ -2,6 +2,11 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.40.9 (2026-09-01)
+-------------------
+* Keep leading '~' unquoted in zsh completion. (`#1279 <https://github.com/ros2/ros2cli/issues/1279>`_) (`#1281 <https://github.com/ros2/ros2cli/issues/1281>`_) (`#1284 <https://github.com/ros2/ros2cli/issues/1284>`_)
+* Contributors: mergify[bot]
+
 0.40.8 (2026-07-15)
 -------------------
 * Check socket is actually freed and reusable during shutdown daemon. (`#1230 <https://github.com/ros2/ros2cli//issues/1230>`_) (`#1231 <https://github.com/ros2/ros2cli//issues/1231>`_)

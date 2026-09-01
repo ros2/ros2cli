@@ -2,6 +2,9 @@
 Changelog for package ros2service
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.40.9 (2026-09-01)
+-------------------
+
 0.40.8 (2026-07-15)
 -------------------
 * Merge pull request `#1246 <https://github.com/ros2/ros2cli//issues/1246>`_ from ros2/mergify/bp/lyrical/pr-1244

@@ -2,6 +2,11 @@
 Changelog for package ros2interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.40.9 (2026-09-01)
+-------------------
+* fix non standard interface locations. (`#1186 <https://github.com/ros2/ros2cli/issues/1186>`_) (`#1283 <https://github.com/ros2/ros2cli/issues/1283>`_) (`#1288 <https://github.com/ros2/ros2cli/issues/1288>`_)
+* Contributors: mergify[bot]
+
 0.40.8 (2026-07-15)
 -------------------
 
