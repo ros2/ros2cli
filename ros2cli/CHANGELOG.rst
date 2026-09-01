@@ -2,6 +2,11 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.32.12 (2026-09-01)
+--------------------
+* Keep leading '~' unquoted in zsh completion. (`#1279 <https://github.com/ros2/ros2cli/issues/1279>`_) (`#1281 <https://github.com/ros2/ros2cli/issues/1281>`_) (`#1286 <https://github.com/ros2/ros2cli/issues/1286>`_)
+* Contributors: mergify[bot]
+
 0.32.11 (2026-07-15)
 --------------------
 
