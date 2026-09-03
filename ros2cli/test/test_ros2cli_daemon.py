@@ -118,15 +118,19 @@ def local_node():
             action_name=TEST_ACTION_NAME,
             execute_callback=noop_execute_callback
         )
-        action_server  # to avoid "assigned by never used" warning
         action_client = rclpy.action.ActionClient(
             node=node,
             action_type=test_msgs.action.Fibonacci,
             action_name=TEST_ACTION_NAME
         )
-        action_client  # to avoid "assigned by never used" warning
 
         yield node
+
+        # Teardown: explicitly destroy the node to make sure that any
+        # lingering middleware resources are freed (specifically sockets)
+        action_client.destroy()
+        action_server.destroy()
+        node.destroy_node()
 
 
 @pytest.fixture(scope='module')
