@@ -13,6 +13,8 @@
 # limitations under the License.
 
 import random
+import re
+import subprocess
 import sys
 import threading
 import time
@@ -22,24 +24,79 @@ import pytest
 from ros2multicast.api import receive
 from ros2multicast.api import send
 
+_MULTICAST_ADDRESS = re.compile(r'\b2(?:2[4-9]|3[0-9])(?:\.\d{1,3}){3}\b')
+_UDP_ENDPOINT = re.compile(r'^\s*(?:UDP|udp)\s+\S', re.MULTILINE)
+
+
+def _capture(argv):
+    try:
+        return subprocess.run(argv, capture_output=True, text=True, timeout=30).stdout
+    except (OSError, subprocess.SubprocessError):
+        return ''
+
+
+def _network_state():
+    """
+    Summarize the machine-wide network resources these tests draw on.
+
+    Both the UDP port pool and the multicast membership table are shared by every process
+    on the machine.  Once either is exhausted, binding and joining fail for everything on
+    the box, which is easy to mistake for a defect in the code under test.
+    See https://github.com/ros2/ros2cli/issues/1141.
+    """
+    if sys.platform.startswith('win'):
+        joins = _capture(['netsh', 'interface', 'ipv4', 'show', 'joins'])
+        endpoints = _capture(['netstat', '-ano', '-p', 'UDP'])
+        port_range = '+'.join(re.findall(
+            r':\s*(\d+)',
+            _capture(['netsh', 'int', 'ipv4', 'show', 'dynamicport', 'udp'])))
+    else:
+        joins = _capture(['netstat', '--groups', '--numeric'])
+        endpoints = _capture(['ss', '-uan'])
+        port_range = _capture(['sysctl', '-n', 'net.ipv4.ip_local_port_range']).strip()
+    return (
+        f'{len(_MULTICAST_ADDRESS.findall(joins))} multicast memberships, '
+        f'{len(_UDP_ENDPOINT.findall(endpoints))} udp endpoints open, '
+        f'dynamic port range: {port_range or "unknown"}'
+    )
+
+
+def _reraise(error):
+    """Re-raise a socket error, first recording the machine state that may have caused it."""
+    print(
+        f'ros2multicast socket operation failed ({error}); machine network state: '
+        f'{_network_state()}',
+        file=sys.stderr)
+    raise error
+
 
 def _send_receive(sent_data, rx_kwargs, tx_kwargs):
     received_data = None
+    rx_error = None
 
     def target():
-        nonlocal received_data
+        nonlocal received_data, rx_error
         try:
             received_data, _ = receive(**rx_kwargs)
         except TimeoutError:
             pass
+        except Exception as e:  # noqa: B902
+            # Stash it for the calling thread. Left unhandled here, pytest turns it into
+            # an unhandled-thread-exception warning, so the test either fails with a
+            # misleading assertion or passes when it should not.
+            rx_error = e
 
     t = threading.Thread(target=target)
     t.start()
     time.sleep(0.1)
     try:
         send(sent_data, **tx_kwargs)
+    except OSError as e:
+        _reraise(e)
     finally:
         t.join()
+    if rx_error is not None:
+        _reraise(rx_error)
     return received_data
 
 
@@ -86,13 +143,11 @@ def test_group_mismatch():
     try:
         assert _send_receive(sent_data, rx_kwargs, tx_kwargs) is None
     except OSError as e:
-        if sys.platform.startswith('win'):
-            if 10051 == e.winerror:
-                # TODO(sloretz) understand why this test fails this way in CI
-                # "A socket operation was attempted to an unreachable network"
-                pytest.skip('Unknown why this OSError occurs on Windows')
-        else:
-            raise
+        if sys.platform.startswith('win') and 10051 == e.winerror:
+            # TODO(sloretz) understand why this test fails this way in CI
+            # "A socket operation was attempted to an unreachable network"
+            pytest.skip('Unknown why this OSError occurs on Windows')
+        raise
 
 
 def test_port_mismatch():
