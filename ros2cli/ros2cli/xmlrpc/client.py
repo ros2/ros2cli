@@ -15,9 +15,24 @@
 # Alias xmlrpc.client module objects to ensure client code uses ros2cli.xmlrpc
 from xmlrpc.client import ProtocolError
 from xmlrpc.client import ServerProxy
+from xmlrpc.client import Transport
 
 
 __all__ = [
     'ProtocolError',
-    'ServerProxy'
+    'ServerProxy',
+    'TimeoutTransport',
 ]
+
+
+class TimeoutTransport(Transport):
+
+    def __init__(self, *args, timeout=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._timeout = timeout
+
+    def make_connection(self, *args, **kwargs):
+        connection = super().make_connection(*args, **kwargs)
+        if self._timeout is not None:
+            connection.timeout = self._timeout
+        return connection
