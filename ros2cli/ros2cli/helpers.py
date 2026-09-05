@@ -20,9 +20,10 @@ import shutil
 import subprocess
 import sys
 import time
-
 from typing import Dict
 from typing import Optional
+
+from argcomplete import CompletionFinder
 
 
 def get_ros_domain_id():
@@ -238,3 +239,28 @@ def interactive_select(
     except (OSError, subprocess.SubprocessError) as e:
         print(f'Error during interactive selection: {e}', file=sys.stderr)
         return None
+
+
+class UnescapedCompletionFinder(CompletionFinder):
+
+    def quote_completions(
+        self,
+        completions: list[str],
+        cword_prequote: str,
+        last_wordbreak_pos: Optional[int],
+    ) -> list[str]:
+        """
+        Return completions without shell escaping.
+
+        Overrides the parent method to prevent mangling of YAML tokens
+        (dashes, braces, colons, etc.) that would otherwise be escaped
+        by the default shell quoting logic.
+
+        :param completions: List of completion strings to process.
+        :param cword_prequote: The quote character preceding the word
+            being completed, if any.
+        :param last_wordbreak_pos: Position of the last word-break
+            character in the current word, or None.
+        :return: The completions list, unmodified.
+        """
+        return completions
