@@ -26,8 +26,13 @@ from typing import Optional
 
 
 def get_ros_domain_id():
-    return int(os.environ.get('ROS_DOMAIN_ID', 0))
-
+    string = os.environ.get('ROS_DOMAIN_ID', '0')
+    try:
+        value = int(string)
+    except ValueError:
+        raise ValueError(
+            f'ROS_DOMAIN_ID must be an integer or unset (defaults to 0), got {string!r}'
+        )
 
 def wait_for(predicate, timeout, period=0.1):
     """
