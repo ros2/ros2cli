@@ -15,14 +15,13 @@
 from io import StringIO
 import sys
 import unittest
+import argparse
 
 from rcl_interfaces.msg import Log
 import rclpy
 from rclpy.node import Node
 
 from ros2log.verb.watch import LogWatcher, WatchVerb
-
-import argparse
 
 
 class TestWatchVerb(unittest.TestCase):
