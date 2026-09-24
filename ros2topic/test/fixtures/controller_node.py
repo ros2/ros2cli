@@ -36,9 +36,9 @@ class ControllerNode(Node):
         self.pub.publish(msg)
 
 
-def main(args=None):
+def main():
     try:
-        with rclpy.init(args=args):
+        with rclpy.init():
             node = ControllerNode()
             rclpy.spin(node)
     except (KeyboardInterrupt, ExternalShutdownException):
