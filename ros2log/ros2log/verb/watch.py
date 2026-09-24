@@ -70,7 +70,7 @@ class WatchVerb(VerbExtension):
 
     def add_arguments(self, parser, cli_name):
         parser.add_argument(
-            '--level',
+            '--level', '--log-level',
             type=str,
             choices=LOG_LEVELS.keys(),
             help='Show only logs at or above the specified severity level')

@@ -20,7 +20,9 @@ from rcl_interfaces.msg import Log
 import rclpy
 from rclpy.node import Node
 
-from ros2log.verb.watch import LogWatcher
+from ros2log.verb.watch import LogWatcher, WatchVerb
+
+import argparse
 
 
 class TestWatchVerb(unittest.TestCase):
@@ -240,6 +242,13 @@ class TestWatchVerb(unittest.TestCase):
         self.assertIn('my_function', output)
         self.assertIn('test.py', output)
         self.assertIn('42', output)
+
+    def test_watch_log_level_alias():
+        parser = argparse.ArgumentParser()
+        verb = WatchVerb()
+        verb.add_arguments(parser, 'ros2 log watch')
+        args = parser.parse_args(['--log-level', 'WARN'])
+        self.assertEqual(args.level, 'WARN')
 
 
 if __name__ == '__main__':
