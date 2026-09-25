@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import argparse
 from io import StringIO
 import sys
 import unittest
-import argparse
 
 from rcl_interfaces.msg import Log
 import rclpy
