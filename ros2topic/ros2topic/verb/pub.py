@@ -138,7 +138,7 @@ def main(args):
         times = 1
 
     if args.stdin:
-        values = collect_stdin()
+        values = collect_stdin().decode()
     else:
         values = args.values
 
