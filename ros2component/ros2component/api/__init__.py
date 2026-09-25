@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from collections import namedtuple
+import os
 import subprocess
 
 from ament_index_python import get_resource
@@ -392,17 +393,29 @@ def add_component_arguments(parser):
     )
 
 
-def run_standalone_container(*, container_node_name):
-    """Run a standalone component container."""
+def run_standalone_container(*, container_node_name, executor_type=None, isolated=False):
+    """
+    Run a standalone component container.
+
+    :param container_node_name: name of the container node
+    :param executor_type: executor for the container ('single-threaded',
+      'multi-threaded' or 'events-cbg'), or None for the container's default
+    :param isolated: whether each component gets its own executor
+    """
     try:
         paths = get_executable_paths(package_name='rclcpp_components')
     except PackageNotFound:
         raise RuntimeError("Package 'rclcpp_components' not found")
 
-    executable_path = next((p for p in paths if 'component_container' in p), None)
+    executable_path = next(
+        (p for p in paths if os.path.basename(p) == 'component_container'), None)
     if executable_path is None:
         raise RuntimeError('No component container node found!')
 
-    return subprocess.Popen([
-        executable_path, '--ros-args', '-r', '__node:=' + container_node_name
-    ])
+    cmd = [executable_path]
+    if executor_type is not None:
+        cmd += ['--executor-type', executor_type]
+    if isolated:
+        cmd.append('--isolated')
+    cmd += ['--ros-args', '-r', '__node:=' + container_node_name]
+    return subprocess.Popen(cmd)
