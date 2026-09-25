@@ -20,7 +20,7 @@ from rcl_interfaces.msg import Log
 import rclpy
 from rclpy.node import Node
 
-from ros2log.verb.watch import LogWatcher
+from ros2log.verb.watch import LogWatcher, WatchVerb
 
 
 class TestWatchVerb(unittest.TestCase):
@@ -240,6 +240,19 @@ class TestWatchVerb(unittest.TestCase):
         self.assertIn('my_function', output)
         self.assertIn('test.py', output)
         self.assertIn('42', output)
+
+    def test_filter_alias_for_regex(self):
+        """Test that --filter is accepted as an alias for --regex."""
+        import argparse
+        parser = argparse.ArgumentParser()
+        verb = WatchVerb()
+        verb.add_arguments(parser, 'ros2 log watch')
+
+        args = parser.parse_args(['--filter', 'my_pattern'])
+        self.assertEqual(args.regex, 'my_pattern')
+
+        args = parser.parse_args(['--regex', 'my_pattern'])
+        self.assertEqual(args.regex, 'my_pattern')
 
 
 if __name__ == '__main__':
