@@ -31,7 +31,7 @@ class FindVerb(VerbExtension):
             help="Name of the ROS topic type to filter for (e.g. 'std_msg/msg/String')")
         arg.completer = message_type_completer
         parser.add_argument(
-            '-c', '--count-topics', action='store_true',
+            '-c', '--count-topics', '--count', action='store_true',
             help='Only display the number of topics discovered')
         # duplicate the following argument from the command for visibility
         parser.add_argument(
