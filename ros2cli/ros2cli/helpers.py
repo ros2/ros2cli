@@ -29,10 +29,12 @@ def get_ros_domain_id():
     string = os.environ.get('ROS_DOMAIN_ID', '0')
     try:
         value = int(string)
+        return value
     except ValueError:
         raise ValueError(
             f'ROS_DOMAIN_ID must be an integer or unset (defaults to 0), got {string!r}'
         )
+        
 
 def wait_for(predicate, timeout, period=0.1):
     """
