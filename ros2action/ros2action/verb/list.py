@@ -25,7 +25,7 @@ class ListVerb(VerbExtension):
             '-t', '--show-types', action='store_true',
             help='Additionally show the action type')
         parser.add_argument(
-            '-c', '--count-actions', action='store_true',
+            '-c', '--count-actions', '--count', action='store_true',
             help='Only display the number of actions discovered')
 
     def main(self, *, args):

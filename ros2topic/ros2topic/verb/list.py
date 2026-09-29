@@ -28,7 +28,7 @@ class ListVerb(VerbExtension):
             '-t', '--show-types', action='store_true',
             help='Additionally show the topic type')
         parser.add_argument(
-            '-c', '--count-topics', action='store_true',
+            '-c', '--count-topics', '--count', action='store_true',
             help='Only display the number of topics discovered')
         # duplicate the following argument from the command for visibility
         parser.add_argument(

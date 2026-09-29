@@ -27,7 +27,7 @@ class FindVerb(VerbExtension):
             help="Name of the ROS action type to find (e.g. 'test_msgs/action/Fibonacci')")
         arg.completer = action_type_completer
         parser.add_argument(
-            '-c', '--count-actions', action='store_true',
+            '-c', '--count-actions', '--count', action='store_true',
             help='Only display the number of actions discovered')
 
     def main(self, *, args):

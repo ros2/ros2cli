@@ -28,7 +28,7 @@ class FindVerb(VerbExtension):
                  "(e.g. 'rcl_interfaces/srv/ListParameters')")
         arg.completer = service_type_completer
         parser.add_argument(
-            '-c', '--count-services', action='store_true',
+            '-c', '--count-services', '--count', action='store_true',
             help='Only display the number of services discovered')
         # duplicate the following argument from the command for visibility
         parser.add_argument(
