@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import argparse
 from io import StringIO
 import sys
 import unittest
@@ -21,6 +22,16 @@ import rclpy
 from rclpy.node import Node
 
 from ros2log.verb.watch import LogWatcher
+from ros2log.verb.watch import WatchVerb
+
+
+def test_filter_alias():
+    """Test that --filter shares the --regex parser destination."""
+    parser = argparse.ArgumentParser()
+    WatchVerb().add_arguments(parser, 'ros2 log watch')
+
+    assert parser.parse_args(['--filter', 'my_pattern']).regex == 'my_pattern'
+    assert parser.parse_args(['--regex', 'old_pattern']).regex == 'old_pattern'
 
 
 class TestWatchVerb(unittest.TestCase):

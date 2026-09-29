@@ -79,7 +79,7 @@ class WatchVerb(VerbExtension):
             type=str,
             help='Filter logs by logger name')
         parser.add_argument(
-            '--regex',
+            '--regex', '--filter',
             type=str,
             help='Filter log messages matching the specified regular expression pattern. '
                  'e.g. "topic.*(/\\w+)"')
