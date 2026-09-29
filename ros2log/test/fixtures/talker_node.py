@@ -45,8 +45,8 @@ class TalkerNode(Node):
         self.count += 1
 
 
-def main(args=None):
-    rclpy.init(args=args)
+def main():
+    rclpy.init()
     node = TalkerNode()
     try:
         rclpy.spin(node)

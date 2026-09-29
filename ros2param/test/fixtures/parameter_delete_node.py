@@ -16,9 +16,9 @@ import rclpy
 from rclpy.executors import ExternalShutdownException
 
 
-def main(args=None):
+def main():
     try:
-        with rclpy.init(args=args):
+        with rclpy.init():
             # Create a node that allows undeclared parameters
             # so they can be dynamically set and deleted
             node = rclpy.create_node('parameter_delete_node', allow_undeclared_parameters=True)

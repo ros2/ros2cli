@@ -40,8 +40,8 @@ class ListenerNode(Node):
         self.get_logger().error(f'Error message: {msg.data}')
 
 
-def main(args=None):
-    rclpy.init(args=args)
+def main():
+    rclpy.init()
     node = ListenerNode()
     try:
         rclpy.spin(node)

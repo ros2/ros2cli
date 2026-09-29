@@ -38,9 +38,9 @@ class Counter:
         self.count[param] = self.count[param] + 1
 
 
-def main(args=None):
+def main():
     try:
-        with rclpy.init(args=args):
+        with rclpy.init():
             node = rclpy.create_node('qos_subscription')
 
             counter = Counter()

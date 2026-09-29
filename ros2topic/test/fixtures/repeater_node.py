@@ -46,11 +46,11 @@ def parse_arguments(args=None):
     return parser.parse_args(args=remove_ros_args(args))
 
 
-def main(args=None):
+def main():
     try:
-        parsed_args = parse_arguments(args=args)
+        parsed_args = parse_arguments(args=sys.argv[1:])
 
-        with rclpy.init(args=args):
+        with rclpy.init():
             node = RepeaterNode(message_type=parsed_args.message_type)
             rclpy.spin(node)
     except (KeyboardInterrupt, ExternalShutdownException):
@@ -58,4 +58,4 @@ def main(args=None):
 
 
 if __name__ == '__main__':
-    main(args=sys.argv[1:])
+    main()
