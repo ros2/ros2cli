@@ -22,7 +22,7 @@ class TopicCommand(CommandExtension):
     def add_arguments(self, parser, cli_name):
         self._subparser = parser
         parser.add_argument(
-            '--include-hidden-topics', action='store_true',
+            '--include-hidden-topics', '-a', '--all', action='store_true',
             help='Consider hidden topics as well')
 
         # add arguments and sub-commands of verbs
