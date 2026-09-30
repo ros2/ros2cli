@@ -10,7 +10,7 @@
   <maintainer email="audrow@openrobotics.org">Audrow Nash</maintainer>
   <maintainer email="geoff@openrobotics.org">Geoffrey Biggs</maintainer>
 
-  <license>Apache License 2.0</license>
+  <license>Apache-2.0</license>
 
   <author email="aditya.pande@openrobotics.org">Aditya Pande</author>
   <author email="dthomas@osrfoundation.org">Dirk Thomas</author>

@@ -27,7 +27,7 @@ class NodesVerb(VerbExtension):
             '-a', '--all', action='store_true',
             help='Display all nodes even hidden ones')
         parser.add_argument(
-            '-c', '--count-nodes', action='store_true',
+            '-c', '--count-nodes', '--count', action='store_true',
             help='Only display the number of nodes discovered')
 
     def main(self, *, args):  # noqa: D102

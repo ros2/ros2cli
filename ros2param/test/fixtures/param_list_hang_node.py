@@ -30,9 +30,9 @@ class ParamListHangNode(Node):
             time.sleep(1.0)
 
 
-def main(args=None):
+def main():
     try:
-        with rclpy.init(args=args):
+        with rclpy.init():
             node = ParamListHangNode()
             rclpy.spin(node)
     except (KeyboardInterrupt, ExternalShutdownException):

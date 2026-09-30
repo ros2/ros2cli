@@ -10,7 +10,7 @@
   <maintainer email="audrow@openrobotics.org">Audrow Nash</maintainer>
   <maintainer email="geoff@openrobotics.org">Geoffrey Biggs</maintainer>
 
-  <license>Apache License 2.0</license>
+  <license>Apache-2.0</license>
   <license>BSD-3-Clause</license>  <!-- ros2topic/verb/delay.py|hz.py|bw.py are BSD -->
 
   <author email="aditya.pande@openrobotics.org">Aditya Pande</author>

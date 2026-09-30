@@ -12,20 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import rclpy
-from rclpy.executors import ExternalShutdownException
+import argparse
+
+import pytest
+
+from ros2lifecycle.verb.nodes import NodesVerb
 
 
-def main():
-    try:
-        with rclpy.init():
-            # Create a node that allows undeclared parameters
-            # so they can be dynamically set and deleted
-            node = rclpy.create_node('parameter_delete_node', allow_undeclared_parameters=True)
-            rclpy.spin(node)
-    except (KeyboardInterrupt, ExternalShutdownException):
-        print('parameter delete node stopped cleanly')
-
-
-if __name__ == '__main__':
-    main()
+@pytest.mark.parametrize('option', ['-c', '--count-nodes', '--count'])
+def test_nodes_count_alias(option):
+    parser = argparse.ArgumentParser(allow_abbrev=False)
+    NodesVerb().add_arguments(parser, 'ros2 lifecycle nodes')
+    args = parser.parse_args([option])
+    assert args.count_nodes is True

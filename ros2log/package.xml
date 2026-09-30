@@ -6,7 +6,7 @@
   <description>The log command for ROS 2 command line tools.</description>
   <maintainer email="tomoya.fujita825@gmail.com">Tomoya Fujita</maintainer>
   <maintainer email="fumiya-onishi@keio.jp">Fumiya Ohnishi</maintainer>
-  <license>Apache License 2.0</license>
+  <license>Apache-2.0</license>
 
   <author email="tomoya.fujita825@gmail.com">Tomoya Fujita</author>
   <author email="fumiya-onishi@keio.jp">Fumiya Ohnishi</author>

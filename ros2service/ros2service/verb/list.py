@@ -27,7 +27,7 @@ class ListVerb(VerbExtension):
             '-t', '--show-types', action='store_true',
             help='Additionally show the service type')
         parser.add_argument(
-            '-c', '--count-services', action='store_true',
+            '-c', '--count-services', '--count', action='store_true',
             help='Only display the number of services discovered')
         # duplicate the following argument from the command for visibility
         parser.add_argument(

@@ -43,7 +43,7 @@ setup(
     long_description="""\
 The framework provides a single command line script which can be extended with
 commands and verbs.""",
-    license='Apache License, Version 2.0',
+    license='Apache-2.0',
     entry_points={
         'ros2cli.command': [
             'daemon = ros2cli.command.daemon:DaemonCommand',

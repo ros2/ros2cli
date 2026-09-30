@@ -30,7 +30,7 @@ setup(
     description='The multicast command for ROS 2 command line tools.',
     long_description="""\
 The package provides the multicast command for the ROS 2 command line tools.""",
-    license='Apache License, Version 2.0',
+    license='Apache-2.0',
     extras_require={
         'test': [
             'pytest',

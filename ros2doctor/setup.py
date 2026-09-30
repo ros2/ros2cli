@@ -30,7 +30,7 @@ setup(
     description='The doctor command for ROS 2 command line tools',
     long_description="""\
     The package provides a cli tool to check potential issues in a ROS 2 system""",
-    license='Apache License, Version 2.0',
+    license='Apache-2.0',
     extras_require={
         'test': [
             'pytest',
