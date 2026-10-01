@@ -36,9 +36,22 @@ class StandaloneVerb(VerbExtension):
             default='standalone_container_' + uuid.uuid4().hex[:12],
             help='Name of the standalone container node to be run'
         )
+        parser.add_argument(
+            '--executor-type',
+            choices=['single-threaded', 'multi-threaded', 'events-cbg'],
+            default=None,
+            help='Executor used by the standalone container '
+                 "(default: the container's default, single-threaded)"
+        )
+        parser.add_argument(
+            '--isolated', action='store_true',
+            help='Give each component in the container its own executor'
+        )
 
     def main(self, *, args):
-        container = run_standalone_container(container_node_name=args.container_node_name)
+        container = run_standalone_container(
+            container_node_name=args.container_node_name,
+            executor_type=args.executor_type, isolated=args.isolated)
 
         with DirectNode(args) as node:
             try:
