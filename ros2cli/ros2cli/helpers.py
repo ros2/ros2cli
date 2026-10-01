@@ -34,7 +34,7 @@ def get_ros_domain_id():
         raise ValueError(
             f'ROS_DOMAIN_ID must be an integer or unset (defaults to 0), got {string!r}'
         )
-        
+
 
 def wait_for(predicate, timeout, period=0.1):
     """
