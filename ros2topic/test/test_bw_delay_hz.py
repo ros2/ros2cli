@@ -157,15 +157,6 @@ class TestROS2TopicBwDelayHz(unittest.TestCase):
 
                 publish_timer = self.node.create_timer(0.5, publish_message)
 
-                # Wait for the publisher to be discovered
-                publisher_count = 0
-                timeout_count = 0
-                while publisher_count == 0 and timeout_count < 10:
-                    self.executor.spin_once(timeout_sec=0.1)
-                    publisher_count = self.node.count_publishers(topic)
-                    timeout_count += 1
-                assert publisher_count > 0, 'Publisher was not discovered'
-
                 try:
                     command_action = ExecuteProcess(
                         cmd=(['ros2', 'topic', verb] +
@@ -182,10 +173,24 @@ class TestROS2TopicBwDelayHz(unittest.TestCase):
                             filtered_rmw_implementation=get_rmw_implementation_identifier()
                         )
                     ) as command:
-                        # The future won't complete - we will hit the timeout
-                        self.executor.spin_until_future_complete(
-                            rclpy.task.Future(), timeout_sec=5
+                        incompatible_qos_warning = (
+                            "New publisher discovered on topic '{}', offering incompatible"
+                            ' QoS.'.format(topic)
                         )
+                        # Keep publishing while waiting on the command under test itself.
+                        # This avoids inferring its discovery state from a different node.
+                        for _ in range(150):
+                            self.executor.spin_once(timeout_sec=0.1)
+                            output = command.output or ''
+                            if compatible_qos:
+                                if re.search(success_regex, output, flags=re.MULTILINE):
+                                    break
+                            elif incompatible_qos_warning in output:
+                                break
+                        else:
+                            self.fail(
+                                f'{verb} CLI did not produce expected output within 15 seconds'
+                            )
                     command.wait_for_shutdown(timeout=10)
                     # Check results
                     if compatible_qos:
@@ -197,10 +202,9 @@ class TestROS2TopicBwDelayHz(unittest.TestCase):
                         assert command.output, (
                             f'{verb} CLI did not print incompatible QoS warning'
                         )
-                        assert ("New publisher discovered on topic '{}', offering incompatible"
-                                ' QoS.'.format(topic) in command.output), (
-                                f'{verb} CLI did not print expected incompatible QoS warning'
-                            )
+                        assert incompatible_qos_warning in command.output, (
+                            f'{verb} CLI did not print expected incompatible QoS warning'
+                        )
                 finally:
                     # Cleanup
                     self.node.destroy_timer(publish_timer)
