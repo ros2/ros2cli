@@ -252,6 +252,13 @@ class TestWatchVerb(unittest.TestCase):
         self.assertIn('test.py', output)
         self.assertIn('42', output)
 
+    def test_watch_log_level_alias(self):
+        parser = argparse.ArgumentParser()
+        verb = WatchVerb()
+        verb.add_arguments(parser, 'ros2 log watch')
+        args = parser.parse_args(['--log-level', 'WARN'])
+        self.assertEqual(args.level, 'WARN')
+
 
 if __name__ == '__main__':
     unittest.main()
