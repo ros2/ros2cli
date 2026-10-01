@@ -29,6 +29,12 @@ from ros2cli.helpers import wait_for
 from ros2cli.xmlrpc.client import ServerProxy
 
 
+# The daemon server polls for shutdown every 0.2 seconds. Allow several such
+# intervals for Windows process teardown without letting a foreign port owner
+# consume the caller's full (or indefinite) daemon startup timeout.
+_DAEMON_SOCKET_RELEASE_GRACE_PERIOD = 1.0
+
+
 class DaemonNode:
 
     def __init__(self, args):
@@ -90,6 +96,38 @@ def _is_daemon_address_free():
         raise
 
 
+def _make_xmlrpc_server_when_available(args, timeout):
+    """Acquire the daemon XML-RPC server socket, waiting out a Windows shutdown tail."""
+    try:
+        return daemon.make_xmlrpc_server()
+    except socket.error as e:
+        if e.errno != errno.EADDRINUSE:
+            raise
+
+    # A live daemon owns the address legitimately. The shutdown-tail behavior
+    # addressed here is Windows-specific; on other platforms preserve the
+    # previous immediate EADDRINUSE result. No requested timeout also remains
+    # non-blocking.
+    if is_daemon_running(args) or timeout is None or os.name != 'nt':
+        return None
+
+    # A Windows daemon can stop serving before its process releases the socket.
+    # Use a short bounded grace period rather than the full spawn timeout: a
+    # foreign process can own this fixed port too, and must not make startup
+    # block indefinitely when the caller requested an indefinite daemon wait.
+    grace_period = _DAEMON_SOCKET_RELEASE_GRACE_PERIOD
+    if timeout > 0:
+        grace_period = min(timeout, grace_period)
+    if not wait_for(_is_daemon_address_free, grace_period):
+        return None
+    try:
+        return daemon.make_xmlrpc_server()
+    except socket.error as e:
+        if e.errno == errno.EADDRINUSE:
+            return None
+        raise
+
+
 def shutdown_daemon(args, timeout=None):
     """
     Shut down daemon node if it's running.
@@ -141,19 +179,14 @@ def spawn_daemon(args, timeout=None, debug=False, inactivity_timeout=2 * 60 * 60
       disables the timeout, so the daemon runs until explicitly
       stopped.
     :return: `True` if the daemon was spawned,
-      `False` if it was already running.
+      `False` if it was already running or its address remained busy.
     :raises: if it fails to spawn the daemon.
     """
     # Acquire socket by instantiating XMLRPC server.
-    try:
-        server = daemon.make_xmlrpc_server()
-        server.socket.set_inheritable(True)
-    except socket.error as e:
-        if e.errno == errno.EADDRINUSE:
-            # Failed to acquire socket
-            # Daemon already running
-            return False
-        raise
+    server = _make_xmlrpc_server_when_available(args, timeout)
+    if server is None:
+        return False
+    server.socket.set_inheritable(True)
 
     # During tab completion on the ros2 tooling, we can get here and attempt to spawn a daemon.
     # In that scenario, there may be open file descriptors that can prevent us from successfully
