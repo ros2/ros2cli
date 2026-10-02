@@ -106,7 +106,8 @@ class PubVerb(VerbExtension):
             help=(
                 'This sets the maximum wait time in seconds if '
                 '--wait-matching-subscriptions is set. '
-                'By default, this flag is not set meaning the subscriber will wait endlessly.'))
+                'By default, no timeout is set and the publisher waits for a subscriber '
+                'indefinitely.'))
         parser.add_argument(
             '--keep-alive', metavar='N', type=positive_float, default=0.1,
             help='Keep publishing node alive for N seconds after the last msg '
