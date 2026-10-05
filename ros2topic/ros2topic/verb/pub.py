@@ -105,7 +105,7 @@ class PubVerb(VerbExtension):
             '--max-wait-time-secs', type=positive_float, default=None,
             help=(
                 'This sets the maximum wait time in seconds if '
-                '--wait-until-matching-subscriptions is set. '
+                '--wait-matching-subscriptions is set. '
                 'By default, this flag is not set meaning the subscriber will wait endlessly.'))
         parser.add_argument(
             '--keep-alive', metavar='N', type=positive_float, default=0.1,
