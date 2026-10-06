@@ -63,10 +63,8 @@ def _network_state():
 
 def _reraise(error):
     """Re-raise a socket error, first recording the machine state that may have caused it."""
-    print(
-        f'ros2multicast socket operation failed ({error}); machine network state: '
-        f'{_network_state()}',
-        file=sys.stderr)
+    # A note reaches the failure message; stderr does not reach the JUnit report.
+    error.add_note(f'machine network state: {_network_state()}')
     raise error
 
 

@@ -77,10 +77,11 @@ def is_daemon_running(args):
 
 def _is_daemon_address_free():
     # Mirror LocalXMLRPCServer.allow_reuse_address: SO_REUSEADDR on
-    # all platforms so TIME_WAIT doesn't make us falsely report busy.
+    # non-Windows so TIME_WAIT doesn't make us falsely report busy.
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            if os.name != 'nt':
+                s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             s.bind(daemon.get_address())
         return True
     except socket.error as e:
