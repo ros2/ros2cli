@@ -124,7 +124,7 @@ def _get_interface_lines(interface_identifier: str) -> typing.Iterable[Interface
     interfaces, _ = get_resource('rosidl_interfaces', pkg_name)
     interfaces = interfaces.splitlines()
 
-    interface = [f for f in interfaces if f.endswith(msg_name + '.' + msg_type)]
+    interface = [f for f in interfaces if os.path.basename(f) == msg_name + '.' + msg_type]
     if len(interface) == 0:
         raise LookupError(
             f"Interface '{msg_type}/{msg_name}' not found in package '{pkg_name}'"
