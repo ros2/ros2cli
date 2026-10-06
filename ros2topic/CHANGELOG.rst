@@ -2,8 +2,8 @@
 Changelog for package ros2topic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.32.13 (2026-10-06)
+--------------------
 * Fixes `#1306 <https://github.com/ros2/ros2cli/issues/1306>`_ (`#1317 <https://github.com/ros2/ros2cli/issues/1317>`_) (`#1329 <https://github.com/ros2/ros2cli/issues/1329>`_)
   (cherry picked from commit 6dbc8972f82aea5fbb15900ae2a9f224f4f3b622)
   Co-authored-by: Sruthika R <sruthika0225@gmail.com>

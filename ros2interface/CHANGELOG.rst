@@ -2,8 +2,8 @@
 Changelog for package ros2interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.32.13 (2026-10-06)
+--------------------
 * Fix/interface show suffix match (`#1315 <https://github.com/ros2/ros2cli/issues/1315>`_) (`#1321 <https://github.com/ros2/ros2cli/issues/1321>`_)
   (cherry picked from commit 1976d163279615def79db73810128aca6babfcc6)
   Co-authored-by: Usama Jahangir <67747435+usamajahangir@users.noreply.github.com>
