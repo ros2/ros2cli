@@ -13,6 +13,8 @@
 # limitations under the License.
 
 import argparse
+import subprocess
+import sys
 import time
 
 import pytest
@@ -23,7 +25,9 @@ from rclpy.endpoint_info import EndpointTypeEnum
 
 from rclpy.utilities import get_rmw_implementation_identifier
 
+from ros2cli import daemon as ros2cli_daemon
 from ros2cli.node.daemon import DaemonNode
+from ros2cli.node.daemon import _is_daemon_address_free
 from ros2cli.node.daemon import is_daemon_running
 from ros2cli.node.daemon import shutdown_daemon
 from ros2cli.node.daemon import spawn_daemon
@@ -118,15 +122,37 @@ def local_node():
             action_name=TEST_ACTION_NAME,
             execute_callback=noop_execute_callback
         )
-        action_server  # to avoid "assigned by never used" warning
         action_client = rclpy.action.ActionClient(
             node=node,
             action_type=test_msgs.action.Fibonacci,
             action_name=TEST_ACTION_NAME
         )
-        action_client  # to avoid "assigned by never used" warning
 
         yield node
+
+        # Teardown: explicitly destroy the node to make sure that any
+        # lingering middleware resources are freed (specifically sockets)
+        action_client.destroy()
+        action_server.destroy()
+        node.destroy_node()
+
+
+def _daemon_address_state():
+    host, port = ros2cli_daemon.get_address()
+    try:
+        free = _is_daemon_address_free()
+    except OSError as e:
+        free = f'check failed: {e}'
+    listing = ''
+    if sys.platform.startswith('win'):
+        try:
+            out = subprocess.run(
+                ['netstat', '-ano', '-p', 'TCP'], capture_output=True, text=True, timeout=30
+            ).stdout
+            listing = '\n'.join(line for line in out.splitlines() if f':{port} ' in line)
+        except (OSError, subprocess.SubprocessError):
+            pass
+    return f'daemon address {host}:{port} free={free}\n{listing}'
 
 
 @pytest.fixture(scope='module')
@@ -137,7 +163,8 @@ def daemon_node():
     with DaemonNode(args=[]) as node:
         if not node.connected:
             pytest.fail(
-                f'failed to connect daemon {TEST_NODE_NAMESPACE}/{TEST_NODE_NAME}'
+                f'failed to connect daemon {TEST_NODE_NAMESPACE}/{TEST_NODE_NAME}\n'
+                f'{_daemon_address_state()}'
             )
         attempts = 3
         delay_between_attempts = 2  # seconds

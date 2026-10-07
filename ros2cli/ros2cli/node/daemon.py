@@ -144,6 +144,9 @@ def spawn_daemon(args, timeout=None, debug=False, inactivity_timeout=2 * 60 * 60
       `False` if it was already running.
     :raises: if it fails to spawn the daemon.
     """
+    if is_daemon_running(args):
+        return False
+
     # Acquire socket by instantiating XMLRPC server.
     try:
         server = daemon.make_xmlrpc_server()
