@@ -12,6 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from argparse import ArgumentTypeError
+
+import pytest
+
+from ros2topic.verb.delay import precision_int
 from ros2topic.verb.delay import ROSTopicDelay
 
 
@@ -44,4 +49,23 @@ def test_custom_delay_precision(capsys):
 
     assert 'average delay: 0.001790\n' in output
     assert '\tmin: 0.001235s max: 0.002346s' in output
-    assert 'std dev: 0.00056s window: 2' in output
+    assert 'std dev: 0.000556s window: 2' in output
+
+
+def test_max_delay_precision(capsys):
+    output = _delay_output(capsys, precision=9)
+
+    assert 'average delay: 0.001790123\n' in output
+    assert '\tmin: 0.001234567s max: 0.002345678s' in output
+    assert 'std dev: 0.000555556s window: 2' in output
+
+
+@pytest.mark.parametrize('value', ['0', '3', '9'])
+def test_precision_int_valid(value):
+    assert precision_int(value) == int(value)
+
+
+@pytest.mark.parametrize('value', ['-1', '10', '10000000000', 'abc', '1.5'])
+def test_precision_int_invalid(value):
+    with pytest.raises(ArgumentTypeError):
+        precision_int(value)
