@@ -61,6 +61,9 @@ class SendGoalVerb(VerbExtension):
         group.add_argument(
             '--stdin', action='store_true',
             help='Read goal from standard input')
+        group.add_argument(
+            '--goal-file', metavar='FILE',
+            help='Read goal request values from a YAML file')
         arg.completer = ActionGoalPrototypeCompleter(action_type_key='action_type')
         parser.add_argument(
             '-f', '--feedback', action='store_true',
@@ -81,6 +84,20 @@ class SendGoalVerb(VerbExtension):
 
         if args.stdin:
             goal = collect_stdin()
+        elif args.goal_file is not None:
+            try:
+                with open(args.goal_file, 'r', encoding='utf-8') as goal_file:
+                    goal = goal_file.read()
+            except (OSError, UnicodeError) as e:
+                return f'Failed to read goal file: {e}'
+            try:
+                parsed_goal = yaml.safe_load(goal)
+            except yaml.YAMLError as e:
+                return f'Failed to parse goal file: {e}'
+            if parsed_goal is None:
+                return 'Goal file is empty'
+            if not isinstance(parsed_goal, dict):
+                return 'Goal file must contain a YAML mapping'
         else:
             goal = args.goal
 
