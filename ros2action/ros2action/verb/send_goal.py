@@ -84,14 +84,20 @@ class SendGoalVerb(VerbExtension):
 
         if args.stdin:
             goal = collect_stdin()
-        elif args.goal_file:
+        elif args.goal_file is not None:
             try:
                 with open(args.goal_file, 'r', encoding='utf-8') as goal_file:
                     goal = goal_file.read()
-            except OSError as e:
+            except (OSError, UnicodeError) as e:
                 return f'Failed to read goal file: {e}'
-            if not goal.strip():
+            try:
+                parsed_goal = yaml.safe_load(goal)
+            except yaml.YAMLError as e:
+                return f'Failed to parse goal file: {e}'
+            if parsed_goal is None:
                 return 'Goal file is empty'
+            if not isinstance(parsed_goal, dict):
+                return 'Goal file must contain a YAML mapping'
         else:
             goal = args.goal
 
