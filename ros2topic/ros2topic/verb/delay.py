@@ -29,6 +29,7 @@
 # This file is originally from:
 # https://github.com/ros/ros_comm/blob/6e5016f4b2266d8a60c9a1e163c4928b8fc7115e/tools/rostopic/src/rostopic/__init__.py
 
+from argparse import ArgumentTypeError
 import math
 
 import rclpy
@@ -46,6 +47,21 @@ from ros2topic.api import TopicNameCompleter
 from ros2topic.verb import VerbExtension
 
 DEFAULT_WINDOW_SIZE = 10000
+DEFAULT_PRECISION = 3
+# delays are measured in integer nanoseconds, so more than 9 decimal places of seconds is noise
+MAX_PRECISION = 9
+# std dev is always printed with at least this many decimal places
+MIN_STD_DEV_PRECISION = 5
+
+
+def precision_int(string):
+    try:
+        value = int(string)
+    except ValueError:
+        value = -1
+    if not 0 <= value <= MAX_PRECISION:
+        raise ArgumentTypeError(f'value must be an integer between 0 and {MAX_PRECISION}')
+    return value
 
 
 class DelayVerb(VerbExtension):
@@ -62,6 +78,11 @@ class DelayVerb(VerbExtension):
             '--window', '-w', dest='window_size', type=positive_int, default=DEFAULT_WINDOW_SIZE,
             help='window size, in # of messages, for calculating rate, '
                  'string to (default: %d)' % DEFAULT_WINDOW_SIZE)
+        parser.add_argument(
+            '--precision', type=precision_int, default=DEFAULT_PRECISION,
+            help='number of decimal places for average, minimum, and maximum delay, '
+                 f'between 0 and {MAX_PRECISION} (default: %(default)s); std dev uses '
+                 f'at least {MIN_STD_DEV_PRECISION}')
         add_direct_node_arguments(parser)
 
     def main(self, *, args):
@@ -72,13 +93,14 @@ def main(args):
     with DirectNode(args) as node:
         qos_profile = choose_qos(node.node, topic_name=args.topic_name, qos_args=args)
         return _rostopic_delay(
-            node.node, args.topic_name, qos_profile, window_size=args.window_size)
+            node.node, args.topic_name, qos_profile, window_size=args.window_size,
+            precision=args.precision)
 
 
 class ROSTopicDelay(object):
     """Receives messages for a topic and computes timestamp delay."""
 
-    def __init__(self, node, window_size):
+    def __init__(self, node, window_size, precision=DEFAULT_PRECISION):
         import threading
         self.lock = threading.Lock()
         self.last_msg_tn = 0
@@ -87,6 +109,7 @@ class ROSTopicDelay(object):
         self.delays = []
 
         self.window_size = window_size
+        self.precision = precision
 
         self._clock = node.get_clock()
 
@@ -155,18 +178,25 @@ class ROSTopicDelay(object):
             print('no new messages')
             return
         delay, min_delta, max_delta, std_dev, window = ret
+        std_dev_precision = max(self.precision, MIN_STD_DEV_PRECISION)
         # convert nanoseconds to seconds when print
-        print('average delay: %.3f\n\tmin: %.3fs max: %.3fs std dev: %.5fs window: %s'
-              % (delay * 1e-9, min_delta * 1e-9, max_delta * 1e-9, std_dev * 1e-9, window))
+        print(
+            f'average delay: {delay * 1e-9:.{self.precision}f}\n'
+            f'\tmin: {min_delta * 1e-9:.{self.precision}f}s '
+            f'max: {max_delta * 1e-9:.{self.precision}f}s '
+            f'std dev: {std_dev * 1e-9:.{std_dev_precision}f}s window: {window}')
 
 
-def _rostopic_delay(node, topic, qos_profile, window_size=DEFAULT_WINDOW_SIZE):
+def _rostopic_delay(
+    node, topic, qos_profile, window_size=DEFAULT_WINDOW_SIZE, precision=DEFAULT_PRECISION
+):
     """
     Periodically print the publishing delay of a topic to console until shutdown.
 
     :param topic: topic name, ``str``
     :param qos_profile: qos profile of the subscriber
     :param window_size: number of messages to average over, ``unsigned_int``
+    :param precision: number of decimal places for average/minimum/maximum delay, ``int`` in [0, 9]
     :param blocking: pause delay until topic is published, ``bool``
     """
     # pause hz until topic is published
@@ -176,7 +206,7 @@ def _rostopic_delay(node, topic, qos_profile, window_size=DEFAULT_WINDOW_SIZE):
         node.destroy_node()
         return 1
 
-    rt = ROSTopicDelay(node, window_size)
+    rt = ROSTopicDelay(node, window_size, precision=precision)
     node.create_subscription(
         msg_class,
         topic,
