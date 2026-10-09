@@ -19,8 +19,6 @@ from typing import Optional
 
 import warnings
 
-from argcomplete import CompletionFinder
-
 import rclpy
 
 from rclpy.expand_topic_name import expand_topic_name
@@ -161,17 +159,6 @@ def _get_msg_class(node, topic, include_hidden_topics):
         return get_message(message_type)
     except (AttributeError, ModuleNotFoundError, ValueError):
         raise RuntimeError("The message type '%s' is invalid" % message_type)
-
-
-class YamlCompletionFinder(CompletionFinder):
-    def quote_completions(
-        self, completions: list[str],
-            cword_prequote: str, last_wordbreak_pos: Optional[int]):
-
-        # For YAML content, return as-is without escaping
-        if not any('-' in c for c in completions):
-            return completions
-        return super().quote_completions(completions, cword_prequote, last_wordbreak_pos)
 
 
 class TopicMessagePrototypeCompleter:
