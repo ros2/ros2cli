@@ -21,6 +21,7 @@ import sys
 
 from rclpy.executors import ExternalShutdownException
 
+from ros2cli.color import ColorState
 from ros2cli.command import add_subparsers_on_demand
 
 
@@ -42,6 +43,14 @@ def main(*, script_name='ros2', argv=None, description=None, extension=None):
             'Do not force line buffering in stdout and instead use the python default buffering, '
             'which might be affected by PYTHONUNBUFFERED/-u and depends on whatever stdout is '
             'interactive or not'))
+    parser.add_argument(
+        '--color',
+        action='store_true',
+        default=False,
+        help=(
+            'Enable color output. '
+            'Color can also be enabled persistently by setting the '
+            'ROS2CLI_COLOR_OUTPUT=1 environment variable.'))
 
     # add arguments for command extension(s)
     if extension:
@@ -65,6 +74,9 @@ def main(*, script_name='ros2', argv=None, description=None, extension=None):
 
     # parse the command line arguments
     args = parser.parse_args(args=argv)
+
+    # apply color setting: --color flag takes precedence over ROS2CLI_COLOR_OUTPUT.
+    ColorState.set_from_args(args.color)
 
     if not args.use_python_default_buffering:
         # Make the output always line buffered.
