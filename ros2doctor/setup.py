@@ -47,6 +47,8 @@ setup(
             'TopicCheck = ros2doctor.api.topic:TopicCheck',
             'QoSCompatibilityCheck = ros2doctor.api.qos_compatibility:QoSCompatibilityCheck',
             'PackageCheck = ros2doctor.api.package:PackageCheck',
+            'NodeCheck = ros2doctor.api.node:NodeCheck',
+            'ParameterCheck = ros2doctor.api.parameter:ParameterCheck',
         ],
         'ros2doctor.report': [
             'PlatformReport = ros2doctor.api.platform:PlatformReport',
@@ -58,7 +60,9 @@ setup(
             'ActionReport = ros2doctor.api.action:ActionReport',
             'QoSCompatibilityReport = ros2doctor.api.qos_compatibility:QoSCompatibilityReport',
             'PackageReport = ros2doctor.api.package:PackageReport',
-            'EnvironmentReport = ros2doctor.api.environment:EnvironmentReport'
+            'EnvironmentReport = ros2doctor.api.environment:EnvironmentReport',
+            'NodeReport = ros2doctor.api.node:NodeReport',
+            'ParameterReport = ros2doctor.api.parameter:ParameterReport'
         ],
         'ros2cli.extension_point': [
             'ros2doctor.verb = ros2doctor.verb:VerbExtension',

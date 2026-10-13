@@ -22,6 +22,8 @@
   <exec_depend>rclpy</exec_depend>
   <exec_depend>ros2action</exec_depend>
   <exec_depend>ros2cli</exec_depend>
+  <exec_depend>ros2node</exec_depend>
+  <exec_depend>ros2param</exec_depend>
   <exec_depend>ros_environment</exec_depend>
   <exec_depend>std_msgs</exec_depend>
 
