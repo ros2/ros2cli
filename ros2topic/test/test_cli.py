@@ -331,6 +331,7 @@ class TestROS2TopicCLI(unittest.TestCase):
                 f'Topic type hash: {STD_MSGS_STRING_TYPE_HASH_STR}',
                 re.compile(r'Endpoint type: (INVALID|PUBLISHER|SUBSCRIPTION)'),
                 re.compile(r'GID: [\w\.]+'),
+                'Buffer backends: <none>',
                 'QoS profile:',
                 re.compile(r'  Reliability: (RELIABLE|BEST_EFFORT|SYSTEM_DEFAULT|UNKNOWN)'),
                 re.compile(
