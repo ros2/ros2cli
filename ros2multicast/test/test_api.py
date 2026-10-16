@@ -12,15 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-<<<<<<< HEAD
-=======
 import functools
 import logging
-import random
 import sys
->>>>>>> 99e308c (Skip multicast tests where sending is known to be broken on Windows (#1333))
 import threading
 import time
+
+import pytest
 
 from ros2multicast.api import receive
 from ros2multicast.api import send
