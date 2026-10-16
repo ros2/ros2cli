@@ -12,6 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+<<<<<<< HEAD
+=======
+import ipaddress
+import os
+>>>>>>> f41b427 (Accept loopback clients in LocalXMLRPCServer (#1241))
 import socket
 import struct
 # Import SimpleXMLRPCRequestHandler to re-export it.
@@ -32,6 +37,12 @@ def get_local_ipaddrs():
     return iplist
 
 
+def is_local_address(address, local_ipaddrs):
+    # Loopback is always local, but not every environment lists it among the interface
+    # addresses (e.g. Windows containers), which would make the daemon drop every client.
+    return ipaddress.ip_address(address).is_loopback or address in local_ipaddrs
+
+
 class LocalXMLRPCServer(SimpleXMLRPCServer):
 
     allow_reuse_address = False
@@ -50,6 +61,6 @@ class LocalXMLRPCServer(SimpleXMLRPCServer):
         return sock, addr
 
     def verify_request(self, request, client_address):
-        if client_address[0] not in get_local_ipaddrs():
+        if not is_local_address(client_address[0], get_local_ipaddrs()):
             return False
         return super(LocalXMLRPCServer, self).verify_request(request, client_address)
