@@ -12,11 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-<<<<<<< HEAD
-=======
 import ipaddress
-import os
->>>>>>> f41b427 (Accept loopback clients in LocalXMLRPCServer (#1241))
 import socket
 import struct
 # Import SimpleXMLRPCRequestHandler to re-export it.
