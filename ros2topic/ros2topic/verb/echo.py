@@ -21,6 +21,7 @@ from rclpy.event_handler import SubscriptionEventCallbacks
 from rclpy.event_handler import UnsupportedEventTypeError
 from rclpy.node import Node
 from rclpy.qos import QoSProfile
+from rclpy.subscription_content_filter_options import ContentFilterOptions
 from rclpy.task import Future
 
 from ros2cli.helpers import interactive_select
@@ -108,6 +109,15 @@ class EchoVerb(VerbExtension):
                                                  'are printed. Expression can use Python builtins '
                                                  'as well as m (the message).')
         parser.add_argument(
+            '--content-filter', dest='content_filter_expr', default=None,
+            help='DDS content filter expression applied at the middleware level '
+                 '(e.g. "data > 100"). Only messages matching the filter are '
+                 'delivered to the subscriber. Use %%0, %%1, ... as parameter '
+                 'placeholders with --content-filter-params.')
+        parser.add_argument(
+            '--content-filter-params', dest='content_filter_params', nargs='*', default=[],
+            help='Parameters for the content filter expression')
+        parser.add_argument(
             '--once', action='store_true', help='Print the first message received and then exit.')
         parser.add_argument(
             '--timeout', metavar='N', type=positive_float,
@@ -192,13 +202,20 @@ class EchoVerb(VerbExtension):
             if args.timeout is not None:
                 self.timer = node.create_timer(args.timeout, self._timed_out)
 
+            content_filter_options = None
+            if args.content_filter_expr:
+                content_filter_options = ContentFilterOptions(
+                    filter_expression=args.content_filter_expr,
+                    expression_parameters=args.content_filter_params)
+
             self.subscribe_and_spin(
                 node,
                 args.topic_name,
                 message_type,
                 qos_profile,
                 args.no_lost_messages,
-                args.raw)
+                args.raw,
+                content_filter_options=content_filter_options)
 
     def subscribe_and_spin(
         self,
@@ -208,6 +225,7 @@ class EchoVerb(VerbExtension):
         qos_profile: QoSProfile,
         no_report_lost_messages: bool,
         raw: bool,
+        content_filter_options: Optional[ContentFilterOptions] = None,
     ) -> Optional[str]:
         """Initialize a node with a single subscription and spin."""
         event_callbacks = None
@@ -221,7 +239,8 @@ class EchoVerb(VerbExtension):
                 self._subscriber_callback,
                 qos_profile,
                 event_callbacks=event_callbacks,
-                raw=raw)
+                raw=raw,
+                content_filter_options=content_filter_options)
         except UnsupportedEventTypeError:
             assert not no_report_lost_messages
             node.create_subscription(
@@ -230,7 +249,8 @@ class EchoVerb(VerbExtension):
                 self._subscriber_callback,
                 qos_profile,
                 event_callbacks=None,
-                raw=raw)
+                raw=raw,
+                content_filter_options=content_filter_options)
 
         if self.future is not None:
             rclpy.spin_until_future_complete(node, self.future)

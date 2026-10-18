@@ -41,6 +41,7 @@ import rclpy
 from rclpy.clock import Clock
 from rclpy.clock import ClockType
 from rclpy.executors import ExternalShutdownException
+from rclpy.subscription_content_filter_options import ContentFilterOptions
 
 from ros2cli.helpers import interactive_select
 from ros2cli.node.direct import add_arguments as add_direct_node_arguments
@@ -95,6 +96,12 @@ class HzVerb(VerbExtension):
             dest='use_wtime', default=False, action='store_true',
             help='calculates rate using wall time which can be helpful'
                  ' when clock is not published during simulation')
+        parser.add_argument(
+            '--content-filter', dest='content_filter_expr', default=None,
+            help='DDS content filter expression applied at the middleware level')
+        parser.add_argument(
+            '--content-filter-params', dest='content_filter_params', nargs='*', default=[],
+            help='Parameters for the content filter expression')
         add_direct_node_arguments(parser)
 
     def main(self, *, args):
@@ -134,6 +141,12 @@ def main(args):
     else:
         filter_expr = None
 
+    content_filter_options = None
+    if args.content_filter_expr:
+        content_filter_options = ContentFilterOptions(
+            filter_expression=args.content_filter_expr,
+            expression_parameters=args.content_filter_params)
+
     with DirectNode(args) as node:
         # Get all available topics at this moment
         if args.all_topics:
@@ -149,7 +162,8 @@ def main(args):
         return _rostopic_hz(
             node.node, topics, qos_args=args, window_size=args.window_size,
             filter_expr=filter_expr, use_wtime=args.use_wtime,
-            all_topics=args.all_topics)
+            all_topics=args.all_topics,
+            content_filter_options=content_filter_options)
 
 
 class ROSTopicHz(object):
@@ -337,7 +351,7 @@ def _get_ascii_table(header, cols):
 
 
 def _rostopic_hz(node, topics, qos_args, window_size=DEFAULT_WINDOW_SIZE, filter_expr=None,
-                 use_wtime=False, all_topics=False):
+                 use_wtime=False, all_topics=False, content_filter_options=None):
     """
     Periodically print the publishing rate of a topic to console until shutdown.
 
@@ -346,6 +360,7 @@ def _rostopic_hz(node, topics, qos_args, window_size=DEFAULT_WINDOW_SIZE, filter
     :param window_size: number of messages to average over, -1 for infinite, ``int``
     :param filter_expr: Python filter expression that is called with m, the message instance
     :param all_topics: whether all topics are being monitored, ``bool``
+    :param content_filter_options: DDS content filter options, ``ContentFilterOptions``
     """
     # pause hz until topic is published
     rt = ROSTopicHz(node, window_size, filter_expr=filter_expr, use_wtime=use_wtime)
@@ -367,7 +382,8 @@ def _rostopic_hz(node, topics, qos_args, window_size=DEFAULT_WINDOW_SIZE, filter
             topic,
             functools.partial(rt.callback_hz, topic=topic),
             qos_profile,
-            raw=filter_expr is None)
+            raw=filter_expr is None,
+            content_filter_options=content_filter_options)
         if topics_len > 1:
             print('Subscribed to [%s]' % topic)
 
