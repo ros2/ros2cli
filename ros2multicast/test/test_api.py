@@ -30,7 +30,7 @@ _WSAENOBUFS = 10055
 _ISSUE = 'https://github.com/ros2/ros2cli/issues/1141'
 
 
-@functools.cache
+@functools.lru_cache(maxsize=None)
 def _multicast_known_broken():
     """Return a reason if multicast sending is known to be broken here, else an empty string."""
     if not sys.platform.startswith('win'):
