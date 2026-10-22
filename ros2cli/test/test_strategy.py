@@ -13,12 +13,16 @@
 # limitations under the License.
 
 import argparse
+from types import SimpleNamespace
 
 import pytest
 
+import ros2cli.daemon as daemon
+from ros2cli.node.daemon import DaemonNode
 from ros2cli.node.daemon import is_daemon_running
 from ros2cli.node.daemon import shutdown_daemon
 from ros2cli.node.daemon import spawn_daemon
+import ros2cli.node.strategy as strategy_module
 from ros2cli.node.strategy import NodeStrategy
 
 
@@ -66,3 +70,55 @@ def test_enforce_no_daemon(enforce_daemon_is_running):
     with NodeStrategy(args=args) as node:
         assert node._daemon_node is None
         assert node._direct_node is not None
+
+
+def test_daemon_configuration_matches_current_process():
+    node = DaemonNode(args=[])
+    node._methods = ['get_daemon_configuration']
+    node._proxy = SimpleNamespace(
+        get_daemon_configuration=daemon.get_daemon_configuration
+    )
+
+    assert node.configuration_matches
+
+
+def test_daemon_configuration_rejects_different_rmw():
+    configuration = daemon.get_daemon_configuration()
+    configuration['rmw_implementation'] += '_different'
+    node = DaemonNode(args=[])
+    node._methods = ['get_daemon_configuration']
+    node._proxy = SimpleNamespace(
+        get_daemon_configuration=lambda: configuration
+    )
+
+    assert not node.configuration_matches
+
+
+def test_daemon_configuration_rejects_unverifiable_daemon():
+    node = DaemonNode(args=[])
+    node._methods = []
+
+    assert not node.configuration_matches
+
+
+def test_strategy_falls_back_for_mismatched_daemon(monkeypatch, capsys):
+    daemon_node = SimpleNamespace(
+        connected=True,
+        configuration_matches=False,
+    )
+    direct_node = object()
+
+    monkeypatch.setattr(strategy_module, 'check_discovery_configuration', lambda: None)
+    monkeypatch.setattr(strategy_module, 'is_daemon_running', lambda args: True)
+    monkeypatch.setattr(strategy_module, 'DaemonNode', lambda args: daemon_node)
+    monkeypatch.setattr(
+        strategy_module,
+        'DirectNode',
+        lambda args, node_name=None: direct_node,
+    )
+
+    strategy = NodeStrategy(args=[])
+
+    assert strategy._daemon_node is None
+    assert strategy._direct_node is direct_node
+    assert 'Falling back to direct discovery' in capsys.readouterr().err

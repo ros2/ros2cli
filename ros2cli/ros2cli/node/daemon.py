@@ -54,6 +54,18 @@ class DaemonNode:
     def methods(self):
         return self._methods
 
+    @property
+    def configuration_matches(self):
+        """Return whether the daemon uses this process's ROS discovery configuration."""
+        if 'get_daemon_configuration' not in self._methods:
+            return False
+        configuration = self._proxy.get_daemon_configuration()
+        return (
+            configuration.get('ros_domain_id') == get_ros_domain_id() and
+            configuration.get('rmw_implementation') ==
+            rclpy.get_rmw_implementation_identifier()
+        )
+
     def __enter__(self):
         self._proxy.__enter__()
         return self
