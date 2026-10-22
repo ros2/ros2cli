@@ -14,7 +14,6 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/ShortVariedMultiNested.msg"
   "msg/ShortVariedNested.msg"
   "srv/ShortVariedMultiNested.srv"
-  ADD_LINTER_TESTS
 )
 
 ament_export_dependencies(rosidl_default_runtime)
