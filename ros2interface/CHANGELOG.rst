@@ -2,6 +2,11 @@
 Changelog for package ros2interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.18.21 (2026-10-23)
+--------------------
+* Fix/interface show suffix match (`#1315 <https://github.com/ros2/ros2cli//issues/1315>`_) (`#1322 <https://github.com/ros2/ros2cli//issues/1322>`_)
+* Contributors: mergify[bot]
+
 0.18.20 (2026-09-01)
 --------------------
 * fix non standard interface locations. (`#1186 <https://github.com/ros2/ros2cli/issues/1186>`_) (backport `#1283 <https://github.com/ros2/ros2cli/issues/1283>`_) (`#1291 <https://github.com/ros2/ros2cli/issues/1291>`_)

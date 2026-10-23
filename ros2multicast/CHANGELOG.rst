@@ -2,6 +2,11 @@
 Changelog for package ros2multicast
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.18.21 (2026-10-23)
+--------------------
+* Skip multicast tests where sending is known to be broken on Windows (backport `#1333 <https://github.com/ros2/ros2cli//issues/1333>`_) (`#1337 <https://github.com/ros2/ros2cli//issues/1337>`_)
+* Contributors: mergify[bot]
+
 0.18.20 (2026-09-01)
 --------------------
 
