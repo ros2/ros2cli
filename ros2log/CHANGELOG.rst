@@ -2,6 +2,14 @@
 Changelog for package ros2log
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.42.1 (2026-10-23)
+-------------------
+* added --log-level as alias for --level in ros2 log watch. Aligns ros2… (`#1308 <https://github.com/ros2/ros2cli//issues/1308>`_)
+* Add --filter alias to ros2 log watch (`#1313 <https://github.com/ros2/ros2cli//issues/1313>`_)
+* Remove unused main args from test fixtures (`#1299 <https://github.com/ros2/ros2cli//issues/1299>`_)
+* Use the SPDX identifier Apache-2.0 in license declarations (`#1297 <https://github.com/ros2/ros2cli//issues/1297>`_)
+* Contributors: Danil Belov, Ishaan Mavinkurve, Michael Carroll, William Li
+
 0.42.0 (2026-09-01)
 -------------------
 * ros2log new package introduction (`#1217 <https://github.com/ros2/ros2cli/issues/1217>`_)

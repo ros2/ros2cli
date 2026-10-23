@@ -2,6 +2,12 @@
 Changelog for package ros2component
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.42.1 (2026-10-23)
+-------------------
+* Add --executor-type and --isolated to ros2 component standalone (`#1310 <https://github.com/ros2/ros2cli//issues/1310>`_)
+* Use the SPDX identifier Apache-2.0 in license declarations (`#1297 <https://github.com/ros2/ros2cli//issues/1297>`_)
+* Contributors: Maurice Alexander Purnawan, Michael Carroll
+
 0.42.0 (2026-09-01)
 -------------------
 

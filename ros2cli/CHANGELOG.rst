@@ -2,6 +2,13 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.42.1 (2026-10-23)
+-------------------
+* Accept loopback clients in LocalXMLRPCServer (`#1241 <https://github.com/ros2/ros2cli//issues/1241>`_)
+* Added valid integer value checking to avoid an uncaught ValueError (`#1296 <https://github.com/ros2/ros2cli//issues/1296>`_)
+* Use the SPDX identifier Apache-2.0 in license declarations (`#1297 <https://github.com/ros2/ros2cli//issues/1297>`_)
+* Contributors: JasperGrant, Michael Carroll
+
 0.42.0 (2026-09-01)
 -------------------
 * Keep leading '~' unquoted in zsh completion. (`#1279 <https://github.com/ros2/ros2cli/issues/1279>`_) (`#1281 <https://github.com/ros2/ros2cli/issues/1281>`_)

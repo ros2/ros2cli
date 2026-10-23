@@ -2,6 +2,15 @@
 Changelog for package ros2topic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.42.1 (2026-10-23)
+-------------------
+* Make ros2 topic delay precision configurable (`#1273 <https://github.com/ros2/ros2cli//issues/1273>`_)
+* Fixes `#1306 <https://github.com/ros2/ros2cli//issues/1306>`_ (`#1317 <https://github.com/ros2/ros2cli//issues/1317>`_)
+* Add --count alias to list, find and nodes verbs (`#1312 <https://github.com/ros2/ros2cli//issues/1312>`_)
+* Remove unused main args from test fixtures (`#1299 <https://github.com/ros2/ros2cli//issues/1299>`_)
+* Use the SPDX identifier Apache-2.0 in license declarations (`#1297 <https://github.com/ros2/ros2cli//issues/1297>`_)
+* Contributors: Danil Belov, Elan Hasson, Michael Carroll, Sruthika R, Sylvester Kaczmarek
+
 0.42.0 (2026-09-01)
 -------------------
 

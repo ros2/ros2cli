@@ -2,6 +2,12 @@
 Changelog for package ros2param
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.42.1 (2026-10-23)
+-------------------
+* Remove unused main args from test fixtures (`#1299 <https://github.com/ros2/ros2cli//issues/1299>`_)
+* Use the SPDX identifier Apache-2.0 in license declarations (`#1297 <https://github.com/ros2/ros2cli//issues/1297>`_)
+* Contributors: Danil Belov, Michael Carroll
+
 0.42.0 (2026-09-01)
 -------------------
 

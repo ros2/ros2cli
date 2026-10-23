@@ -2,6 +2,13 @@
 Changelog for package ros2doctor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.42.1 (2026-10-23)
+-------------------
+* Remove rmw_fastrtps_dynamic_cpp (`#1331 <https://github.com/ros2/ros2cli//issues/1331>`_)
+* Remove unused main args from test fixtures (`#1299 <https://github.com/ros2/ros2cli//issues/1299>`_)
+* Use the SPDX identifier Apache-2.0 in license declarations (`#1297 <https://github.com/ros2/ros2cli//issues/1297>`_)
+* Contributors: Christophe Bedard, Danil Belov, Michael Carroll
+
 0.42.0 (2026-09-01)
 -------------------
 * Add multicast options to ros2 doctor hello (`#1267 <https://github.com/ros2/ros2cli/issues/1267>`_)

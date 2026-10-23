@@ -2,6 +2,11 @@
 Changelog for package ros2run
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.42.1 (2026-10-23)
+-------------------
+* Use the SPDX identifier Apache-2.0 in license declarations (`#1297 <https://github.com/ros2/ros2cli//issues/1297>`_)
+* Contributors: Michael Carroll
+
 0.42.0 (2026-09-01)
 -------------------
 

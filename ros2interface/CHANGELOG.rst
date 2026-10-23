@@ -2,6 +2,12 @@
 Changelog for package ros2interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.42.1 (2026-10-23)
+-------------------
+* Fix/interface show suffix match (`#1315 <https://github.com/ros2/ros2cli//issues/1315>`_)
+* Use the SPDX identifier Apache-2.0 in license declarations (`#1297 <https://github.com/ros2/ros2cli//issues/1297>`_)
+* Contributors: Michael Carroll, Usama Jahangir
+
 0.42.0 (2026-09-01)
 -------------------
 * fix non standard interface locations. (`#1186 <https://github.com/ros2/ros2cli/issues/1186>`_) (`#1283 <https://github.com/ros2/ros2cli/issues/1283>`_)

@@ -2,6 +2,13 @@
 Changelog for package ros2service
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.42.1 (2026-10-23)
+-------------------
+* Add --count alias to list, find and nodes verbs (`#1312 <https://github.com/ros2/ros2cli//issues/1312>`_)
+* Remove unused main args from test fixtures (`#1299 <https://github.com/ros2/ros2cli//issues/1299>`_)
+* Use the SPDX identifier Apache-2.0 in license declarations (`#1297 <https://github.com/ros2/ros2cli//issues/1297>`_)
+* Contributors: Danil Belov, Elan Hasson, Michael Carroll
+
 0.42.0 (2026-09-01)
 -------------------
 
