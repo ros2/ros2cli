@@ -42,7 +42,7 @@ class ListVerb(VerbExtension):
                 'Only parameters matching the regex expression will be showed.'
                 ' Supports `re` regex syntax.'))
         parser.add_argument(
-            '--include-hidden-nodes', action='store_true',
+            '--include-hidden-nodes', '--all', '-a', action='store_true',
             help='Consider hidden nodes as well')
         parser.add_argument(
             '--param-prefixes', nargs='+', default=[],
@@ -51,7 +51,7 @@ class ListVerb(VerbExtension):
             '--param-type', action='store_true',
             help='Print parameter types with parameter names')
         parser.add_argument(
-            '--service-timeout', metavar='N', type=float, default=5.0,
+            '--service-timeout', '--timeout', metavar='N', type=float, default=5.0,
             help='Maximum time to wait for service responses in seconds '
                  '(default: %(default)s)')
 
