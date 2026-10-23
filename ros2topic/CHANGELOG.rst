@@ -2,6 +2,11 @@
 Changelog for package ros2topic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.40.10 (2026-10-23)
+--------------------
+* Fixes `#1306 <https://github.com/ros2/ros2cli//issues/1306>`_ (`#1317 <https://github.com/ros2/ros2cli//issues/1317>`_) (`#1327 <https://github.com/ros2/ros2cli//issues/1327>`_)
+* Contributors: mergify[bot]
+
 0.40.9 (2026-09-01)
 -------------------
 

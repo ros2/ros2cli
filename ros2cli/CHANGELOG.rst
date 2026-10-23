@@ -2,6 +2,11 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.40.10 (2026-10-23)
+--------------------
+* Accept loopback clients in LocalXMLRPCServer (`#1241 <https://github.com/ros2/ros2cli//issues/1241>`_) (`#1338 <https://github.com/ros2/ros2cli//issues/1338>`_)
+* Contributors: mergify[bot]
+
 0.40.9 (2026-09-01)
 -------------------
 * Keep leading '~' unquoted in zsh completion. (`#1279 <https://github.com/ros2/ros2cli/issues/1279>`_) (`#1281 <https://github.com/ros2/ros2cli/issues/1281>`_) (`#1284 <https://github.com/ros2/ros2cli/issues/1284>`_)
