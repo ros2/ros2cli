@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import argparse
 import contextlib
 from pathlib import Path
 import sys
@@ -41,6 +42,7 @@ from rclpy.utilities import get_available_rmw_implementations
 
 from ros2cli.helpers import get_rmw_additional_env
 from ros2cli.node.strategy import NodeStrategy
+from ros2param.verb.list import ListVerb
 
 
 TEST_NODE = 'test_node'
@@ -50,6 +52,16 @@ HANG_NODE = 'param_list_hang_node'
 HANG_NAMESPACE = '/'
 
 TEST_TIMEOUT = 20.0
+
+
+def test_timeout_alias():
+    parser = argparse.ArgumentParser()
+    ListVerb().add_arguments(parser, 'ros2 param list')
+
+    args = parser.parse_args(['--timeout', '2.5'])
+
+    assert args.service_timeout == 2.5
+
 
 # Skip cli tests on Windows while they exhibit pathological behavior
 # https://github.com/ros2/build_farmer/issues/248
