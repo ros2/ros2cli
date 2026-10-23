@@ -44,7 +44,7 @@ class InfoVerb(VerbExtension):
                  'If not provided, an interactive selection will be shown.')
         argument.completer = NodeNameCompleter()
         parser.add_argument(
-            '--include-hidden', action='store_true',
+            '--include-hidden', '-a', '--all', action='store_true',
             help='Display hidden topics, services, and actions as well')
 
     def main(self, *, args):

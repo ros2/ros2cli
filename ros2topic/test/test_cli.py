@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import argparse
 import contextlib
 import functools
 import math
@@ -41,6 +42,8 @@ import pytest
 
 from rclpy.utilities import get_available_rmw_implementations
 from ros2cli.helpers import get_rmw_additional_env
+from ros2topic.verb.find import FindVerb
+from ros2topic.verb.list import ListVerb
 
 
 # Skip cli tests on Windows while they exhibit pathological behavior
@@ -241,6 +244,22 @@ class TestROS2TopicCLI(unittest.TestCase):
         )
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_list_all_alias(self):
+        parser = argparse.ArgumentParser()
+        verb = ListVerb()
+        verb.add_arguments(parser, 'ros2 topic list')
+        args = parser.parse_args(['--all'])
+        assert args.include_hidden_topics is True
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_list_a_alias(self):
+        parser = argparse.ArgumentParser()
+        verb = ListVerb()
+        verb.add_arguments(parser, 'ros2 topic list')
+        args = parser.parse_args(['-a'])
+        assert args.include_hidden_topics is True
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_list_with_types(self):
         with self.launch_topic_command(arguments=['list', '-t']) as topic_command:
             assert topic_command.wait_for_shutdown(timeout=10)
@@ -398,6 +417,22 @@ class TestROS2TopicCLI(unittest.TestCase):
             assert topic_command.wait_for_shutdown(timeout=10)
         assert topic_command.exit_code == launch_testing.asserts.EXIT_OK
         assert not topic_command.output
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_find_all_alias(self):
+        parser = argparse.ArgumentParser()
+        verb = FindVerb()
+        verb.add_arguments(parser, 'ros2 topic find')
+        args = parser.parse_args(['rcl_interfaces/msg/Log', '--all'])
+        assert args.include_hidden_topics is True
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_find_a_alias(self):
+        parser = argparse.ArgumentParser()
+        verb = FindVerb()
+        verb.add_arguments(parser, 'ros2 topic find')
+        args = parser.parse_args(['rcl_interfaces/msg/Log', '-a'])
+        assert args.include_hidden_topics is True
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_topic_echo(self):

@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import argparse
 import contextlib
 import functools
 import itertools
@@ -39,6 +40,8 @@ import pytest
 
 from rclpy.utilities import get_available_rmw_implementations
 from ros2cli.helpers import get_rmw_additional_env
+from ros2service.verb.find import FindVerb
+from ros2service.verb.list import ListVerb
 
 from test_msgs.srv import BasicTypes
 
@@ -204,6 +207,22 @@ class TestROS2ServiceCLI(unittest.TestCase):
         )
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_service_list_all_alias(self):
+        parser = argparse.ArgumentParser()
+        verb = ListVerb()
+        verb.add_arguments(parser, 'ros2 service list')
+        args = parser.parse_args(['--all'])
+        assert args.include_hidden_services is True
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_service_list_a_alias(self):
+        parser = argparse.ArgumentParser()
+        verb = ListVerb()
+        verb.add_arguments(parser, 'ros2 service list')
+        args = parser.parse_args(['-a'])
+        assert args.include_hidden_services is True
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_list_with_types(self):
         with self.launch_service_command(arguments=['list', '-t']) as service_command:
             assert service_command.wait_for_shutdown(timeout=10)
@@ -251,6 +270,22 @@ class TestROS2ServiceCLI(unittest.TestCase):
             text=service_command.output,
             strict=True
         )
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_service_find_all_alias(self):
+        parser = argparse.ArgumentParser()
+        verb = FindVerb()
+        verb.add_arguments(parser, 'ros2 service find')
+        args = parser.parse_args(['test_msgs/srv/BasicTypes', '--all'])
+        assert args.include_hidden_services is True
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_service_find_a_alias(self):
+        parser = argparse.ArgumentParser()
+        verb = FindVerb()
+        verb.add_arguments(parser, 'ros2 service find')
+        args = parser.parse_args(['test_msgs/srv/BasicTypes', '-a'])
+        assert args.include_hidden_services is True
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_find_count(self):

@@ -22,7 +22,7 @@ class ServiceCommand(CommandExtension):
     def add_arguments(self, parser, cli_name):
         self._subparser = parser
         parser.add_argument(
-            '--include-hidden-services', action='store_true',
+            '--include-hidden-services', '-a', '--all', action='store_true',
             help='Consider hidden services as well')
 
         # add arguments and sub-commands of verbs
