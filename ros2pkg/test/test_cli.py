@@ -132,7 +132,8 @@ class TestROS2PkgCLI(unittest.TestCase):
                     '--maintainer-email', 'nobody@nowhere.com',
                     '--maintainer-name', 'Nobody',
                     '--node-name', 'test_node',
-                    '--library-name', 'test_library'
+                    '--library-name', 'test_library',
+                    '--message', 'MyMsg', 'OtherMsg',
                 ], cwd=tmpdir
             ) as pkg_command:
                 assert pkg_command.wait_for_shutdown(timeout=5)
@@ -151,6 +152,7 @@ class TestROS2PkgCLI(unittest.TestCase):
                     "dependencies: ['ros2pkg']",
                     'node_name: test_node',
                     'library_name: test_library',
+                    "messages: ['MyMsg', 'OtherMsg']",
                     'creating folder ' + os.path.join('.', 'a_test_package'),
                     'creating ' + os.path.join('.', 'a_test_package', 'package.xml'),
                     'creating source and include folder',
@@ -171,29 +173,31 @@ class TestROS2PkgCLI(unittest.TestCase):
                     'creating ' + os.path.join(
                         '.', 'a_test_package', 'include', 'a_test_package', 'visibility_control.h'
                     ),
+                    'creating folder ' + os.path.join('.', 'a_test_package', 'msg'),
+                    'creating ' + os.path.join('.', 'a_test_package', 'msg', 'MyMsg.msg'),
+                    'creating ' + os.path.join('.', 'a_test_package', 'msg', 'OtherMsg.msg'),
                 ],
                 text=pkg_command.output,
                 strict=True
             )
             # Check layout
-            assert os.path.isdir(os.path.join(tmpdir, 'a_test_package'))
-            assert os.path.isfile(os.path.join(tmpdir, 'a_test_package', 'package.xml'))
-            assert os.path.isfile(os.path.join(tmpdir, 'a_test_package', 'CMakeLists.txt'))
-            assert os.path.isfile(os.path.join(tmpdir, 'a_test_package', 'LICENSE'))
-            assert os.path.isfile(
-                os.path.join(tmpdir, 'a_test_package', 'src', 'test_node.cpp')
-            )
-            assert os.path.isfile(
-                os.path.join(tmpdir, 'a_test_package', 'src', 'test_library.cpp')
-            )
+            pkg_dir = os.path.join(tmpdir, 'a_test_package')
+            assert os.path.isdir(pkg_dir)
+            assert os.path.isfile(os.path.join(pkg_dir, 'package.xml'))
+            assert os.path.isfile(os.path.join(pkg_dir, 'CMakeLists.txt'))
+            assert os.path.isfile(os.path.join(pkg_dir, 'LICENSE'))
+            assert os.path.isfile(os.path.join(pkg_dir, 'src', 'test_node.cpp'))
+            assert os.path.isfile(os.path.join(pkg_dir, 'src', 'test_library.cpp'))
             assert os.path.isfile(os.path.join(
-                tmpdir, 'a_test_package', 'include', 'a_test_package', 'test_library.hpp'
+                pkg_dir, 'include', 'a_test_package', 'test_library.hpp'
             ))
             assert os.path.isfile(os.path.join(
-                tmpdir, 'a_test_package', 'include', 'a_test_package', 'visibility_control.h'
+                pkg_dir, 'include', 'a_test_package', 'visibility_control.h'
             ))
+            assert os.path.isfile(os.path.join(pkg_dir, 'msg', 'MyMsg.msg'))
+            assert os.path.isfile(os.path.join(pkg_dir, 'msg', 'OtherMsg.msg'))
             # Check package.xml
-            tree = ET.parse(os.path.join(tmpdir, 'a_test_package', 'package.xml'))
+            tree = ET.parse(os.path.join(pkg_dir, 'package.xml'))
             root = tree.getroot()
             assert root.tag == 'package'
             assert root.attrib['format'] == '3'
@@ -204,3 +208,18 @@ class TestROS2PkgCLI(unittest.TestCase):
             assert root.find('license').text == 'Apache-2.0'
             assert root.find('depend').text == 'ros2pkg'
             assert root.find('.//build_type').text == 'ament_cmake'
+
+            # Check rosidl message dependencies
+            buildtool_deps = [e.text for e in root.findall('buildtool_depend')]
+            assert 'rosidl_default_generators' in buildtool_deps
+            exec_deps = [e.text for e in root.findall('exec_depend')]
+            assert 'rosidl_default_runtime' in exec_deps
+            assert root.find('member_of_group').text == 'rosidl_interface_packages'
+
+            # Check CMakeLists.txt
+            with open(os.path.join(pkg_dir, 'CMakeLists.txt'), 'r', encoding='utf-8') as f:
+                cmake_content = f.read()
+            assert 'find_package(rosidl_default_generators REQUIRED)' in cmake_content
+            assert 'rosidl_generate_interfaces(${PROJECT_NAME}' in cmake_content
+            assert '"msg/MyMsg.msg"' in cmake_content
+            assert '"msg/OtherMsg.msg"' in cmake_content
