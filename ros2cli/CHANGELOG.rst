@@ -2,6 +2,11 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.32.14 (2026-10-23)
+--------------------
+* Accept loopback clients in LocalXMLRPCServer (backport `#1241 <https://github.com/ros2/ros2cli//issues/1241>`_) (`#1340 <https://github.com/ros2/ros2cli//issues/1340>`_)
+* Contributors: mergify[bot]
+
 0.32.13 (2026-10-06)
 --------------------
 
