@@ -13,6 +13,8 @@
 # limitations under the License.
 
 import os
+import re
+import shlex
 import signal
 import subprocess
 import sys
@@ -21,6 +23,16 @@ from ros2pkg.api import get_executable_paths
 from ros2pkg.api import PackageNotFound
 
 ROS2RUN_MSG_PREFIX = '[ros2run]:'
+
+# Matches a Python interpreter file name such as 'python', 'python3',
+# 'python3.11', 'python.exe' or the windowed 'pythonw' variant.
+_PYTHON_INTERPRETER = re.compile(
+    r'python(?:[0-9]+(?:\.[0-9]+)*)?w?(?:\.exe)?$', re.IGNORECASE)
+# Matches a leading 'NAME=value' environment assignment accepted by 'env'.
+_ENV_ASSIGNMENT = re.compile(r'^[A-Za-z_][A-Za-z0-9_]*=')
+# 'env' options that consume the following token as their argument, so that
+# argument is not mistaken for the interpreter name.
+_ENV_OPTS_WITH_ARG = ('-u', '--unset', '-C', '--chdir', '-a', '--argv0')
 
 
 class MultipleExecutables(Exception):
@@ -51,11 +63,67 @@ def get_executable_path(*, package_name, executable_name):
     return list(paths2base.keys())[0]
 
 
+def _interpreter_basename(interpreter):
+    # handle both POSIX ('/') and Windows ('\\') path separators
+    return interpreter.replace('\\', '/').rsplit('/', 1)[-1]
+
+
+def _shebang_invokes_python(shebang):
+    """Return True if a shebang line (without the leading '#!') runs Python."""
+    try:
+        tokens = [t.strip('"\'') for t in shlex.split(shebang, posix=False)]
+    except ValueError:
+        # unbalanced quoting
+        return False
+    if not tokens:
+        return False
+    interpreter = tokens[0]
+    if _interpreter_basename(interpreter).lower() in ('env', 'env.exe'):
+        # resolve 'env [options] <interpreter> [args]'; options that take an
+        # argument must not have that argument treated as the interpreter
+        interpreter = None
+        rest = tokens[1:]
+        i = 0
+        while i < len(rest):
+            token = rest[i]
+            if _ENV_ASSIGNMENT.match(token):
+                i += 1  # NAME=value environment entry
+            elif token in ('-S', '--split-string'):
+                i += 1  # only re-splits the remaining arguments
+            elif token in _ENV_OPTS_WITH_ARG:
+                i += 2  # skip the option and its separate argument
+            elif token.startswith('--') and '=' in token:
+                i += 1  # self-contained long option, e.g. --unset=NAME
+            elif token.startswith('-'):
+                return False  # unrecognized option: do not guess
+            else:
+                interpreter = token
+                break
+        if interpreter is None:
+            return False
+    return bool(_PYTHON_INTERPRETER.match(_interpreter_basename(interpreter)))
+
+
+def _has_python_shebang(path):
+    """Return True if the file at path begins with a Python shebang line."""
+    try:
+        with open(path, 'rb') as f:
+            header = f.readline(512)
+    except OSError:
+        return False
+    if not header.startswith(b'#!'):
+        return False
+    shebang = header[2:].split(b'\n', 1)[0].decode('utf-8', errors='replace')
+    return _shebang_invokes_python(shebang)
+
+
 def run_executable(*, path, argv, prefix=None):
     cmd = [path] + argv
 
-    # on Windows Python scripts are invokable through the interpreter
-    if os.name == 'nt' and path.endswith('.py'):
+    # on Windows Python scripts are invokable through the interpreter; besides
+    # '.py' files this also covers extensionless scripts (e.g. installed by
+    # pixi) which rely on a shebang that Windows cannot honor on its own
+    if os.name == 'nt' and (path.endswith('.py') or _has_python_shebang(path)):
         cmd.insert(0, sys.executable)
 
     if prefix is not None:
