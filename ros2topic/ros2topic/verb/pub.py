@@ -102,7 +102,7 @@ class PubVerb(VerbExtension):
                 'Wait until finding the specified number of matching subscriptions. '
                 'Defaults to 1 when using "-1"/"--once"/"--times", otherwise defaults to 0.'))
         parser.add_argument(
-            '--max-wait-time-secs', type=positive_float, default=None,
+            '--max-wait-time-secs', '--timeout', type=positive_float, default=None,
             help=(
                 'This sets the maximum wait time in seconds if '
                 '--wait-matching-subscriptions is set. '
@@ -200,7 +200,7 @@ def publisher(
     pub = node.create_publisher(msg_module, topic_name, qos_profile)
 
     if wait_matching_subscriptions == 0 and max_wait_time is not None:
-        return '--max-wait-time-secs option is only effective' \
+        return '--max-wait-time-secs/--timeout option is only effective' \
             ' with --wait-matching-subscriptions, --once or --times'
 
     times_since_last_log = 0
