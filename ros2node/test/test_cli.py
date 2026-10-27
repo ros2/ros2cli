@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import argparse
 import contextlib
 import itertools
 import os
@@ -40,6 +41,7 @@ import pytest
 
 from rclpy.utilities import get_available_rmw_implementations
 from ros2cli.helpers import get_rmw_additional_env
+from ros2node.verb.info import InfoVerb
 
 
 # Skip cli tests on Windows while they exhibit pathological behavior
@@ -247,3 +249,19 @@ class TestROS2NodeCLI(unittest.TestCase):
             ]),
             text=node_command.output, strict=False
         ), 'Output does not match:\n' + node_command.output
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_info_a_alias(self):
+        parser = argparse.ArgumentParser()
+        verb = InfoVerb()
+        verb.add_arguments(parser, 'ros2 node info')
+        args = parser.parse_args(['-a'])
+        assert args.include_hidden is True
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_info_all_alias(self):
+        parser = argparse.ArgumentParser()
+        verb = InfoVerb()
+        verb.add_arguments(parser, 'ros2 node info')
+        args = parser.parse_args(['--all'])
+        assert args.include_hidden is True
