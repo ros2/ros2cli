@@ -283,6 +283,14 @@ def publisher(
         if not times_since_last_log:
             print(
                 f'Waiting for at least {wait_matching_subscriptions} matching subscription(s)...')
+<<<<<<< HEAD
+=======
+        if max_wait_time is not None and max_wait_time <= total_wait_time:
+            subscriber_word = (
+                'subscriber' if wait_matching_subscriptions == 1 else 'subscribers')
+            return f'Timed out waiting for subscribers: Expected {wait_matching_subscriptions}' \
+                f' {subscriber_word} but only got {pub.get_subscription_count()} subscribers'
+>>>>>>> 21537ac (Fix typo in subscriber timeout message (#1347))
         times_since_last_log = (times_since_last_log + 1) % 10
         time.sleep(0.1)
 
