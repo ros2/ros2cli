@@ -213,7 +213,7 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                 'Waiting for at least 1 matching subscription(s)...',
                 'Waiting for at least 1 matching subscription(s)...',
                 'Timed out waiting for subscribers: Expected'
-                ' 1 subcribers but only got 0 subscribers'
+                ' 1 subscriber but only got 0 subscribers'
             ],
             text=command.output,
             strict=True)
