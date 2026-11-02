@@ -42,7 +42,7 @@ class ListVerb(VerbExtension):
                 'Only parameters matching the regex expression will be showed.'
                 ' Supports `re` regex syntax.'))
         parser.add_argument(
-            '--include-hidden-nodes', action='store_true',
+            '--include-hidden-nodes', '-a', '--all', action='store_true',
             help='Consider hidden nodes as well')
         parser.add_argument(
             '--param-prefixes', nargs='+', default=[],
