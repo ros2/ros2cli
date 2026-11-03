@@ -2,6 +2,9 @@
 Changelog for package ros2param
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.42.2 (2026-11-03)
+-------------------
+
 0.42.1 (2026-10-23)
 -------------------
 * Remove unused main args from test fixtures (`#1299 <https://github.com/ros2/ros2cli//issues/1299>`_)

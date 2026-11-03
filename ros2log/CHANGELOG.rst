@@ -2,6 +2,9 @@
 Changelog for package ros2log
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.42.2 (2026-11-03)
+-------------------
+
 0.42.1 (2026-10-23)
 -------------------
 * added --log-level as alias for --level in ros2 log watch. Aligns ros2… (`#1308 <https://github.com/ros2/ros2cli//issues/1308>`_)

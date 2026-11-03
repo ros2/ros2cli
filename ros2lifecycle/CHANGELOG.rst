@@ -2,6 +2,9 @@
 Changelog for package ros2lifecycle
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.42.2 (2026-11-03)
+-------------------
+
 0.42.1 (2026-10-23)
 -------------------
 * Improve lifecycle set transition help (`#1271 <https://github.com/ros2/ros2cli//issues/1271>`_)

@@ -2,6 +2,9 @@
 Changelog for package ros2interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.42.2 (2026-11-03)
+-------------------
+
 0.42.1 (2026-10-23)
 -------------------
 * Fix/interface show suffix match (`#1315 <https://github.com/ros2/ros2cli//issues/1315>`_)

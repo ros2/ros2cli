@@ -2,6 +2,9 @@
 Changelog for package ros2service
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.42.2 (2026-11-03)
+-------------------
+
 0.42.1 (2026-10-23)
 -------------------
 * Add --count alias to list, find and nodes verbs (`#1312 <https://github.com/ros2/ros2cli//issues/1312>`_)

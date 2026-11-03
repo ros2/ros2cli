@@ -2,6 +2,11 @@
 Changelog for package ros2node
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.42.2 (2026-11-03)
+-------------------
+* Add color output utilities and tests (`#1248 <https://github.com/ros2/ros2cli//issues/1248>`_)
+* Contributors: Peng Wang
+
 0.42.1 (2026-10-23)
 -------------------
 * Add --count alias to list, find and nodes verbs (`#1312 <https://github.com/ros2/ros2cli//issues/1312>`_)

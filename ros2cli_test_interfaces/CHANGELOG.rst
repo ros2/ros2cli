@@ -2,6 +2,9 @@
 Changelog for package ros2cli_test_interfaces
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.42.2 (2026-11-03)
+-------------------
+
 0.42.1 (2026-10-23)
 -------------------
 * Remove ADD_LINTER_TESTS from generated-code lint on interface packages (`#1343 <https://github.com/ros2/ros2cli//issues/1343>`_)

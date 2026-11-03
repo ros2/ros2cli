@@ -2,6 +2,11 @@
 Changelog for package ros2topic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.42.2 (2026-11-03)
+-------------------
+* Fix typo in subscriber timeout message (`#1347 <https://github.com/ros2/ros2cli//issues/1347>`_)
+* Contributors: VIVIYAN PRINCE P
+
 0.42.1 (2026-10-23)
 -------------------
 * Make ros2 topic delay precision configurable (`#1273 <https://github.com/ros2/ros2cli//issues/1273>`_)

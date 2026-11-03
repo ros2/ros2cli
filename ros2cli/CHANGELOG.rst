@@ -2,6 +2,11 @@
 Changelog for package ros2cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.42.2 (2026-11-03)
+-------------------
+* Add color output utilities and tests (`#1248 <https://github.com/ros2/ros2cli//issues/1248>`_)
+* Contributors: Peng Wang
+
 0.42.1 (2026-10-23)
 -------------------
 * Accept loopback clients in LocalXMLRPCServer (`#1241 <https://github.com/ros2/ros2cli//issues/1241>`_)

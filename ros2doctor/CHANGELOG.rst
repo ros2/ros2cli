@@ -2,6 +2,9 @@
 Changelog for package ros2doctor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.42.2 (2026-11-03)
+-------------------
+
 0.42.1 (2026-10-23)
 -------------------
 * Remove rmw_fastrtps_dynamic_cpp (`#1331 <https://github.com/ros2/ros2cli//issues/1331>`_)
