@@ -140,4 +140,5 @@ class ServicePrototypeCompleter:
 
     def __call__(self, prefix, parsed_args, **kwargs):
         service = get_service(getattr(parsed_args, self.service_type_key))
-        return [message_to_yaml(service.Request())]
+        yaml_snippet = "'" + message_to_yaml(service.Request()) + "'"
+        return [yaml_snippet]

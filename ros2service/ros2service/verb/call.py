@@ -15,11 +15,13 @@
 import time
 from typing import Optional
 
+import argcomplete
+
 import rclpy
 from rclpy.qos import QoSPresetProfiles
 from rclpy.qos import QoSProfile
 
-from ros2cli.helpers import collect_stdin
+from ros2cli.helpers import collect_stdin, UnescapedCompletionFinder
 from ros2cli.node import NODE_NAME_PREFIX
 from ros2cli.qos import add_qos_arguments
 from ros2cli.qos import profile_configure_short_keys
@@ -67,6 +69,10 @@ class CallVerb(VerbExtension):
             '--timeout', metavar='N', type=float,
             help='Maximum time to wait for service response in seconds. '
                  'If not specified, waits indefinitely.')
+
+        # Prevent argcomplete from escaping special characters in the YAML string
+        argcomplete.autocomplete = UnescapedCompletionFinder(parser)
+
         add_qos_arguments(parser, 'service client', 'services_default')
 
     def main(self, *, args):
@@ -99,7 +105,16 @@ def requester(service_type: str, service_name: str, values, period: Optional[flo
     except (AttributeError, ModuleNotFoundError):
         raise RuntimeError('The passed service type is invalid')
 
-    values_dictionary = yaml.safe_load(values)
+    try:
+        # Handle cases where the user pastes the autocompleted bash safe string
+        if '^J' in values:
+            values = values.replace("'", '')
+            values = values.replace('^J', '\n')
+
+        values_dictionary = yaml.safe_load(values)
+
+    except (yaml.parser.ParserError, yaml.scanner.ScannerError):
+        return 'The passed value needs to be in YAML string or a dictionary'
 
     with rclpy.init():
         node = rclpy.create_node(NODE_NAME_PREFIX + '_requester_%s_%s' % (package_name, srv_name))
