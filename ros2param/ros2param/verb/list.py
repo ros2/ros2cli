@@ -51,7 +51,7 @@ class ListVerb(VerbExtension):
             '--param-type', action='store_true',
             help='Print parameter types with parameter names')
         parser.add_argument(
-            '--service-timeout', metavar='N', type=float, default=5.0,
+            '--service-timeout', '--timeout', metavar='N', type=float, default=5.0,
             help='Maximum time to wait for service responses in seconds '
                  '(default: %(default)s)')
 
