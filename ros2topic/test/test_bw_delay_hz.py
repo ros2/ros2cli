@@ -43,6 +43,8 @@ from rclpy.qos import QoSProfile
 from rclpy.qos import ReliabilityPolicy
 from rclpy.utilities import get_rmw_implementation_identifier
 
+from std_msgs.msg import String
+
 
 # Skip cli tests on Windows while they exhibit pathological behavior
 # https://github.com/ros2/build_farmer/issues/248
@@ -504,3 +506,197 @@ class TestROS2TopicBwDelayHz(unittest.TestCase):
         assert 'Cannot specify both --all/-a and topic names' in command.output, (
             'bw command did not print expected error message'
         )
+
+    @launch_testing.markers.retry_on_failure(times=5)
+    def test_hz_content_filter(self, launch_service, proc_info, proc_output):
+        topic = '/clitest/topic/hz_content_filter'
+        publisher = self.node.create_publisher(String, topic, 10)
+        assert publisher
+
+        def publish_message():
+            publisher.publish(String(data='hello'))
+
+        publish_timer = self.node.create_timer(0.5, publish_message)
+
+        # Wait for the publisher to be discovered
+        publisher_count = 0
+        timeout_count = 0
+        while publisher_count == 0 and timeout_count < 10:
+            self.executor.spin_once(timeout_sec=0.1)
+            publisher_count = self.node.count_publishers(topic)
+            timeout_count += 1
+        assert publisher_count > 0, 'Publisher was not discovered'
+
+        try:
+            command_action = ExecuteProcess(
+                cmd=['ros2', 'topic', 'hz',
+                     '--content-filter', "data = 'hello'",
+                     topic],
+                additional_env={
+                    'PYTHONUNBUFFERED': '1'
+                },
+                output='screen'
+            )
+            with launch_testing.tools.launch_process(
+                launch_service, command_action, proc_info, proc_output,
+                output_filter=launch_testing_ros.tools.basic_output_filter(
+                    filtered_rmw_implementation=get_rmw_implementation_identifier()
+                )
+            ) as command:
+                # The future won't complete - we will hit the timeout
+                self.executor.spin_until_future_complete(
+                    rclpy.task.Future(), timeout_sec=5
+                )
+            command.wait_for_shutdown(timeout=10)
+            assert command.output, 'hz with content filter printed no output'
+            assert re.search(
+                r'^average rate: [0-9\.]+$', command.output, flags=re.MULTILINE
+            ), 'hz with content filter did not print expected rate'
+        finally:
+            self.node.destroy_timer(publish_timer)
+            self.node.destroy_publisher(publisher)
+
+    @launch_testing.markers.retry_on_failure(times=5)
+    def test_bw_content_filter(self, launch_service, proc_info, proc_output):
+        topic = '/clitest/topic/bw_content_filter'
+        publisher = self.node.create_publisher(String, topic, 10)
+        assert publisher
+
+        def publish_message():
+            publisher.publish(String(data='hello'))
+
+        publish_timer = self.node.create_timer(0.5, publish_message)
+
+        # Wait for the publisher to be discovered
+        publisher_count = 0
+        timeout_count = 0
+        while publisher_count == 0 and timeout_count < 10:
+            self.executor.spin_once(timeout_sec=0.1)
+            publisher_count = self.node.count_publishers(topic)
+            timeout_count += 1
+        assert publisher_count > 0, 'Publisher was not discovered'
+
+        try:
+            command_action = ExecuteProcess(
+                cmd=['ros2', 'topic', 'bw',
+                     '--content-filter', "data = 'hello'",
+                     topic],
+                additional_env={
+                    'PYTHONUNBUFFERED': '1'
+                },
+                output='screen'
+            )
+            with launch_testing.tools.launch_process(
+                launch_service, command_action, proc_info, proc_output,
+                output_filter=launch_testing_ros.tools.basic_output_filter(
+                    filtered_rmw_implementation=get_rmw_implementation_identifier()
+                )
+            ) as command:
+                # The future won't complete - we will hit the timeout
+                self.executor.spin_until_future_complete(
+                    rclpy.task.Future(), timeout_sec=5
+                )
+            command.wait_for_shutdown(timeout=10)
+            assert command.output, 'bw with content filter printed no output'
+            assert re.search(
+                r'^[0-9]+ B/s from [0-9]+ messages$', command.output, flags=re.MULTILINE
+            ), 'bw with content filter did not print expected bandwidth'
+        finally:
+            self.node.destroy_timer(publish_timer)
+            self.node.destroy_publisher(publisher)
+
+    @launch_testing.markers.retry_on_failure(times=5)
+    def test_hz_content_filter_no_match(self, launch_service, proc_info, proc_output):
+        topic = '/clitest/topic/hz_cfilter_nomatch'
+        publisher = self.node.create_publisher(String, topic, 10)
+        assert publisher
+
+        def publish_message():
+            publisher.publish(String(data='hello'))
+
+        publish_timer = self.node.create_timer(0.5, publish_message)
+
+        # Wait for the publisher to be discovered
+        publisher_count = 0
+        timeout_count = 0
+        while publisher_count == 0 and timeout_count < 10:
+            self.executor.spin_once(timeout_sec=0.1)
+            publisher_count = self.node.count_publishers(topic)
+            timeout_count += 1
+        assert publisher_count > 0, 'Publisher was not discovered'
+
+        try:
+            command_action = ExecuteProcess(
+                cmd=['ros2', 'topic', 'hz',
+                     '--content-filter', "data = 'NOMATCH'",
+                     topic],
+                additional_env={
+                    'PYTHONUNBUFFERED': '1'
+                },
+                output='screen'
+            )
+            with launch_testing.tools.launch_process(
+                launch_service, command_action, proc_info, proc_output,
+                output_filter=launch_testing_ros.tools.basic_output_filter(
+                    filtered_rmw_implementation=get_rmw_implementation_identifier()
+                )
+            ) as command:
+                self.executor.spin_until_future_complete(
+                    rclpy.task.Future(), timeout_sec=5
+                )
+            command.wait_for_shutdown(timeout=10)
+            # No messages should match, so no rate should be reported
+            assert not re.search(
+                r'^average rate:', command.output, flags=re.MULTILINE
+            ), 'hz should not report rate when content filter rejects all messages'
+        finally:
+            self.node.destroy_timer(publish_timer)
+            self.node.destroy_publisher(publisher)
+
+    @launch_testing.markers.retry_on_failure(times=5)
+    def test_bw_content_filter_no_match(self, launch_service, proc_info, proc_output):
+        topic = '/clitest/topic/bw_cfilter_nomatch'
+        publisher = self.node.create_publisher(String, topic, 10)
+        assert publisher
+
+        def publish_message():
+            publisher.publish(String(data='hello'))
+
+        publish_timer = self.node.create_timer(0.5, publish_message)
+
+        # Wait for the publisher to be discovered
+        publisher_count = 0
+        timeout_count = 0
+        while publisher_count == 0 and timeout_count < 10:
+            self.executor.spin_once(timeout_sec=0.1)
+            publisher_count = self.node.count_publishers(topic)
+            timeout_count += 1
+        assert publisher_count > 0, 'Publisher was not discovered'
+
+        try:
+            command_action = ExecuteProcess(
+                cmd=['ros2', 'topic', 'bw',
+                     '--content-filter', "data = 'NOMATCH'",
+                     topic],
+                additional_env={
+                    'PYTHONUNBUFFERED': '1'
+                },
+                output='screen'
+            )
+            with launch_testing.tools.launch_process(
+                launch_service, command_action, proc_info, proc_output,
+                output_filter=launch_testing_ros.tools.basic_output_filter(
+                    filtered_rmw_implementation=get_rmw_implementation_identifier()
+                )
+            ) as command:
+                self.executor.spin_until_future_complete(
+                    rclpy.task.Future(), timeout_sec=5
+                )
+            command.wait_for_shutdown(timeout=10)
+            # No messages should match, so no bandwidth should be reported
+            assert not re.search(
+                r'^[0-9]+ B/s', command.output, flags=re.MULTILINE
+            ), 'bw should not report bandwidth when content filter rejects all messages'
+        finally:
+            self.node.destroy_timer(publish_timer)
+            self.node.destroy_publisher(publisher)
