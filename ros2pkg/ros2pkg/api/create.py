@@ -106,6 +106,8 @@ def create_package_environment(package, destination_directory):
             'package_license': package.licenses[0],
             'buildtool_dependencies': package.buildtool_depends,
             'dependencies': package.build_depends,
+            'exec_dependencies': package.exec_depends,
+            'member_of_group': package.member_of_groups,
             'test_dependencies': package.test_depends,
             'exports': package.exports,
             }
@@ -259,12 +261,14 @@ def populate_cmake(package, package_directory, cpp_node_name, cpp_library_name):
             version_config)
 
 
-def populate_ament_cmake(package, package_directory, cpp_node_name, cpp_library_name):
+def populate_ament_cmake(package, package_directory, cpp_node_name, cpp_library_name,
+                         message_names=None):
     cmakelists_config = {
             'project_name': package.name,
             'dependencies': [str(dep) for dep in package.build_depends],
             'cpp_node_name': cpp_node_name,
             'cpp_library_name': cpp_library_name,
+            'message_names': message_names or [],
             }
     _create_template_file(
             'ament_cmake',
@@ -355,3 +359,20 @@ def populate_rust_node(package, source_directory, node_name):
             source_directory,
             'main.rs',
             cargo_node_config)
+
+
+def populate_messages(package_directory: str, message_names: list) -> None:
+    """
+    Create stub message files in the msg/ subdirectory of the package.
+
+    :param package_directory: path to the package directory.
+    :param message_names: list of message names to create.
+    """
+    msg_directory = _create_folder('msg', package_directory)
+    for msg_name in message_names:
+        _create_template_file(
+                'msg',
+                'message.msg.em',
+                msg_directory,
+                msg_name + '.msg',
+                {})
