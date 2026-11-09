@@ -56,7 +56,7 @@ class SetVerb(VerbExtension):
         arg.completer = NodeNameCompleter(
             include_hidden_nodes_key='include_hidden_nodes')
         parser.add_argument(
-            '--include-hidden-nodes', action='store_true',
+            '--include-hidden-nodes', '-a', '--all', action='store_true',
             help='Consider hidden nodes as well')
         arg = parser.add_argument(
             'params_and_values', nargs='+',
