@@ -533,7 +533,12 @@ class TestROS2TopicEchoPub(unittest.TestCase):
                 )
                 assert command.wait_for_output(functools.partial(
                     launch_testing.tools.expect_output, expected_lines=[
-                        re.compile(r"^b'\\x00\\x01\\x00\\x00\\x06\\x00\\x00\\x00hello(\\x00)*'$"),
+                        # The encapsulation header is CDR_LE (0x0001) followed by a 2-byte
+                        # options field. Per DDS-XTypes, the two least significant
+                        # bits of the options may hold the number of trailing padding bytes,
+                        # which some middlewares (e.g. Connext) set, so accept 0-3 there.
+                        re.compile(
+                            r"^b'\\x00\\x01\\x00\\x0[0-3]\\x06\\x00\\x00\\x00hello(\\x00)*'$"),
                         re.compile(r'^---$'),
                     ], strict=False
                 ), timeout=10), 'Echo CLI did not print expected message'
