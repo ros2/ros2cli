@@ -82,6 +82,12 @@ class HzVerb(VerbExtension):
             help='subscribe to all available topics')
         add_qos_arguments(parser, 'subscribe', 'sensor_data')
         parser.add_argument(
+            '--acceptable-buffer-backends', metavar='BACKENDS',
+            help='comma-separated buffer backend names to accept, or "any" for all installed '
+                 'backends; CPU is always acceptable (default: CPU-only). Uses typed message '
+                 'reception to preserve native buffers without reading their contents, unless '
+                 'accessed by --filter')
+        parser.add_argument(
             '--window', '-w',
             dest='window_size', type=positive_int, default=DEFAULT_WINDOW_SIZE,
             help='window size, in # of messages, for calculating rate '
@@ -149,7 +155,8 @@ def main(args):
         return _rostopic_hz(
             node.node, topics, qos_args=args, window_size=args.window_size,
             filter_expr=filter_expr, use_wtime=args.use_wtime,
-            all_topics=args.all_topics)
+            all_topics=args.all_topics,
+            acceptable_buffer_backends=args.acceptable_buffer_backends)
 
 
 class ROSTopicHz(object):
@@ -337,7 +344,7 @@ def _get_ascii_table(header, cols):
 
 
 def _rostopic_hz(node, topics, qos_args, window_size=DEFAULT_WINDOW_SIZE, filter_expr=None,
-                 use_wtime=False, all_topics=False):
+                 use_wtime=False, all_topics=False, acceptable_buffer_backends=None):
     """
     Periodically print the publishing rate of a topic to console until shutdown.
 
@@ -346,6 +353,7 @@ def _rostopic_hz(node, topics, qos_args, window_size=DEFAULT_WINDOW_SIZE, filter
     :param window_size: number of messages to average over, -1 for infinite, ``int``
     :param filter_expr: Python filter expression that is called with m, the message instance
     :param all_topics: whether all topics are being monitored, ``bool``
+    :param acceptable_buffer_backends: acceptable buffer backend names, or "any"
     """
     # pause hz until topic is published
     rt = ROSTopicHz(node, window_size, filter_expr=filter_expr, use_wtime=use_wtime)
@@ -362,12 +370,18 @@ def _rostopic_hz(node, topics, qos_args, window_size=DEFAULT_WINDOW_SIZE, filter
 
         qos_profile = choose_qos(node, topic_name=topic, qos_args=qos_args)
 
+        subscription_options = {}
+        if acceptable_buffer_backends is not None:
+            subscription_options['acceptable_buffer_backends'] = acceptable_buffer_backends
+        # Native buffers must be reconstructed through the typed take path.
+        # A raw subscription only returns serialized bytes.
         node.create_subscription(
             msg_class,
             topic,
             functools.partial(rt.callback_hz, topic=topic),
             qos_profile,
-            raw=filter_expr is None)
+            raw=filter_expr is None and acceptable_buffer_backends is None,
+            **subscription_options)
         if topics_len > 1:
             print('Subscribed to [%s]' % topic)
 
