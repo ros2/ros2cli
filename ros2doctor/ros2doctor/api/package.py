@@ -46,8 +46,12 @@ def get_distro_package_versions() -> dict:
             'Unable to access ROSDISTRO_INDEX_URL or DEFAULT_INDEX_URL. '
             'Check network setting to make sure machine is connected to internet.')
         return
-    i = rosdistro.get_index(url)
-    distro_info = rosdistro.get_distribution(i, distro_name)
+    try:
+        i = rosdistro.get_index(url)
+        distro_info = rosdistro.get_distribution(i, distro_name)
+    except Exception as e:
+        doctor_error(f'Unable to fetch rosdistro index from {url}: {e}')
+        return
     if not distro_info:
         doctor_warn(f'Distribution name {distro_name} is not found')
         return
