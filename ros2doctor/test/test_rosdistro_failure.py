@@ -88,6 +88,19 @@ class TestRosdistroFetchFailure(unittest.TestCase):
             warnings.simplefilter('ignore')
             self.assertIsNone(get_distro_package_versions())
 
+    def test_package_versions_none_on_distribution_failure(self):
+        """The package versions helper returns None when loading the distribution fails."""
+        with mock.patch.dict(os.environ, {'ROS_DISTRO': 'rolling'}), \
+                mock.patch('ros2doctor.api.package.rosdistro.get_index_url',
+                           return_value='https://example.invalid/index-v4.yaml'), \
+                mock.patch('ros2doctor.api.package.rosdistro.get_index',
+                           return_value=object()), \
+                mock.patch('ros2doctor.api.package.rosdistro.get_distribution',
+                           side_effect=RuntimeError('unknown distribution')), \
+                warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            self.assertIsNone(get_distro_package_versions())
+
     def test_platform_helper_returns_none_on_fetch_failure(self):
         """_check_platform_helper returns None instead of raising URLError."""
         with mock.patch.dict(os.environ, {'ROS_DISTRO': 'rolling'}), \
@@ -100,7 +113,7 @@ class TestRosdistroFetchFailure(unittest.TestCase):
             self.assertIsNone(_check_platform_helper())
 
     def test_package_check_reports_error_on_fetch_failure(self):
-        """PackageCheck returns an error result instead of raising URLError."""
+        """The package check returns an error result instead of raising URLError."""
         with mock.patch.dict(os.environ, {'ROS_DISTRO': 'rolling'}), \
                 mock.patch('ros2doctor.api.package.rosdistro.get_index',
                            side_effect=_unreachable_index), \
@@ -110,7 +123,7 @@ class TestRosdistroFetchFailure(unittest.TestCase):
             self.assertGreaterEqual(result.error, 1)
 
     def test_platform_check_reports_error_on_fetch_failure(self):
-        """PlatformCheck returns an error result instead of raising URLError."""
+        """The platform check returns an error result instead of raising URLError."""
         with mock.patch.dict(os.environ, {'ROS_DISTRO': 'rolling'}), \
                 mock.patch('ros2doctor.api.platform.rosdistro.get_index',
                            side_effect=_unreachable_index), \
@@ -120,7 +133,7 @@ class TestRosdistroFetchFailure(unittest.TestCase):
             self.assertEqual(result.error, 1)
 
     def test_package_report_is_empty_on_fetch_failure(self):
-        """PackageReport returns an empty report instead of raising URLError."""
+        """The package report is empty instead of raising URLError."""
         with mock.patch.dict(os.environ, {'ROS_DISTRO': 'rolling'}), \
                 mock.patch('ros2doctor.api.package.rosdistro.get_index',
                            side_effect=_unreachable_index), \
@@ -131,7 +144,7 @@ class TestRosdistroFetchFailure(unittest.TestCase):
             self.assertEqual(report.items, [])
 
     def test_rosdistro_report_is_empty_on_fetch_failure(self):
-        """RosdistroReport returns an empty report instead of raising URLError."""
+        """The rosdistro report is empty instead of raising URLError."""
         with mock.patch.dict(os.environ, {'ROS_DISTRO': 'rolling'}), \
                 mock.patch('ros2doctor.api.platform.rosdistro.get_index',
                            side_effect=_unreachable_index), \

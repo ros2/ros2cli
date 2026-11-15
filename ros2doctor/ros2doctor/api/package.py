@@ -48,9 +48,15 @@ def get_distro_package_versions() -> dict:
         return
     try:
         i = rosdistro.get_index(url)
-        distro_info = rosdistro.get_distribution(i, distro_name)
     except Exception as e:
         doctor_error(f'Unable to fetch rosdistro index from {url}: {e}')
+        return
+    try:
+        distro_info = rosdistro.get_distribution(i, distro_name)
+    except Exception as e:
+        doctor_error(
+            f'Unable to load distribution {distro_name} '
+            f'from rosdistro index {url}: {e}')
         return
     if not distro_info:
         doctor_warn(f'Distribution name {distro_name} is not found')
