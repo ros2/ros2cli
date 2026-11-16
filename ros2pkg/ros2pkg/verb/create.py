@@ -142,8 +142,9 @@ class CreateVerb(VerbExtension):
                 buildtool_depends = ['ament_cmake_ros']
             else:
                 buildtool_depends = ['ament_cmake']
-
-        if args.build_type == 'ament_cargo':
+        elif args.build_type == 'cmake':
+            buildtool_depends = ['cmake']
+        elif args.build_type == 'ament_cargo':
             buildtool_depends = ['ament_cargo']
 
         test_dependencies = []

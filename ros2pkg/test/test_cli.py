@@ -119,7 +119,7 @@ class TestROS2PkgCLI(unittest.TestCase):
             strict=True
         )
 
-    def test_create_package(self):
+    def test_create_package_ament_cmake(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             with self.launch_pkg_command(
                 arguments=[
@@ -202,5 +202,100 @@ class TestROS2PkgCLI(unittest.TestCase):
             assert root.find('maintainer').text == 'Nobody'
             assert root.find('maintainer').attrib['email'] == 'nobody@nowhere.com'
             assert root.find('license').text == 'Apache-2.0'
+            assert root.find('buildtool_depend').text == 'ament_cmake_ros'
             assert root.find('depend').text == 'ros2pkg'
             assert root.find('.//build_type').text == 'ament_cmake'
+
+    def test_create_package_cmake(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            with self.launch_pkg_command(
+                arguments=[
+                    'create', 'a_test_package',
+                    '--package-format', '3',
+                    '--description', 'A test package dummy description',
+                    '--license', 'Apache-2.0',
+                    '--build-type', 'cmake',
+                    '--dependencies', 'ros2pkg',
+                    '--maintainer-email', 'nobody@nowhere.com',
+                    '--maintainer-name', 'Nobody',
+                    '--node-name', 'test_node',
+                    '--library-name', 'test_library'
+                ], cwd=tmpdir
+            ) as pkg_command:
+                assert pkg_command.wait_for_shutdown(timeout=5)
+            assert pkg_command.exit_code == launch_testing.asserts.EXIT_OK
+            assert launch_testing.tools.expect_output(
+                expected_lines=[
+                    'going to create a new package',
+                    'package name: a_test_package',
+                    'destination directory: ' + os.path.realpath(tmpdir),
+                    'package format: 3',
+                    'version: 0.0.0',
+                    'description: A test package dummy description',
+                    "maintainer: ['Nobody <nobody@nowhere.com>']",
+                    "licenses: ['Apache-2.0']",
+                    'build type: cmake',
+                    "dependencies: ['ros2pkg']",
+                    'node_name: test_node',
+                    'library_name: test_library',
+                    'creating folder ' + os.path.join('.', 'a_test_package'),
+                    'creating ' + os.path.join('.', 'a_test_package', 'package.xml'),
+                    'creating source and include folder',
+                    'creating folder ' + os.path.join('.', 'a_test_package', 'src'),
+                    'creating folder ' + os.path.join(
+                        '.', 'a_test_package', 'include', 'a_test_package'
+                    ),
+                    'creating ' + os.path.join('.', 'a_test_package', 'CMakeLists.txt'),
+                    # CMake packages get *Config.cmake.in and *ConfigVersion.cmake.in
+                    'creating ' + os.path.join(
+                        '.', 'a_test_package', 'a_test_packageConfig.cmake.in'
+                    ),
+                    'creating ' + os.path.join(
+                        '.', 'a_test_package', 'a_test_packageConfigVersion.cmake.in'
+                    ),
+                    'creating ' + os.path.join(
+                        '.', 'a_test_package', 'src', 'test_node.cpp'
+                    ),
+                    'creating ' + os.path.join(
+                        '.', 'a_test_package', 'include', 'a_test_package', 'test_library.hpp'
+                    ),
+                    'creating ' + os.path.join(
+                        '.', 'a_test_package', 'src', 'test_library.cpp'
+                    ),
+                    'creating ' + os.path.join(
+                        '.', 'a_test_package', 'include', 'a_test_package', 'visibility_control.h'
+                    ),
+                ],
+                text=pkg_command.output,
+                strict=True
+            )
+            # Check layout
+            assert os.path.isdir(os.path.join(tmpdir, 'a_test_package'))
+            assert os.path.isfile(os.path.join(tmpdir, 'a_test_package', 'package.xml'))
+            assert os.path.isfile(os.path.join(tmpdir, 'a_test_package', 'CMakeLists.txt'))
+            assert os.path.isfile(os.path.join(tmpdir, 'a_test_package', 'LICENSE'))
+            assert os.path.isfile(
+                os.path.join(tmpdir, 'a_test_package', 'src', 'test_node.cpp')
+            )
+            assert os.path.isfile(
+                os.path.join(tmpdir, 'a_test_package', 'src', 'test_library.cpp')
+            )
+            assert os.path.isfile(os.path.join(
+                tmpdir, 'a_test_package', 'include', 'a_test_package', 'test_library.hpp'
+            ))
+            assert os.path.isfile(os.path.join(
+                tmpdir, 'a_test_package', 'include', 'a_test_package', 'visibility_control.h'
+            ))
+            # Check package.xml
+            tree = ET.parse(os.path.join(tmpdir, 'a_test_package', 'package.xml'))
+            root = tree.getroot()
+            assert root.tag == 'package'
+            assert root.attrib['format'] == '3'
+            assert root.find('name').text == 'a_test_package'
+            assert root.find('description').text == 'A test package dummy description'
+            assert root.find('maintainer').text == 'Nobody'
+            assert root.find('maintainer').attrib['email'] == 'nobody@nowhere.com'
+            assert root.find('license').text == 'Apache-2.0'
+            assert root.find('buildtool_depend').text == 'cmake'
+            assert root.find('depend').text == 'ros2pkg'
+            assert root.find('.//build_type').text == 'cmake'
