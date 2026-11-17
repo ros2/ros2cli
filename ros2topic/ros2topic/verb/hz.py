@@ -29,8 +29,8 @@
 # This file is originally from:
 # https://github.com/ros/ros_comm/blob/6e5016f4b2266d8a60c9a1e163c4928b8fc7115e/tools/rostopic/src/rostopic/__init__.py
 
-from collections import defaultdict
 
+from collections import defaultdict
 import functools
 import math
 import threading
@@ -53,6 +53,7 @@ from ros2topic.api import get_topic_names
 from ros2topic.api import get_topic_names_and_types
 from ros2topic.api import positive_int
 from ros2topic.api import TopicNameCompleter
+from ros2topic.filter_expression import compile_filter, FilterExpressionError
 from ros2topic.verb import VerbExtension
 from ros2topic.verb.echo import clear_terminal
 
@@ -89,7 +90,9 @@ class HzVerb(VerbExtension):
         parser.add_argument(
             '--filter',
             dest='filter_expr', default=None,
-            help='only measure messages matching the specified Python expression', metavar='EXPR')
+            help='only measure messages matching the specified Python expression, in which '
+                 'the message is available as "m" (only a restricted subset of Python is '
+                 'supported)', metavar='EXPR')
         parser.add_argument(
             '--wall-time',
             dest='use_wtime', default=False, action='store_true',
@@ -102,6 +105,13 @@ class HzVerb(VerbExtension):
 
 
 def main(args):
+    filter_expr = None
+    if args.filter_expr:
+        try:
+            filter_expr = compile_filter(args.filter_expr)
+        except FilterExpressionError as e:
+            return str(e)
+
     # Interactive selection if no topic name and not --all
     if not args.all_topics and not args.topic_name:
         with DirectNode(args) as node:
@@ -124,16 +134,6 @@ def main(args):
     if args.all_topics and args.topic_name:
         raise RuntimeError('Cannot specify both --all/-a and topic names')
 
-    topics = args.topic_name
-    if args.filter_expr:
-        def expr_eval(expr):
-            def eval_fn(m):
-                return eval(expr)
-            return eval_fn
-        filter_expr = expr_eval(args.filter_expr)
-    else:
-        filter_expr = None
-
     with DirectNode(args) as node:
         # Get all available topics at this moment
         if args.all_topics:
@@ -145,6 +145,8 @@ def main(args):
                 print('No topics available')
                 return 0
             print(f'Subscribing to all {len(topics)} available topics...')
+        else:
+            topics = args.topic_name
 
         return _rostopic_hz(
             node.node, topics, qos_args=args, window_size=args.window_size,
