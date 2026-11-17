@@ -21,10 +21,23 @@ import pytest
 from ros2topic.verb import hz
 
 
-@pytest.mark.parametrize('backends', [None, 'any', 'cpu', 'cuda,cpu'])
+@pytest.mark.parametrize(('backends', 'expected_backends'), [
+    (None, None),
+    ('', None),
+    (' \t ', None),
+    (', ,', None),
+    ('cpu', None),
+    (' CPU , cpu, ', None),
+    ('any', 'any'),
+    (' ANY, any, ', 'any'),
+    ('BACKEND_A', 'backend_a'),
+    ('backend_a,cpu', 'backend_a,cpu'),
+    (' BACKEND_A, cpu, BACKEND_A, , ', 'backend_a,cpu'),
+    (' Backend_B, BACKEND_A ', 'backend_b,backend_a'),
+])
 @pytest.mark.parametrize('filtered', [False, True])
 @pytest.mark.parametrize('all_topics', [False, True])
-def test_hz_buffer_backends(monkeypatch, backends, filtered, all_topics):
+def test_hz_buffer_backends(monkeypatch, backends, expected_backends, filtered, all_topics):
     parser = argparse.ArgumentParser()
     parser.set_defaults(include_hidden_topics=False)
     hz.HzVerb().add_arguments(parser, 'ros2 topic hz')
@@ -56,11 +69,11 @@ def test_hz_buffer_backends(monkeypatch, backends, filtered, all_topics):
     assert node.create_subscription.call_count == len(topics)
     for topic, call in zip(topics, node.create_subscription.call_args_list):
         assert call.args[1] == topic
-        assert call.kwargs['raw'] is (backends is None and not filtered)
-        if backends is None:
+        assert call.kwargs['raw'] is (expected_backends is None and not filtered)
+        if expected_backends is None:
             assert 'acceptable_buffer_backends' not in call.kwargs
         else:
-            assert call.kwargs['acceptable_buffer_backends'] == backends
+            assert call.kwargs['acceptable_buffer_backends'] == expected_backends
 
         # Timing and metadata filters must not inspect the payload.
         class Message:

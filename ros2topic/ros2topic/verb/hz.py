@@ -84,9 +84,11 @@ class HzVerb(VerbExtension):
         parser.add_argument(
             '--acceptable-buffer-backends', metavar='BACKENDS',
             help='comma-separated buffer backend names to accept, or "any" for all installed '
-                 'backends; CPU is always acceptable (default: CPU-only). Uses typed message '
-                 'reception to preserve native buffers without reading their contents, unless '
-                 'accessed by --filter')
+                 'backends; names are normalized to lowercase and CPU is always acceptable '
+                 '(default: CPU-only). Specifying this argument also enables message '
+                 'deserialization for all incoming messages, regardless of whether they '
+                 'contain CPU or non-CPU buffer data. Empty or CPU-only selections behave '
+                 'as if this argument were omitted.')
         parser.add_argument(
             '--window', '-w',
             dest='window_size', type=positive_int, default=DEFAULT_WINDOW_SIZE,
@@ -355,6 +357,13 @@ def _rostopic_hz(node, topics, qos_args, window_size=DEFAULT_WINDOW_SIZE, filter
     :param all_topics: whether all topics are being monitored, ``bool``
     :param acceptable_buffer_backends: acceptable buffer backend names, or "any"
     """
+    if acceptable_buffer_backends is not None:
+        backends = list(dict.fromkeys(
+            backend.strip().lower() for backend in acceptable_buffer_backends.split(',')
+            if backend.strip()))
+        acceptable_buffer_backends = (
+            ','.join(backends) if any(backend != 'cpu' for backend in backends) else None)
+
     # pause hz until topic is published
     rt = ROSTopicHz(node, window_size, filter_expr=filter_expr, use_wtime=use_wtime)
     topics_len = len(topics)
