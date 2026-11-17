@@ -351,7 +351,7 @@ def _rostopic_hz(node, topics, qos_args, window_size=DEFAULT_WINDOW_SIZE, filter
             print('Subscribed to [%s]' % topic)
 
     # remove the topics from the list if failed to find message type
-    while (topic in topics_to_be_removed):
+    for topic in topics_to_be_removed:
         topics.remove(topic)
     if len(topics) == 0:
         node.destroy_node()
