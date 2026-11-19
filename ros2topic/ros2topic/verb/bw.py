@@ -40,6 +40,7 @@ import traceback
 import rclpy
 
 from rclpy.executors import ExternalShutdownException
+from rclpy.subscription_content_filter_options import ContentFilterOptions
 
 from ros2cli.helpers import interactive_select
 from ros2cli.node.direct import add_arguments as add_direct_node_arguments
@@ -96,6 +97,12 @@ class BwVerb(VerbExtension):
             '--window', '-w', dest='window_size', type=positive_int, default=DEFAULT_WINDOW_SIZE,
             help='maximum window size, in # of messages, for calculating rate '
                  f'(default: {DEFAULT_WINDOW_SIZE})', metavar='WINDOW')
+        parser.add_argument(
+            '--content-filter', dest='content_filter_expr', default=None,
+            help='DDS content filter expression applied at the middleware level')
+        parser.add_argument(
+            '--content-filter-params', dest='content_filter_params', nargs='*', default=[],
+            help='Parameters for the content filter expression')
         add_direct_node_arguments(parser)
 
     def main(self, *, args):
@@ -127,6 +134,12 @@ def main(args):
 
     topics = args.topic_name
 
+    content_filter_options = None
+    if args.content_filter_expr:
+        content_filter_options = ContentFilterOptions(
+            filter_expression=args.content_filter_expr,
+            expression_parameters=args.content_filter_params)
+
     with DirectNode(args) as node:
         # Get all available topics at this moment
         if args.all_topics:
@@ -139,7 +152,8 @@ def main(args):
                 return
             print(f'Subscribing to all {len(topics)} available topics...')
         return _rostopic_bw(node.node, topics, qos_args=args, window_size=args.window_size,
-                            all_topics=args.all_topics)
+                            all_topics=args.all_topics,
+                            content_filter_options=content_filter_options)
 
 
 class ROSTopicBandwidth(object):
@@ -293,7 +307,8 @@ def _get_ascii_table(header, cols):
     return table
 
 
-def _rostopic_bw(node, topics, qos_args, window_size=DEFAULT_WINDOW_SIZE, all_topics=False):
+def _rostopic_bw(node, topics, qos_args, window_size=DEFAULT_WINDOW_SIZE, all_topics=False,
+                 content_filter_options=None):
     """Periodically print the received bandwidth of topics to console until shutdown."""
     # pause bw until topic is published
     rt = ROSTopicBandwidth(node, window_size)
@@ -314,7 +329,8 @@ def _rostopic_bw(node, topics, qos_args, window_size=DEFAULT_WINDOW_SIZE, all_to
             topic,
             functools.partial(rt.callback, topic=topic),
             qos_profile,
-            raw=True
+            raw=True,
+            content_filter_options=content_filter_options
         )
         print('Subscribed to [%s]' % topic)
 
