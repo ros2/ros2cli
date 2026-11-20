@@ -35,10 +35,11 @@ _extension_instances = {}
 
 
 def instantiate_extensions(
-    group_name, *, exclude_names=None, unique_instance=False
+    group_name, *, exclude_names=None, unique_instance=False,
+    entry_points=None
 ):
     extension_types = load_entry_points(
-        group_name, exclude_names=exclude_names)
+        group_name, exclude_names=exclude_names, entry_points=entry_points)
     extension_instances = {}
     for extension_name, extension_class in extension_types.items():
         extension_instance = _instantiate_extension(
