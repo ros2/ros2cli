@@ -45,7 +45,11 @@ def _check_platform_helper() -> Tuple[str, dict, dict]:
             'Unable to access ROSDISTRO_INDEX_URL or DEFAULT_INDEX_URL. '
             'Check network setting to make sure machine is connected to internet.')
         return
-    i = rosdistro.get_index(u)
+    try:
+        i = rosdistro.get_index(u)
+    except Exception as e:
+        doctor_error(f'Unable to fetch rosdistro index from {u}: {e}')
+        return
     distro_info = i.distributions.get(distro_name)
     if not distro_info:
         doctor_warn(f'Distribution name {distro_name} is not found')
@@ -53,7 +57,7 @@ def _check_platform_helper() -> Tuple[str, dict, dict]:
     try:
         distro_data = rosdistro.get_distribution(i, distro_name).get_data()
     except AttributeError:
-        distro_data = ''
+        distro_data = {}
     return distro_name, distro_info, distro_data
 
 

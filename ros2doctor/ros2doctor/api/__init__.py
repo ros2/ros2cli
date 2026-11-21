@@ -204,8 +204,9 @@ def run_checks(*, include_warnings: bool = False,
             continue
         try:
             check_instance = check_class()
-        except Exception:
-            doctor_warn(f'Unable to instantiate check object from {check_entry_pt.name}.')
+        except Exception as e:
+            doctor_warn(
+                f'Unable to instantiate check object from {check_entry_pt.name}: {e}')
             continue
         try:
             check_category = check_instance.category()
@@ -214,8 +215,8 @@ def run_checks(*, include_warnings: bool = False,
                 fail += 1
                 fail_categories.add(check_category)
             total += 1
-        except Exception:
-            doctor_warn(f'Fail to call {check_entry_pt.name} class functions.')
+        except Exception as e:
+            doctor_warn(f'Fail to call {check_entry_pt.name} class functions: {e}')
     return fail_categories, fail, total
 
 
@@ -243,8 +244,9 @@ def generate_reports(*, categories=None, exclude_packages: bool = False) -> List
             continue
         try:
             report_instance = report_class()
-        except Exception:
-            doctor_warn(f'Unable to instantiate report object from {report_entry_pt.name}.')
+        except Exception as e:
+            doctor_warn(
+                f'Unable to instantiate report object from {report_entry_pt.name}: {e}')
             continue
         try:
             report_category = report_instance.category()
@@ -254,8 +256,8 @@ def generate_reports(*, categories=None, exclude_packages: bool = False) -> List
                     reports.append(report)
             else:
                 reports.append(report)
-        except Exception:
-            doctor_warn(f'Fail to call {report_entry_pt.name} class functions.')
+        except Exception as e:
+            doctor_warn(f'Fail to call {report_entry_pt.name} class functions: {e}')
     return reports
 
 
