@@ -16,6 +16,7 @@
 import argparse
 import builtins
 import functools
+import os
 import signal
 import sys
 
@@ -93,13 +94,13 @@ def main(*, script_name='ros2', argv=None, description=None, extension=None):
         # get extension identified by the passed command (if available)
         extension = getattr(args, selected_extension_key, None)
 
-    # handle the case that no command was passed
-    if extension is None:
-        parser.print_help()
-        return 0
-
     # call the main method of the extension
     try:
+        # handle the case that no command was passed
+        if extension is None:
+            parser.print_help()
+            return 0
+
         rc = extension.main(parser=parser, args=args)
     except KeyboardInterrupt:
         rc = signal.SIGINT
@@ -107,4 +108,15 @@ def main(*, script_name='ros2', argv=None, description=None, extension=None):
         rc = signal.SIGTERM
     except RuntimeError as e:
         rc = str(e)
+    except BrokenPipeError:
+        # The downstream reader (e.g. `head`) closed the pipe: exit quietly
+        # instead of printing a traceback. Redirect stdout to /dev/null first,
+        # so the interpreter shutdown flush does not raise again
+        # (see https://docs.python.org/3/library/signal.html#note-on-sigpipe).
+        try:
+            devnull = os.open(os.devnull, os.O_WRONLY)
+            os.dup2(devnull, sys.stdout.fileno())
+        except (AttributeError, OSError, ValueError):
+            pass
+        return 1
     return rc
