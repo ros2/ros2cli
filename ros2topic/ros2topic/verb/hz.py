@@ -41,6 +41,12 @@ import rclpy
 from rclpy.clock import Clock
 from rclpy.clock import ClockType
 from rclpy.executors import ExternalShutdownException
+<<<<<<< HEAD
+=======
+from rclpy.experimental import EventsExecutor
+
+from ros2cli.helpers import interactive_select
+>>>>>>> 5079830 (Use EventsExecutor in ros2 topic hz (#1365))
 from ros2cli.node.direct import add_arguments as add_direct_node_arguments
 from ros2cli.node.direct import DirectNode
 from ros2topic.api import add_qos_arguments
@@ -358,6 +364,10 @@ def _rostopic_hz(node, topics, qos_args, window_size=DEFAULT_WINDOW_SIZE, filter
         rclpy.try_shutdown()
         return 1
 
+    # The EventsExecutor dispatches subscription callbacks with far less
+    # per-message overhead than the default executor, which otherwise caps the
+    # rate hz can observe at a few kHz.
+    executor = EventsExecutor()
     try:
         def thread_func():
             while rclpy.ok():
@@ -366,10 +376,13 @@ def _rostopic_hz(node, topics, qos_args, window_size=DEFAULT_WINDOW_SIZE, filter
 
         print_thread = threading.Thread(target=thread_func)
         print_thread.start()
-        rclpy.spin(node)
+        executor.add_node(node)
+        executor.spin()
     except (KeyboardInterrupt, ExternalShutdownException):
         pass
     finally:
+        executor.remove_node(node)
+        executor.shutdown()
         node.destroy_node()
         rclpy.try_shutdown()
         print_thread.join()
