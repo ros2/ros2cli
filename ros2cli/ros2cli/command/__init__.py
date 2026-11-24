@@ -53,9 +53,9 @@ class CommandExtension:
         raise NotImplementedError()
 
 
-def get_command_extensions(group_name, *, exclude_names=None):
+def get_command_extensions(group_name, *, exclude_names=None, entry_points=None):
     extensions = instantiate_extensions(
-        group_name, exclude_names=exclude_names)
+        group_name, exclude_names=exclude_names, entry_points=entry_points)
     for name, extension in extensions.items():
         extension.NAME = name
     return extensions
@@ -148,7 +148,8 @@ def add_subparsers_on_demand(
     name = getattr(known_args, subparser.dest)
     if name is None:
         # add description for all command extensions to the root parser
-        command_extensions = get_command_extensions(group_name)
+        command_extensions = get_command_extensions(
+            group_name, entry_points=entry_points)
         if command_extensions:
             description = ''
             max_length = max(
@@ -166,7 +167,8 @@ def add_subparsers_on_demand(
     else:
         # add description for the selected command extension to the subparser
         command_extensions = get_command_extensions(
-            group_name, exclude_names=set(entry_points.keys() - {name}))
+            group_name, exclude_names=set(entry_points.keys() - {name}),
+            entry_points=entry_points)
         extension = command_extensions[name]
         command_parser = command_parsers[name]
         command_parser.set_defaults(**{dest: extension})
