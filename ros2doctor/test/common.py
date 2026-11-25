@@ -33,3 +33,32 @@ def generate_expected_service_report(services: Iterable[str], serv_counts: Itera
         expected_report.add_to_report('service count', serv_count)
         expected_report.add_to_report('client count', cli_count)
     return expected_report
+
+
+def generate_expected_node_report(node_count: int, nodes: Iterable[str]) -> Report:
+    expected_report = Report('NODE LIST')
+    if node_count == 0:
+        expected_report.add_to_report('node count', 0)
+        expected_report.add_to_report('node', 'none')
+    else:
+        expected_report.add_to_report('node count', node_count)
+        for node in nodes:
+            expected_report.add_to_report('node', node)
+    return expected_report
+
+
+def generate_expected_parameter_report(nodes_checked: int, param_count: int,
+                                       node_params: Iterable[tuple]) -> Report:
+    expected_report = Report('PARAMETER LIST')
+    if nodes_checked == 0:
+        expected_report.add_to_report('total nodes checked', 0)
+        expected_report.add_to_report('total parameter count', 0)
+        expected_report.add_to_report('parameter', 'none')
+    else:
+        for node_name, params in node_params:
+            expected_report.add_to_report('node', node_name)
+            for param in params:
+                expected_report.add_to_report('parameter', param)
+        expected_report.add_to_report('total nodes checked', nodes_checked)
+        expected_report.add_to_report('total parameter count', param_count)
+    return expected_report

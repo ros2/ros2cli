@@ -14,6 +14,7 @@
 
 import unittest
 
+from common import generate_expected_node_report
 from common import generate_expected_service_report
 from common import generate_expected_topic_report
 
@@ -25,6 +26,9 @@ import launch_testing.markers
 
 import pytest
 
+from ros2doctor.api.node import NodeCheck
+from ros2doctor.api.node import NodeReport
+from ros2doctor.api.parameter import ParameterReport
 from ros2doctor.api.service import ServiceReport
 from ros2doctor.api.topic import TopicCheck
 from ros2doctor.api.topic import TopicReport
@@ -74,3 +78,23 @@ class TestROS2DoctorAPI(unittest.TestCase):
         self.assertEqual(report.name, expected_report.name)
         self.assertEqual(report.items, expected_report.items)
         self.assertEqual(report, expected_report)
+
+    def test_node_check(self):
+        """Assume no duplicate nodes exist in a clean environment."""
+        node_check = NodeCheck()
+        check_result = node_check.check()
+        self.assertEqual(check_result.error, 0)
+        self.assertEqual(check_result.warning, 0)
+
+    def test_no_node_report(self):
+        """Assume no nodes are running in a clean environment."""
+        report = NodeReport().report()
+        expected_report = generate_expected_node_report(0, [])
+        self.assertEqual(report.name, expected_report.name)
+        self.assertEqual(report.name, 'NODE LIST')
+
+    def test_no_parameter_report(self):
+        """Assume no parameters in a clean environment."""
+        report = ParameterReport().report()
+        self.assertEqual(report.name, 'PARAMETER LIST')
+        self.assertIsNotNone(report)
