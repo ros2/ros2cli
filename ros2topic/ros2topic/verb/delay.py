@@ -75,6 +75,11 @@ class DelayVerb(VerbExtension):
             include_hidden_topics_key='include_hidden_topics')
         add_qos_arguments(parser, 'subscribe', 'sensor_data')
         parser.add_argument(
+            '--acceptable-buffer-backends', metavar='BACKENDS',
+            help='comma-separated buffer backend names to accept, or "any" for all installed '
+                 'backends; names are normalized to lowercase and CPU is always acceptable '
+                 '(default: CPU-only).')
+        parser.add_argument(
             '--window', '-w', dest='window_size', type=positive_int, default=DEFAULT_WINDOW_SIZE,
             help='window size, in # of messages, for calculating rate, '
                  'string to (default: %d)' % DEFAULT_WINDOW_SIZE)
@@ -94,7 +99,7 @@ def main(args):
         qos_profile = choose_qos(node.node, topic_name=args.topic_name, qos_args=args)
         return _rostopic_delay(
             node.node, args.topic_name, qos_profile, window_size=args.window_size,
-            precision=args.precision)
+            precision=args.precision, acceptable_buffer_backends=args.acceptable_buffer_backends)
 
 
 class ROSTopicDelay(object):
@@ -188,7 +193,12 @@ class ROSTopicDelay(object):
 
 
 def _rostopic_delay(
-    node, topic, qos_profile, window_size=DEFAULT_WINDOW_SIZE, precision=DEFAULT_PRECISION
+    node,
+    topic,
+    qos_profile,
+    window_size=DEFAULT_WINDOW_SIZE,
+    precision=DEFAULT_PRECISION,
+    acceptable_buffer_backends=None
 ):
     """
     Periodically print the publishing delay of a topic to console until shutdown.
@@ -198,7 +208,15 @@ def _rostopic_delay(
     :param window_size: number of messages to average over, ``unsigned_int``
     :param precision: number of decimal places for average/minimum/maximum delay, ``int`` in [0, 9]
     :param blocking: pause delay until topic is published, ``bool``
+    :param acceptable_buffer_backends: acceptable buffer backend names, or "any"
     """
+    if acceptable_buffer_backends is not None:
+        backends = list(dict.fromkeys(
+            backend.strip().lower() for backend in acceptable_buffer_backends.split(',')
+            if backend.strip()))
+        acceptable_buffer_backends = (
+            ','.join(backends) if any(backend != 'cpu' for backend in backends) else None)
+
     # pause hz until topic is published
     msg_class = get_msg_class(node, topic, blocking=True, include_hidden_topics=True)
 
@@ -206,12 +224,17 @@ def _rostopic_delay(
         node.destroy_node()
         return 1
 
+    subscription_options = {}
+    if acceptable_buffer_backends is not None:
+        subscription_options['acceptable_buffer_backends'] = acceptable_buffer_backends
+
     rt = ROSTopicDelay(node, window_size, precision=precision)
     node.create_subscription(
         msg_class,
         topic,
         rt.callback_delay,
-        qos_profile)
+        qos_profile,
+        **subscription_options)
 
     timer = node.create_timer(1, rt.print_delay)
     while rclpy.ok():
