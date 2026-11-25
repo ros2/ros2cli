@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import argparse
 import contextlib
 import sys
 import unittest
@@ -36,6 +37,8 @@ import pytest
 
 from rclpy.utilities import get_available_rmw_implementations
 from ros2cli.helpers import get_rmw_additional_env
+from ros2lifecycle.verb.get import GetVerb
+from ros2lifecycle.verb.set import SetVerb
 
 
 # Skip cli tests on Windows while they exhibit pathological behavior
@@ -390,6 +393,22 @@ class TestROS2LifecycleCLI(unittest.TestCase):
         )
 
     @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_get_all_alias(self):
+        parser = argparse.ArgumentParser()
+        verb = GetVerb()
+        verb.add_arguments(parser, 'ros2 lifecycle get')
+        args = parser.parse_args(['/_hidden_test_lifecycle_node', '--all'])
+        assert args.include_hidden_nodes is True
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_get_a_alias(self):
+        parser = argparse.ArgumentParser()
+        verb = GetVerb()
+        verb.add_arguments(parser, 'ros2 lifecycle get')
+        args = parser.parse_args(['/_hidden_test_lifecycle_node', '-a'])
+        assert args.include_hidden_nodes is True
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
     def test_get_lifecycle_node_state(self):
         with self.launch_lifecycle_command(
             arguments=['get', '/test_lifecycle_node']
@@ -444,3 +463,19 @@ class TestROS2LifecycleCLI(unittest.TestCase):
         assert launch_testing.tools.expect_output(
             expected_lines=[lifecycle[0][0]], text=lifecycle_command.output, strict=False
         )
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_set_all_alias(self):
+        parser = argparse.ArgumentParser()
+        verb = SetVerb()
+        verb.add_arguments(parser, 'ros2 lifecycle set')
+        args = parser.parse_args(['/_hidden_test_lifecycle_node', 'configure', '--all'])
+        assert args.include_hidden_nodes is True
+
+    @launch_testing.markers.retry_on_failure(times=5, delay=1)
+    def test_set_a_alias(self):
+        parser = argparse.ArgumentParser()
+        verb = SetVerb()
+        verb.add_arguments(parser, 'ros2 lifecycle set')
+        args = parser.parse_args(['/_hidden_test_lifecycle_node', 'configure', '-a'])
+        assert args.include_hidden_nodes is True

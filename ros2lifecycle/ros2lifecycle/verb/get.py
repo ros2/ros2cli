@@ -35,7 +35,7 @@ class GetVerb(VerbExtension):
         arg.completer = NodeNameCompleter(
             include_hidden_nodes_key='include_hidden_nodes')
         parser.add_argument(
-            '--include-hidden-nodes', action='store_true',
+            '--include-hidden-nodes', '-a', '--all', action='store_true',
             help='Consider hidden nodes as well')
         parser.add_argument(
             '--timeout', metavar='N', type=float,
