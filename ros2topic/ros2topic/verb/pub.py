@@ -102,7 +102,7 @@ class PubVerb(VerbExtension):
                 'Wait until finding the specified number of matching subscriptions. '
                 'Defaults to 1 when using "-1"/"--once"/"--times", otherwise defaults to 0.'))
         parser.add_argument(
-            '--max-wait-time-secs', type=positive_float, default=None,
+            '--max-wait-time-secs', '--timeout', type=positive_float, default=None,
             help=(
                 'This sets the maximum wait time in seconds if '
                 '--wait-matching-subscriptions is set. '
