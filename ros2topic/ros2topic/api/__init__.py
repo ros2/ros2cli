@@ -12,12 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from argparse import ArgumentParser
 from argparse import ArgumentTypeError
 from time import sleep
 from typing import Optional
-
-import warnings
 
 from argcomplete import CompletionFinder
 
@@ -184,53 +181,3 @@ class TopicMessagePrototypeCompleter:
         message = get_message(getattr(parsed_args, self.topic_type_key))
         yaml_snippet = "'" + message_to_yaml(message()) + "'"
         return [yaml_snippet]
-
-
-def profile_configure_short_keys(
-    profile: rclpy.qos.QoSProfile = None, reliability: Optional[str] = None,
-    durability: Optional[str] = None, depth: Optional[int] = None, history: Optional[str] = None,
-    liveliness: Optional[str] = None, liveliness_lease_duration_s: Optional[int] = None,
-) -> None:
-    warnings.warn(
-        "'qos_profile_from_short_keys()' is deprecated. "
-        "use 'ros2cli.qos.qos_profile_from_short_keys()' instead.",
-        DeprecationWarning)
-    from ros2cli.qos import profile_configure_short_keys as _profile_configure_short_keys
-    return _profile_configure_short_keys(profile, reliability, durability, depth, history,
-                                         liveliness, liveliness_lease_duration_s)
-
-
-def qos_profile_from_short_keys(
-    preset_profile: str, reliability: Optional[str] = None, durability: Optional[str] = None,
-    depth: Optional[int] = None, history: Optional[str] = None, liveliness: Optional[str] = None,
-    liveliness_lease_duration_s: Optional[float] = None,
-) -> rclpy.qos.QoSProfile:
-    warnings.warn(
-        "'qos_profile_from_short_keys()' is deprecated. "
-        "use 'ros2cli.qos.qos_profile_from_short_keys()' instead.",
-        DeprecationWarning)
-    from ros2cli.qos import qos_profile_from_short_keys as _qos_profile_from_short_keys
-    return _qos_profile_from_short_keys(
-        preset_profile, reliability, durability,
-        depth, history, liveliness, liveliness_lease_duration_s)
-
-
-def add_qos_arguments(
-    parser: ArgumentParser, entity_type: str,
-    default_profile_str: str = 'default', extra_message: str = ''
-) -> None:
-    warnings.warn(
-        "'add_qos_arguments()' is deprecated. "
-        "use 'ros2cli.qos.add_qos_arguments()' instead.",
-        DeprecationWarning)
-    from ros2cli.qos import add_qos_arguments as _add_qos_arguments
-    return _add_qos_arguments(parser, entity_type, default_profile_str, extra_message)
-
-
-def choose_qos(node, topic_name: str, qos_args):
-    warnings.warn(
-        "'choose_qos()' is deprecated. "
-        "use 'ros2cli.qos.choose_qos()' instead.",
-        DeprecationWarning)
-    from ros2cli.qos import choose_qos as _choose_qos
-    return _choose_qos(node, topic_name, qos_args)
